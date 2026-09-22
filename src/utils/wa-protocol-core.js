@@ -425,14 +425,25 @@ export const getCallStatusFromNode = ({ tag, attrs }) => {
 
 const UNEXPECTED_SERVER_CODE_TEXT = 'Unexpected server response: '
 export const getCodeFromWSError = error => {
-	let statusCode = 500
+	// IMPORTANT: this classifies raw WebSocket *transport* errors (connection reset,
+	// DNS failure, proxy hiccup, host cutting the socket, etc) - these never reached
+	// WA's own XML stream, so they must NOT collapse to the same 500 used by
+	// getErrorCodeFromStreamError for a real WA-reported "badSession". DisconnectReason
+	// 500 === badSession, which callers (e.g. bot reconnect logic) usually treat as
+	// non-recoverable. Misreporting a transient network blip as 500 makes bots stop
+	// reconnecting on ordinary network issues, which is not what happened.
+	const code = error?.code || error?.cause?.code
 	if (error?.message?.includes(UNEXPECTED_SERVER_CODE_TEXT)) {
-		const code = +error?.message.slice(UNEXPECTED_SERVER_CODE_TEXT.length)
-		if (!Number.isNaN(code) && code >= 400) statusCode = code
-	} else if (error?.code?.startsWith('E') || error?.message?.includes('timed out')) {
-		statusCode = 408 // ETIMEOUT, ENOTFOUND etc
+		const parsed = +error.message.slice(UNEXPECTED_SERVER_CODE_TEXT.length)
+		if (!Number.isNaN(parsed) && parsed >= 400) return parsed
 	}
-	return statusCode
+	if (code?.startsWith?.('E') || error?.message?.includes('timed out') || error?.cause?.message?.includes('timed out')) {
+		return 408 // ETIMEDOUT, ECONNRESET, ENOTFOUND, EHOSTUNREACH etc - transient, recoverable
+	}
+	// Unknown/unclassified transport error: default to connectionLost (408), not
+	// badSession (500). We genuinely don't know why the socket died, but it wasn't
+	// WA telling us the session is bad, so it should stay recoverable/retryable.
+	return 408
 }
 
 /** Is the given platform WA business */

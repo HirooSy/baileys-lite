@@ -1,6 +1,6 @@
 {
   "name": "@hiroosy/baileys-lite",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A Lightweight Baileys built with NodeJs 22+",
   "repository": {
   "type": "git",

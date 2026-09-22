@@ -90,7 +90,20 @@ export class WebSocketClient extends AbstractSocketClient {
 
 		socket.onopen = () => { clearHandshake(); this.emit('open') }
 		socket.onclose = event => { clearHandshake(); this.emit('close', event.code, event.reason) }
-		socket.onerror = event => { clearHandshake(); this.emit('error', event.error || new Error(event.message || 'WebSocket error')) }
+		socket.onerror = event => {
+			clearHandshake()
+			// undici's ErrorEvent sometimes carries an `error` whose own `.message` is empty
+			// (the useful detail, e.g. ECONNRESET, lives on `.cause`). Fall back through
+			// cause.message/cause.code/event.message so we never emit a blank-message error -
+			// an empty message defeats getCodeFromWSError's classification and previously
+			// caused these to be reported as WebSocket Error () with no real diagnostic.
+			const raw = event.error || new Error(event.message || 'WebSocket error')
+			if (!raw.message) {
+				const detail = raw.cause?.message || raw.cause?.code || event.message || 'unknown'
+				raw.message = `WebSocket error: ${detail}`
+			}
+			this.emit('error', raw)
+		}
 		socket.onmessage = event => {
 			// `ws` handed listeners a Buffer/string; the native WebSocket hands back an ArrayBuffer
 			// (binaryType set above) or a string — normalize to match.
