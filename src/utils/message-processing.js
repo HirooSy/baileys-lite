@@ -548,8 +548,12 @@ export class MessageRetryManager {
 			}
 		})
 		this.messageKeyIndex = new Map()
-		this.sessionRecreateHistory = new Cache({ ttl: RECREATE_SESSION_TIMEOUT * 2 })
-		this.retryCounters = new Cache({ ttl: 15 * 60 * 1000, updateAgeOnGet: true })
+		// max caps below match zapo's approach of bounding every cache by entry count,
+		// not just TTL: under a burst (e.g. many peers retrying at once, or multi-session
+		// scale with many chats active at once) a count-only ceiling keeps memory flat
+		// even before the TTL sweep has a chance to run.
+		this.sessionRecreateHistory = new Cache({ max: 4096, ttl: RECREATE_SESSION_TIMEOUT * 2 })
+		this.retryCounters = new Cache({ max: 4096, ttl: 15 * 60 * 1000, updateAgeOnGet: true })
 		this.baseKeys = new Cache({ max: 1024, ttl: 15 * 60 * 1000 })
 		this.pendingPhoneRequests = {}
 		this.maxMsgRetryCount = maxMsgRetryCount

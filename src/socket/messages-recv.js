@@ -81,13 +81,17 @@ export const makeMessagesRecvSocket = (config) => {
     const getLIDForPN = signalRepository.lidMapping.getLIDForPN.bind(signalRepository.lidMapping);
     /** this mutex ensures that each retryRequest will wait for the previous one to finish */
     const retryMutex = makeMutex();
+    // max bounds entry count so a burst of retries/calls can't outgrow memory between
+    // TTL sweeps - same reasoning as the signal-key cache in auth-state-core.js.
     const msgRetryCache = config.msgRetryCounterCache ||
         new Cache({
+            max: 8192,
             stdTTL: DEFAULT_CACHE_TTLS.MSG_RETRY, // 1 hour
             useClones: false
         });
     const callOfferCache = config.callOfferCache ||
         new Cache({
+            max: 2048,
             stdTTL: DEFAULT_CACHE_TTLS.CALL_OFFER, // 5 mins
             useClones: false
         });

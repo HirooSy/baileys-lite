@@ -68,8 +68,20 @@ export class WebSocketClient extends AbstractSocketClient {
 		if (connectTimeoutMs > 0) {
 			handshakeTimer = setTimeout(() => {
 				if (socket.readyState === WebSocket.CONNECTING) {
+					// Do NOT call socket.close() synchronously here: Node's undici-based
+					// WebSocket has a known bug (nodejs/undici#4741) where close() while
+					// still CONNECTING dispatches its internal #onSocketClose path
+					// synchronously and can throw a raw TypeError instead of just emitting
+					// 'error'/'close'. Detach our own listeners first so we don't react to
+					// whatever it does, then let the abort happen off this call stack.
+					socket.onopen = null
+					socket.onmessage = null
+					socket.onerror = () => {}
+					socket.onclose = () => {}
 					this.emit('error', new Error('Opening handshake has timed out'))
-					try { socket.close() } catch {}
+					queueMicrotask(() => {
+						try { socket.close() } catch {}
+					})
 				}
 			}, connectTimeoutMs)
 			handshakeTimer.unref?.()
@@ -94,12 +106,39 @@ export class WebSocketClient extends AbstractSocketClient {
 			this.socket = null
 			return
 		}
+		// Node's undici-based WebSocket has a known bug (nodejs/undici#4741): calling
+		// close() while readyState is still CONNECTING dispatches 'error'/'close'
+		// SYNCHRONOUSLY from inside close() via an internal #onSocketClose path, and on
+		// some Node builds that path throws a raw TypeError instead of emitting cleanly
+		// (this is what crashes the process with "at #onSocketClose (...undici:...)").
+		// So for a still-connecting socket we never call socket.close() at all: just
+		// detach our listeners and drop the reference, and swallow whatever the socket
+		// does on its own afterwards.
+		if (socket.readyState === WebSocket.CONNECTING) {
+			socket.onopen = null
+			socket.onmessage = null
+			socket.onerror = () => {}
+			socket.onclose = () => {}
+			this.socket = null
+			// Best-effort abort in a microtask, outside this call stack, so a synchronous
+			// throw from undici's internals can't propagate up into our caller.
+			queueMicrotask(() => {
+				try { socket.close() } catch {}
+			})
+			return
+		}
 		// connect()'s onclose handler emits 'close'; here we only wait for it (like `ws`'s once('close')).
 		// Guarded with a timeout: if the underlying transport is stuck (e.g. a wedged TCP
 		// socket), 'close' may never fire and this would otherwise hang teardown forever.
 		let onClose
 		const closePromise = new Promise(resolve => { onClose = resolve; this.once('close', onClose) })
-		try { socket.close() } catch {}
+		try {
+			socket.close()
+		} catch {
+			// Same undici race as above can still throw synchronously even outside
+			// CONNECTING (e.g. a close initiated concurrently with a receiver error).
+			// Ignore it; the timeout below still bounds how long we wait.
+		}
 		await Promise.race([closePromise, new Promise(resolve => setTimeout(resolve, 5000))])
 		this.off('close', onClose)
 		this.socket = null

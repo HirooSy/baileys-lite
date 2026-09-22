@@ -124,7 +124,11 @@ const txStorage = new AsyncLocalStorage()
 
 /** Adds caching capability to a SignalKeyStore */
 export function makeCacheableSignalKeyStore(store, logger, _cache) {
-	const cache = _cache || new Cache({ ttl: DEFAULT_CACHE_TTLS.SIGNAL_STORE * 1000 })
+	// max bounds entry count in addition to ttl: this cache holds signal keys (sessions,
+	// pre-keys, sender-keys) for every peer a session has ever talked to, so on a
+	// long-running / multi-session process it can otherwise grow without bound between
+	// TTL sweeps. 8192 matches the default session-store ceiling used elsewhere.
+	const cache = _cache || new Cache({ max: 8192, ttl: DEFAULT_CACHE_TTLS.SIGNAL_STORE * 1000 })
 	const cacheMutex = makeMutex()
 
 	function getUniqueId(type, id) {
