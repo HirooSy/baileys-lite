@@ -1,8 +1,8 @@
 <div align=center><img src="https://files.catbox.moe/bzw1x3.png"/></div>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@hiroosy/baileys-lite"><img height="25" alt="npm version" src="https://img.shields.io/npm/v/@hiroosy/baileys?color=CB3837&style=for-the-badge&logo=npm" /></a>
-  <a href="https://www.npmjs.com/package/@hiroosy/baileys-lite"><img height="25" alt="npm package size" src="https://img.shields.io/npm/unpacked-size/@hiroosy/baileys?label=size&color=2F855A&style=for-the-badge&logo=npm" /></a>
+  <a href="https://www.npmjs.com/package/@hiroosy/baileys-lite"><img height="25" alt="npm version" src="https://img.shields.io/npm/v/@hiroosy/baileys-lite?color=CB3837&style=for-the-badge&logo=npm" /></a>
+  <a href="https://www.npmjs.com/package/@hiroosy/baileys-lite"><img height="25" alt="npm package size" src="https://img.shields.io/npm/unpacked-size/@hiroosy/baileys-lite?label=size&color=2F855A&style=for-the-badge&logo=npm" /></a>
   <img height="25" alt="node version" src="https://img.shields.io/badge/NodeJS_22+-000000.svg?&style=for-the-badge&logo=node.js&logoColor=green" />
 </p>
 
