@@ -1,0 +1,27 @@
+{
+  "name": "@hiroosy/baileys-lite",
+  "version": "0.0.3",
+  "description": "A Lightweight Baileys made by HirooSy",
+  "keywords": [
+    "whatsapp",
+    "automation"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src/**/*",
+    "WAProto/**/*",
+    "engine-requirements.js"
+  ],
+  "scripts": {
+    "preinstall": "node ./engine-requirements.js"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
