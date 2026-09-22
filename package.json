@@ -1,7 +1,11 @@
 {
   "name": "@hiroosy/baileys-lite",
-  "version": "0.0.4",
+  "version": "0.0.8",
   "description": "A Lightweight Baileys made by HirooSy",
+  "repository": {
+  "type": "git",
+  "url": "https://github.com/HirooSy/baileys-lite.git"
+},
   "keywords": [
     "whatsapp",
     "automation"
