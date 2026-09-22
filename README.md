@@ -18,7 +18,7 @@ built-ins instead of third-party packages.
 ## Install
 
 ```bash
-npm install @hiroosy/baileys
+npm install @hiroosy/baileys-lite
 ```
 
 > [!IMPORTANT]
