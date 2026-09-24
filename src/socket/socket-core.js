@@ -35,9 +35,10 @@ import {
 } from '../utils/wa-protocol-core.js'
 import { addTransactionCapability } from '../utils/auth-state-core.js'
 import { makeEventBuffer } from '../utils/chat-sync.js'
-import { assertNodeErrorFree, binaryNodeToString, encodeBinaryNode, getAllBinaryNodeChildren, getBinaryNodeChild, getBinaryNodeChildren, isLidUser, jidDecode, jidEncode, S_WHATSAPP_NET } from '../binary/wa-binary.js'
+import { assertNodeErrorFree, binaryNodeToString, encodeBinaryNode, getAllBinaryNodeChildren, getBinaryNodeChild, getBinaryNodeChildren, isLidUser, jidDecode, jidEncode, jidNormalizedUser, S_WHATSAPP_NET } from '../binary/wa-binary.js'
 import { BinaryInfo } from '../wam/wam.js'
 import { USyncQuery, USyncUser } from './usync.js'
+import { normalizeUsername, isValidUsername, isValidUsernameKey } from '../utils/username.js'
 import { WebSocketClient } from '../socket-client/websocket-client.js'
 
 /* ------------------------------------------------------------------ */
@@ -241,6 +242,82 @@ export const makeSocket = config => {
 		if (usyncQuery.users.length === 0) return []
 		const results = await executeUSyncQuery(usyncQuery)
 		return results ? results.list.filter(a => !!a.lid).map(({ lid, id }) => ({ pn: id, lid })) : []
+	}
+
+	/**
+	 * Resolves a WhatsApp username handle (e.g. "cool.person" or "@cool.person") to its
+	 * LID/JID over the usync contact protocol.
+	 *
+	 * This does NOT reuse executeUSyncQuery(): a username lookup's <contact> result node
+	 * can legitimately carry an <error> child meaning "the owner gates lookups behind a
+	 * 4-digit key" - that is an expected outcome here, not a protocol failure, but the
+	 * shared USyncContactProtocol.parser() calls assertNodeErrorFree() and would throw on
+	 * it (correct for every *other* usync caller, wrong for this one). So the <user> result
+	 * node is inspected directly instead of going through the generic protocol parsers.
+	 *
+	 * @param {string} handle - the username, with or without a leading '@'
+	 * @param {string} [usernameKey] - the 4-digit key, when the caller already has it
+	 *   (e.g. from a previous 'key-required' response the user supplied out of band)
+	 * @returns {Promise<
+	 *   | { status: 'ok', jid: string }
+	 *   | { status: 'key-required' }
+	 *   | { status: 'not-found' }
+	 * >}
+	 */
+	const resolveUsername = async (handle, usernameKey) => {
+		const username = normalizeUsername(handle)
+		if (!isValidUsername(username)) throw new Boom('Invalid username', { statusCode: 400 })
+		if (usernameKey !== undefined && !isValidUsernameKey(usernameKey)) {
+			throw new Boom('Invalid username key: expected a 4-digit string', { statusCode: 400 })
+		}
+
+		const usyncUser = new USyncUser().withUsername(username)
+		if (usernameKey) usyncUser.withUsernameKey(usernameKey)
+
+		const usyncQuery = new USyncQuery().withContactProtocol().withUser(usyncUser)
+		const userNode = {
+			tag: 'user',
+			attrs: {},
+			content: [usyncQuery.protocols[0].getUserElement(usyncUser)].filter(a => a !== null)
+		}
+		const iq = {
+			tag: 'iq',
+			attrs: { to: S_WHATSAPP_NET, type: 'get', xmlns: 'usync' },
+			content: [
+				{
+					tag: 'usync',
+					attrs: { context: usyncQuery.context, mode: usyncQuery.mode, sid: generateMessageTag(), last: 'true', index: '0' },
+					content: [
+						{ tag: 'query', attrs: {}, content: [{ tag: 'contact', attrs: {} }] },
+						{ tag: 'list', attrs: {}, content: [userNode] }
+					]
+				}
+			]
+		}
+
+		const result = await query(iq)
+		const usyncNode = getBinaryNodeChild(result, 'usync')
+		const listNode = usyncNode ? getBinaryNodeChild(usyncNode, 'list') : undefined
+		const resultUserNode = listNode ? getBinaryNodeChild(listNode, 'user') : undefined
+		if (!resultUserNode) return { status: 'not-found' }
+
+		const contactNode = getBinaryNodeChild(resultUserNode, 'contact')
+		if (!contactNode) return { status: 'not-found' }
+
+		const errorNode = getBinaryNodeChild(contactNode, 'error')
+		if (errorNode) {
+			// The server withholds the JID until the caller supplies the owner's lookup key.
+			// Any other per-user error is surfaced the same way - the caller already knows
+			// the handle exists (it got a <contact> node back) but cannot resolve it yet.
+			return { status: 'key-required' }
+		}
+
+		if (contactNode.attrs?.type !== 'in') return { status: 'not-found' }
+
+		const jid = resultUserNode.attrs?.jid
+		if (!jid) return { status: 'key-required' }
+
+		return { status: 'ok', jid: jidNormalizedUser(jid) }
 	}
 
 	const ev = makeEventBuffer(logger)
@@ -820,6 +897,7 @@ export const makeSocket = config => {
 		sendWAMBuffer,
 		executeUSyncQuery,
 		onWhatsApp,
+		resolveUsername,
 		fetchAccountReachoutTimelock,
 		fetchNewChatMessageCap
 	}

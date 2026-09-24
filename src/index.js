@@ -36,6 +36,7 @@ export * from './wam/wam-constants.js'
 // was WAUSync/
 export * from './socket/usync.js'
 // was Utils/
+export * from './foundation/ai-rich.js'
 export * from './utils/wa-protocol-core.js'
 export * from './utils/auth-state-core.js'
 export * from './utils/auth-state-storage.js'

@@ -7,6 +7,7 @@
 import { getRandomValues, randomBytes, randomUUID } from 'node:crypto'
 import { promises as fs } from 'node:fs'
 import { proto } from '../../WAProto/index.js'
+import { AIRichBuilder, aiRichBuilderFromSpec } from '../foundation/ai-rich.js'
 import { Boom } from '../foundation/boom.js'
 import { zip } from '../foundation/zip.js'
 import {
@@ -757,6 +758,11 @@ const prepareStickerPackMessage = async (message, options) => {
 	return WAProto.Message.StickerPackMessage.fromObject(obj)
 }
 
+/**
+ * `nativeFlow` accepts a plain array of button objects — `{text, id}`, `{text, url}`, `{text, copy}`,
+ * `{text, sections}`, `{text, call}` — or `{ buttons: [...] }`. Matches WAProto's InteractiveMessage.NativeFlowMessage
+ * button shape 1:1; see prepareNativeFlowButtons below for the encoding.
+ */
 const prepareNativeFlowButtons = message => {
 	const buttons = message.nativeFlow
 	const isButtonsFieldArray = Array.isArray(buttons)
@@ -847,6 +853,10 @@ export const generateWAMessageContent = async (message, options) => {
 	if (hasNonNullishProperty(message, 'raw')) {
 		delete message.raw
 		return message
+	} else if (hasNonNullishProperty(message, 'aiRich')) {
+		const { aiRich, forwarded, quoted, quotedParticipant, botJid } = message
+		const builder = aiRich instanceof AIRichBuilder ? aiRich : aiRichBuilderFromSpec(aiRich)
+		m = builder.build({ forwarded, quoted, quotedParticipant, botJid })
 	} else if (
 		hasNonNullishProperty(message, 'code') ||
 		hasNonNullishProperty(message, 'links') ||

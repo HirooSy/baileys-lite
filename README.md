@@ -8,6 +8,14 @@
 
 **High-Performace Javascript Baileys**, Built for high-scalability workloads, multi-session operation, and full user configurability.
 
+- [x] Support LID/PN/Username.
+- [x] High performance for multi sessions.
+- [x] Native / Zero depedency.
+- [x] Low memory & CPU consumption.
+- [ ] Calls.
+
+---
+
 ## Requirements
 
 - Node.js **22 or newer** (the library uses the native global `WebSocket` and other modern built-ins).
