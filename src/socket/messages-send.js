@@ -61,7 +61,9 @@ import { USyncQuery, USyncUser } from './usync.js'
 import { makeNewsletterSocket } from './groups-newsletter.js'
 
 export const makeMessagesSocket = (config) => {
-    const { logger, linkPreviewImageThumbnailWidth, generateHighQualityLinkPreview, options: httpRequestOptions, patchMessageBeforeSending, cachedGroupMetadata, enableRecentMessageCache, maxMsgRetryCount } = config;
+    const { logger, linkPreviewImageThumbnailWidth, generateHighQualityLinkPreview, options: httpRequestOptions, cachedGroupMetadata, enableRecentMessageCache, maxMsgRetryCount } = config;
+    let currentPatchMessageBeforeSending = config.patchMessageBeforeSending;
+    const patchMessageBeforeSending = (message, jids) => currentPatchMessageBeforeSending(message, jids);
     const sock = makeNewsletterSocket(config);
     const { ev, authState, messageMutex, signalRepository, upsertMessage, query, fetchPrivacySettings, sendNode, groupMetadata, groupToggleEphemeral, registerSocketEndHandler } = sock;
     const getLIDForPN = signalRepository.lidMapping.getLIDForPN.bind(signalRepository.lidMapping);
@@ -415,11 +417,11 @@ export const makeMessagesSocket = (config) => {
         });
         return msgId;
     };
-    const createParticipantNodes = async (recipientJids, message, extraAttrs, dsmMessage) => {
+    const createParticipantNodes = async (recipientJids, message, extraAttrs, dsmMessage, alreadyPatched = false) => {
         if (!recipientJids.length) {
             return { nodes: [], shouldIncludeDeviceIdentity: false };
         }
-        const patched = await patchMessageBeforeSending(message, recipientJids);
+        const patched = alreadyPatched ? message : await patchMessageBeforeSending(message, recipientJids);
         const patchedMessages = Array.isArray(patched)
             ? patched
             : recipientJids.map(jid => ({ recipientJid: jid, message: patched }));
@@ -429,7 +431,7 @@ export const makeMessagesSocket = (config) => {
         const meLidUser = meLid ? jidDecode(meLid)?.user : null;
         const encryptionPromises = patchedMessages.map(async ({ recipientJid: jid, message: patchedMessage }) => {
             try {
-                if (!jid)
+                if (!jid || !patchedMessage)
                     return null;
                 let msgToEncrypt = patchedMessage;
                 if (dsmMessage) {
@@ -466,6 +468,7 @@ export const makeMessagesSocket = (config) => {
             }
             catch (err) {
                 logger.error({ jid, err }, 'Failed to encrypt for recipient');
+                console.error('[sPR-DEBUG] encrypt failed for', jid, err?.message, err?.stack?.split('\n')[1]);
                 return null;
             }
         });
@@ -612,53 +615,82 @@ export const makeMessagesSocket = (config) => {
                         addressing_mode: groupData?.addressingMode || 'lid'
                     };
                 }
-                const patched = await patchMessageBeforeSending(message);
+                const patched = await patchMessageBeforeSending(message, isGroup ? devices.map(d => d.jid) : undefined);
                 if (Array.isArray(patched)) {
-                    throw new Boom('Per-jid patching is not supported in groups');
-                }
-                const bytes = encodeWAMessage(patched);
-                reportingMessage = patched;
-                const groupAddressingMode = additionalAttributes?.['addressing_mode'] || groupData?.addressingMode || 'lid';
-                const groupSenderIdentity = groupAddressingMode === 'lid' && meLid ? meLid : meId;
-                const { ciphertext, senderKeyDistributionMessage } = await signalRepository.encryptGroupMessage({
-                    group: destinationJid,
-                    data: bytes,
-                    meId: groupSenderIdentity
-                });
-                const senderKeyRecipients = [];
-                for (const device of devices) {
-                    const deviceJid = device.jid;
-                    const hasKey = !!senderKeyMap[deviceJid];
-                    if ((!hasKey || !!participant) &&
-                        !isHostedLidUser(deviceJid) &&
-                        !isHostedPnUser(deviceJid) &&
-                        device.device !== 99) {
-                        //todo: revamp all this logic
-                        // the goal is to follow with what I said above for each group, and instead of a true false map of ids, we can set an array full of those the app has already sent pkmsgs
-                        senderKeyRecipients.push(deviceJid);
-                        senderKeyMap[deviceJid] = true;
+                    // Per-jid mode: patchMessageBeforeSending returned an array of {recipientJid, message}
+                    // keyed by base jid (device:0). Expand to cover ALL devices of each user so every
+                    // device of a member receives the same per-user text via pkmsg.
+                    // sender-key (skmsg) is skipped entirely for this send.
+                    logger.debug({ jid, devices: devices.length }, 'per-jid group patch: bypassing sender-key');
+                    // Build a user→message map from patched (which uses base/device:0 jids)
+                    const userMsgMap = new Map();
+                    for (const { recipientJid, message: msg } of patched) {
+                        if (!msg) continue;
+                        const decoded = jidDecode(recipientJid);
+                        if (decoded) userMsgMap.set(decoded.user, msg);
                     }
+                    // Expand: for every device in the group, look up its user in the map
+                    const expanded = devices
+                        .map(d => {
+                            const decoded = jidDecode(d.jid);
+                            const msg = decoded ? userMsgMap.get(decoded.user) : undefined;
+                            return msg ? { recipientJid: d.jid, message: msg } : null;
+                        })
+                        .filter(Boolean);
+                    logger.debug({ expanded: expanded.length }, 'per-jid expanded device list');
+                    if (expanded.length) {
+                        await assertSessions(expanded.map(e => e.recipientJid));
+                        const result = await createParticipantNodes(expanded.map(e => e.recipientJid), expanded, extraAttrs, undefined, true);
+                        shouldIncludeDeviceIdentity = shouldIncludeDeviceIdentity || result.shouldIncludeDeviceIdentity;
+                        participants.push(...result.nodes);
+                    }
+                    reportingMessage = patched[0]?.message;
                 }
-                if (senderKeyRecipients.length) {
-                    logger.debug({ senderKeyJids: senderKeyRecipients }, 'sending new sender key');
-                    const senderKeyMsg = {
-                        senderKeyDistributionMessage: {
-                            axolotlSenderKeyDistributionMessage: senderKeyDistributionMessage,
-                            groupId: destinationJid
+                else {
+                    const bytes = encodeWAMessage(patched);
+                    reportingMessage = patched;
+                    const groupAddressingMode = additionalAttributes?.['addressing_mode'] || groupData?.addressingMode || 'lid';
+                    const groupSenderIdentity = groupAddressingMode === 'lid' && meLid ? meLid : meId;
+                    const { ciphertext, senderKeyDistributionMessage } = await signalRepository.encryptGroupMessage({
+                        group: destinationJid,
+                        data: bytes,
+                        meId: groupSenderIdentity
+                    });
+                    const senderKeyRecipients = [];
+                    for (const device of devices) {
+                        const deviceJid = device.jid;
+                        const hasKey = !!senderKeyMap[deviceJid];
+                        if ((!hasKey || !!participant) &&
+                            !isHostedLidUser(deviceJid) &&
+                            !isHostedPnUser(deviceJid) &&
+                            device.device !== 99) {
+                            //todo: revamp all this logic
+                            // the goal is to follow with what I said above for each group, and instead of a true false map of ids, we can set an array full of those the app has already sent pkmsgs
+                            senderKeyRecipients.push(deviceJid);
+                            senderKeyMap[deviceJid] = true;
                         }
-                    };
-                    const senderKeySessionTargets = senderKeyRecipients;
-                    await assertSessions(senderKeySessionTargets);
-                    const result = await createParticipantNodes(senderKeyRecipients, senderKeyMsg, extraAttrs);
-                    shouldIncludeDeviceIdentity = shouldIncludeDeviceIdentity || result.shouldIncludeDeviceIdentity;
-                    participants.push(...result.nodes);
+                    }
+                    if (senderKeyRecipients.length) {
+                        logger.debug({ senderKeyJids: senderKeyRecipients }, 'sending new sender key');
+                        const senderKeyMsg = {
+                            senderKeyDistributionMessage: {
+                                axolotlSenderKeyDistributionMessage: senderKeyDistributionMessage,
+                                groupId: destinationJid
+                            }
+                        };
+                        const senderKeySessionTargets = senderKeyRecipients;
+                        await assertSessions(senderKeySessionTargets);
+                        const result = await createParticipantNodes(senderKeyRecipients, senderKeyMsg, extraAttrs);
+                        shouldIncludeDeviceIdentity = shouldIncludeDeviceIdentity || result.shouldIncludeDeviceIdentity;
+                        participants.push(...result.nodes);
+                    }
+                    binaryNodeContent.push({
+                        tag: 'enc',
+                        attrs: { v: '2', type: 'skmsg', ...extraAttrs },
+                        content: ciphertext
+                    });
+                    await authState.keys.set({ 'sender-key-memory': { [jid]: senderKeyMap } });
                 }
-                binaryNodeContent.push({
-                    tag: 'enc',
-                    attrs: { v: '2', type: 'skmsg', ...extraAttrs },
-                    content: ciphertext
-                });
-                await authState.keys.set({ 'sender-key-memory': { [jid]: senderKeyMap } });
             }
             else {
                 // ADDRESSING CONSISTENCY: Match own identity to conversation context
@@ -1092,6 +1124,11 @@ export const makeMessagesSocket = (config) => {
         getUSyncDevices,
         messageRetryManager,
         updateMemberLabel,
+        // Function (not property) for the same reason as getMediaHost above: a later spread
+        // (chats.ts, connection.js's own socket options-merge) must still see live reads,
+        // and setPatchMessageBeforeSending must still be able to change what relayMessage uses.
+        getPatchMessageBeforeSending: () => currentPatchMessageBeforeSending,
+        setPatchMessageBeforeSending: fn => { currentPatchMessageBeforeSending = fn; },
         updateMediaMessage: async (message) => {
             const content = assertMediaContent(message.message);
             const mediaKey = content.mediaKey;
