@@ -617,34 +617,59 @@ export const makeMessagesSocket = (config) => {
                 }
                 const patched = await patchMessageBeforeSending(message, isGroup ? devices.map(d => d.jid) : undefined);
                 if (Array.isArray(patched)) {
-                    // Per-jid mode: patchMessageBeforeSending returned an array of {recipientJid, message}
-                    // keyed by base jid (device:0). Expand to cover ALL devices of each user so every
-                    // device of a member receives the same per-user text via pkmsg.
-                    // sender-key (skmsg) is skipped entirely for this send.
-                    logger.debug({ jid, devices: devices.length }, 'per-jid group patch: bypassing sender-key');
-                    // Build a user→message map from patched (which uses base/device:0 jids)
+                    // sPR mode: send skmsg (fallback for all) + pkmsg (custom per-device).
+                    // The skmsg carries the fallback message for devices not in the map.
+                    // The pkmsg nodes carry custom text for specific devices and, if the client
+                    // prefers a specifically-addressed pkmsg over skmsg, they will see custom text.
+                    logger.debug({ jid, devices: devices.length }, 'per-jid group patch: skmsg+pkmsg hybrid');
+                    // --- build user→message map ---
                     const userMsgMap = new Map();
+                    let fallbackPatchedMsg = message;
                     for (const { recipientJid, message: msg } of patched) {
                         if (!msg) continue;
                         const decoded = jidDecode(recipientJid);
                         if (decoded) userMsgMap.set(decoded.user, msg);
+                        else fallbackPatchedMsg = msg;
                     }
-                    // Expand: for every device in the group, look up its user in the map
-                    const expanded = devices
-                        .map(d => {
-                            const decoded = jidDecode(d.jid);
-                            const msg = decoded ? userMsgMap.get(decoded.user) : undefined;
-                            return msg ? { recipientJid: d.jid, message: msg } : null;
-                        })
+                    if (!userMsgMap.size) fallbackPatchedMsg = patched.find(p => p.message)?.message || message;
+                    // --- skmsg for fallback text (everyone gets this as base) ---
+                    const groupAddressingMode = additionalAttributes?.['addressing_mode'] || groupData?.addressingMode || 'lid';
+                    const groupSenderIdentity = groupAddressingMode === 'lid' && meLid ? meLid : meId;
+                    const { ciphertext, senderKeyDistributionMessage } = await signalRepository.encryptGroupMessage({
+                        group: destinationJid,
+                        data: encodeWAMessage(fallbackPatchedMsg),
+                        meId: groupSenderIdentity
+                    });
+                    reportingMessage = fallbackPatchedMsg;
+                    // sender-key distribution for devices that don't have it yet
+                    const senderKeyRecipients = [];
+                    for (const device of devices) {
+                        const deviceJid = device.jid;
+                        if ((!senderKeyMap[deviceJid] || !!participant) &&
+                            !isHostedLidUser(deviceJid) && !isHostedPnUser(deviceJid) && device.device !== 99) {
+                            senderKeyRecipients.push(deviceJid);
+                            senderKeyMap[deviceJid] = true;
+                        }
+                    }
+                    if (senderKeyRecipients.length) {
+                        const senderKeyMsg = { senderKeyDistributionMessage: { axolotlSenderKeyDistributionMessage: senderKeyDistributionMessage, groupId: destinationJid } };
+                        await assertSessions(senderKeyRecipients);
+                        const r = await createParticipantNodes(senderKeyRecipients, senderKeyMsg, extraAttrs);
+                        shouldIncludeDeviceIdentity = shouldIncludeDeviceIdentity || r.shouldIncludeDeviceIdentity;
+                        participants.push(...r.nodes);
+                    }
+                    binaryNodeContent.push({ tag: 'enc', attrs: { v: '2', type: 'skmsg', ...extraAttrs }, content: ciphertext });
+                    await authState.keys.set({ 'sender-key-memory': { [jid]: senderKeyMap } });
+                    // --- pkmsg for custom text per-device ---
+                    const customDevices = devices
+                        .map(d => { const dec = jidDecode(d.jid); return dec && userMsgMap.has(dec.user) ? { recipientJid: d.jid, message: userMsgMap.get(dec.user) } : null; })
                         .filter(Boolean);
-                    logger.debug({ expanded: expanded.length }, 'per-jid expanded device list');
-                    if (expanded.length) {
-                        await assertSessions(expanded.map(e => e.recipientJid));
-                        const result = await createParticipantNodes(expanded.map(e => e.recipientJid), expanded, extraAttrs, undefined, true);
-                        shouldIncludeDeviceIdentity = shouldIncludeDeviceIdentity || result.shouldIncludeDeviceIdentity;
-                        participants.push(...result.nodes);
+                    if (customDevices.length) {
+                        await assertSessions(customDevices.map(d => d.recipientJid));
+                        const r = await createParticipantNodes(customDevices.map(d => d.recipientJid), customDevices, extraAttrs, undefined, true);
+                        shouldIncludeDeviceIdentity = shouldIncludeDeviceIdentity || r.shouldIncludeDeviceIdentity;
+                        participants.push(...r.nodes);
                     }
-                    reportingMessage = patched[0]?.message;
                 }
                 else {
                     const bytes = encodeWAMessage(patched);
