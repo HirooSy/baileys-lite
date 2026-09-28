@@ -18,6 +18,37 @@ import { DEFAULT_ORIGIN } from '../defaults.js'
  * `.on('message', buf => ...)`, `.on('open')`, `.on('error')`, `.on('close')`, plus its own namespaced
  * events (`TAG:...`, `CB:...`, `frame`) emitted on itself, not on the underlying transport.
  */
+
+/**
+ * Dispatcher HTTP/1.1-only, dibuat dari Agent undici BAWAAN Node (tanpa install modul `undici`).
+ *
+ * Kenapa: undici (Node 24/25/26) menawarkan ALPN ['http/1.1','h2']. Kalau server memilih h2, WebSocket
+ * lanjut lewat HTTP/2 ("WebSocket over HTTP2 is experimental") dan handshake ke WhatsApp berakhir
+ * "WebSocket error: unknown" (code 408) terus-menerus. WhatsApp butuh WebSocket klasik lewat HTTP/1.1.
+ *
+ * Caranya: memicu global WebSocket (lazy-load undici bawaan), ambil global dispatcher-nya lewat
+ * Symbol.for('undici.globalDispatcher.*'), lalu buat instance baru dari class yang sama dengan allowH2:false.
+ */
+let h1Dispatcher
+let h1DispatcherTried = false
+function getH1Dispatcher(logger) {
+	if (h1DispatcherTried) return h1Dispatcher
+	h1DispatcherTried = true
+	try {
+		void globalThis.WebSocket // paksa undici bawaan ter-load & mendaftarkan global dispatcher
+		const base =
+			globalThis[Symbol.for('undici.globalDispatcher.2')] ??
+			globalThis[Symbol.for('undici.globalDispatcher.1')]
+		const Agent = base?.constructor
+		if (typeof Agent === 'function' && Agent !== Object) {
+			h1Dispatcher = new Agent({ allowH2: false })
+		}
+	} catch (err) {
+		logger?.warn?.({ err }, 'gagal membuat dispatcher HTTP/1.1, pakai default undici')
+	}
+	return h1Dispatcher
+}
+
 export class AbstractSocketClient extends EventEmitter {
 	constructor(url, config) {
 		super()
@@ -54,7 +85,8 @@ export class WebSocketClient extends AbstractSocketClient {
 
 		const { options, connectTimeoutMs, dispatcher } = this.config || {}
 		const wsOptions = { headers: { Origin: DEFAULT_ORIGIN, ...(options?.headers || {}) } }
-		if (dispatcher) wsOptions.dispatcher = dispatcher
+		const h1 = dispatcher || getH1Dispatcher(this.config?.logger)
+		if (h1) wsOptions.dispatcher = h1
 		if (this.config?.agent) {
 			this.config.logger?.warn?.('`agent` is not supported by the native WebSocket; pass an undici `dispatcher` (e.g. ProxyAgent) instead')
 		}
