@@ -1,54 +1,3 @@
-/**
- * Pure-JS JPEG encoder — vendored from `jpeg-js` 0.4.4 (BSD-3-Clause, Copyright 2008 Adobe Systems Inc.),
- * CommonJS export converted to `export default`. See ./LICENSE.
- * https://github.com/eugeneware/jpeg-js
- *
- * ONE behavior fix vs. verbatim porting (documented per baileys-lite convention of noting intentional
- * diffs): upstream's `encode()` has a dead branch `if (typeof module === 'undefined') return new
- * Uint8Array(...)` that is unreachable in the original package because jpeg-js is always loaded as CJS
- * there (`module` is always defined) — it always actually returns `Buffer.from(byteout)`. In this ESM
- * file `module` is not a global, so verbatim porting would silently flip which branch runs and hand back
- * a Uint8Array instead of a Buffer. Removed the dead branch; behavior is upstream's REAL behavior
- * (always Buffer), not a new behavior.
- * Algorithm body (DCT, quantization, Huffman tables) otherwise untouched vs. upstream md5 a8a2b452889aca67cd35440e40d219ae.
- */
-/*
-  Copyright (c) 2008, Adobe Systems Incorporated
-  All rights reserved.
-
-  Redistribution and use in source and binary forms, with or without 
-  modification, are permitted provided that the following conditions are
-  met:
-
-  * Redistributions of source code must retain the above copyright notice, 
-    this list of conditions and the following disclaimer.
-  
-  * Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the 
-    documentation and/or other materials provided with the distribution.
-  
-  * Neither the name of Adobe Systems Incorporated nor the names of its 
-    contributors may be used to endorse or promote products derived from 
-    this software without specific prior written permission.
-
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
-  IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
-  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-  PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
-  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-  EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-/*
-JPEG encoder ported to JavaScript and optimized by Andreas Ritter, www.bytestrom.eu, 11/2009
-
-Basic GUI blocking jpeg encoder
-*/
-
 var btoa = btoa || function(buf) {
   return Buffer.from(buf).toString('base64');
 };
@@ -65,7 +14,7 @@ function JPEGEncoder(quality) {
 	var UVDC_HT;
 	var YAC_HT;
 	var UVAC_HT;
-	
+
 	var bitcode = new Array(65535);
 	var category = new Array(65535);
 	var outputfDCTQuant = new Array(64);
@@ -73,14 +22,14 @@ function JPEGEncoder(quality) {
 	var byteout = [];
 	var bytenew = 0;
 	var bytepos = 7;
-	
+
 	var YDU = new Array(64);
 	var UDU = new Array(64);
 	var VDU = new Array(64);
 	var clt = new Array(256);
 	var RGB_YUV_TABLE = new Array(2048);
 	var currentQuality;
-	
+
 	var ZigZag = [
 			 0, 1, 5, 6,14,15,27,28,
 			 2, 4, 7,13,16,26,29,42,
@@ -91,7 +40,7 @@ function JPEGEncoder(quality) {
 			21,34,37,47,50,56,59,61,
 			35,36,48,49,57,58,62,63
 		];
-	
+
 	var std_dc_luminance_nrcodes = [0,0,1,5,1,1,1,1,1,1,0,0,0,0,0,0,0];
 	var std_dc_luminance_values = [0,1,2,3,4,5,6,7,8,9,10,11];
 	var std_ac_luminance_nrcodes = [0,0,2,1,3,3,2,4,3,5,5,4,4,0,0,1,0x7d];
@@ -118,7 +67,7 @@ function JPEGEncoder(quality) {
 			0xf1,0xf2,0xf3,0xf4,0xf5,0xf6,0xf7,0xf8,
 			0xf9,0xfa
 		];
-	
+
 	var std_dc_chrominance_nrcodes = [0,0,3,1,1,1,1,1,1,1,1,1,0,0,0,0,0];
 	var std_dc_chrominance_values = [0,1,2,3,4,5,6,7,8,9,10,11];
 	var std_ac_chrominance_nrcodes = [0,0,2,1,2,4,4,3,4,7,5,4,4,0,1,2,0x77];
@@ -145,7 +94,7 @@ function JPEGEncoder(quality) {
 			0xea,0xf2,0xf3,0xf4,0xf5,0xf6,0xf7,0xf8,
 			0xf9,0xfa
 		];
-	
+
 	function initQuantTables(sf){
 			var YQT = [
 				16, 11, 10, 16, 24, 40, 51, 61,
@@ -157,7 +106,7 @@ function JPEGEncoder(quality) {
 				49, 64, 78, 87,103,121,120,101,
 				72, 92, 95, 98,112,100,103, 99
 			];
-			
+
 			for (var i = 0; i < 64; i++) {
 				var t = ffloor((YQT[i]*sf+50)/100);
 				if (t < 1) {
@@ -201,7 +150,7 @@ function JPEGEncoder(quality) {
 				}
 			}
 		}
-		
+
 		function computeHuffmanTbl(nrcodes, std_table){
 			var codevalue = 0;
 			var pos_in_table = 0;
@@ -218,7 +167,7 @@ function JPEGEncoder(quality) {
 			}
 			return HT;
 		}
-		
+
 		function initHuffmanTbl()
 		{
 			YDC_HT = computeHuffmanTbl(std_dc_luminance_nrcodes,std_dc_luminance_values);
@@ -226,20 +175,20 @@ function JPEGEncoder(quality) {
 			YAC_HT = computeHuffmanTbl(std_ac_luminance_nrcodes,std_ac_luminance_values);
 			UVAC_HT = computeHuffmanTbl(std_ac_chrominance_nrcodes,std_ac_chrominance_values);
 		}
-	
+
 		function initCategoryNumber()
 		{
 			var nrlower = 1;
 			var nrupper = 2;
 			for (var cat = 1; cat <= 15; cat++) {
-				//Positive numbers
+
 				for (var nr = nrlower; nr<nrupper; nr++) {
 					category[32767+nr] = cat;
 					bitcode[32767+nr] = [];
 					bitcode[32767+nr][1] = cat;
 					bitcode[32767+nr][0] = nr;
 				}
-				//Negative numbers
+
 				for (var nrneg =-(nrupper-1); nrneg<=-nrlower; nrneg++) {
 					category[32767+nrneg] = cat;
 					bitcode[32767+nrneg] = [];
@@ -250,7 +199,7 @@ function JPEGEncoder(quality) {
 				nrupper <<= 1;
 			}
 		}
-		
+
 		function initRGBYUVTable() {
 			for(var i = 0; i < 256;i++) {
 				RGB_YUV_TABLE[i]      		=  19595 * i;
@@ -263,8 +212,7 @@ function JPEGEncoder(quality) {
 				RGB_YUV_TABLE[(i+1792)>>0] 	= - 5329 * i;
 			}
 		}
-		
-		// IO functions
+
 		function writeBits(bs)
 		{
 			var value = bs[0];
@@ -288,24 +236,23 @@ function JPEGEncoder(quality) {
 				}
 			}
 		}
-	
+
 		function writeByte(value)
 		{
-			//byteout.push(clt[value]); // write char directly instead of converting later
+
       byteout.push(value);
 		}
-	
+
 		function writeWord(value)
 		{
 			writeByte((value>>8)&0xFF);
 			writeByte((value   )&0xFF);
 		}
-		
-		// DCT & quantization core
+
 		function fDCTQuant(data, fdtbl)
 		{
 			var d0, d1, d2, d3, d4, d5, d6, d7;
-			/* Pass 1: process rows. */
+
 			var dataOff=0;
 			var i;
 			var I8 = 8;
@@ -320,7 +267,7 @@ function JPEGEncoder(quality) {
 				d5 = data[dataOff+5];
 				d6 = data[dataOff+6];
 				d7 = data[dataOff+7];
-				
+
 				var tmp0 = d0 + d7;
 				var tmp7 = d0 - d7;
 				var tmp1 = d1 + d6;
@@ -329,43 +276,39 @@ function JPEGEncoder(quality) {
 				var tmp5 = d2 - d5;
 				var tmp3 = d3 + d4;
 				var tmp4 = d3 - d4;
-	
-				/* Even part */
-				var tmp10 = tmp0 + tmp3;	/* phase 2 */
+
+				var tmp10 = tmp0 + tmp3;
 				var tmp13 = tmp0 - tmp3;
 				var tmp11 = tmp1 + tmp2;
 				var tmp12 = tmp1 - tmp2;
-	
-				data[dataOff] = tmp10 + tmp11; /* phase 3 */
+
+				data[dataOff] = tmp10 + tmp11;
 				data[dataOff+4] = tmp10 - tmp11;
-	
-				var z1 = (tmp12 + tmp13) * 0.707106781; /* c4 */
-				data[dataOff+2] = tmp13 + z1; /* phase 5 */
+
+				var z1 = (tmp12 + tmp13) * 0.707106781;
+				data[dataOff+2] = tmp13 + z1;
 				data[dataOff+6] = tmp13 - z1;
-	
-				/* Odd part */
-				tmp10 = tmp4 + tmp5; /* phase 2 */
+
+				tmp10 = tmp4 + tmp5;
 				tmp11 = tmp5 + tmp6;
 				tmp12 = tmp6 + tmp7;
-	
-				/* The rotator is modified from fig 4-8 to avoid extra negations. */
-				var z5 = (tmp10 - tmp12) * 0.382683433; /* c6 */
-				var z2 = 0.541196100 * tmp10 + z5; /* c2-c6 */
-				var z4 = 1.306562965 * tmp12 + z5; /* c2+c6 */
-				var z3 = tmp11 * 0.707106781; /* c4 */
-	
-				var z11 = tmp7 + z3;	/* phase 5 */
+
+				var z5 = (tmp10 - tmp12) * 0.382683433;
+				var z2 = 0.541196100 * tmp10 + z5;
+				var z4 = 1.306562965 * tmp12 + z5;
+				var z3 = tmp11 * 0.707106781;
+
+				var z11 = tmp7 + z3;
 				var z13 = tmp7 - z3;
-	
-				data[dataOff+5] = z13 + z2;	/* phase 6 */
+
+				data[dataOff+5] = z13 + z2;
 				data[dataOff+3] = z13 - z2;
 				data[dataOff+1] = z11 + z4;
 				data[dataOff+7] = z11 - z4;
-	
-				dataOff += 8; /* advance pointer to next row */
+
+				dataOff += 8;
 			}
-	
-			/* Pass 2: process columns. */
+
 			dataOff = 0;
 			for (i=0; i<I8; ++i)
 			{
@@ -377,7 +320,7 @@ function JPEGEncoder(quality) {
 				d5 = data[dataOff + 40];
 				d6 = data[dataOff + 48];
 				d7 = data[dataOff + 56];
-				
+
 				var tmp0p2 = d0 + d7;
 				var tmp7p2 = d0 - d7;
 				var tmp1p2 = d1 + d6;
@@ -386,92 +329,87 @@ function JPEGEncoder(quality) {
 				var tmp5p2 = d2 - d5;
 				var tmp3p2 = d3 + d4;
 				var tmp4p2 = d3 - d4;
-	
-				/* Even part */
-				var tmp10p2 = tmp0p2 + tmp3p2;	/* phase 2 */
+
+				var tmp10p2 = tmp0p2 + tmp3p2;
 				var tmp13p2 = tmp0p2 - tmp3p2;
 				var tmp11p2 = tmp1p2 + tmp2p2;
 				var tmp12p2 = tmp1p2 - tmp2p2;
-	
-				data[dataOff] = tmp10p2 + tmp11p2; /* phase 3 */
+
+				data[dataOff] = tmp10p2 + tmp11p2;
 				data[dataOff+32] = tmp10p2 - tmp11p2;
-	
-				var z1p2 = (tmp12p2 + tmp13p2) * 0.707106781; /* c4 */
-				data[dataOff+16] = tmp13p2 + z1p2; /* phase 5 */
+
+				var z1p2 = (tmp12p2 + tmp13p2) * 0.707106781;
+				data[dataOff+16] = tmp13p2 + z1p2;
 				data[dataOff+48] = tmp13p2 - z1p2;
-	
-				/* Odd part */
-				tmp10p2 = tmp4p2 + tmp5p2; /* phase 2 */
+
+				tmp10p2 = tmp4p2 + tmp5p2;
 				tmp11p2 = tmp5p2 + tmp6p2;
 				tmp12p2 = tmp6p2 + tmp7p2;
-	
-				/* The rotator is modified from fig 4-8 to avoid extra negations. */
-				var z5p2 = (tmp10p2 - tmp12p2) * 0.382683433; /* c6 */
-				var z2p2 = 0.541196100 * tmp10p2 + z5p2; /* c2-c6 */
-				var z4p2 = 1.306562965 * tmp12p2 + z5p2; /* c2+c6 */
-				var z3p2 = tmp11p2 * 0.707106781; /* c4 */
-	
-				var z11p2 = tmp7p2 + z3p2;	/* phase 5 */
+
+				var z5p2 = (tmp10p2 - tmp12p2) * 0.382683433;
+				var z2p2 = 0.541196100 * tmp10p2 + z5p2;
+				var z4p2 = 1.306562965 * tmp12p2 + z5p2;
+				var z3p2 = tmp11p2 * 0.707106781;
+
+				var z11p2 = tmp7p2 + z3p2;
 				var z13p2 = tmp7p2 - z3p2;
-	
-				data[dataOff+40] = z13p2 + z2p2; /* phase 6 */
+
+				data[dataOff+40] = z13p2 + z2p2;
 				data[dataOff+24] = z13p2 - z2p2;
 				data[dataOff+ 8] = z11p2 + z4p2;
 				data[dataOff+56] = z11p2 - z4p2;
-	
-				dataOff++; /* advance pointer to next column */
+
+				dataOff++;
 			}
-	
-			// Quantize/descale the coefficients
+
 			var fDCTQuant;
 			for (i=0; i<I64; ++i)
 			{
-				// Apply the quantization and scaling factor & Round to nearest integer
+
 				fDCTQuant = data[i]*fdtbl[i];
 				outputfDCTQuant[i] = (fDCTQuant > 0.0) ? ((fDCTQuant + 0.5)|0) : ((fDCTQuant - 0.5)|0);
-				//outputfDCTQuant[i] = fround(fDCTQuant);
 
 			}
 			return outputfDCTQuant;
 		}
-		
+
 		function writeAPP0()
 		{
-			writeWord(0xFFE0); // marker
-			writeWord(16); // length
-			writeByte(0x4A); // J
-			writeByte(0x46); // F
-			writeByte(0x49); // I
-			writeByte(0x46); // F
-			writeByte(0); // = "JFIF",'\0'
-			writeByte(1); // versionhi
-			writeByte(1); // versionlo
-			writeByte(0); // xyunits
-			writeWord(1); // xdensity
-			writeWord(1); // ydensity
-			writeByte(0); // thumbnwidth
-			writeByte(0); // thumbnheight
+			writeWord(0xFFE0);
+			writeWord(16);
+			writeByte(0x4A);
+			writeByte(0x46);
+			writeByte(0x49);
+			writeByte(0x46);
+			writeByte(0);
+			writeByte(1);
+			writeByte(1);
+			writeByte(0);
+			writeWord(1);
+			writeWord(1);
+			writeByte(0);
+			writeByte(0);
 		}
 
 		function writeAPP1(exifBuffer) {
 			if (!exifBuffer) return;
 
-			writeWord(0xFFE1); // APP1 marker
+			writeWord(0xFFE1);
 
 			if (exifBuffer[0] === 0x45 &&
 					exifBuffer[1] === 0x78 &&
 					exifBuffer[2] === 0x69 &&
 					exifBuffer[3] === 0x66) {
-				// Buffer already starts with EXIF, just use it directly
-				writeWord(exifBuffer.length + 2); // length is buffer + length itself!
+
+				writeWord(exifBuffer.length + 2);
 			} else {
-				// Buffer doesn't start with EXIF, write it for them
-				writeWord(exifBuffer.length + 5 + 2); // length is buffer + EXIF\0 + length itself!
-				writeByte(0x45); // E
-				writeByte(0x78); // X
-				writeByte(0x69); // I
-				writeByte(0x66); // F
-				writeByte(0); // = "EXIF",'\0'
+
+				writeWord(exifBuffer.length + 5 + 2);
+				writeByte(0x45);
+				writeByte(0x78);
+				writeByte(0x69);
+				writeByte(0x66);
+				writeByte(0);
 			}
 
 			for (var i = 0; i < exifBuffer.length; i++) {
@@ -481,27 +419,27 @@ function JPEGEncoder(quality) {
 
 		function writeSOF0(width, height)
 		{
-			writeWord(0xFFC0); // marker
-			writeWord(17);   // length, truecolor YUV JPG
-			writeByte(8);    // precision
+			writeWord(0xFFC0);
+			writeWord(17);
+			writeByte(8);
 			writeWord(height);
 			writeWord(width);
-			writeByte(3);    // nrofcomponents
-			writeByte(1);    // IdY
-			writeByte(0x11); // HVY
-			writeByte(0);    // QTY
-			writeByte(2);    // IdU
-			writeByte(0x11); // HVU
-			writeByte(1);    // QTU
-			writeByte(3);    // IdV
-			writeByte(0x11); // HVV
-			writeByte(1);    // QTV
+			writeByte(3);
+			writeByte(1);
+			writeByte(0x11);
+			writeByte(0);
+			writeByte(2);
+			writeByte(0x11);
+			writeByte(1);
+			writeByte(3);
+			writeByte(0x11);
+			writeByte(1);
 		}
-	
+
 		function writeDQT()
 		{
-			writeWord(0xFFDB); // marker
-			writeWord(132);	   // length
+			writeWord(0xFFDB);
+			writeWord(132);
 			writeByte(0);
 			for (var i=0; i<64; i++) {
 				writeByte(YTable[i]);
@@ -511,37 +449,37 @@ function JPEGEncoder(quality) {
 				writeByte(UVTable[j]);
 			}
 		}
-	
+
 		function writeDHT()
 		{
-			writeWord(0xFFC4); // marker
-			writeWord(0x01A2); // length
-	
-			writeByte(0); // HTYDCinfo
+			writeWord(0xFFC4);
+			writeWord(0x01A2);
+
+			writeByte(0);
 			for (var i=0; i<16; i++) {
 				writeByte(std_dc_luminance_nrcodes[i+1]);
 			}
 			for (var j=0; j<=11; j++) {
 				writeByte(std_dc_luminance_values[j]);
 			}
-	
-			writeByte(0x10); // HTYACinfo
+
+			writeByte(0x10);
 			for (var k=0; k<16; k++) {
 				writeByte(std_ac_luminance_nrcodes[k+1]);
 			}
 			for (var l=0; l<=161; l++) {
 				writeByte(std_ac_luminance_values[l]);
 			}
-	
-			writeByte(1); // HTUDCinfo
+
+			writeByte(1);
 			for (var m=0; m<16; m++) {
 				writeByte(std_dc_chrominance_nrcodes[m+1]);
 			}
 			for (var n=0; n<=11; n++) {
 				writeByte(std_dc_chrominance_values[n]);
 			}
-	
-			writeByte(0x11); // HTUACinfo
+
+			writeByte(0x11);
 			for (var o=0; o<16; o++) {
 				writeByte(std_ac_chrominance_nrcodes[o+1]);
 			}
@@ -549,37 +487,37 @@ function JPEGEncoder(quality) {
 				writeByte(std_ac_chrominance_values[p]);
 			}
 		}
-		
+
 		function writeCOM(comments)
 		{
 			if (typeof comments === "undefined" || comments.constructor !== Array) return;
 			comments.forEach(e => {
 				if (typeof e !== "string") return;
-				writeWord(0xFFFE); // marker
+				writeWord(0xFFFE);
 				var l = e.length;
-				writeWord(l + 2); // length itself as well
+				writeWord(l + 2);
 				var i;
 				for (i = 0; i < l; i++)
 					writeByte(e.charCodeAt(i));
 			});
 		}
-	
+
 		function writeSOS()
 		{
-			writeWord(0xFFDA); // marker
-			writeWord(12); // length
-			writeByte(3); // nrofcomponents
-			writeByte(1); // IdY
-			writeByte(0); // HTY
-			writeByte(2); // IdU
-			writeByte(0x11); // HTU
-			writeByte(3); // IdV
-			writeByte(0x11); // HTV
-			writeByte(0); // Ss
-			writeByte(0x3f); // Se
-			writeByte(0); // Bf
+			writeWord(0xFFDA);
+			writeWord(12);
+			writeByte(3);
+			writeByte(1);
+			writeByte(0);
+			writeByte(2);
+			writeByte(0x11);
+			writeByte(3);
+			writeByte(0x11);
+			writeByte(0);
+			writeByte(0x3f);
+			writeByte(0);
 		}
-		
+
 		function processDU(CDU, fdtbl, DC, HTDC, HTAC){
 			var EOB = HTAC[0x00];
 			var M16zeroes = HTAC[0xF0];
@@ -588,23 +526,23 @@ function JPEGEncoder(quality) {
 			var I63 = 63;
 			var I64 = 64;
 			var DU_DCT = fDCTQuant(CDU, fdtbl);
-			//ZigZag reorder
+
 			for (var j=0;j<I64;++j) {
 				DU[ZigZag[j]]=DU_DCT[j];
 			}
 			var Diff = DU[0] - DC; DC = DU[0];
-			//Encode DC
+
 			if (Diff==0) {
-				writeBits(HTDC[0]); // Diff might be 0
+				writeBits(HTDC[0]);
 			} else {
 				pos = 32767+Diff;
 				writeBits(HTDC[category[pos]]);
 				writeBits(bitcode[pos]);
 			}
-			//Encode ACs
-			var end0pos = 63; // was const... which is crazy
+
+			var end0pos = 63;
 			for (; (end0pos>0)&&(DU[end0pos]==0); end0pos--) {};
-			//end0pos = first element in reverse order !=0
+
 			if ( end0pos == 0) {
 				writeBits(EOB);
 				return DC;
@@ -634,24 +572,22 @@ function JPEGEncoder(quality) {
 
 		function initCharLookupTable(){
 			var sfcc = String.fromCharCode;
-			for(var i=0; i < 256; i++){ ///// ACHTUNG // 255
+			for(var i=0; i < 256; i++){
 				clt[i] = sfcc(i);
 			}
 		}
-		
-		this.encode = function(image,quality) // image data object
+
+		this.encode = function(image,quality)
 		{
 			var time_start = new Date().getTime();
-			
+
 			if(quality) setQuality(quality);
-			
-			// Initialize bit writer
+
 			byteout = new Array();
 			bytenew=0;
 			bytepos=7;
-	
-			// Add JPEG headers
-			writeWord(0xFFD8); // SOI
+
+			writeWord(0xFFD8);
 			writeAPP0();
 			writeCOM(image.comments);
 			writeAPP1(image.exifBuffer);
@@ -660,16 +596,13 @@ function JPEGEncoder(quality) {
 			writeDHT();
 			writeSOS();
 
-	
-			// Encode 8x8 macroblocks
 			var DCY=0;
 			var DCU=0;
 			var DCV=0;
-			
+
 			bytenew=0;
 			bytepos=7;
-			
-			
+
 			this.encode.displayName = "_encode_";
 
 			var imageData = image.data;
@@ -678,7 +611,7 @@ function JPEGEncoder(quality) {
 
 			var quadWidth = width*4;
 			var tripleWidth = width*3;
-			
+
 			var x, y = 0;
 			var r, g, b;
 			var start,p, col,row,pos;
@@ -689,38 +622,30 @@ function JPEGEncoder(quality) {
 				p = start;
 				col = -1;
 				row = 0;
-				
+
 				for(pos=0; pos < 64; pos++){
-					row = pos >> 3;// /8
-					col = ( pos & 7 ) * 4; // %8
-					p = start + ( row * quadWidth ) + col;		
-					
-					if(y+row >= height){ // padding bottom
+					row = pos >> 3;
+					col = ( pos & 7 ) * 4;
+					p = start + ( row * quadWidth ) + col;
+
+					if(y+row >= height){
 						p-= (quadWidth*(y+1+row-height));
 					}
 
-					if(x+col >= quadWidth){ // padding right	
+					if(x+col >= quadWidth){
 						p-= ((x+col) - quadWidth +4)
 					}
-					
+
 					r = imageData[ p++ ];
 					g = imageData[ p++ ];
 					b = imageData[ p++ ];
-					
-					
-					/* // calculate YUV values dynamically
-					YDU[pos]=((( 0.29900)*r+( 0.58700)*g+( 0.11400)*b))-128; //-0x80
-					UDU[pos]=(((-0.16874)*r+(-0.33126)*g+( 0.50000)*b));
-					VDU[pos]=((( 0.50000)*r+(-0.41869)*g+(-0.08131)*b));
-					*/
-					
-					// use lookup table (slightly faster)
+
 					YDU[pos] = ((RGB_YUV_TABLE[r]             + RGB_YUV_TABLE[(g +  256)>>0] + RGB_YUV_TABLE[(b +  512)>>0]) >> 16)-128;
 					UDU[pos] = ((RGB_YUV_TABLE[(r +  768)>>0] + RGB_YUV_TABLE[(g + 1024)>>0] + RGB_YUV_TABLE[(b + 1280)>>0]) >> 16)-128;
 					VDU[pos] = ((RGB_YUV_TABLE[(r + 1280)>>0] + RGB_YUV_TABLE[(g + 1536)>>0] + RGB_YUV_TABLE[(b + 1792)>>0]) >> 16)-128;
 
 				}
-				
+
 				DCY = processDU(YDU, fdtbl_Y, DCY, YDC_HT, YAC_HT);
 				DCU = processDU(UDU, fdtbl_UV, DCU, UVDC_HT, UVAC_HT);
 				DCV = processDU(VDU, fdtbl_UV, DCV, UVDC_HT, UVAC_HT);
@@ -728,36 +653,27 @@ function JPEGEncoder(quality) {
 				}
 				y+=8;
 			}
-			
-			
-			////////////////////////////////////////////////////////////////
-	
-			// Do the bit alignment of the EOI marker
+
 			if ( bytepos >= 0 ) {
 				var fillbits = [];
 				fillbits[1] = bytepos+1;
 				fillbits[0] = (1<<(bytepos+1))-1;
 				writeBits(fillbits);
 			}
-	
-			writeWord(0xFFD9); //EOI
 
-			// jpeg-js is always loaded as CJS upstream, so `module` is always defined there and this
-			// always falls through to Buffer.from(). Preserve that (unreachable-upstream Uint8Array branch removed).
+			writeWord(0xFFD9);
+
 			return Buffer.from(byteout);
 
 			var jpegDataUri = 'data:image/jpeg;base64,' + btoa(byteout.join(''));
-			
+
 			byteout = [];
-			
-			// benchmarking
+
 			var duration = new Date().getTime() - time_start;
-    		//console.log('Encoding time: '+ duration + 'ms');
-    		//
-			
-			return jpegDataUri			
+
+			return jpegDataUri
 	}
-	
+
 	function setQuality(quality){
 		if (quality <= 0) {
 			quality = 1;
@@ -765,37 +681,37 @@ function JPEGEncoder(quality) {
 		if (quality > 100) {
 			quality = 100;
 		}
-		
-		if(currentQuality == quality) return // don't recalc if unchanged
-		
+
+		if(currentQuality == quality) return
+
 		var sf = 0;
 		if (quality < 50) {
 			sf = Math.floor(5000 / quality);
 		} else {
 			sf = Math.floor(200 - quality*2);
 		}
-		
+
 		initQuantTables(sf);
 		currentQuality = quality;
-		//console.log('Quality set to: '+quality +'%');
+
 	}
-	
+
 	function init(){
 		var time_start = new Date().getTime();
 		if(!quality) quality = 50;
-		// Create tables
+
 		initCharLookupTable()
 		initHuffmanTbl();
 		initCategoryNumber();
 		initRGBYUVTable();
-		
+
 		setQuality(quality);
 		var duration = new Date().getTime() - time_start;
-    	//console.log('Initialization '+ duration + 'ms');
+
 	}
-	
+
 	init();
-	
+
 };
 
 export default encode;
@@ -811,7 +727,6 @@ function encode(imgData, qu) {
   };
 }
 
-// helper function to get the imageData of an existing image on the current page.
 function getImageDataFromImage(idOrElement){
 	var theImg = (typeof(idOrElement)=='string')? document.getElementById(idOrElement):idOrElement;
 	var cvs = document.createElement('canvas');
@@ -819,6 +734,6 @@ function getImageDataFromImage(idOrElement){
 	cvs.height = theImg.height;
 	var ctx = cvs.getContext("2d");
 	ctx.drawImage(theImg,0,0);
-	
+
 	return (ctx.getImageData(0, 0, cvs.width, cvs.height));
 }

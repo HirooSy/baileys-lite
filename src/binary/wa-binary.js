@@ -4,10 +4,6 @@ import { randomBytes } from 'node:crypto'
 import { Boom } from '../foundation/boom.js'
 import * as constants from './wa-binary-constants.js'
 
-/* ------------------------------------------------------------------ */
-/* JID utilities                                                       */
-/* ------------------------------------------------------------------ */
-
 export const S_WHATSAPP_NET = '@s.whatsapp.net'
 export const OFFICIAL_BIZ_JID = '16505361212@c.us'
 export const SERVER_JID = 'server@c.us'
@@ -84,10 +80,6 @@ export const transferDevice = (fromJid, toJid) => {
 	const { server, user } = jidDecode(toJid)
 	return jidEncode(user, server, deviceId)
 }
-
-/* ------------------------------------------------------------------ */
-/* Binary node encode                                                  */
-/* ------------------------------------------------------------------ */
 
 export const encodeBinaryNode = (node, opts = constants, buffer = [0]) => {
 	const encoded = encodeBinaryNodeInner(node, opts, buffer)
@@ -254,7 +246,7 @@ const encodeBinaryNodeInner = ({ tag, attrs, content }, opts, buffer) => {
 		writeListStart(validContent.length)
 		for (const item of validContent) encodeBinaryNodeInner(item, opts, buffer)
 	} else if (typeof content === 'undefined') {
-		// no children
+
 	} else {
 		throw new Error(`invalid children for header "${tag}": ${content} (${typeof content})`)
 	}
@@ -262,17 +254,13 @@ const encodeBinaryNodeInner = ({ tag, attrs, content }, opts, buffer) => {
 	return buffer
 }
 
-/* ------------------------------------------------------------------ */
-/* Binary node decode                                                  */
-/* ------------------------------------------------------------------ */
-
 const inflatePromise = promisify(inflate)
 
 export const decompressingIfRequired = async buffer => {
 	if (2 & buffer.readUInt8()) {
 		buffer = await inflatePromise(buffer.slice(1))
 	} else {
-		buffer = buffer.slice(1) // uncompressed nodes have a 0x00 prefix, strip it
+		buffer = buffer.slice(1)
 	}
 	return buffer
 }
@@ -488,10 +476,6 @@ export const decodeBinaryNode = async buff => {
 	return decodeDecompressedBinaryNode(decompBuff, constants)
 }
 
-/* ------------------------------------------------------------------ */
-/* Generic node helpers                                                */
-/* ------------------------------------------------------------------ */
-
 const indexCache = new WeakMap()
 
 export const getBinaryNodeChildren = (node, childTag) => {
@@ -549,7 +533,6 @@ export const reduceBinaryNodeToDictionary = (node, tag) => {
 	}, {})
 }
 
-/** `proto` is passed in by the message decode call site to avoid a hard import cycle here. */
 export const getBinaryNodeMessages = ({ content }, proto) => {
 	const msgs = []
 	if (Array.isArray(content)) {
@@ -576,11 +559,6 @@ export function binaryNodeToString(node, i = 0) {
 	return tag + content
 }
 
-/**
- * Produce the binary node (WABinary-like JSON shape) required for the specific
- * interactive button / list type. Compatible with observed official client traffic.
- * NOTE: the "v" (version) / "name" values are empirically derived from real traffic.
- */
 const FLOWS_MAP = {
 	mpm: true,
 	cta_catalog: true,

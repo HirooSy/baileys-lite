@@ -1,10 +1,3 @@
-/**
- * Converts a raw RGBA(16) buffer into the exact color-type/bit-depth layout the encoder will filter+deflate.
- * Vendored from `pngjs` 7.0.0 (MIT). Only require()/module.exports converted to import/export
- * (zlib/util/assert/buffer -> node: specifiers). See ./LICENSE.
- * Algorithm body unchanged vs. upstream md5 6983b6f4ffa73ed0a734ebd0fc56c46a.
- * https://github.com/pngjs/pngjs
- */
 "use strict";
 
 import constants from './constants.js'
@@ -17,17 +10,16 @@ const bitPacker = function (dataIn, width, height, options) {
   if (options.colorType === options.inputColorType) {
     let bigEndian = (function () {
       let buffer = new ArrayBuffer(2);
-      new DataView(buffer).setInt16(0, 256, true /* littleEndian */);
-      // Int16Array uses the platform's endianness.
+      new DataView(buffer).setInt16(0, 256, true );
+
       return new Int16Array(buffer)[0] !== 256;
     })();
-    // If no need to convert to grayscale and alpha is present/absent in both, take a fast route
+
     if (options.bitDepth === 8 || (options.bitDepth === 16 && bigEndian)) {
       return dataIn;
     }
   }
 
-  // map to a UInt16 array if data is 16bit, fix endianness below
   let data = options.bitDepth !== 16 ? dataIn : new Uint16Array(dataIn.buffer);
 
   let maxValue = 255;
@@ -137,7 +129,7 @@ const bitPacker = function (dataIn, width, height, options) {
           break;
         case constants.COLORTYPE_ALPHA:
         case constants.COLORTYPE_GRAYSCALE: {
-          // Convert to grayscale and alpha
+
           let grayscale = (rgba.red + rgba.green + rgba.blue) / 3;
           if (options.bitDepth === 8) {
             outData[outIndex] = grayscale;

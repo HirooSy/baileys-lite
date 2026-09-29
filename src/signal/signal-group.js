@@ -1,10 +1,3 @@
-/**
- * Signal protocol "Sender Key" group-messaging implementation.
- * Combines what used to be 12 separate files under Signal/Group/.
- *
- * Cryptographic primitives (encrypt/decrypt/MAC/signature/key derivation)
- * come from the native ./libsignal.js port (no npm dependency).
- */
 import * as nodeCrypto from 'node:crypto'
 import { crypto as signalCrypto, curve as signalCurve } from './libsignal.js'
 
@@ -12,10 +5,6 @@ const { calculateMAC, decrypt, deriveSecrets, encrypt } = signalCrypto
 const { calculateSignature, generateKeyPair, verifySignature } = signalCurve
 import { proto } from '../../WAProto/index.js'
 import { BufferJSON } from '../utils/wa-protocol-core.js'
-
-/* ------------------------------------------------------------------ */
-/* CiphertextMessage — shared constants base class                     */
-/* ------------------------------------------------------------------ */
 
 export class CiphertextMessage {
 	constructor() {
@@ -28,10 +17,6 @@ export class CiphertextMessage {
 		this.ENCRYPTED_MESSAGE_OVERHEAD = 53
 	}
 }
-
-/* ------------------------------------------------------------------ */
-/* keyhelper                                                           */
-/* ------------------------------------------------------------------ */
 
 export const keyhelper = {
 	generateSenderKey() {
@@ -48,10 +33,6 @@ export const keyhelper = {
 		}
 	}
 }
-
-/* ------------------------------------------------------------------ */
-/* SenderKeyName                                                       */
-/* ------------------------------------------------------------------ */
 
 function isNull(str) {
 	return str === null || str === ''
@@ -98,10 +79,6 @@ export class SenderKeyName {
 		return hashCode(this.groupId) ^ hashCode(this.sender.toString())
 	}
 }
-
-/* ------------------------------------------------------------------ */
-/* SenderMessageKey / SenderChainKey                                   */
-/* ------------------------------------------------------------------ */
 
 export class SenderMessageKey {
 	constructor(iteration, seed) {
@@ -151,10 +128,6 @@ export class SenderChainKey {
 		return calculateMAC(key, seed)
 	}
 }
-
-/* ------------------------------------------------------------------ */
-/* SenderKeyState / SenderKeyRecord                                    */
-/* ------------------------------------------------------------------ */
 
 export class SenderKeyState {
 	constructor(id, iteration, chainKey, signatureKeyPair, signatureKeyPublic, signatureKeyPrivate, senderKeyStateStructure) {
@@ -272,10 +245,6 @@ export class SenderKeyRecord {
 	}
 }
 
-/* ------------------------------------------------------------------ */
-/* SenderKeyDistributionMessage / SenderKeyMessage (wire formats)      */
-/* ------------------------------------------------------------------ */
-
 export class SenderKeyDistributionMessage extends CiphertextMessage {
 	constructor(id, iteration, chainKey, signatureKey, serialized) {
 		super()
@@ -384,10 +353,6 @@ export class SenderKeyMessage extends CiphertextMessage {
 		return 4
 	}
 }
-
-/* ------------------------------------------------------------------ */
-/* GroupSessionBuilder / GroupCipher                                    */
-/* ------------------------------------------------------------------ */
 
 export class GroupSessionBuilder {
 	constructor(senderKeyStore) {

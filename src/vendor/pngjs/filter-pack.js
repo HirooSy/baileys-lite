@@ -1,9 +1,3 @@
-/**
- * Applies PNG scanline filters during encode, picking the best filter per row by sum-of-abs heuristic.
- * Vendored from `pngjs` 7.0.0 (MIT). Only require()/module.exports converted to import/export. See ./LICENSE.
- * Algorithm body unchanged vs. upstream md5 5e371b5b268f253d3b1e3ffc81c2731b.
- * https://github.com/pngjs/pngjs
- */
 "use strict";
 
 import paethPredictor from './paeth-predictor.js'
@@ -155,7 +149,7 @@ const filterData = function (pxData, width, height, options, bpp) {
 
   for (let y = 0; y < height; y++) {
     if (filterTypes.length > 1) {
-      // find best filter for this line (with lowest sum of values)
+
       let min = Infinity;
 
       for (let i = 0; i < filterTypes.length; i++) {

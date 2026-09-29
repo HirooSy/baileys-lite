@@ -1,11 +1,3 @@
-/**
- * Media handling utilities. Combines what used to be messages-media.js and link-preview.js.
- *
- * Optional packages (`sharp`, `@napi-rs/image`, `jimp`) are NOT declared in package.json. They are dynamically
- * imported and used only if the application installs them itself; each call site degrades gracefully when one is
- * missing (see below). Audio durations, WAV/FLAC waveforms and link previews no longer need `music-metadata`,
- * `audio-decode` or `link-preview-js` — they're handled by the built-in modules in ../foundation.
- */
 import { spawn } from 'node:child_process'
 import { audioDuration } from '../foundation/audio-duration.js'
 import { decodeChannel0, waveformFromSamples } from '../foundation/audio-samples.js'
@@ -82,10 +74,6 @@ const NEWSLETTER_MEDIA_PATH_MAP = {
 
 const getTmpFilesDirectory = () => tmpdir()
 
-/* ------------------------------------------------------------------ */
-/* Image processing (sharp / @napi-rs/image / jimp — first available)  */
-/* ------------------------------------------------------------------ */
-
 let imageProcessingLibrary
 export const getImageProcessingLibrary = async () => {
 	if (imageProcessingLibrary) return imageProcessingLibrary
@@ -128,17 +116,16 @@ export const getRawMediaUploadData = async (media, mediaType, logger) => {
 		try {
 			await fs.unlink(filePath)
 		} catch {
-			// ignore
+
 		}
 		throw error
 	}
 }
 
-/** generates all the keys required to encrypt/decrypt & sign a media message */
 export async function getMediaKeys(buffer, mediaType) {
 	if (!buffer) throw new Boom('Cannot derive from empty media key')
 	if (typeof buffer === 'string') buffer = Buffer.from(buffer.replace('data:;base64,', ''), 'base64')
-	// expand using HKDF to 112 bytes, also pass in the relevant app info
+
 	const expandedMediaKey = hkdf(buffer, 112, { info: hkdfInfoKey(mediaType) })
 	return {
 		iv: expandedMediaKey.slice(0, 16),
@@ -147,7 +134,6 @@ export async function getMediaKeys(buffer, mediaType) {
 	}
 }
 
-/** Extracts video thumb using FFMPEG */
 export const extractVideoThumb = async (path, time, size) => {
 	const ffmpeg = spawn(
 		'ffmpeg',
@@ -238,24 +224,16 @@ export const generateProfilePicture = async (mediaUpload, dimensions) => {
 	return { img: await img }
 }
 
-/** gets the SHA256 of the given media message */
 export const mediaMessageSHA256B64 = message => {
 	const media = Object.values(message)[0]
 	return media?.fileSha256 && Buffer.from(media.fileSha256).toString('base64')
 }
 
-/**
- * Duration of an audio file in seconds. Accepts a Buffer, a file path, or a Readable stream.
- *
- * Built-in parser: Ogg Opus/Vorbis, WAV, FLAC, MP4/M4A, MP3, ADTS-AAC, AIFF/AIFF-C, Matroska/WebM, AMR-NB/WB —
- * see src/foundation/audio-duration.js. Anything else (WMA, APE, WavPack, Musepack, DSD, ...) resolves
- * `undefined` rather than guessing.
- */
 export async function getAudioDuration(buffer) {
 	if (!Buffer.isBuffer(buffer) && typeof buffer !== 'string') buffer = await toBuffer(buffer)
 	const native = await audioDuration(buffer)
 	if (typeof native === 'number' && Number.isFinite(native)) return native
-	return ffprobeDuration(buffer) // containers the built-in parser doesn't cover (WMA, APE, ...)
+	return ffprobeDuration(buffer)
 }
 
 async function ffprobeDuration(input) {
@@ -271,15 +249,10 @@ async function ffprobeDuration(input) {
 		const seconds = parseFloat(Buffer.concat(outChunks).toString('utf8').trim())
 		return Number.isFinite(seconds) ? seconds : undefined
 	} catch {
-		return undefined // ffprobe not installed
+		return undefined
 	}
 }
 
-/**
- * First channel of an audio file as float samples via the system `ffmpeg` binary (a program, not an npm package;
- * media.js already shells out to it for video thumbnails). Used only for containers the built-in decoder cannot
- * read (Ogg Opus/Vorbis, MP3, AAC/M4A, AMR, ...). Resolves `undefined` when ffmpeg is missing or fails.
- */
 const decodeChannel0WithFfmpeg = audioData =>
 	new Promise(resolve => {
 		let child
@@ -293,8 +266,8 @@ const decodeChannel0WithFfmpeg = audioData =>
 			child.kill('SIGKILL')
 			resolve(undefined)
 		}, 60000)
-		child.on('error', () => resolve(undefined)) // ENOENT: ffmpeg not installed
-		child.stdin.on('error', () => {}) // ffmpeg may close its input early (EPIPE)
+		child.on('error', () => resolve(undefined))
+		child.stdin.on('error', () => {})
 		child.stdout.on('data', c => out.push(c))
 		child.on('close', code => {
 			clearTimeout(timer)
@@ -307,11 +280,6 @@ const decodeChannel0WithFfmpeg = audioData =>
 		child.stdin.end(audioData)
 	})
 
-/**
- * 64-value voice-note waveform (0..100). WAV and FLAC are decoded by the built-in decoder; other formats need the
- * system `ffmpeg` binary. Without either, resolves `undefined` (the voice note is still sent, just without a waveform).
- * referenced from and modifying https://github.com/wppconnect-team/wa-js/blob/main/src/chat/functions/prepareAudioWaveform.ts
- */
 export async function getAudioWaveform(buffer, logger) {
 	try {
 		let audioData
@@ -355,7 +323,6 @@ export const getStream = async (item, opts) => {
 	return { stream: createReadStream(item.url), type: 'file' }
 }
 
-/** generates a thumbnail for a given media, if required */
 export async function generateThumbnail(file, mediaType, options) {
 	let thumbnail
 	let originalImageDimensions
@@ -426,7 +393,7 @@ export const encryptedStream = async (media, mediaType, { logger, saveOriginalFi
 		encFileWriteStream.end()
 		originalFileStream?.end?.()
 		stream.destroy()
-		// Wait for write streams to fully flush to disk (reduces memory pressure).
+
 		await encFinishPromise
 		await originalFinishPromise
 		logger?.debug('encrypted data successfully')
@@ -465,7 +432,7 @@ const extractHost = url => {
 }
 
 export const downloadContentFromMessage = async ({ mediaKey, directPath, url }, type, opts = {}) => {
-	// Fallback host: explicit opt > host parsed from `url` > DEF_MEDIA_HOST.
+
 	const fallbackHost = opts.host ?? extractHost(url)
 	const downloadUrl = directPath ? getUrlFromDirectPath(directPath, fallbackHost) : url
 	if (!downloadUrl) throw new Boom('No valid media URL or directPath present in message', { statusCode: 400 })
@@ -473,7 +440,6 @@ export const downloadContentFromMessage = async ({ mediaKey, directPath, url }, 
 	return downloadEncryptedContent(downloadUrl, keys, opts)
 }
 
-/** Decrypts and downloads an AES256-CBC encrypted file; the plaintext's SHA256 is appended to the ciphertext. */
 export const downloadEncryptedContent = async (downloadUrl, { cipherKey, iv }, { startByte, endByte, options } = {}) => {
 	let bytesFetched = 0
 	let startChunk = 0
@@ -524,7 +490,7 @@ export const downloadEncryptedContent = async (downloadUrl, { cipherKey, iv }, {
 					data = data.slice(AES_CHUNK_SIZE)
 				}
 				aes = Crypto.createDecipheriv('aes-256-cbc', cipherKey, ivValue)
-				if (endByte) aes.setAutoPadding(false) // avoid PKCS7 errors when trimming to a byte range
+				if (endByte) aes.setAutoPadding(false)
 			}
 			try {
 				pushBytes(aes.update(data), b => this.push(b))
@@ -542,10 +508,7 @@ export const downloadEncryptedContent = async (downloadUrl, { cipherKey, iv }, {
 			}
 		}
 	})
-	// pipe() does not forward 'error' events from source to destination -- without this,
-	// a dropped connection or malformed response on `fetched` crashes the process
-	// (unhandled 'error' on the source) instead of surfacing as an error on the
-	// returned stream that callers can catch.
+
 	fetched.on('error', err => output.destroy(err))
 	return fetched.pipe(output, { end: true })
 }
@@ -569,7 +532,7 @@ export const uploadWithNodeHttp = async ({ url, filePath, headers, timeoutMs, ag
 	if (redirectCount > 5) throw new Error('Too many redirects')
 	const parsedUrl = new URL(url)
 	const httpModule = parsedUrl.protocol === 'https:' ? await import('node:https') : await import('node:http')
-	const fileStats = await fs.stat(filePath) // Content-Length is required for Node.js streaming
+	const fileStats = await fs.stat(filePath)
 	const fileSize = fileStats.size
 	return new Promise((resolve, reject) => {
 		const req = httpModule.request(
@@ -584,7 +547,7 @@ export const uploadWithNodeHttp = async ({ url, filePath, headers, timeoutMs, ag
 			},
 			res => {
 				if (res.statusCode && res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-					res.resume() // consume response to free resources
+					res.resume()
 					const newUrl = new URL(res.headers.location, url).toString()
 					resolve(uploadWithNodeHttp({ url: newUrl, filePath, headers, timeoutMs, agent }, redirectCount + 1))
 					return
@@ -617,7 +580,7 @@ export const uploadWithNodeHttp = async ({ url, filePath, headers, timeoutMs, ag
 const uploadWithFetch = async ({ url, filePath, headers, timeoutMs, agent }) => {
 	const nodeStream = createReadStream(filePath)
 	const webStream = Readable.toWeb(nodeStream)
-	// Native fetch only accepts Undici-style dispatchers, not generic https Agents.
+
 	const dispatcher = typeof agent?.dispatch === 'function' ? agent : undefined
 	const response = await fetch(url, {
 		...(dispatcher ? { dispatcher } : {}),
@@ -634,14 +597,6 @@ const uploadWithFetch = async ({ url, filePath, headers, timeoutMs, agent }) => 
 	}
 }
 
-/**
- * Uploads media to WhatsApp servers.
- *
- * Two implementations: Node's native `fetch` (undici) buffers the whole request body in
- * memory even when streaming, causing high memory use on large files
- * (see https://github.com/nodejs/undici/issues/4058) — so on Node we use `node:http(s)`
- * directly. Other runtimes (Bun, Deno, browsers) stream correctly, so they use fetch.
- */
 const uploadMedia = async (params, logger) => {
 	if (isNodeRuntime()) {
 		logger?.debug('Using Node.js https module for upload (avoids undici buffering bug)')
@@ -701,7 +656,6 @@ export const getWAUploadToServer = ({ customUploadHosts, fetchAgent, logger, opt
 
 const getMediaRetryKey = mediaKey => hkdf(mediaKey, 32, { info: 'WhatsApp Media Retry Notification' })
 
-/** Generate a binary node that will request the phone to re-upload the media & return the newly uploaded URL */
 export const encryptMediaRetryRequest = (key, mediaKey, meId) => {
 	const recp = { stanzaId: key.id }
 	const recpBuffer = proto.ServerErrorReceipt.encode(recp).finish()
@@ -712,8 +666,7 @@ export const encryptMediaRetryRequest = (key, mediaKey, meId) => {
 		tag: 'receipt',
 		attrs: { id: key.id, to: jidNormalizedUser(meId), type: 'server-error' },
 		content: [
-			// this encrypt node is actually pretty useless — media returns even without it —
-			// kept here to maintain parity with WA Web
+
 			{
 				tag: 'encrypt',
 				attrs: {},
@@ -765,22 +718,13 @@ const MEDIA_RETRY_STATUS_MAP = {
 }
 export const getStatusCodeForMediaRetry = code => MEDIA_RETRY_STATUS_MAP[code]
 
-/* ------------------------------------------------------------------ */
-/* Link preview                                                        */
-/* ------------------------------------------------------------------ */
-
 const THUMBNAIL_WIDTH_PX = 192
 
-/** Fetches an image and generates a thumbnail for it */
 const getCompressedJpegThumbnail = async (url, { thumbnailWidth, fetchOpts }) => {
 	const stream = await getHttpStream(url, fetchOpts)
 	return extractImageThumb(stream, thumbnailWidth)
 }
 
-/**
- * Given a piece of text, checks for any URL present, generates link preview for the same and returns it.
- * Returns undefined if the fetch failed or no URL was found.
- */
 export const getUrlInfo = async (text, opts = { thumbnailWidth: THUMBNAIL_WIDTH_PX, fetchOpts: { timeout: 3000 } }) => {
 	try {
 		let retries = 0
@@ -818,7 +762,7 @@ export const getUrlInfo = async (text, opts = { thumbnailWidth: THUMBNAIL_WIDTH_
 				originalThumbnailUrl: image
 			}
 			if (opts.uploadImage) {
-				// imported lazily to avoid a hard circular dependency with the message-composition module
+
 				const { prepareWAMessageMedia } = await import('./message-compose.js')
 				const { imageMessage } = await prepareWAMessageMedia(
 					{ image: { url: image } },

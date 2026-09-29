@@ -1,9 +1,3 @@
-/**
- * Message composition utilities. Combines what used to be messages.js and
- * rich-message-utils.js. LANGUAGE_KEYWORDS (syntax-highlighting keyword lists)
- * moved here from WABinary/constants.js, where it had been misplaced — it's
- * message-composition data, not WA binary-protocol data.
- */
 import { getRandomValues, randomBytes, randomUUID } from 'node:crypto'
 import { promises as fs } from 'node:fs'
 import { proto } from '../../WAProto/index.js'
@@ -60,10 +54,6 @@ const MessageTypeProto = {
 	sticker: WAProto.Message.StickerMessage,
 	document: WAProto.Message.DocumentMessage
 }
-
-/* ------------------------------------------------------------------ */
-/* Code syntax-highlighting keyword lists (for richResponseMessage)     */
-/* ------------------------------------------------------------------ */
 
 const CPP_KEYWORDS = new Set([
 	'alignas','alignof','and','and_eq','asm','auto','bitand','bitor','bool','break','case',
@@ -424,11 +414,6 @@ export const wrapToBotForwardedMessage = richResponseMessage => ({
 	botForwardedMessage: { message: { richResponseMessage } }
 })
 
-/* ------------------------------------------------------------------ */
-/* Message content composition                                         */
-/* ------------------------------------------------------------------ */
-
-/** Uses a regex to test whether the string contains a URL, and returns the URL if it does. */
 export const extractUrlFromText = text => text.match(URL_REGEX)?.[0]
 
 export const generateLinkPreviewIfRequired = async (text, getUrlInfo, logger) => {
@@ -603,10 +588,6 @@ const prepareProductMessage = async (message, options) => {
 	return content
 }
 
-/**
- * Credits: Work on ensuring stickerPackMessage fields are valid by @jlucaso1
- * (https://github.com/jlucaso1), based on https://github.com/WhiskeySockets/Baileys/pull/1561
- */
 const prepareStickerPackMessage = async (message, options) => {
 	const { cover, stickers = [], name = '📦 Sticker Pack', publisher = '', description = '' } = message
 	if (stickers.length > 60) throw new Boom('Sticker pack exceeds the maximum limit of 60 stickers', { statusCode: 400 })
@@ -758,11 +739,147 @@ const prepareStickerPackMessage = async (message, options) => {
 	return WAProto.Message.StickerPackMessage.fromObject(obj)
 }
 
-/**
- * `nativeFlow` accepts a plain array of button objects — `{text, id}`, `{text, url}`, `{text, copy}`,
- * `{text, sections}`, `{text, call}` — or `{ buttons: [...] }`. Matches WAProto's InteractiveMessage.NativeFlowMessage
- * button shape 1:1; see prepareNativeFlowButtons below for the encoding.
- */
+// ---- nativeFlow widget (A2UI / bloksWidget) ----
+// Text inside a bloksWidget uses a system font without color-emoji glyphs, so icons
+// default to plain ASCII. `style: 'symbol'` uses simple unicode symbols instead.
+const WIDGET_ICON_ASCII = {
+	accountCircle: '[user]', add: '[+]', arrowBack: '[<]', arrowForward: '[>]', attachFile: '[attach]',
+	calendarToday: '[date]', call: '[call]', camera: '[camera]', check: '[ok]', close: '[x]', delete: '[delete]',
+	download: '[download]', edit: '[edit]', event: '[event]', error: '[!]', fastForward: '[>>]', favorite: '[fav]',
+	favoriteOff: '[fav]', folder: '[folder]', help: '[?]', home: '[home]', info: '[i]', locationOn: '[location]',
+	lock: '[lock]', lockOpen: '[unlock]', mail: '[mail]', menu: '[menu]', moreVert: '[more]', moreHoriz: '[more]',
+	notificationsOff: '[muted]', notifications: '[alert]', pause: '[pause]', payment: '[pay]', person: '[user]',
+	phone: '[phone]', photo: '[photo]', play: '[play]', print: '[print]', refresh: '[refresh]', rewind: '[<<]',
+	search: '[search]', send: '[send]', settings: '[settings]', share: '[share]', shoppingCart: '[cart]',
+	skipNext: '[next]', skipPrevious: '[prev]', star: '[star]', starHalf: '[star]', starOff: '[star]',
+	stop: '[stop]', upload: '[upload]', visibility: '[show]', visibilityOff: '[hide]', volumeDown: '[vol-]',
+	volumeMute: '[mute]', volumeOff: '[mute]', volumeUp: '[vol+]', warning: '[!]'
+}
+const WIDGET_ICON_SYMBOL = {
+	accountCircle: '☺', add: '+', arrowBack: '<', arrowForward: '>', attachFile: '@',
+	calendarToday: '#', call: '☎', camera: '◉', check: '✓', close: '✕', delete: '✕',
+	download: '↓', edit: '✎', event: '#', error: '!', fastForward: '»', favorite: '♥',
+	favoriteOff: '♡', folder: '▤', help: '?', home: '⌂', info: 'i', locationOn: '⚑',
+	lock: '⚿', lockOpen: '⚿', mail: '✉', menu: '≡', moreVert: '⋮', moreHoriz: '…',
+	notificationsOff: '⌇', notifications: '☏', pause: '‖', payment: '$', person: '☺',
+	phone: '☎', photo: '▨', play: '▶', print: '⎙', refresh: '↻', rewind: '«',
+	search: '⚲', send: '➤', settings: '⚙', share: '⤴', shoppingCart: '⛁',
+	skipNext: '»', skipPrevious: '«', star: '★', starHalf: '★', starOff: '☆',
+	stop: '■', upload: '↑', visibility: '◉', visibilityOff: '◎', volumeDown: '◑',
+	volumeMute: '◌', volumeOff: '◌', volumeUp: '◕', warning: '!'
+}
+
+const buildWidgetItem = (item = {}, id, components) => {
+	if (item.image) {
+		components.push({ id, component: 'Image', url: item.image, variant: item.variant || 'header', fit: item.fit || 'cover', ...(item.description ? { description: String(item.description) } : {}) })
+	} else if (item.text) {
+		components.push({ id, component: 'Text', text: String(item.text), variant: item.variant || 'body' })
+	} else if (item.icon || item.name) {
+		const iconName = item.icon || item.name
+		if (item.native) {
+			components.push({ id, component: 'Icon', name: iconName })
+		} else {
+			const map = item.style === 'symbol' ? WIDGET_ICON_SYMBOL : WIDGET_ICON_ASCII
+			components.push({ id, component: 'Text', text: map[iconName] || (item.style === 'symbol' ? '•' : `[${iconName}]`), variant: item.variant || 'body' })
+		}
+	} else if (item.video) {
+		components.push({ id, component: 'Video', url: item.video })
+	} else if (item.audio) {
+		components.push({ id, component: 'AudioPlayer', url: item.audio, ...(item.description ? { description: String(item.description) } : {}) })
+	} else if (item.divider) {
+		components.push({ id, component: 'Divider', axis: typeof item.divider === 'string' ? item.divider : 'horizontal' })
+	} else if (item.button) {
+		const textId = `${id}_text`
+		components.push(
+			{ id, component: 'Button', child: textId, variant: item.variant || 'primary', action: { call: 'openUrl', args: { url: String(item.url || '') } } },
+			{ id: textId, component: 'Text', text: String(item.button), variant: 'body' }
+		)
+	} else if (item.input) {
+		components.push({
+			id, component: 'TextField',
+			label: String(item.label || item.input),
+			...(item.value !== undefined ? { value: String(item.value) } : {}),
+			variant: item.variant || 'shortText',
+			...(item.validationRegexp ? { validationRegexp: item.validationRegexp } : {})
+		})
+	} else if (item.checkbox) {
+		components.push({ id, component: 'CheckBox', label: String(item.checkbox), value: !!item.value })
+	} else if (item.choice) {
+		components.push({
+			id, component: 'ChoicePicker',
+			...(item.label ? { label: String(item.label) } : {}),
+			options: item.choice.map(o => (typeof o === 'string' ? { label: o, value: o } : { label: String(o.label), value: String(o.value) })),
+			value: item.value ? (Array.isArray(item.value) ? item.value.map(String) : [String(item.value)]) : [],
+			variant: item.variant || 'mutuallyExclusive',
+			...(item.displayStyle ? { displayStyle: item.displayStyle } : {}),
+			...(item.filterable !== undefined ? { filterable: !!item.filterable } : {})
+		})
+	} else if (item.slider !== undefined) {
+		components.push({ id, component: 'Slider', ...(item.label ? { label: String(item.label) } : {}), min: item.min ?? 0, max: item.slider, value: item.value ?? item.min ?? 0 })
+	} else if (item.datetime) {
+		components.push({
+			id, component: 'DateTimeInput',
+			value: item.value !== undefined ? String(item.value) : '',
+			enableDate: item.enableDate !== undefined ? !!item.enableDate : true,
+			enableTime: !!item.enableTime,
+			...(item.min ? { min: String(item.min) } : {}),
+			...(item.max ? { max: String(item.max) } : {}),
+			...(item.label ? { label: String(item.label) } : {})
+		})
+	} else if (item.row) {
+		const children = item.row.map((sub, j) => buildWidgetItem(sub, `${id}_${j}`, components)).filter(Boolean)
+		components.push({ id, component: 'Row', children, justify: item.justify || 'start', align: item.align || 'stretch' })
+	} else if (item.column) {
+		const children = item.column.map((sub, j) => buildWidgetItem(sub, `${id}_${j}`, components)).filter(Boolean)
+		components.push({ id, component: 'Column', children, justify: item.justify || 'start', align: item.align || 'stretch' })
+	} else if (item.list) {
+		const children = item.list.map((sub, j) => buildWidgetItem(sub, `${id}_${j}`, components)).filter(Boolean)
+		components.push({ id, component: 'List', children, direction: item.direction || 'vertical', align: item.align || 'stretch' })
+	} else {
+		return null
+	}
+	return id
+}
+
+const widgetItemFallback = (item = {}) => {
+	if (item.image) return '[image]'
+	if (item.text) return String(item.text)
+	if (item.icon || item.name) return WIDGET_ICON_ASCII[item.icon || item.name] || `[${item.icon || item.name}]`
+	if (item.video) return '[video]'
+	if (item.audio) return '[audio]'
+	if (item.button) return `${item.button}: ${item.url || ''}`
+	if (item.input) return `${item.label || item.input}: ${item.value ?? ''}`
+	if (item.checkbox) return `[ ] ${item.checkbox}`
+	if (item.choice) return `${item.label || ''} ${(Array.isArray(item.value) ? item.value : [item.value]).filter(Boolean).join(', ')}`.trim()
+	if (item.slider !== undefined) return `${item.label || 'slider'}: ${item.value ?? item.min ?? 0}/${item.slider}`
+	if (item.datetime) return `${item.label || 'date'}: ${item.value || ''}`
+	if (item.row) return item.row.map(widgetItemFallback).filter(Boolean).join(' | ')
+	if (item.column || item.list) return (item.column || item.list).map(widgetItemFallback).filter(Boolean).join('\n')
+	return ''
+}
+
+const prepareBloksWidget = (widget = {}) => {
+	const { align = 'center', items = [], fallback } = widget
+	const uuid = randomUUID()
+	const components = []
+	const children = items.map((item, i) => buildWidgetItem(item, `item_${i}`, components)).filter(Boolean)
+	components.unshift({ id: 'root', component: 'Column', justify: 'center', align, children })
+	const data = JSON.stringify({
+		version: 'v0.9',
+		createSurface: {
+			surfaceId: uuid,
+			catalogId: 'https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json',
+			components
+		}
+	})
+	return {
+		uuid,
+		data,
+		type: 'im_a2ui',
+		fallback: fallback || items.map(widgetItemFallback).filter(Boolean).join('\n') || 'Cannot load widget'
+	}
+}
+
 const prepareNativeFlowButtons = message => {
 	const buttons = message.nativeFlow
 	const isButtonsFieldArray = Array.isArray(buttons)
@@ -818,11 +935,6 @@ export const prepareDisappearingMessageSettingContent = ephemeralExpiration => {
 	})
 }
 
-/**
- * Generate forwarded message content like WA does.
- * @param message the message to forward
- * @param forceForward will show the message as forwarded even if it is from you
- */
 export const generateForwardMessageContent = (message, forceForward) => {
 	let content = message.message
 	if (!content) throw new Boom('no content in message', { statusCode: 400 })
@@ -1015,21 +1127,21 @@ export const generateWAMessageContent = async (message, options) => {
 			allowAddOption: message.poll.canAddOption ?? false
 		}
 		if (message.poll.toAnnouncementGroup) {
-			m.pollCreationMessageV2 = pollCreationMessage // v2: community announcement groups (single + multiple select)
+			m.pollCreationMessageV2 = pollCreationMessage
 		} else if (message.poll.pollType === 1) {
 			if (!message.poll.correctAnswer) throw new Boom('No "correctAnswer" provided for quiz', { statusCode: 400 })
 			m.pollCreationMessageV5 = {
-				...pollCreationMessage, // quiz — newsletter only
+				...pollCreationMessage,
 				correctAnswer: { optionName: message.poll.correctAnswer.toString() },
 				pollType: 1,
 				selectableOptionsCount: 1
 			}
 		} else if (message.poll.hideVoter) {
-			m.pollCreationMessageV6 = pollCreationMessage // v6: hidden-voter-names poll variant
+			m.pollCreationMessageV6 = pollCreationMessage
 		} else if (message.poll.selectableCount === 1) {
-			m.pollCreationMessageV3 = pollCreationMessage // v3: single select polls
+			m.pollCreationMessageV3 = pollCreationMessage
 		} else {
-			m.pollCreationMessage = pollCreationMessage // multiple choice polls
+			m.pollCreationMessage = pollCreationMessage
 		}
 		m.messageContextInfo = { messageSecret: message.poll.messageSecret || randomBytes(32) }
 	} else if (hasNonNullishProperty(message, 'pollResult')) {
@@ -1162,6 +1274,7 @@ export const generateWAMessageContent = async (message, options) => {
 		} else if (hasOptionalProperty(message, 'footer')) {
 			interactiveMessage.footer = { text: message.footer }
 		}
+		if (hasNonNullishProperty(message, 'widget')) interactiveMessage.bloksWidget = prepareBloksWidget(message.widget)
 		m = { interactiveMessage }
 	} else if (hasNonNullishProperty(message, 'cards')) {
 		const interactiveMessage = {
@@ -1337,14 +1450,14 @@ export const generateWAMessageFromContent = (jid, message, options) => {
 		const participant = quoted.key.fromMe ? userJid : quoted.participant || quoted.key.participant || quoted.key.remoteJid
 		let quotedMsg = normalizeMessageContent(quoted.message)
 		const msgType = getContentType(quotedMsg)
-		quotedMsg = proto.Message.create({ [msgType]: quotedMsg[msgType] }) // strip redundant properties
+		quotedMsg = proto.Message.create({ [msgType]: quotedMsg[msgType] })
 		const quotedContent = quotedMsg[msgType]
 		if (typeof quotedContent === 'object' && quotedContent && 'contextInfo' in quotedContent) delete quotedContent.contextInfo
 		const contextInfo = ('contextInfo' in innerMessage[key] && innerMessage[key]?.contextInfo) || {}
 		contextInfo.participant = jidNormalizedUser(participant)
 		contextInfo.stanzaId = quoted.key.id
 		contextInfo.quotedMessage = quotedMsg
-		// if a participant is quoted, then it must be a group, so remoteJid of that group must also be set
+
 		if (!isNewsletter && jid !== quoted.key.remoteJid) contextInfo.remoteJid = quoted.key.remoteJid
 		if (contextInfo && innerMessage[key]) innerMessage[key].contextInfo = contextInfo
 	}
@@ -1366,13 +1479,12 @@ export const generateWAMessageFromContent = (jid, message, options) => {
 }
 
 export const generateWAMessage = async (jid, content, options) => {
-	// ensure msg ID is with every log
+
 	options.logger = options?.logger?.child({ msgId: options.messageId })
-	// Pass jid in the options to generateWAMessageContent (copy: do not mutate the caller's options)
+
 	return generateWAMessageFromContent(jid, await generateWAMessageContent(content, { ...options, jid }), options)
 }
 
-/** Get the key to access the true type of content */
 export const getContentType = content => {
 	if (content) {
 		const keys = Object.keys(content)
@@ -1409,10 +1521,6 @@ const getFutureProofMessage = message =>
 	message?.viewOnceMessageV2 ||
 	message?.viewOnceMessageV2Extension
 
-/**
- * Normalizes ephemeral, view once messages to regular message content.
- * Eg. image messages in ephemeral messages, in view once messages etc.
- */
 export const normalizeMessageContent = content => {
 	if (!content) return undefined
 	for (let i = 0; i < 5; i++) {
@@ -1423,7 +1531,6 @@ export const normalizeMessageContent = content => {
 	return content
 }
 
-/** Extract the true message content from a message. Eg. extracts the inner message from a disappearing/view-once message. */
 export const extractMessageContent = content => {
 	const extractFromTemplateMessage = msg => {
 		if (msg.imageMessage) return { imageMessage: msg.imageMessage }
@@ -1440,11 +1547,9 @@ export const extractMessageContent = content => {
 	return content
 }
 
-/** Returns the device predicted by message ID */
 export const getDevice = id =>
 	/^3A.{18}$/.test(id) ? 'ios' : /^3E.{20}$/.test(id) ? 'web' : /^(.{21}|.{32})$/.test(id) ? 'android' : /^(3F|.{18}$)/.test(id) ? 'desktop' : 'unknown'
 
-/** Upserts a receipt in the message */
 export const updateMessageWithReceipt = (msg, receipt) => {
 	msg.userReceipt = msg.userReceipt || []
 	const recp = msg.userReceipt.find(m => m.userJid === receipt.userJid)
@@ -1452,7 +1557,6 @@ export const updateMessageWithReceipt = (msg, receipt) => {
 	else msg.userReceipt.push(receipt)
 }
 
-/** Update the message with a new reaction */
 export const updateMessageWithReaction = (msg, reaction) => {
 	const authorID = getKeyAuthor(reaction.key)
 	const reactions = (msg.reactions || []).filter(r => getKeyAuthor(r.key) !== authorID)
@@ -1461,7 +1565,6 @@ export const updateMessageWithReaction = (msg, reaction) => {
 	msg.reactions = reactions
 }
 
-/** Update the message with a new poll update */
 export const updateMessageWithPollUpdate = (msg, update) => {
 	const authorID = getKeyAuthor(update.pollUpdateMessageKey)
 	const reactions = (msg.pollUpdates || []).filter(r => getKeyAuthor(r.pollUpdateMessageKey) !== authorID)
@@ -1469,7 +1572,6 @@ export const updateMessageWithPollUpdate = (msg, update) => {
 	msg.pollUpdates = reactions
 }
 
-/** Update the message with a new event response */
 export const updateMessageWithEventResponse = (msg, update) => {
 	const authorID = getKeyAuthor(update.eventResponseMessageKey)
 	const responses = (msg.eventResponses || []).filter(r => getKeyAuthor(r.eventResponseMessageKey) !== authorID)
@@ -1477,7 +1579,6 @@ export const updateMessageWithEventResponse = (msg, update) => {
 	msg.eventResponses = responses
 }
 
-/** Aggregates all poll updates in a poll. Returns a list of options & their voters. */
 export function getAggregateVotesInPollMessage({ message, pollUpdates }, meId) {
 	const opts =
 		message?.pollCreationMessage?.options ||
@@ -1507,7 +1608,6 @@ export function getAggregateVotesInPollMessage({ message, pollUpdates }, meId) {
 	return Object.values(voteHashMap)
 }
 
-/** Aggregates all event responses in an event message. Returns a list of response types & their responders. */
 export function getAggregateResponsesInEventMessage({ eventResponses }, meId) {
 	const responseTypes = ['GOING', 'NOT_GOING', 'MAYBE']
 	const responseMap = {}
@@ -1519,7 +1619,6 @@ export function getAggregateResponsesInEventMessage({ eventResponses }, meId) {
 	return Object.values(responseMap)
 }
 
-/** Given a list of message keys, aggregates them by chat & sender. Useful for sending read receipts in bulk. */
 export const aggregateMessageKeysNotFromMe = keys => {
 	const keyMap = {}
 	for (const { remoteJid, id, participant, fromMe } of keys) {
@@ -1534,7 +1633,6 @@ export const aggregateMessageKeysNotFromMe = keys => {
 
 const REUPLOAD_REQUIRED_STATUS = [410, 404]
 
-/** Downloads the given message. Throws an error if it's not a media message. */
 export const downloadMediaMessage = async (message, type, options, ctx) => {
 	async function downloadMsg() {
 		const mContent = extractMessageContent(message.message)
@@ -1571,7 +1669,6 @@ export const downloadMediaMessage = async (message, type, options, ctx) => {
 	})
 }
 
-/** Checks whether the given message is a media message; if it is returns the inner content */
 export const assertMediaContent = content => {
 	content = extractMessageContent(content)
 	const mediaContent = content?.documentMessage || content?.imageMessage || content?.videoMessage || content?.audioMessage || content?.stickerMessage
@@ -1579,7 +1676,6 @@ export const assertMediaContent = content => {
 	return mediaContent
 }
 
-/** Checks if a WebP buffer is animated by looking for VP8X chunk with animation flag, or ANIM/ANMF chunks */
 const isAnimatedWebP = buffer => {
 	if (!isWebPBuffer(buffer)) return false
 	let offset = 12
@@ -1597,7 +1693,6 @@ const isAnimatedWebP = buffer => {
 	return false
 }
 
-/** Checks if a buffer is a WebP file */
 const isWebPBuffer = buffer =>
 	buffer.length >= 12 &&
 	buffer[0] === 0x52 &&
@@ -1609,10 +1704,6 @@ const isWebPBuffer = buffer =>
 	buffer[10] === 0x42 &&
 	buffer[11] === 0x50
 
-/**
- * Determines whether a message should include a Biz Binary Node.
- * A Biz Binary Node is added only for interactive messages such as buttons or other supported interactive types.
- */
 export const shouldIncludeBizBinaryNode = message =>
 	!!(message.buttonsMessage || message.listMessage || message.templateMessage || (message.interactiveMessage && message.interactiveMessage.nativeFlowMessage))
 

@@ -1,12 +1,3 @@
-/**
- * Signal session repository (1:1 E2EE) + LID↔PN identity mapping store.
- * Combines what used to be libsignal.js + lid-mapping.js.
- *
- * The Signal protocol itself (X3DH, Double Ratchet, session state) lives in
- * ./libsignal.js (native port, no npm dependency) — this file is bookkeeping
- * around it (JID <-> protocol address mapping, key storage glue, LID/PN
- * identity resolution), not the crypto itself.
- */
 import * as libsignal from './libsignal.js'
 import { PreKeyWhisperMessage } from './libsignal.js'
 import { Cache } from '../foundation/cache.js'
@@ -14,13 +5,9 @@ import { generateSignalPubKey } from '../utils/wa-protocol-core.js'
 import { isHostedLidUser, isHostedPnUser, isLidUser, isPnUser, jidDecode, jidNormalizedUser, transferDevice, WAJIDDomains } from '../binary/wa-binary.js'
 import { SenderKeyName, SenderKeyRecord, GroupCipher, GroupSessionBuilder, SenderKeyDistributionMessage } from './signal-group.js'
 
-/* ------------------------------------------------------------------ */
-/* LIDMappingStore                                                     */
-/* ------------------------------------------------------------------ */
-
 export class LIDMappingStore {
 	constructor(keys, logger, pnToLIDFunc) {
-		this.mappingCache = new Cache({ ttl: 3 * 24 * 60 * 60 * 1000, updateAgeOnGet: true }) // 7 days
+		this.mappingCache = new Cache({ ttl: 3 * 24 * 60 * 60 * 1000, updateAgeOnGet: true })
 		this.inflightLIDLookups = new Map()
 		this.inflightPNLookups = new Map()
 		this.keys = keys
@@ -177,7 +164,7 @@ export class LIDMappingStore {
 		}
 
 		if (Object.keys(usyncFetch).length > 0) {
-			const result = await this.pnToLIDFunc?.(Object.keys(usyncFetch)) // already adds LIDs to mapping
+			const result = await this.pnToLIDFunc?.(Object.keys(usyncFetch))
 			if (result && result.length > 0) {
 				await this.storeLIDPNMappings(result)
 				for (const pair of result) {
@@ -277,16 +264,11 @@ export class LIDMappingStore {
 	}
 }
 
-/* ------------------------------------------------------------------ */
-/* Signal session repository                                           */
-/* ------------------------------------------------------------------ */
-
-/** Extract identity key from PreKeyWhisperMessage for identity change detection */
 function extractIdentityFromPkmsg(ciphertext) {
 	try {
 		if (!ciphertext || ciphertext.length < 2) return undefined
 		const version = ciphertext[0]
-		if ((version & 0xf) !== 3) return undefined // version byte check (version 3)
+		if ((version & 0xf) !== 3) return undefined
 		const preKeyProto = PreKeyWhisperMessage.decode(ciphertext.slice(1))
 		if (preKeyProto.identityKey?.length === 33) return new Uint8Array(preKeyProto.identityKey)
 		return undefined
@@ -299,7 +281,7 @@ export function makeLibSignalRepository(auth, logger, pnToLIDFunc) {
 	const lidMapping = new LIDMappingStore(auth.keys, logger, pnToLIDFunc)
 	const storage = signalStorage(auth, lidMapping)
 	const parsedKeys = auth.keys
-	const migratedSessionCache = new Cache({ ttl: 3 * 24 * 60 * 60 * 1000, updateAgeOnGet: true }) // 7 days
+	const migratedSessionCache = new Cache({ ttl: 3 * 24 * 60 * 60 * 1000, updateAgeOnGet: true })
 
 	const ensureSenderKeyAndCreateSkdm = async (group, meId) => {
 		const senderName = jidToSignalSenderKeyName(group, meId)
@@ -405,8 +387,7 @@ export function makeLibSignalRepository(auth, logger, pnToLIDFunc) {
 			logger.trace({ jid }, 'injecting E2EE session')
 			const cipher = new libsignal.SessionBuilder(storage, jidToSignalProtocolAddress(jid))
 			return parsedKeys.transaction(async () => {
-				// libsignal runtime accepts an absent prekey (initOutgoing checks `device.preKey && ...`)
-				// but the bundled .d.ts marks it required.
+
 				await cipher.initOutgoing(session)
 			}, jid)
 		},
@@ -447,9 +428,9 @@ export function makeLibSignalRepository(auth, logger, pnToLIDFunc) {
 		},
 
 		async migrateSession(fromJid, toJid) {
-			// TODO: use usync to handle this entire mess
+
 			if (!fromJid || (!isLidUser(toJid) && !isHostedLidUser(toJid))) return { migrated: 0, skipped: 0, total: 0 }
-			if (!isPnUser(fromJid) && !isHostedPnUser(fromJid)) return { migrated: 0, skipped: 0, total: 1 } // only PN -> LID supported
+			if (!isPnUser(fromJid) && !isHostedPnUser(fromJid)) return { migrated: 0, skipped: 0, total: 1 }
 
 			const { user } = jidDecode(fromJid)
 			logger.debug({ fromJid }, 'bulk device migration - loading all user devices')
@@ -550,7 +531,7 @@ const jidToSignalProtocolAddress = jid => {
 const jidToSignalSenderKeyName = (group, user) => new SenderKeyName(group, jidToSignalProtocolAddress(user))
 
 function signalStorage({ creds, keys }, lidMapping) {
-	// Resolve a PN signal address to its LID counterpart, if a mapping exists.
+
 	const resolveLIDSignalAddress = async id => {
 		if (id.includes('.')) {
 			const [deviceId, device] = id.split('.')
@@ -584,7 +565,7 @@ function signalStorage({ creds, keys }, lidMapping) {
 			await keys.set({ session: { [wireJid]: session.serialize() } })
 		},
 
-		isTrustedIdentity: () => true, // TOFU - Trust on First Use (same as WhatsApp Web)
+		isTrustedIdentity: () => true,
 
 		loadIdentityKey: async id => {
 			const wireJid = await resolveLIDSignalAddress(id)
@@ -601,7 +582,7 @@ function signalStorage({ creds, keys }, lidMapping) {
 				return true
 			}
 			if (!existingKey) {
-				await keys.set({ 'identity-key': { [wireJid]: identityKey } }) // new contact - TOFU
+				await keys.set({ 'identity-key': { [wireJid]: identityKey } })
 				return true
 			}
 			return false

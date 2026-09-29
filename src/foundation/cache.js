@@ -1,26 +1,10 @@
-/**
- * Replaces `lru-cache` and `@cacheable/node-cache`.
- *
- * Covers exactly the surface Baileys uses against both libraries:
- *   get(key), set(key, value), has(key), delete(key), clear()/flushAll()
- * with:
- *   - ttl (ms): entries expire after this long
- *   - max: hard cap on entry count (oldest inserted/refreshed evicted first)
- *   - updateAgeOnGet: a `get()` refreshes the entry's TTL clock (both libs support this)
- *   - dispose(value, key): called when an entry is evicted, whether by TTL or by `max`
- *
- * Built on a plain Map (insertion order == recency order once we re-insert on
- * touch), with a lazy sweep instead of a per-entry timer so a cache with many
- * short-lived entries doesn't spin up thousands of timers.
- */
-
 export class Cache {
 	constructor(options = {}) {
-		this.ttl = options.ttl ?? (options.stdTTL ? options.stdTTL * 1000 : 0) // stdTTL is node-cache's seconds-based option
+		this.ttl = options.ttl ?? (options.stdTTL ? options.stdTTL * 1000 : 0)
 		this.max = options.max || Infinity
 		this.updateAgeOnGet = !!options.updateAgeOnGet
 		this.dispose = options.dispose || (() => {})
-		this._store = new Map() // key -> { value, expiresAt }
+		this._store = new Map()
 
 		if (this.ttl > 0) {
 			this._sweeper = setInterval(() => this._sweep(), Math.min(this.ttl, 60_000))
@@ -52,7 +36,7 @@ export class Cache {
 		}
 		if (this.updateAgeOnGet && this.ttl > 0) {
 			entry.expiresAt = Date.now() + this.ttl
-			// re-insert to move to the back (most-recently-used) for `max` eviction order
+
 			this._store.delete(key)
 			this._store.set(key, entry)
 		}
@@ -60,7 +44,7 @@ export class Cache {
 	}
 
 	set(key, value) {
-		if (this._store.has(key)) this._store.delete(key) // re-insert to refresh recency order
+		if (this._store.has(key)) this._store.delete(key)
 		this._store.set(key, {
 			value,
 			expiresAt: this.ttl > 0 ? Date.now() + this.ttl : 0
@@ -98,17 +82,14 @@ export class Cache {
 		this._store.clear()
 	}
 
-	// node-cache alias
 	flushAll() {
 		this.clear()
 	}
 
-	// node-cache alias: `del(key)` (Baileys calls this, e.g. msgRetryCache.del / placeholderResendCache.del)
 	del(key) {
 		return this.delete(key)
 	}
 
-	/** node-cache's close(): stop the background sweeper so the process can exit cleanly. */
 	close() {
 		if (this._sweeper) {
 			clearInterval(this._sweeper)
@@ -116,7 +97,6 @@ export class Cache {
 		}
 	}
 
-	/** node-cache's mget: returns { [key]: value } for keys that were found (and not expired). */
 	mget(keys) {
 		const result = {}
 		for (const key of keys) {
@@ -126,7 +106,6 @@ export class Cache {
 		return result
 	}
 
-	/** node-cache's mset: data is an array of { key, value, ttl? } (ttl currently ignored — per-entry TTL override not needed by Baileys' usage). */
 	mset(data) {
 		for (const item of data) this.set(item.key, item.value)
 		return true
@@ -137,6 +116,5 @@ export class Cache {
 	}
 }
 
-/** Factory mirroring `new LRUCache(opts)` / `new NodeCache(opts)` call sites. */
 export const LRUCache = Cache
 export const NodeCache = Cache

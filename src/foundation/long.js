@@ -1,12 +1,3 @@
-/**
- * Minimal 64-bit integer, API-compatible with the subset of `long` (long.js 5.x)
- * that protobufjs and WAProto actually use. Replaces the `long` package.
- *
- * Shape is intentionally the same as long.js so consumers keep working:
- *   { low, high, unsigned }  (low/high are signed 32-bit ints)
- *   toNumber(), toString(), toJSON-free, isLong via __isLong__
- * Arithmetic is done with BigInt instead of long.js's emulated 32-bit math.
- */
 const TWO_64 = 1n << 64n
 const MASK64 = TWO_64 - 1n
 
@@ -19,11 +10,10 @@ export class Long {
 		this.unsigned = !!unsigned
 	}
 
-	/** Underlying 64 bits as an unsigned BigInt. */
 	_bits() {
 		return (BigInt(this.high >>> 0) << 32n) | BigInt(this.low >>> 0)
 	}
-	/** Value as BigInt honoring signedness. */
+
 	toBigInt() {
 		const b = this._bits()
 		return this.unsigned ? b : BigInt.asIntN(64, b)
@@ -84,7 +74,7 @@ export class Long {
 		if (Number.isNaN(value)) return new Long(0, 0, unsigned)
 		if (unsigned) {
 			if (value < 0) return new Long(0, 0, true)
-			if (value >= 18446744073709551616) return new Long(-1, -1, true) // saturate, like long.js
+			if (value >= 18446744073709551616) return new Long(-1, -1, true)
 		} else {
 			if (value <= -9223372036854775808) return new Long(0, -2147483648, false)
 			if (value + 1 >= 9223372036854775808) return new Long(-1, 2147483647, false)
@@ -107,7 +97,7 @@ export class Long {
 		if (p > 0) throw Error('interior hyphen')
 		const neg = p === 0
 		const digits = neg ? str.substring(1) : str
-		// same parse as long.js: parseInt per 8-digit block, so garbage digits become NaN -> 0 rather than throwing
+
 		let result = 0n
 		const R = BigInt(radix)
 		for (let i = 0; i < digits.length; i += 8) {
@@ -123,7 +113,7 @@ export class Long {
 		if (typeof val === 'number') return Long.fromNumber(val, unsigned)
 		if (typeof val === 'string') return Long.fromString(val, unsigned)
 		if (typeof val === 'bigint') return Long.fromBigInt(val, unsigned)
-		// throws for non-objects, converts non-instanceof Long (same as long.js)
+
 		return new Long(val.low, val.high, typeof unsigned === 'boolean' ? unsigned : val.unsigned)
 	}
 

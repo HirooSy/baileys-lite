@@ -1,10 +1,3 @@
-/**
- * Packer object: builds PNG chunks (IHDR/gAMA/IDAT/IEND) from pixel data using bitpacker+filter-pack+zlib.
- * Vendored from `pngjs` 7.0.0 (MIT). Only require()/module.exports converted to import/export
- * (zlib/util/assert/buffer -> node: specifiers). See ./LICENSE.
- * Algorithm body unchanged vs. upstream md5 bb043be341ec01e2db5b765f7ee86fec.
- * https://github.com/pngjs/pngjs
- */
 "use strict";
 
 import constants from './constants.js'
@@ -25,7 +18,7 @@ let Packer = function (options) {
     options.inputHasAlpha != null ? options.inputHasAlpha : true;
   options.deflateFactory = options.deflateFactory || zlib.createDeflate;
   options.bitDepth = options.bitDepth || 8;
-  // This is outputColorType
+
   options.colorType =
     typeof options.colorType === "number"
       ? options.colorType
@@ -81,10 +74,9 @@ Packer.prototype.createDeflate = function () {
 };
 
 Packer.prototype.filterData = function (data, width, height) {
-  // convert to correct format for filtering (e.g. right bpp and bit depth)
+
   let packedData = bitPacker(data, width, height, this._options);
 
-  // filter pixel data
   let bpp = constants.COLORTYPE_TO_BPP_MAP[this._options.colorType];
   let filteredData = filter(packedData, width, height, this._options, bpp);
   return filteredData;
@@ -118,11 +110,11 @@ Packer.prototype.packIHDR = function (width, height) {
   let buf = Buffer.alloc(13);
   buf.writeUInt32BE(width, 0);
   buf.writeUInt32BE(height, 4);
-  buf[8] = this._options.bitDepth; // Bit depth
-  buf[9] = this._options.colorType; // colorType
-  buf[10] = 0; // compression
-  buf[11] = 0; // filter
-  buf[12] = 0; // interlace
+  buf[8] = this._options.bitDepth;
+  buf[9] = this._options.colorType;
+  buf[10] = 0;
+  buf[11] = 0;
+  buf[12] = 0;
 
   return this._packChunk(constants.TYPE_IHDR, buf);
 };

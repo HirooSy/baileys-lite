@@ -1,8 +1,3 @@
-/**
- * Message-receive socket layer (wraps makeMessagesSocket from messages-send.js).
- * Was Socket/messages-recv.js. Handles inbound messages, receipts, notifications,
- * calls, retry requests, bad acks, offline node processing and tctoken pruning.
- */
 import { randomBytes } from 'node:crypto'
 import { proto } from '../../WAProto/index.js'
 import { Boom } from '../foundation/boom.js'
@@ -79,23 +74,22 @@ export const makeMessagesRecvSocket = (config) => {
     const sock = makeMessagesSocket(config);
     const { userDevicesCache, devicesMutex, ev, authState, ws, messageMutex, notificationMutex, receiptMutex, signalRepository, query, upsertMessage, resyncAppState, onUnexpectedError, assertSessions, sendNode, relayMessage, sendReceipt, uploadPreKeys, sendPeerDataOperationMessage, messageRetryManager, registerSocketEndHandler, issuePrivacyTokens, fetchAccountReachoutTimelock, placeholderResendCache } = sock;
     const getLIDForPN = signalRepository.lidMapping.getLIDForPN.bind(signalRepository.lidMapping);
-    /** this mutex ensures that each retryRequest will wait for the previous one to finish */
+
     const retryMutex = makeMutex();
-    // max bounds entry count so a burst of retries/calls can't outgrow memory between
-    // TTL sweeps - same reasoning as the signal-key cache in auth-state-core.js.
+
     const msgRetryCache = config.msgRetryCounterCache ||
         new Cache({
             max: 8192,
-            stdTTL: DEFAULT_CACHE_TTLS.MSG_RETRY, // 1 hour
+            stdTTL: DEFAULT_CACHE_TTLS.MSG_RETRY,
             useClones: false
         });
     const callOfferCache = config.callOfferCache ||
         new Cache({
             max: 2048,
-            stdTTL: DEFAULT_CACHE_TTLS.CALL_OFFER, // 5 mins
+            stdTTL: DEFAULT_CACHE_TTLS.CALL_OFFER,
             useClones: false
         });
-    // Debounce identity-change session refreshes per JID to avoid bursts
+
     const identityAssertDebounce = new Cache({ stdTTL: 5, useClones: false });
     let sendActiveReceipts = false;
     const fetchMessageHistory = async (count, oldestMsgKey, oldestMsgTimestamp) => {
@@ -123,8 +117,7 @@ export const makeMessagesRecvSocket = (config) => {
             return;
         }
         else {
-            // Store original message data so PDO response handler can preserve
-            // metadata (LID details, timestamps, etc.) that the phone may omit
+
             await placeholderResendCache.set(messageKey?.id, msgData || true);
         }
         await delay(2000);
@@ -182,7 +175,7 @@ export const makeMessagesRecvSocket = (config) => {
                 case 'MessageCappingInfoNotification':
                     handleMessageCappingNotification(data);
                     break;
-                // newsletter ops still use the legacy <mex> child structure
+
                 case 'NotificationNewsletterUpdate':
                 case 'NotificationLinkedProfilesUpdates':
                 case 'NotificationNewsletterAdminPromote':
@@ -225,7 +218,7 @@ export const makeMessagesRecvSocket = (config) => {
             });
             return;
         }
-        // WA Web defaults to now+60s when the server omits the expiry
+
         const timeEnforcementEnds = payload.time_enforcement_ends
             ? new Date(parseInt(payload.time_enforcement_ends, 10) * 1000)
             : new Date(Date.now() + 60000);
@@ -330,7 +323,7 @@ export const makeMessagesRecvSocket = (config) => {
                 break;
         }
     };
-    // Handles newsletter notifications
+
     const handleNewsletterNotification = async (node) => {
         const from = node.attrs.from;
         const children = getAllBinaryNodeChildren(node);
@@ -399,7 +392,7 @@ export const makeMessagesRecvSocket = (config) => {
                                 key: {
                                     remoteJid: from,
                                     id: child.attrs.message_id || child.attrs.server_id,
-                                    fromMe: false // TODO: is this really true though
+                                    fromMe: false
                                 },
                                 message: messageProto,
                                 messageTimestamp: +child.attrs.t
@@ -420,9 +413,7 @@ export const makeMessagesRecvSocket = (config) => {
         }
     };
     const sendMessageAck = async (node, errorCode) => {
-        // Notifications (e.g. companion_reg_refresh) can arrive and need acking before
-        // pairing/login completes, while authState.creds.me is still undefined. Falling
-        // back to buildAckStanza's existing no-`from` path instead of crashing here.
+
         const stanza = buildAckStanza(node, errorCode, authState.creds.me?.id);
         logger.debug({ recv: { tag: node.tag, attrs: node.attrs }, sent: stanza.attrs }, 'sent ack');
         await sendNode(stanza);
@@ -453,20 +444,20 @@ export const makeMessagesRecvSocket = (config) => {
         const { key: msgKey } = fullMessage;
         const msgId = msgKey.id;
         if (messageRetryManager) {
-            // Check if we've exceeded max retries using the new system
+
             if (messageRetryManager.hasExceededMaxRetries(msgId)) {
                 logger.debug({ msgId }, 'reached retry limit with new retry manager, clearing');
                 messageRetryManager.markRetryFailed(msgId);
                 return;
             }
-            // Increment retry count using new system
+
             const retryCount = messageRetryManager.incrementRetryCount(msgId);
-            // Use the new retry count for the rest of the logic
+
             const key = `${msgId}:${msgKey?.participant}`;
             await msgRetryCache.set(key, retryCount);
         }
         else {
-            // Fallback to old system
+
             const key = `${msgId}:${msgKey?.participant}`;
             let retryCount = (await msgRetryCache.get(key)) || 0;
             if (retryCount >= maxMsgRetryCount) {
@@ -481,12 +472,12 @@ export const makeMessagesRecvSocket = (config) => {
         const retryCount = (await msgRetryCache.get(key)) || 1;
         const { account, signedPreKey, signedIdentityKey: identityKey } = authState.creds;
         const fromJid = node.attrs.from;
-        // Check if we should recreate the session
+
         let shouldRecreateSession = false;
         let recreateReason = '';
         if (enableAutoSessionRecreation && messageRetryManager && retryCount > 1) {
             try {
-                // Check if we have a session with this JID
+
                 const sessionId = signalRepository.jidToSignalProtocolAddress(fromJid);
                 const hasSession = await signalRepository.validateSession(fromJid);
                 const result = messageRetryManager.shouldRecreateSession(fromJid, hasSession.exists);
@@ -494,7 +485,7 @@ export const makeMessagesRecvSocket = (config) => {
                 recreateReason = result.reason;
                 if (shouldRecreateSession) {
                     logger.debug({ fromJid, retryCount, reason: recreateReason }, 'recreating session for retry');
-                    // Delete existing session to force recreation
+
                     await authState.keys.set({ session: { [sessionId]: null } });
                     forceIncludeKeys = true;
                 }
@@ -504,9 +495,9 @@ export const makeMessagesRecvSocket = (config) => {
             }
         }
         if (retryCount <= 2) {
-            // Use new retry manager for phone requests if available
+
             if (messageRetryManager) {
-                // Schedule phone request with delay (like whatsmeow)
+
                 messageRetryManager.schedulePhoneRequest(msgId, async () => {
                     try {
                         const requestId = await requestPlaceholderResend(msgKey);
@@ -518,7 +509,7 @@ export const makeMessagesRecvSocket = (config) => {
                 });
             }
             else {
-                // Fallback to immediate request
+
                 const msgId = await requestPlaceholderResend(msgKey);
                 logger.debug(`sendRetryRequest: requested placeholder resend for message ${msgId}`);
             }
@@ -540,7 +531,7 @@ export const makeMessagesRecvSocket = (config) => {
                             id: node.attrs.id,
                             t: node.attrs.t,
                             v: '1',
-                            // ADD ERROR FIELD
+
                             error: '0'
                         }
                     },
@@ -579,13 +570,9 @@ export const makeMessagesRecvSocket = (config) => {
             logger.info({ msgAttrs: node.attrs, retryCount }, 'sent retry receipt');
         }, authState?.creds?.me?.id || 'sendRetryRequest');
     };
-    // Mirrors WAWeb/Handle/PreKeyLow.js: skip a re-issued notification with the same stanza id.
+
     const inFlightPreKeyLow = new Set();
-    /**
-     * Fire-and-forget tctoken re-issuance after a peer's device identity changed.
-     * Mirrors WAWebSendTcTokenWhenDeviceIdentityChange — runs in parallel with
-     * the session refresh (not after it).
-     */
+
     const reissueTcTokenAfterIdentityChange = (from) => {
         void (async () => {
             const normalizedJid = jidNormalizedUser(from);
@@ -649,7 +636,7 @@ export const makeMessagesRecvSocket = (config) => {
         }
     };
     const handleGroupNotification = (fullNode, child, msg) => {
-        // TODO: Support PN/LID (Here is only LID now)
+
         const actingParticipantLid = fullNode.attrs.participant;
         const actingParticipantPn = fullNode.attrs.participant_pn;
         const actingParticipantUsername = fullNode.attrs.participant_username;
@@ -699,7 +686,7 @@ export const makeMessagesRecvSocket = (config) => {
                 const stubType = `GROUP_PARTICIPANT_${child.tag.toUpperCase()}`;
                 msg.messageStubType = WAMessageStubType[stubType];
                 const participants = getBinaryNodeChildren(child, 'participant').map(({ attrs }) => {
-                    // TODO: Store LID MAPPINGS
+
                     return {
                         id: attrs.jid,
                         phoneNumber: isLidUser(attrs.jid) && isPnUser(attrs.phone_number) ? attrs.phone_number : undefined,
@@ -709,8 +696,7 @@ export const makeMessagesRecvSocket = (config) => {
                     };
                 });
                 if (participants.length === 1 &&
-                    // if recv. "remove" message and sender removed themselves
-                    // mark as left
+
                     (areJidsSameUser(participants[0].id, actingParticipantLid) ||
                         areJidsSameUser(participants[0].id, actingParticipantPn)) &&
                     child.tag === 'remove') {
@@ -765,7 +751,7 @@ export const makeMessagesRecvSocket = (config) => {
                 break;
             case 'revoked_membership_requests':
                 const isDenied = areJidsSameUser(affectedParticipantLid, actingParticipantLid);
-                // TODO: LIDMAPPING SUPPORT
+
                 msg.messageStubType = WAMessageStubType.GROUP_MEMBERSHIP_JOIN_APPROVAL_REQUEST_NON_ADMIN_ADD;
                 msg.messageStubParameters = [
                     JSON.stringify({ lid: affectedParticipantLid, pn: affectedParticipantPn }),
@@ -824,9 +810,7 @@ export const makeMessagesRecvSocket = (config) => {
                 }
                 const existingCache = (await userDevicesCache?.get(user)) || [];
                 if (!existingCache.length) {
-                    // No baseline yet; skip applying the delta so getUSyncDevices can
-                    // later fetch the full device list. Caching just the notification
-                    // entries would make a partial list look authoritative.
+
                     logger.debug({ user, tag }, 'device list not cached, deferring to USync refresh');
                     continue;
                 }
@@ -870,7 +854,7 @@ export const makeMessagesRecvSocket = (config) => {
                 await handleMexNotification(node);
                 break;
             case 'w:gp2':
-                // TODO: HANDLE PARTICIPANT_PN
+
                 handleGroupNotification(node, child, result);
                 break;
             case 'mediaretry':
@@ -898,7 +882,7 @@ export const makeMessagesRecvSocket = (config) => {
             case 'picture':
                 const setPicture = getBinaryNodeChild(node, 'set');
                 const delPicture = getBinaryNodeChild(node, 'delete');
-                // TODO: WAJIDHASH stuff proper support inhouse
+
                 ev.emit('contacts.update', [
                     {
                         id: jidNormalizedUser(node?.attrs?.from) || (setPicture || delPicture)?.attrs?.hash || '',
@@ -1012,11 +996,7 @@ export const makeMessagesRecvSocket = (config) => {
             return result;
         }
     };
-    /**
-     * In-memory cache of storage JIDs with stored tctokens, seeded from the persisted index.
-     * Used to coalesce writes during a session; pruning always re-reads the persisted index
-     * to cover writes made by other layers (e.g. history sync).
-     */
+
     const tcTokenKnownJids = new Set();
     const tcTokenIndexLoaded = (async () => {
         try {
@@ -1035,8 +1015,7 @@ export const makeMessagesRecvSocket = (config) => {
             clearTimeout(tcTokenIndexTimer);
             tcTokenIndexTimer = undefined;
         }
-        // Merge with whatever is already persisted so we don't clobber writes from other
-        // paths (history sync, concurrent sessions on the same store).
+
         const write = await buildMergedTcTokenIndexWrite(authState.keys, tcTokenKnownJids);
         return authState.keys.set({ tctoken: write });
     }
@@ -1062,8 +1041,7 @@ export const makeMessagesRecvSocket = (config) => {
         if (!tokensNode)
             return;
         const from = jidNormalizedUser(node.attrs.from);
-        // WA Web uses: senderLid ?? toLid(from) for the storage key
-        // The sender_lid attribute provides the LID directly when available
+
         const senderLid = node.attrs.sender_lid && isLidUser(jidNormalizedUser(node.attrs.sender_lid))
             ? jidNormalizedUser(node.attrs.sender_lid)
             : undefined;
@@ -1106,26 +1084,26 @@ export const makeMessagesRecvSocket = (config) => {
         const participant = key.participant || remoteJid;
         const retryCount = +retryNode.attrs.count || 1;
         const msgId = ids[0];
-        // Try to get messages from cache first, then fallback to getMessage
+
         const msgs = [];
         for (const id of ids) {
             let msg;
-            // Try to get from retry cache first if enabled
+
             if (messageRetryManager) {
                 const cachedMsg = messageRetryManager.getRecentMessage(remoteJid, id);
                 if (cachedMsg) {
                     msg = cachedMsg.message;
                     logger.debug({ jid: remoteJid, id }, 'found message in retry cache');
-                    // Mark retry as successful since we found the message
+
                     messageRetryManager.markRetrySuccess(id);
                 }
             }
-            // Fallback to getMessage if not found in cache
+
             if (!msg) {
                 msg = await getMessage({ ...key, id });
                 if (msg) {
                     logger.debug({ jid: remoteJid, id }, 'found message via getMessage');
-                    // Also mark as successful if found via getMessage
+
                     if (messageRetryManager) {
                         messageRetryManager.markRetrySuccess(id);
                     }
@@ -1133,9 +1111,7 @@ export const makeMessagesRecvSocket = (config) => {
             }
             msgs.push(msg);
         }
-        // if it's the primary jid sending the request
-        // just re-send the message to everyone
-        // prevents the first message decryption failure
+
         const sendToAll = !jidDecode(participant)?.device;
         const sessionId = signalRepository.jidToSignalProtocolAddress(participant);
         let injectedFromBundle = false;
@@ -1248,8 +1224,7 @@ export const makeMessagesRecvSocket = (config) => {
                 receiptMutex.mutex(async () => {
                     const status = getStatusFromReceiptType(attrs.type);
                     if (typeof status !== 'undefined' &&
-                        // basically, we only want to know when a message from us has been delivered to/read by the other person
-                        // or another device of ours has read some messages
+
                         (status >= proto.WebMessageInfo.Status.SERVER_ACK || !isNodeFromMe)) {
                         if (isJidGroup(remoteJid) || isJidStatusBroadcast(remoteJid)) {
                             if (attrs.participant) {
@@ -1271,7 +1246,7 @@ export const makeMessagesRecvSocket = (config) => {
                         }
                     }
                     if (attrs.type === 'retry') {
-                        // correctly set who is asking for the retry
+
                         key.participant = key.participant || attrs.from;
                         const retryNode = getBinaryNodeChild(node, 'retry');
                         if (ids[0] && key.participant && (await willSendMessageAgain(ids[0], key.participant))) {
@@ -1333,7 +1308,7 @@ export const makeMessagesRecvSocket = (config) => {
     };
     const handleMessage = async (node) => {
         const encNode = getBinaryNodeChild(node, 'enc');
-        // TODO: temporary fix for crashes and issues resulting of failed msmsg decryption
+
         if (encNode?.attrs.type === 'msmsg') {
             logger.debug({ key: node.attrs.key }, 'ignored msmsg');
             await sendMessageAck(node, NACK_REASONS.MissingMessageSecret);
@@ -1343,7 +1318,7 @@ export const makeMessagesRecvSocket = (config) => {
         try {
             const { fullMessage: msg, category, author, decrypt } = decryptMessageNode(node, authState.creds.me.id, authState.creds.me.lid || '', signalRepository, logger);
             const alt = msg.key.participantAlt || msg.key.remoteJidAlt;
-            // store new mappings we didn't have before
+
             if (!!alt) {
                 const altServer = jidDecode(alt)?.server;
                 const primaryJid = msg.key.participant || msg.key.remoteJid;
@@ -1363,15 +1338,14 @@ export const makeMessagesRecvSocket = (config) => {
                 if (msg.key?.remoteJid && msg.key?.id && msg.message && messageRetryManager) {
                     messageRetryManager.addRecentMessage(msg.key.remoteJid, msg.key.id, msg.message);
                 }
-                // message failed to decrypt
+
                 if (msg.messageStubType === proto.WebMessageInfo.StubType.CIPHERTEXT && msg.category !== 'peer') {
                     if (msg?.messageStubParameters?.[0] === MISSING_KEYS_ERROR_TEXT) {
                         acked = true;
                         return sendMessageAck(node, NACK_REASONS.ParsingError);
                     }
                     if (msg.messageStubParameters?.[0] === NO_MESSAGE_FOUND_ERROR_TEXT) {
-                        // Message arrived without encryption (e.g. CTWA ads messages).
-                        // Check if this is eligible for placeholder resend (matching WA Web filters).
+
                         const unavailableNode = getBinaryNodeChild(node, 'unavailable');
                         const unavailableType = unavailableNode?.attrs?.type;
                         if (unavailableType === 'bot_unavailable_fanout' ||
@@ -1387,18 +1361,14 @@ export const makeMessagesRecvSocket = (config) => {
                             acked = true;
                             return sendMessageAck(node);
                         }
-                        // Request the real content from the phone via placeholder resend PDO.
-                        // Upsert the CIPHERTEXT stub as a placeholder (like WA Web's processPlaceholderMsg),
-                        // and store the requestId in stubParameters[1] so users can correlate
-                        // with the incoming PDO response event.
+
                         const cleanKey = {
                             remoteJid: msg.key.remoteJid,
                             fromMe: msg.key.fromMe,
                             id: msg.key.id,
                             participant: msg.key.participant
                         };
-                        // Cache the original message metadata so the PDO response handler
-                        // can preserve key fields (LID details etc.) that the phone may omit
+
                         const msgData = {
                             key: msg.key,
                             messageTimestamp: msg.messageTimestamp,
@@ -1423,10 +1393,10 @@ export const makeMessagesRecvSocket = (config) => {
                         });
                         acked = true;
                         await sendMessageAck(node);
-                        // Don't return — fall through to upsertMessage so the stub is emitted
+
                     }
                     else {
-                        // Skip retry for expired status messages (>24h old)
+
                         if (isJidStatusBroadcast(msg.key.remoteJid)) {
                             const messageAge = unixTimestampSeconds() - toNumber(msg.messageTimestamp);
                             if (messageAge > STATUS_EXPIRY_SECONDS) {
@@ -1436,7 +1406,7 @@ export const makeMessagesRecvSocket = (config) => {
                             }
                         }
                         logger.debug('[handleMessage] Attempting retry request for failed decryption');
-                        // WAWeb only retry-receipts here; server emits PreKeyLow if prekeys run low.
+
                         await retryMutex.mutex(async () => {
                             try {
                                 if (!ws.isOpen) {
@@ -1463,19 +1433,19 @@ export const makeMessagesRecvSocket = (config) => {
                     }
                     const isNewsletter = isJidNewsletter(msg.key.remoteJid);
                     if (!isNewsletter) {
-                        // no type in the receipt => message delivered
+
                         let type = undefined;
                         let participant = msg.key.participant;
                         if (category === 'peer') {
-                            // special peer message
+
                             type = 'peer_msg';
                         }
                         else if (msg.key.fromMe) {
-                            // message was sent by us from a different device
+
                             type = 'sender';
-                            // need to specially handle this case
+
                             if (isLidUser(msg.key.remoteJid) || isLidUser(msg.key.remoteJidAlt)) {
-                                participant = author; // TODO: investigate sending receipts to LIDs and not PNs
+                                participant = author;
                             }
                         }
                         else if (!sendActiveReceipts) {
@@ -1483,11 +1453,11 @@ export const makeMessagesRecvSocket = (config) => {
                         }
                         acked = true;
                         await sendReceipt(msg.key.remoteJid, participant, [msg.key.id], type);
-                        // send ack for history message
+
                         const isAnyHistoryMsg = getHistoryMsg(msg.message);
                         if (isAnyHistoryMsg) {
                             const jid = jidNormalizedUser(msg.key.remoteJid);
-                            await sendReceipt(jid, undefined, [msg.key.id], 'hist_sync'); // TODO: investigate
+                            await sendReceipt(jid, undefined, [msg.key.id], 'hist_sync');
                         }
                     }
                     else {
@@ -1540,13 +1510,13 @@ export const makeMessagesRecvSocket = (config) => {
                 await callOfferCache.set(call.id, call);
             }
             const existingCall = await callOfferCache.get(call.id);
-            // use existing call info to populate this event
+
             if (existingCall) {
                 call.isVideo = existingCall.isVideo;
                 call.isGroup = existingCall.isGroup;
                 call.callerPn = call.callerPn || existingCall.callerPn;
             }
-            // delete data once call has ended
+
             if (status === 'reject' || status === 'accept' || status === 'timeout' || status === 'terminate') {
                 await callOfferCache.del(call.id);
             }
@@ -1561,29 +1531,11 @@ export const makeMessagesRecvSocket = (config) => {
     };
     const handleBadAck = async ({ attrs }) => {
         const key = { remoteJid: attrs.from, fromMe: true, id: attrs.id };
-        // WARNING: REFRAIN FROM ENABLING THIS FOR NOW. IT WILL CAUSE A LOOP
-        // // current hypothesis is that if pash is sent in the ack
-        // // it means -- the message hasn't reached all devices yet
-        // // we'll retry sending the message here
-        // if(attrs.phash) {
-        // 	logger.info({ attrs }, 'received phash in ack, resending message...')
-        // 	const msg = await getMessage(key)
-        // 	if(msg) {
-        // 		await relayMessage(key.remoteJid!, msg, { messageId: key.id!, useUserDevicesCache: false })
-        // 	} else {
-        // 		logger.warn({ attrs }, 'could not send message again, as it was not found')
-        // 	}
-        // }
-        // error in acknowledgement,
-        // device could not display the message
+
         if (attrs.error) {
             const isReachoutTimelocked = attrs.error === String(NACK_REASONS.SenderReachoutTimelocked);
             if (attrs.error === SERVER_ERROR_CODES.MessageAccountRestriction) {
-                // 463 = 1:1 message missing privacy token (tctoken). Usually means the
-                // account is restricted: WhatsApp blocks starting new chats but preserves
-                // existing ones, since established chats already carry a tctoken.
-                // WA Web prevents this client-side (disables the compose bar).
-                // No retry — retrying counts as another "reach out" and worsens the restriction.
+
                 logger.warn({ msgId: attrs.id, from: attrs.from }, 'error 463: account restricted or missing tctoken for contact');
                 const ackFrom = attrs.from;
                 if (ackFrom && !inFlight463Recoveries.has(ackFrom)) {
@@ -1616,7 +1568,7 @@ export const makeMessagesRecvSocket = (config) => {
                 logger.warn({ msgId: attrs.id, from: attrs.from }, 'smax-invalid (479): stanza rejected by server — likely stale device session or malformed addressing');
             }
             else if (isReachoutTimelocked) {
-                // user is temporarily restricted, fetch current restriction details
+
                 await fetchAccountReachoutTimelock().catch(err => logger.warn({ err }, 'failed to fetch reachout timelock'));
                 logger.warn({ attrs }, 'received error in ack');
             }
@@ -1634,8 +1586,7 @@ export const makeMessagesRecvSocket = (config) => {
             ]);
         }
     };
-    /// processes a node with the given function
-    /// and adds the task to the existing buffer if we're buffering events
+
     const processNodeWithBuffer = async (node, identifier, exec) => {
         ev.buffer();
         await execTask();
@@ -1655,7 +1606,7 @@ export const makeMessagesRecvSocket = (config) => {
         yieldToEventLoop: () => new Promise(resolve => setImmediate(resolve))
     });
     const processNode = async (type, node, identifier, exec) => {
-        // Fast path: ack and drop ignored JIDs before entering the buffer/queue
+
         const from = node.attrs.from;
         let ignoreJid = from;
         if (type === 'receipt' && from) {
@@ -1676,7 +1627,7 @@ export const makeMessagesRecvSocket = (config) => {
             await processNodeWithBuffer(node, identifier, exec);
         }
     };
-    // recv a message
+
     ws.on('CB:message', async (node) => {
         await processNode('message', node, 'processing message', handleMessage);
     });
@@ -1696,7 +1647,7 @@ export const makeMessagesRecvSocket = (config) => {
         if (!call) {
             return;
         }
-        // missed call + group call notification message generation
+
         if (call.status === 'timeout' || (call.status === 'offer' && call.isGroup)) {
             const msg = {
                 key: {
@@ -1723,30 +1674,28 @@ export const makeMessagesRecvSocket = (config) => {
             await upsertMessage(protoMsg, call.offline ? 'append' : 'notify');
         }
     });
-    /** timestamp of last tctoken prune run — throttles to once per 24h */
+
     let lastTcTokenPruneTs = 0;
-    /** dedupe in-flight 463 recovery token issuance by target JID */
+
     const inFlight463Recoveries = new Set();
     ev.on('connection.update', ({ isOnline, connection }) => {
         if (typeof isOnline !== 'undefined') {
             sendActiveReceipts = isOnline;
             logger.trace(`sendActiveReceipts set to "${sendActiveReceipts}"`);
         }
-        // Flush pending tctoken index save on disconnect to avoid writing after close
+
         if (connection === 'close' && tcTokenIndexTimer) {
             clearTimeout(tcTokenIndexTimer);
             tcTokenIndexTimer = undefined;
-            // Best-effort flush — may fail if store is already closed
+
             try {
                 void Promise.resolve(flushTcTokenIndex()).catch(() => { });
             }
             catch {
-                /* ignore sync errors */
+
             }
         }
-        // Prune expired tctokens when coming online, at most once per 24 hours
-        // Matches WA Web's CLEAN_TC_TOKENS task
-        // Note: don't gate on tcTokenKnownJids.size — the index may still be loading
+
         if (isOnline) {
             const now = Date.now();
             const DAY_MS = 24 * 60 * 60 * 1000;
@@ -1769,8 +1718,7 @@ export const makeMessagesRecvSocket = (config) => {
     async function pruneExpiredTcTokens() {
         try {
             await tcTokenIndexLoaded;
-            // Union with the persisted index picks up JIDs added by other layers
-            // (history sync) without needing inter-module wiring.
+
             const persisted = await readTcTokenIndex(authState.keys);
             const allJids = new Set(tcTokenKnownJids);
             for (const jid of persisted)
@@ -1785,7 +1733,7 @@ export const makeMessagesRecvSocket = (config) => {
             for (const jid of jids) {
                 const entry = allTokens[jid];
                 if (!entry) {
-                    // Tracked but nothing in store — drop from index.
+
                     mutated++;
                     continue;
                 }

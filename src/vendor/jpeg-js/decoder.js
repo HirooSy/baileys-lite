@@ -1,35 +1,3 @@
-/**
- * Pure-JS JPEG decoder — vendored verbatim from `jpeg-js` 0.4.4 (BSD-3-Clause, Copyright 2011 notmasteryet),
- * only the CommonJS export at the bottom was converted to `export default`. See ./LICENSE.
- * Algorithm body is untouched (checked in against upstream md5 03d367b0053de962384f06f9007e23b9).
- * https://github.com/eugeneware/jpeg-js
- */
-/* -*- tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- /
-/* vim: set shiftwidth=2 tabstop=2 autoindent cindent expandtab: */
-/*
-   Copyright 2011 notmasteryet
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
-
-// - The JPEG specification can be found in the ITU CCITT Recommendation T.81
-//   (www.w3.org/Graphics/JPEG/itu-t81.pdf)
-// - The JFIF specification can be found in the JPEG File Interchange Format
-//   (www.w3.org/Graphics/JPEG/jfif3.pdf)
-// - The Adobe Application-Specific JPEG markers in the Supporting the DCT Filters
-//   in PostScript Level 2, Technical Note #5116
-//   (partners.adobe.com/public/developer/en/ps/sdk/5116.DCT_Filter.pdf)
-
 var JpegImage = (function jpegImage() {
   "use strict";
   var dctZigZag = new Int32Array([
@@ -50,14 +18,14 @@ var JpegImage = (function jpegImage() {
     63
   ]);
 
-  var dctCos1  =  4017   // cos(pi/16)
-  var dctSin1  =   799   // sin(pi/16)
-  var dctCos3  =  3406   // cos(3*pi/16)
-  var dctSin3  =  2276   // sin(3*pi/16)
-  var dctCos6  =  1567   // cos(6*pi/16)
-  var dctSin6  =  3784   // sin(6*pi/16)
-  var dctSqrt2 =  5793   // sqrt(2)
-  var dctSqrt1d2 = 2896  // sqrt(2) / 2
+  var dctCos1  =  4017
+  var dctSin1  =   799
+  var dctCos3  =  3406
+  var dctSin3  =  2276
+  var dctCos6  =  1567
+  var dctSin6  =  3784
+  var dctSqrt2 =  5793
+  var dctSqrt1d2 = 2896
 
   function constructor() {
   }
@@ -87,7 +55,7 @@ var JpegImage = (function jpegImage() {
         k++;
       }
       if (i + 1 < length) {
-        // p here points to last code
+
         code.push(q = {children: [], index: 0});
         p.children[p.index] = q.children;
         p = q;
@@ -119,7 +87,7 @@ var JpegImage = (function jpegImage() {
         if (nextByte) {
           throw new Error("unexpected marker: " + ((bitsData << 8) | nextByte).toString(16));
         }
-        // unstuff 0
+
       }
       bitsCount = 7;
       return bitsData >>> 7;
@@ -210,7 +178,7 @@ var JpegImage = (function jpegImage() {
         var z = dctZigZag[k];
         var direction = zz[z] < 0 ? -1 : 1;
         switch (successiveACState) {
-        case 0: // initial state
+        case 0:
           var rs = decodeHuffman(component.huffmanTableAC);
           var s = rs & 15, r = rs >> 4;
           if (s === 0) {
@@ -228,7 +196,7 @@ var JpegImage = (function jpegImage() {
             successiveACState = r ? 2 : 3;
           }
           continue;
-        case 1: // skipping r zero items
+        case 1:
         case 2:
           if (zz[z])
             zz[z] += (readBit() << successive) * direction;
@@ -238,7 +206,7 @@ var JpegImage = (function jpegImage() {
               successiveACState = successiveACState == 2 ? 3 : 0;
           }
           break;
-        case 3: // set value for a zero item
+        case 3:
           if (zz[z])
             zz[z] += (readBit() << successive) * direction;
           else {
@@ -246,7 +214,7 @@ var JpegImage = (function jpegImage() {
             successiveACState = 0;
           }
           break;
-        case 4: // eob
+        case 4:
           if (zz[z])
             zz[z] += (readBit() << successive) * direction;
           break;
@@ -264,7 +232,7 @@ var JpegImage = (function jpegImage() {
       var mcuCol = mcu % mcusPerLine;
       var blockRow = mcuRow * component.v + row;
       var blockCol = mcuCol * component.h + col;
-      // If the block is missing and we're in tolerant mode, just skip it.
+
       if (component.blocks[blockRow] === undefined && opts.tolerantDecoding)
         return;
       decode(component, component.blocks[blockRow][blockCol]);
@@ -272,7 +240,7 @@ var JpegImage = (function jpegImage() {
     function decodeBlock(component, decode, mcu) {
       var blockRow = (mcu / component.blocksPerLine) | 0;
       var blockCol = mcu % component.blocksPerLine;
-      // If the block is missing and we're in tolerant mode, just skip it.
+
       if (component.blocks[blockRow] === undefined && opts.tolerantDecoding)
         return;
       decode(component, component.blocks[blockRow][blockCol]);
@@ -301,7 +269,7 @@ var JpegImage = (function jpegImage() {
 
     var h, v;
     while (mcu < mcuExpected) {
-      // reset interval stuff
+
       for (i = 0; i < componentsLength; i++)
         components[i].pred = 0;
       eobrun = 0;
@@ -326,13 +294,12 @@ var JpegImage = (function jpegImage() {
           }
           mcu++;
 
-          // If we've reached our expected MCU's, stop decoding
           if (mcu === mcuExpected) break;
         }
       }
 
       if (mcu === mcuExpected) {
-        // Skip trailing bytes at the end of the scan - until we reach the next marker
+
         do {
           if (data[offset] === 0xFF) {
             if (data[offset + 1] !== 0x00) {
@@ -343,14 +310,13 @@ var JpegImage = (function jpegImage() {
         } while (offset < data.length - 2);
       }
 
-      // find marker
       bitsCount = 0;
       marker = (data[offset] << 8) | data[offset + 1];
       if (marker < 0xFF00) {
         throw new Error("marker was not found");
       }
 
-      if (marker >= 0xFFD0 && marker <= 0xFFD7) { // RSTx
+      if (marker >= 0xFFD0 && marker <= 0xFFD7) {
         offset += 2;
       }
       else
@@ -365,29 +331,21 @@ var JpegImage = (function jpegImage() {
     var blocksPerLine = component.blocksPerLine;
     var blocksPerColumn = component.blocksPerColumn;
     var samplesPerLine = blocksPerLine << 3;
-    // Only 1 used per invocation of this function and garbage collected after invocation, so no need to account for its memory footprint.
+
     var R = new Int32Array(64), r = new Uint8Array(64);
 
-    // A port of poppler's IDCT method which in turn is taken from:
-    //   Christoph Loeffler, Adriaan Ligtenberg, George S. Moschytz,
-    //   "Practical Fast 1-D DCT Algorithms with 11 Multiplications",
-    //   IEEE Intl. Conf. on Acoustics, Speech & Signal Processing, 1989,
-    //   988-991.
     function quantizeAndInverse(zz, dataOut, dataIn) {
       var qt = component.quantizationTable;
       var v0, v1, v2, v3, v4, v5, v6, v7, t;
       var p = dataIn;
       var i;
 
-      // dequant
       for (i = 0; i < 64; i++)
         p[i] = zz[i] * qt[i];
 
-      // inverse DCT on rows
       for (i = 0; i < 8; ++i) {
         var row = 8 * i;
 
-        // check for all-zero AC coefficients
         if (p[1 + row] == 0 && p[2 + row] == 0 && p[3 + row] == 0 &&
             p[4 + row] == 0 && p[5 + row] == 0 && p[6 + row] == 0 &&
             p[7 + row] == 0) {
@@ -403,7 +361,6 @@ var JpegImage = (function jpegImage() {
           continue;
         }
 
-        // stage 4
         v0 = (dctSqrt2 * p[0 + row] + 128) >> 8;
         v1 = (dctSqrt2 * p[4 + row] + 128) >> 8;
         v2 = p[2 + row];
@@ -413,7 +370,6 @@ var JpegImage = (function jpegImage() {
         v5 = p[3 + row] << 4;
         v6 = p[5 + row] << 4;
 
-        // stage 3
         t = (v0 - v1+ 1) >> 1;
         v0 = (v0 + v1 + 1) >> 1;
         v1 = t;
@@ -427,7 +383,6 @@ var JpegImage = (function jpegImage() {
         v5 = (v7 - v5 + 1) >> 1;
         v7 = t;
 
-        // stage 2
         t = (v0 - v3 + 1) >> 1;
         v0 = (v0 + v3 + 1) >> 1;
         v3 = t;
@@ -441,7 +396,6 @@ var JpegImage = (function jpegImage() {
         v5 = (v5 * dctCos1 - v6 * dctSin1 + 2048) >> 12;
         v6 = t;
 
-        // stage 1
         p[0 + row] = v0 + v7;
         p[7 + row] = v0 - v7;
         p[1 + row] = v1 + v6;
@@ -452,11 +406,9 @@ var JpegImage = (function jpegImage() {
         p[4 + row] = v3 - v4;
       }
 
-      // inverse DCT on columns
       for (i = 0; i < 8; ++i) {
         var col = i;
 
-        // check for all-zero AC coefficients
         if (p[1*8 + col] == 0 && p[2*8 + col] == 0 && p[3*8 + col] == 0 &&
             p[4*8 + col] == 0 && p[5*8 + col] == 0 && p[6*8 + col] == 0 &&
             p[7*8 + col] == 0) {
@@ -472,7 +424,6 @@ var JpegImage = (function jpegImage() {
           continue;
         }
 
-        // stage 4
         v0 = (dctSqrt2 * p[0*8 + col] + 2048) >> 12;
         v1 = (dctSqrt2 * p[4*8 + col] + 2048) >> 12;
         v2 = p[2*8 + col];
@@ -482,7 +433,6 @@ var JpegImage = (function jpegImage() {
         v5 = p[3*8 + col];
         v6 = p[5*8 + col];
 
-        // stage 3
         t = (v0 - v1 + 1) >> 1;
         v0 = (v0 + v1 + 1) >> 1;
         v1 = t;
@@ -496,7 +446,6 @@ var JpegImage = (function jpegImage() {
         v5 = (v7 - v5 + 1) >> 1;
         v7 = t;
 
-        // stage 2
         t = (v0 - v3 + 1) >> 1;
         v0 = (v0 + v3 + 1) >> 1;
         v3 = t;
@@ -510,7 +459,6 @@ var JpegImage = (function jpegImage() {
         v5 = (v5 * dctCos1 - v6 * dctSin1 + 2048) >> 12;
         v6 = t;
 
-        // stage 1
         p[0*8 + col] = v0 + v7;
         p[7*8 + col] = v0 - v7;
         p[1*8 + col] = v1 + v6;
@@ -521,7 +469,6 @@ var JpegImage = (function jpegImage() {
         p[4*8 + col] = v3 - v4;
       }
 
-      // convert to 8-bit integers
       for (i = 0; i < 64; ++i) {
         var sample = 128 + ((p[i] + 8) >> 4);
         dataOut[i] = sample < 0 ? 0 : sample > 0xFF ? 0xFF : sample;
@@ -559,7 +506,7 @@ var JpegImage = (function jpegImage() {
       xhr.open("GET", path, true);
       xhr.responseType = "arraybuffer";
       xhr.onload = (function() {
-        // TODO catch parse error
+
         var data = new Uint8Array(xhr.response || xhr.mozResponseArrayBuffer);
         this.parse(data);
         if (this.onload)
@@ -582,8 +529,7 @@ var JpegImage = (function jpegImage() {
         return array;
       }
       function prepareComponents(frame) {
-        // According to the JPEG standard, the sampling factor must be between 1 and 4
-        // See https://github.com/libjpeg-turbo/libjpeg-turbo/blob/9abeff46d87bd201a952e276f3e4339556a403a3/libjpeg.txt#L1138-L1146
+
         var maxH = 1, maxV = 1;
         var component, componentId;
         for (componentId in frame.components) {
@@ -605,7 +551,6 @@ var JpegImage = (function jpegImage() {
             var blocksToAllocate = blocksPerColumnForMcu * blocksPerLineForMcu;
             var blocks = [];
 
-            // Each block is a Int32Array of length 64 (4 x 64 = 256 bytes)
             requestMemoryAllocation(blocksToAllocate * 256);
 
             for (var i = 0; i < blocksPerColumnForMcu; i++) {
@@ -633,32 +578,32 @@ var JpegImage = (function jpegImage() {
       var fileMarker = readUint16();
       var malformedDataOffset = -1;
       this.comments = [];
-      if (fileMarker != 0xFFD8) { // SOI (Start of Image)
+      if (fileMarker != 0xFFD8) {
         throw new Error("SOI not found");
       }
 
       fileMarker = readUint16();
-      while (fileMarker != 0xFFD9) { // EOI (End of image)
+      while (fileMarker != 0xFFD9) {
         var i, j, l;
         switch(fileMarker) {
           case 0xFF00: break;
-          case 0xFFE0: // APP0 (Application Specific)
-          case 0xFFE1: // APP1
-          case 0xFFE2: // APP2
-          case 0xFFE3: // APP3
-          case 0xFFE4: // APP4
-          case 0xFFE5: // APP5
-          case 0xFFE6: // APP6
-          case 0xFFE7: // APP7
-          case 0xFFE8: // APP8
-          case 0xFFE9: // APP9
-          case 0xFFEA: // APP10
-          case 0xFFEB: // APP11
-          case 0xFFEC: // APP12
-          case 0xFFED: // APP13
-          case 0xFFEE: // APP14
-          case 0xFFEF: // APP15
-          case 0xFFFE: // COM (Comment)
+          case 0xFFE0:
+          case 0xFFE1:
+          case 0xFFE2:
+          case 0xFFE3:
+          case 0xFFE4:
+          case 0xFFE5:
+          case 0xFFE6:
+          case 0xFFE7:
+          case 0xFFE8:
+          case 0xFFE9:
+          case 0xFFEA:
+          case 0xFFEB:
+          case 0xFFEC:
+          case 0xFFED:
+          case 0xFFEE:
+          case 0xFFEF:
+          case 0xFFFE:
             var appData = readDataBlock();
 
             if (fileMarker === 0xFFFE) {
@@ -668,7 +613,7 @@ var JpegImage = (function jpegImage() {
 
             if (fileMarker === 0xFFE0) {
               if (appData[0] === 0x4A && appData[1] === 0x46 && appData[2] === 0x49 &&
-                appData[3] === 0x46 && appData[4] === 0) { // 'JFIF\x00'
+                appData[3] === 0x46 && appData[4] === 0) {
                 jfif = {
                   version: { major: appData[5], minor: appData[6] },
                   densityUnits: appData[7],
@@ -680,20 +625,20 @@ var JpegImage = (function jpegImage() {
                 };
               }
             }
-            // TODO APP1 - Exif
+
             if (fileMarker === 0xFFE1) {
               if (appData[0] === 0x45 &&
                 appData[1] === 0x78 &&
                 appData[2] === 0x69 &&
                 appData[3] === 0x66 &&
-                appData[4] === 0) { // 'EXIF\x00'
+                appData[4] === 0) {
                 this.exifBuffer = appData.subarray(5, appData.length);
               }
             }
 
             if (fileMarker === 0xFFEE) {
               if (appData[0] === 0x41 && appData[1] === 0x64 && appData[2] === 0x6F &&
-                appData[3] === 0x62 && appData[4] === 0x65 && appData[5] === 0) { // 'Adobe\x00'
+                appData[3] === 0x62 && appData[4] === 0x65 && appData[5] === 0) {
                 adobe = {
                   version: appData[6],
                   flags0: (appData[7] << 8) | appData[8],
@@ -704,19 +649,19 @@ var JpegImage = (function jpegImage() {
             }
             break;
 
-          case 0xFFDB: // DQT (Define Quantization Tables)
+          case 0xFFDB:
             var quantizationTablesLength = readUint16();
             var quantizationTablesEnd = quantizationTablesLength + offset - 2;
             while (offset < quantizationTablesEnd) {
               var quantizationTableSpec = data[offset++];
               requestMemoryAllocation(64 * 4);
               var tableData = new Int32Array(64);
-              if ((quantizationTableSpec >> 4) === 0) { // 8 bit values
+              if ((quantizationTableSpec >> 4) === 0) {
                 for (j = 0; j < 64; j++) {
                   var z = dctZigZag[j];
                   tableData[z] = data[offset++];
                 }
-              } else if ((quantizationTableSpec >> 4) === 1) { //16 bit
+              } else if ((quantizationTableSpec >> 4) === 1) {
                 for (j = 0; j < 64; j++) {
                   var z = dctZigZag[j];
                   tableData[z] = readUint16();
@@ -727,10 +672,10 @@ var JpegImage = (function jpegImage() {
             }
             break;
 
-          case 0xFFC0: // SOF0 (Start of Frame, Baseline DCT)
-          case 0xFFC1: // SOF1 (Start of Frame, Extended DCT)
-          case 0xFFC2: // SOF2 (Start of Frame, Progressive DCT)
-            readUint16(); // skip data length
+          case 0xFFC0:
+          case 0xFFC1:
+          case 0xFFC2:
+            readUint16();
             frame = {};
             frame.extended = (fileMarker === 0xFFC1);
             frame.progressive = (fileMarker === 0xFFC2);
@@ -770,7 +715,7 @@ var JpegImage = (function jpegImage() {
             frames.push(frame);
             break;
 
-          case 0xFFC4: // DHT (Define Huffman Tables)
+          case 0xFFC4:
             var huffmanLength = readUint16();
             for (i = 2; i < huffmanLength;) {
               var huffmanTableSpec = data[offset++];
@@ -791,17 +736,17 @@ var JpegImage = (function jpegImage() {
             }
             break;
 
-          case 0xFFDD: // DRI (Define Restart Interval)
-            readUint16(); // skip data length
+          case 0xFFDD:
+            readUint16();
             resetInterval = readUint16();
             break;
 
-          case 0xFFDC: // Number of Lines marker
-            readUint16() // skip data length
-            readUint16() // Ignore this data since it represents the image height
+          case 0xFFDC:
+            readUint16()
+            readUint16()
             break;
-            
-          case 0xFFDA: // SOS (Start of Scan)
+
+          case 0xFFDA:
             var scanLength = readUint16();
             var selectorsCount = data[offset++];
             var components = [], component;
@@ -822,22 +767,20 @@ var JpegImage = (function jpegImage() {
             offset += processed;
             break;
 
-          case 0xFFFF: // Fill bytes
-            if (data[offset] !== 0xFF) { // Avoid skipping a valid marker.
+          case 0xFFFF:
+            if (data[offset] !== 0xFF) {
               offset--;
             }
             break;
           default:
             if (data[offset - 3] == 0xFF &&
                 data[offset - 2] >= 0xC0 && data[offset - 2] <= 0xFE) {
-              // could be incorrect encoding -- last 0xFF byte of the previous
-              // block was eaten by the encoder
+
               offset -= 3;
               break;
             }
             else if (fileMarker === 0xE0 || fileMarker == 0xE1) {
-              // Recover from malformed APP1 markers popular in some phone models.
-              // See https://github.com/eugeneware/jpeg-js/issues/82
+
               if (malformedDataOffset !== -1) {
                 throw new Error(`first unknown JPEG marker at offset ${malformedDataOffset.toString(16)}, second unknown JPEG marker ${fileMarker.toString(16)} at offset ${(offset - 1).toString(16)}`);
               }
@@ -855,7 +798,6 @@ var JpegImage = (function jpegImage() {
       if (frames.length != 1)
         throw new Error("only single frame JPEGs supported");
 
-      // set each frame's components quantization table
       for (var i = 0; i < frames.length; i++) {
         var cp = frames[i].components;
         for (var j in cp) {
@@ -903,7 +845,7 @@ var JpegImage = (function jpegImage() {
           }
           break;
         case 2:
-          // PDF might compress two component data in custom colorspace
+
           component1 = this.components[0];
           component2 = this.components[1];
           for (y = 0; y < height; y++) {
@@ -918,9 +860,9 @@ var JpegImage = (function jpegImage() {
           }
           break;
         case 3:
-          // The default transform for three components is true
+
           colorTransform = true;
-          // The adobe transform marker overrides any previous setting
+
           if (this.adobe && this.adobe.transformCode)
             colorTransform = true;
           else if (typeof this.opts.colorTransform !== 'undefined')
@@ -957,9 +899,9 @@ var JpegImage = (function jpegImage() {
         case 4:
           if (!this.adobe)
             throw new Error('Unsupported color mode (4 components)');
-          // The default transform for four components is false
+
           colorTransform = false;
-          // The adobe transform marker overrides any previous setting
+
           if (this.adobe && this.adobe.transformCode)
             colorTransform = true;
           else if (typeof this.opts.colorTransform !== 'undefined')
@@ -1066,8 +1008,6 @@ var JpegImage = (function jpegImage() {
     }
   };
 
-
-  // We cap the amount of memory used by jpeg-js to avoid unexpected OOMs from untrusted content.
   var totalBytesAllocated = 0;
   var maxMemoryUsageBytes = 0;
   function requestMemoryAllocation(increaseAmount = 0) {
@@ -1098,21 +1038,20 @@ export default decode;
 
 function decode(jpegData, userOpts = {}) {
   var defaultOpts = {
-    // "undefined" means "Choose whether to transform colors based on the image’s color model."
+
     colorTransform: undefined,
     useTArray: false,
     formatAsRGBA: true,
     tolerantDecoding: true,
-    maxResolutionInMP: 100, // Don't decode more than 100 megapixels
-    maxMemoryUsageInMB: 512, // Don't decode if memory footprint is more than 512MB
+    maxResolutionInMP: 100,
+    maxMemoryUsageInMB: 512,
   };
 
   var opts = {...defaultOpts, ...userOpts};
   var arr = new Uint8Array(jpegData);
   var decoder = new JpegImage();
   decoder.opts = opts;
-  // If this constructor ever supports async decoding this will need to be done differently.
-  // Until then, treating as singleton limit is fine.
+
   JpegImage.resetMaxMemoryUsage(opts.maxMemoryUsageInMB * 1024 * 1024);
   decoder.parse(arr);
 
@@ -1135,8 +1074,8 @@ function decode(jpegData, userOpts = {}) {
     if (err instanceof RangeError) {
       throw new Error("Could not allocate enough memory for the image. " +
                       "Required: " + bytesNeeded);
-    } 
-    
+    }
+
     if (err instanceof ReferenceError) {
       if (err.message === "Buffer is not defined") {
         throw new Error("Buffer is not globally defined in this environment. " +

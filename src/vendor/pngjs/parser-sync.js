@@ -1,10 +1,3 @@
-/**
- * Synchronous whole-buffer PNG decode entry point: parse chunks, zlib-inflate IDAT, unfilter, bitmap, normalise.
- * Vendored from `pngjs` 7.0.0 (MIT). Only require()/module.exports converted to import/export
- * (zlib/util/assert/buffer -> node: specifiers). See ./LICENSE.
- * Algorithm body unchanged vs. upstream md5 dc170d369c632b306a208ae9527d9c5a.
- * https://github.com/pngjs/pngjs
- */
 "use strict";
 
 let hasSyncZlib = true;
@@ -78,7 +71,6 @@ const parseSync = function (buffer, options) {
     throw err;
   }
 
-  //join together the inflate datas
   let inflateData = Buffer.concat(inflateDataList);
   inflateDataList.length = 0;
 

@@ -1,12 +1,3 @@
-/**
- * Core WA protocol utilities. Combines what used to be:
- *   crypto.js, generics.js, lt-hash.js, signal.js, validate-connection.js,
- *   noise-handler.js, browser-utils.js, companion-reg-client-utils.js,
- *   stanza-ack.js, reporting-utils.js
- *
- * md5/hkdf/LTHashAntiTampering come from ../foundation/wa-crypto.js and the
- * curve operations from ../signal/libsignal.js (both native, no npm deps).
- */
 import { createCipheriv, createDecipheriv, createHash, createHmac, randomBytes, randomFillSync } from 'node:crypto'
 import { platform, release } from 'node:os'
 import { curve } from '../signal/libsignal.js'
@@ -30,33 +21,22 @@ import {
 
 export { md5, hkdf }
 
-/* ------------------------------------------------------------------ */
-/* Crypto primitives                                                    */
-/* ------------------------------------------------------------------ */
-
 const KEY_BUNDLE_TYPE = Buffer.from([5])
 export { KEY_BUNDLE_TYPE }
 
-/** prefix version byte to the pub keys, required for some curve crypto functions */
 export const generateSignalPubKey = pubKey => (pubKey.length === 33 ? pubKey : Buffer.concat([KEY_BUNDLE_TYPE, pubKey]))
 
 export const Curve = {
 	generateKeyPair: () => {
 		const { pubKey, privKey } = curve.generateKeyPair()
-		return { private: Buffer.from(privKey), public: Buffer.from(pubKey.slice(1)) } // remove version byte
+		return { private: Buffer.from(privKey), public: Buffer.from(pubKey.slice(1)) }
 	},
 	sharedKey: (privateKey, publicKey) => {
 		const shared = curve.calculateAgreement(generateSignalPubKey(publicKey), privateKey)
 		return Buffer.from(shared)
 	},
 	sign: (privateKey, buf) => curve.calculateSignature(privateKey, buf),
-	/**
-	 * KNOWN UPSTREAM QUIRK (kept for behavioral parity with @whiskeysockets/baileys 7.0.0-rc14): this only
-	 * catches exceptions. `curve.verifySignature` REPORTS a bad signature by returning `false` (it does not throw),
-	 * so `verify()` returns `true` for ANY well-formed 64-byte signature — a changed message, a random signature or
-	 * a different key all "verify". The three call sites (noise certificate chain, account signature at pairing)
-	 * are therefore not enforcing signatures today. See PROGRESS.md ("Security note") and `Curve.verifyStrict`.
-	 */
+
 	verify: (pubKey, message, signature) => {
 		try {
 			curve.verifySignature(generateSignalPubKey(pubKey), message, signature)
@@ -65,11 +45,7 @@ export const Curve = {
 			return false
 		}
 	},
-	/**
-	 * Correct XEdDSA verification: returns `true` only for a valid signature. NOT used by the library yet —
-	 * switching the call sites to it is a behavior change that must be validated against real server traffic
-	 * first (a legitimate certificate that fails strict verification would break connecting).
-	 */
+
 	verifyStrict: (pubKey, message, signature) => {
 		try {
 			return curve.verifySignature(generateSignalPubKey(pubKey), message, signature) === true
@@ -88,14 +64,12 @@ export const signedKeyPair = (identityKeyPair, keyId) => {
 
 const GCM_TAG_LENGTH = 128 >> 3
 
-/** encrypt AES 256 GCM; the auth tag is suffixed to the ciphertext */
 export function aesEncryptGCM(plaintext, key, iv, additionalData) {
 	const cipher = createCipheriv('aes-256-gcm', key, iv)
 	cipher.setAAD(additionalData)
 	return Buffer.concat([cipher.update(plaintext), cipher.final(), cipher.getAuthTag()])
 }
 
-/** decrypt AES 256 GCM; the auth tag is suffixed to the ciphertext */
 export function aesDecryptGCM(ciphertext, key, iv, additionalData) {
 	const decipher = createDecipheriv('aes-256-gcm', key, iv)
 	const enc = ciphertext.slice(0, ciphertext.length - GCM_TAG_LENGTH)
@@ -115,7 +89,6 @@ export function aesDecryptCTR(ciphertext, key, iv) {
 	return Buffer.concat([decipher.update(ciphertext), decipher.final()])
 }
 
-/** decrypt AES 256 CBC; the IV is prefixed to the buffer */
 export function aesDecrypt(buffer, key) {
 	return aesDecryptWithIV(buffer.subarray(16), key, buffer.subarray(0, 16))
 }
@@ -125,7 +98,6 @@ export function aesDecryptWithIV(buffer, key, IV) {
 	return Buffer.concat([aes.update(buffer), aes.final()])
 }
 
-/** encrypt AES 256 CBC; a random IV is prefixed to the buffer */
 export function aesEncrypt(buffer, key) {
 	const IV = randomBytes(16)
 	const aes = createCipheriv('aes-256-cbc', key, IV)
@@ -155,20 +127,7 @@ export async function derivePairingCodeKey(pairingCode, salt) {
 	return Buffer.from(derivedBits)
 }
 
-/* ------------------------------------------------------------------ */
-/* LT-Hash (anti-tampering)                                            */
-/* ------------------------------------------------------------------ */
-
-/**
- * LT Hash is a summation based hash algorithm that maintains the integrity of a piece of data
- * over a series of mutations. You can add/remove mutations and it'll return a hash equal to
- * if the same series of mutations was made sequentially.
- */
 export const LT_HASH_ANTI_TAMPERING = new LTHashAntiTampering()
-
-/* ------------------------------------------------------------------ */
-/* Generic helpers                                                     */
-/* ------------------------------------------------------------------ */
 
 export const BufferJSON = {
 	replacer: (k, value) => {
@@ -195,7 +154,6 @@ export const BufferJSON = {
 export const getKeyAuthor = (key, meId = 'me') =>
 	(key?.fromMe ? meId : key?.participantAlt || key?.remoteJidAlt || key?.participant || key?.remoteJid) || ''
 
-// eslint-disable-next-line eqeqeq
 export const isStringNullOrEmpty = value => value == null || value === ''
 
 export const writeRandomPadMax16 = msg => {
@@ -212,7 +170,6 @@ export const unpadRandomMax16 = e => {
 	return new Uint8Array(t.buffer, t.byteOffset, t.length - r)
 }
 
-// code is inspired by whatsmeow
 export const generateParticipantHashV2 = participants => {
 	participants.sort()
 	const sha256Hash = sha256(Buffer.from(participants.join(''))).toString('base64')
@@ -235,7 +192,6 @@ export const encodeBigEndian = (e, t = 4) => {
 
 export const toNumber = t => (typeof t === 'object' && t ? ('toNumber' in t ? t.toNumber() : t.low) : t || 0)
 
-/** unix timestamp of a date in seconds */
 export const unixTimestampSeconds = (date = new Date()) => (date.getTime() / 1000) | 0
 
 export const debouncedTimeout = (intervalMs = 1000, task) => {
@@ -284,7 +240,6 @@ export async function promiseTimeout(ms, promiseExecutor) {
 	return p
 }
 
-// inspired from whatsmeow's send.go
 export const generateMessageIDV2 = userId => {
 	const data = Buffer.alloc(8 + 20 + 16)
 	data.writeBigUInt64BE(BigInt(Math.floor(Date.now() / 1000)))
@@ -329,14 +284,13 @@ export const bindWaitForConnectionUpdate = ev => bindWaitForEvent(ev, 'connectio
 
 const baileysVersion = [2, 3000, 1047970367]
 
-/** utility that fetches latest baileys version from the master branch. */
 export const fetchLatestBaileysVersion = async (options = {}) => {
 	const URL = 'https://raw.githubusercontent.com/WhiskeySockets/Baileys/master/src/Defaults/index.ts'
 	try {
 		const response = await fetch(URL, { dispatcher: options.dispatcher, method: 'GET', headers: options.headers })
 		if (!response.ok) throw new Boom(`Failed to fetch latest Baileys version: ${response.statusText}`, { statusCode: response.status })
 		const text = await response.text()
-		// Extract version from the `const version = [...]` line (search all lines: robust to line shifts upstream)
+
 		const versionMatch = text.match(/const version = \[(\d+),\s*(\d+),\s*(\d+)\]/)
 		if (versionMatch) {
 			const version = [parseInt(versionMatch[1]), parseInt(versionMatch[2]), parseInt(versionMatch[3])]
@@ -348,7 +302,6 @@ export const fetchLatestBaileysVersion = async (options = {}) => {
 	}
 }
 
-/** fetches the latest web version of whatsapp. */
 export const fetchLatestWaWebVersion = async (options = {}) => {
 	try {
 		const defaultHeaders = {
@@ -370,7 +323,6 @@ export const fetchLatestWaWebVersion = async (options = {}) => {
 	}
 }
 
-/** unique message tag prefix for MD clients */
 export const generateMdTagPrefix = () => {
 	const bytes = randomBytes(4)
 	return `${bytes.readUInt16BE()}.${bytes.readUInt16BE(2)}-`
@@ -383,21 +335,19 @@ const STATUS_MAP = {
 	'read-self': proto.WebMessageInfo.Status.READ
 }
 
-/** Given a type of receipt, returns what the new status of the message should be */
 export const getStatusFromReceiptType = type => {
 	const status = STATUS_MAP[type]
 	if (typeof type === 'undefined') return proto.WebMessageInfo.Status.DELIVERY_ACK
 	return status
 }
 
-const CODE_MAP = { conflict: 428 } // DisconnectReason.connectionReplaced
+const CODE_MAP = { conflict: 428 }
 
-/** Stream errors generally provide a reason, map that to a baileys DisconnectReason */
 export const getErrorCodeFromStreamError = node => {
 	const [reasonNode] = getAllBinaryNodeChildren(node)
 	let reason = reasonNode?.tag || 'unknown'
-	const statusCode = +(node.attrs.code || CODE_MAP[reason] || 500) // DisconnectReason.badSession
-	if (statusCode === 515) reason = 'restart required' // DisconnectReason.restartRequired
+	const statusCode = +(node.attrs.code || CODE_MAP[reason] || 500)
+	if (statusCode === 515) reason = 'restart required'
 	return { reason, statusCode }
 }
 
@@ -407,7 +357,7 @@ export const getCallStatusFromNode = ({ tag, attrs }) => {
 		case 'offer_notice':
 			return 'offer'
 		case 'terminate':
-			return attrs.reason === 'timeout' ? 'timeout' : 'terminate' // fired when accepted/rejected/timeout/caller hangs up
+			return attrs.reason === 'timeout' ? 'timeout' : 'terminate'
 		case 'preaccept':
 			return 'preaccept'
 		case 'transport':
@@ -425,28 +375,19 @@ export const getCallStatusFromNode = ({ tag, attrs }) => {
 
 const UNEXPECTED_SERVER_CODE_TEXT = 'Unexpected server response: '
 export const getCodeFromWSError = error => {
-	// IMPORTANT: this classifies raw WebSocket *transport* errors (connection reset,
-	// DNS failure, proxy hiccup, host cutting the socket, etc) - these never reached
-	// WA's own XML stream, so they must NOT collapse to the same 500 used by
-	// getErrorCodeFromStreamError for a real WA-reported "badSession". DisconnectReason
-	// 500 === badSession, which callers (e.g. bot reconnect logic) usually treat as
-	// non-recoverable. Misreporting a transient network blip as 500 makes bots stop
-	// reconnecting on ordinary network issues, which is not what happened.
+
 	const code = error?.code || error?.cause?.code
 	if (error?.message?.includes(UNEXPECTED_SERVER_CODE_TEXT)) {
 		const parsed = +error.message.slice(UNEXPECTED_SERVER_CODE_TEXT.length)
 		if (!Number.isNaN(parsed) && parsed >= 400) return parsed
 	}
 	if (code?.startsWith?.('E') || error?.message?.includes('timed out') || error?.cause?.message?.includes('timed out')) {
-		return 408 // ETIMEDOUT, ECONNRESET, ENOTFOUND, EHOSTUNREACH etc - transient, recoverable
+		return 408
 	}
-	// Unknown/unclassified transport error: default to connectionLost (408), not
-	// badSession (500). We genuinely don't know why the socket died, but it wasn't
-	// WA telling us the session is bad, so it should stay recoverable/retryable.
+
 	return 408
 }
 
-/** Is the given platform WA business */
 export const isWABusinessPlatform = platform => platform === 'smbi' || platform === 'smba'
 
 export function trimUndefined(obj) {
@@ -477,10 +418,6 @@ export function encodeNewsletterMessage(message) {
 	return proto.Message.encode(message).finish()
 }
 
-/* ------------------------------------------------------------------ */
-/* Browser / companion-registration helpers                            */
-/* ------------------------------------------------------------------ */
-
 const PLATFORM_MAP = {
 	aix: 'AIX',
 	darwin: 'Mac OS',
@@ -506,7 +443,7 @@ export const Browsers = {
 
 export const getPlatformId = browser => {
 	const platformType = proto.DeviceProps.PlatformType[browser.toUpperCase()]
-	return platformType ? platformType.toString() : '1' // chrome
+	return platformType ? platformType.toString() : '1'
 }
 
 export const CompanionWebClientType = {
@@ -541,28 +478,16 @@ export const getCompanionPlatformId = browser => getCompanionWebClientType(brows
 export const buildPairingQRData = (ref, noiseKeyB64, identityKeyB64, advB64, browser) =>
 	'https://wa.me/settings/linked_devices#' + [ref, noiseKeyB64, identityKeyB64, advB64, getCompanionPlatformId(browser)].join(',')
 
-/* ------------------------------------------------------------------ */
-/* Stanza ACK                                                           */
-/* ------------------------------------------------------------------ */
-
-/**
- * Builds an ACK stanza for a received node. Pure function -- no I/O, no side effects.
- * Mirrors WhatsApp Web's ACK construction (WAWebHandleMsgSendAck.sendAck/sendNack).
- */
 export function buildAckStanza(node, errorCode, meId) {
 	const { tag, attrs } = node
 	const stanza = { tag: 'ack', attrs: { id: attrs.id, to: attrs.from, class: tag } }
 	if (errorCode) stanza.attrs.error = errorCode.toString()
 	if (attrs.participant) stanza.attrs.participant = attrs.participant
 	if (attrs.recipient) stanza.attrs.recipient = attrs.recipient
-	if (attrs.type) stanza.attrs.type = attrs.type // WA Web always includes type when present
-	if (tag === 'message' && meId) stanza.attrs.from = meId // WA Web always includes `from` for message-class ACKs
+	if (attrs.type) stanza.attrs.type = attrs.type
+	if (tag === 'message' && meId) stanza.attrs.from = meId
 	return stanza
 }
-
-/* ------------------------------------------------------------------ */
-/* Signal / prekey helpers                                             */
-/* ------------------------------------------------------------------ */
 
 function chunkArray(array, size) {
 	const chunks = []
@@ -656,7 +581,6 @@ export const parseAndInjectE2ESessions = async (node, repository) => {
 	const nodes = getBinaryNodeChildren(getBinaryNodeChild(node, 'list'), 'user')
 	for (const n of nodes) assertNodeErrorFree(n)
 
-	// Chunked to yield to the event loop between batches (injectE2ESession is CPU-heavy, not IO).
 	const chunkSize = 100
 	const chunks = chunkArray(nodes, chunkSize)
 	for (const nodesChunk of chunks) {
@@ -703,7 +627,6 @@ export const extractDeviceJids = (result, myJid, myLid, excludeZeroDevices) => {
 	return extracted
 }
 
-/** get the next N keys for upload or processing */
 export const getNextPreKeys = async ({ creds, keys }, count) => {
 	const { newPreKeys, lastPreKeyId, preKeysRange } = generateOrGetPreKeys(creds, count)
 	const update = {
@@ -731,10 +654,6 @@ export const getNextPreKeysNode = async (state, count) => {
 	}
 	return { update, node }
 }
-
-/* ------------------------------------------------------------------ */
-/* Noise protocol handshake handler                                    */
-/* ------------------------------------------------------------------ */
 
 const NOISE_MODE = 'Noise_XX_25519_AESGCM_SHA256\0\0\0\0'
 const WA_CERT_DETAILS = {
@@ -778,9 +697,7 @@ class TransportState {
 }
 
 export const makeNoiseHandler = ({ keyPair: { private: privateKey, public: publicKey }, NOISE_HEADER, logger, routingInfo }) => {
-	// Defense in depth: logger can end up undefined/null if a caller passes
-	// it explicitly (e.g. a stale reference during reconnect) — don't crash,
-	// fall back to a fresh silent-by-default logger instead.
+
 	logger = (logger || createLogger()).child({ class: 'ns' })
 	const data = Buffer.from(NOISE_MODE)
 	let hash = data.byteLength === 32 ? data : sha256(data)
@@ -795,9 +712,7 @@ export const makeNoiseHandler = ({ keyPair: { private: privateKey, public: publi
 	let pendingOnFrame = null
 	let introHeader
 	let destroyed = false
-	// Defense in depth: if data arrives faster than it can be processed (or a peer
-	// misbehaves), inBytes would otherwise grow unbounded and eventually OOM the
-	// process. Cap it and drop the buffered bytes rather than let it balloon.
+
 	const MAX_IN_BYTES = 10 * 1024 * 1024
 
 	if (routingInfo) {
@@ -934,11 +849,7 @@ export const makeNoiseHandler = ({ keyPair: { private: privateKey, public: publi
 			}
 			if (!isWaitingForTransport) await processData(onFrame)
 		},
-		/**
-		 * Release internal state (encryption buffers, transport state, pending frame
-		 * callbacks) when the connection is torn down, so none of it lingers in memory
-		 * and no further frames are processed on a dead connection.
-		 */
+
 		destroy: () => {
 			destroyed = true
 			inBytes = Buffer.alloc(0)
@@ -947,10 +858,6 @@ export const makeNoiseHandler = ({ keyPair: { private: privateKey, public: publi
 		}
 	}
 }
-
-/* ------------------------------------------------------------------ */
-/* Connection validation (login / registration / pairing)              */
-/* ------------------------------------------------------------------ */
 
 const WA_ADV_ACCOUNT_SIG_PREFIX = Buffer.from([6, 0])
 const WA_ADV_DEVICE_SIG_PREFIX = Buffer.from([6, 1])
@@ -1110,10 +1017,6 @@ export const encodeSignedDeviceIdentity = (account, includeSignatureKey) => {
 	if (!includeSignatureKey || !account.accountSignatureKey?.length) account.accountSignatureKey = null
 	return proto.ADVSignedDeviceIdentity.encode(account).finish()
 }
-
-/* ------------------------------------------------------------------ */
-/* Message reporting token                                             */
-/* ------------------------------------------------------------------ */
 
 const reportingFields = [
 	{ f: 1 },

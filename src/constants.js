@@ -1,16 +1,9 @@
-/**
- * Enum and constant re-exports. Combines the entire former Types/ module
- * (Auth, GroupMetadata, Chat, Contact, State, Message, Socket, Events, Product,
- * Call, Signal, Mex, Label, LabelAssociation, RichType, index) — all of it was
- * plain-object enums or pure proto re-exports with zero logic or dependencies.
- */
 import { proto } from '../WAProto/index.js'
 
 export { proto as WAProto }
 
 export const ALL_WA_PATCH_NAMES = ['critical_block', 'critical_unblock_low', 'regular_high', 'regular_low', 'regular']
 
-/* Message-related enums (from proto.Message) */
 export const AssociationType = proto.MessageAssociation.AssociationType
 export const ButtonHeaderType = proto.Message.ButtonsMessage.HeaderType
 export const ButtonType = proto.Message.ButtonsMessage.Button.Type
@@ -22,7 +15,6 @@ export const WAMessageStatus = proto.WebMessageInfo.Status
 
 export const WAMessageAddressingMode = { PN: 'pn', LID: 'lid' }
 
-/* WhatsApp's 20 predefined label colors */
 export const LabelColor = Object.freeze(
 	Object.fromEntries(Array.from({ length: 20 }, (_, i) => [`Color${i + 1}`, i]))
 )
@@ -82,7 +74,6 @@ export const RichSubMessageType = {
 	CONTENT_ITEMS: 9
 }
 
-/** The socket's high-level sync lifecycle state. */
 export const SyncState = { Connecting: 0, AwaitingInitialSync: 1, Syncing: 2, Online: 3 }
 
 export const ReachoutTimelockEnforcementType = {
@@ -102,7 +93,7 @@ export const ReachoutTimelockEnforcementType = {
 	BIZ_COMMERCE_VIOLATION_VIOLENT_CONTENT: 'BIZ_COMMERCE_VIOLATION_VIOLENT_CONTENT',
 	BIZ_COMMERCE_VIOLATION_WEAPONS: 'BIZ_COMMERCE_VIOLATION_WEAPONS',
 	BIZ_QUALITY: 'BIZ_QUALITY',
-	/** No restriction */
+
 	DEFAULT: 'DEFAULT',
 	WEB_COMPANION_ONLY: 'WEB_COMPANION_ONLY'
 }
@@ -123,9 +114,6 @@ export const NewChatMessageCappingOTEStatusType = {
 	EXHAUSTED: 'EXHAUSTED'
 }
 
-// Mirrors the TypeScript enum emitted upstream: forward (name -> code) AND reverse (code -> name) mapping,
-// e.g. DisconnectReason.loggedOut === 401 and DisconnectReason[401] === 'loggedOut'.
-// Where two names share a code (408), the later one wins the reverse entry, same as upstream.
 export const DisconnectReason = {}
 for (const [name, code] of [
 	['connectionClosed', 428],

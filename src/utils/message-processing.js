@@ -1,7 +1,3 @@
-/**
- * Message processing pipeline. Combines what used to be process-message.js,
- * message-retry-manager.js, offline-node-processor.js, history.js, and business.js.
- */
 import { createHash } from 'node:crypto'
 import { createWriteStream, promises as fs } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -34,10 +30,6 @@ import { downloadContentFromMessage, getStream, getUrlFromDirectPath } from './m
 import { buildMergedTcTokenIndexWrite, resolveTcTokenJid } from './auth-state-core.js'
 
 const inflatePromise = promisify(inflate)
-
-/* ------------------------------------------------------------------ */
-/* Incoming-message cleanup / classification                           */
-/* ------------------------------------------------------------------ */
 
 const REAL_MSG_STUB_TYPES = new Set([
 	WAMessageStubType.CALL_MISSED_GROUP_VIDEO,
@@ -79,7 +71,6 @@ async function storeTcTokensFromHistorySync(chats, signalRepository, keyStore, l
 	}
 }
 
-/** Cleans a received message to further processing */
 export const cleanMessage = (message, meId, meLid) => {
 	if (isHostedPnUser(message.key.remoteJid) || isHostedLidUser(message.key.remoteJid)) {
 		message.key.remoteJid = jidEncode(jidDecode(message.key?.remoteJid)?.user, isHostedPnUser(message.key.remoteJid) ? 's.whatsapp.net' : 'lid')
@@ -120,7 +111,6 @@ export const isRealMessage = message => {
 
 export const shouldIncrementChatUnread = message => !message.key.fromMe && !message.messageStubType
 
-/** Get the ID of the chat from the given key. Typically the remoteJid, but for broadcasts, the participant. */
 export const getChatId = ({ remoteJid, participant, fromMe }) => {
 	if (!remoteJid) throw new Boom('Cannot derive chat id: message key is missing remoteJid', { data: { remoteJid, participant, fromMe } })
 	if (isJidBroadcast(remoteJid) && !isJidStatusBroadcast(remoteJid) && !fromMe) {
@@ -129,10 +119,6 @@ export const getChatId = ({ remoteJid, participant, fromMe }) => {
 	}
 	return remoteJid
 }
-
-/* ------------------------------------------------------------------ */
-/* Encrypted-payload decryption (poll votes, event responses, edits)   */
-/* ------------------------------------------------------------------ */
 
 export function decryptPollVote({ encPayload, encIv }, { pollCreatorJid, pollMsgId, pollEncKey, voterJid }) {
 	const toBinary = txt => Buffer.from(txt)
@@ -154,17 +140,12 @@ export function decryptEventResponse({ encPayload, encIv }, { eventCreatorJid, e
 	return proto.Message.EventResponseMessage.decode(decrypted)
 }
 
-/**
- * Decrypt a `secretEncryptedMessage` carrying a `MESSAGE_EDIT` payload.
- * info = msgId || origSenderJid || editorJid || "Message Edit"; aad = (empty);
- * key  = HKDF-SHA256(salt=zeros, ikm=messageSecret, info, L=32).
- */
 export function decryptMessageEdit({ encPayload, encIv }, { originalSenderJid, originalMsgId, editEncKey, editorJid }) {
 	const toBinary = txt => Buffer.from(txt)
 	const sign = Buffer.concat([toBinary(originalMsgId), toBinary(originalSenderJid), toBinary(editorJid), toBinary('Message Edit'), new Uint8Array([1])])
 	const key0 = hmacSign(editEncKey, new Uint8Array(32), 'sha256')
 	const decKey = hmacSign(sign, key0, 'sha256')
-	const aad = Buffer.alloc(0) // intentionally empty, unlike Poll Vote / Event Response
+	const aad = Buffer.alloc(0)
 	const decrypted = aesDecryptGCM(encPayload, decKey, encIv, aad)
 	return proto.Message.decode(decrypted)
 }
@@ -189,10 +170,6 @@ const buildEditUpdate = args => {
 	}
 }
 
-/* ------------------------------------------------------------------ */
-/* Main incoming-message processor                                     */
-/* ------------------------------------------------------------------ */
-
 const processMessage = async (message, { shouldProcessHistoryMsg, placeholderResendCache, ev, creds, signalRepository, keyStore, logger, options, getMessage }) => {
 	const meId = creds.me.id
 	const { accountSettings } = creds
@@ -210,9 +187,7 @@ const processMessage = async (message, { shouldProcessHistoryMsg, placeholderRes
 	}
 	const protocolMsg = content?.protocolMessage
 	if (protocolMsg) {
-		// Self-only protocol message types must be dropped if not fromMe (spoofing guard) — mirrors
-		// whatsmeow's handleProtocolMessage. Cross-user types (REVOKE, MESSAGE_EDIT, EPHEMERAL_SETTING,
-		// GROUP_MEMBER_LABEL_CHANGE) legitimately arrive from others and are NOT in this set.
+
 		const SELF_ONLY_TYPES = new Set([
 			proto.Message.ProtocolMessage.Type.HISTORY_SYNC_NOTIFICATION,
 			proto.Message.ProtocolMessage.Type.APP_STATE_SYNC_KEY_SHARE,
@@ -505,25 +480,20 @@ const processMessage = async (message, { shouldProcessHistoryMsg, placeholderRes
 
 export default processMessage
 
-/* ------------------------------------------------------------------ */
-/* Message retry manager                                               */
-/* ------------------------------------------------------------------ */
-
 const RECENT_MESSAGES_SIZE = 1024
 const MESSAGE_KEY_SEPARATOR = '\u0000'
 const RECREATE_SESSION_TIMEOUT = 60 * 60 * 1000
 const PHONE_REQUEST_DELAY = 3000
 
-/** Retry reason codes matching WhatsApp Web's Signal error codes. */
 export const RetryReason = {
 	UnknownError: 0,
 	SignalErrorNoSession: 1,
 	SignalErrorInvalidKey: 2,
 	SignalErrorInvalidKeyId: 3,
-	SignalErrorInvalidMessage: 4, // MAC verification failed - most common cause of decryption failures
+	SignalErrorInvalidMessage: 4,
 	SignalErrorInvalidSignature: 5,
 	SignalErrorFutureMessage: 6,
-	SignalErrorBadMac: 7, // Explicit MAC failure - session is definitely out of sync
+	SignalErrorBadMac: 7,
 	SignalErrorInvalidSession: 8,
 	SignalErrorInvalidMsgKey: 9,
 	BadBroadcastEphemeralSetting: 10,
@@ -531,7 +501,7 @@ export const RetryReason = {
 	AdvFailure: 12,
 	StatusRevokeDelay: 13
 }
-// reverse lookup for logging, mirrors the old TS enum's string access
+
 for (const [name, value] of Object.entries({ ...RetryReason })) RetryReason[value] = name
 
 const MAC_ERROR_CODES = new Set([RetryReason.SignalErrorInvalidMessage, RetryReason.SignalErrorBadMac])
@@ -548,21 +518,14 @@ export class MessageRetryManager {
 			}
 		})
 		this.messageKeyIndex = new Map()
-		// max caps below match zapo's approach of bounding every cache by entry count,
-		// not just TTL: under a burst (e.g. many peers retrying at once, or multi-session
-		// scale with many chats active at once) a count-only ceiling keeps memory flat
-		// even before the TTL sweep has a chance to run.
+
 		this.sessionRecreateHistory = new Cache({ max: 4096, ttl: RECREATE_SESSION_TIMEOUT * 2 })
 		this.retryCounters = new Cache({ max: 4096, ttl: 15 * 60 * 1000, updateAgeOnGet: true })
 		this.baseKeys = new Cache({ max: 1024, ttl: 15 * 60 * 1000 })
 		this.pendingPhoneRequests = {}
 		this.maxMsgRetryCount = maxMsgRetryCount
 		this.statistics = { totalRetries: 0, successfulRetries: 0, failedRetries: 0, mediaRetries: 0, sessionRecreations: 0, phoneRequests: 0 }
-		// Tracks messages that were locally edited or revoked, so a late-arriving retry
-		// receipt for the pre-edit/pre-revoke version doesn't resend stale content (e.g.
-		// a deleted message reappearing, or an edit getting overwritten by its own
-		// pre-edit body). Bounded TTL: only need to cover the window a stale retry could
-		// realistically still be in flight.
+
 		this.invalidatedMessages = new Cache({ max: 512, ttl: 5 * 60 * 1000 })
 	}
 
@@ -570,7 +533,6 @@ export class MessageRetryManager {
 		return this.keyToString({ to, id })
 	}
 
-	/** Mark (to, id) as edited/revoked so a subsequent resend request for it is dropped. */
 	invalidateMessage(to, id) {
 		if (!to || !id) return
 		this.invalidatedMessages.set(this.invalidatedKey(to, id), true)
@@ -592,7 +554,6 @@ export class MessageRetryManager {
 		return this.recentMessagesMap.get(this.keyToString({ to, id }))
 	}
 
-	/** MAC errors (codes 4 and 7) trigger immediate session recreation regardless of timeout. */
 	shouldRecreateSession(jid, hasSession, errorCode) {
 		if (!hasSession) {
 			this.sessionRecreateHistory.set(jid, Date.now())
@@ -712,16 +673,6 @@ export class MessageRetryManager {
 	}
 }
 
-/* ------------------------------------------------------------------ */
-/* Offline node processor                                              */
-/* ------------------------------------------------------------------ */
-
-/**
- * Creates a processor for offline stanza nodes that:
- * - Queues nodes for sequential processing
- * - Yields to the event loop periodically to avoid blocking
- * - Catches handler errors to prevent the processing loop from crashing
- */
 export function makeOfflineNodeProcessor(nodeProcessorMap, deps, batchSize = 10) {
 	const nodes = []
 	let isProcessing = false
@@ -751,10 +702,6 @@ export function makeOfflineNodeProcessor(nodeProcessorMap, deps, batchSize = 10)
 	}
 	return { enqueue }
 }
-
-/* ------------------------------------------------------------------ */
-/* History sync                                                        */
-/* ------------------------------------------------------------------ */
 
 const extractPnFromMessages = messages => {
 	for (const msgItem of messages) {
@@ -805,7 +752,7 @@ export const processHistoryMessage = (item, logger) => {
 				for (const item_ of msgs) {
 					const message = item_.message
 					messages.push(message)
-					if (!chat.messages?.length) chat.messages = [{ message }] // keep only the most recent message in the chat array
+					if (!chat.messages?.length) chat.messages = [{ message }]
 					if (!message.key.fromMe && !chat.lastMessageRecvTimestamp) chat.lastMessageRecvTimestamp = toNumber(message.messageTimestamp)
 					if (
 						(message.messageStubType === WAMessageStubType.BIZ_PRIVACY_MODE_TO_BSP || message.messageStubType === WAMessageStubType.BIZ_PRIVACY_MODE_TO_FB) &&
@@ -835,10 +782,6 @@ export const getHistoryMsg = message => {
 	const normalizedContent = message ? normalizeMessageContent(message) : undefined
 	return normalizedContent?.protocolMessage?.historySyncNotification
 }
-
-/* ------------------------------------------------------------------ */
-/* Business / catalog                                                  */
-/* ------------------------------------------------------------------ */
 
 export const parseCatalogNode = node => {
 	const catalogNode = getBinaryNodeChild(node, 'product_catalog')
@@ -922,12 +865,10 @@ export const parseProductNode = productNode => {
 	}
 }
 
-/** Uploads images not already uploaded to WA's servers */
 export async function uploadingNecessaryImagesOfProduct(product, waUploadToServer, timeoutMs = 30000) {
 	return { ...product, images: product.images ? await uploadingNecessaryImages(product.images, waUploadToServer, timeoutMs) : product.images }
 }
 
-/** Uploads images not already uploaded to WA's servers */
 export const uploadingNecessaryImages = async (images, waUploadToServer, timeoutMs = 30000) => {
 	return Promise.all(
 		images.map(async img => {

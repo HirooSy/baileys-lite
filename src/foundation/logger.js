@@ -1,14 +1,3 @@
-/**
- * Minimal drop-in logger replacing `pino`.
- * Supports the subset of the pino API Baileys actually uses:
- *   logger.info/warn/error/debug/trace/fatal(obj?, msg?)
- *   logger.child(bindings) -> returns a new logger merging bindings into every line
- *   logger.level (get/set)
- *
- * Output: newline-delimited JSON on stdout/stderr, matching pino's default
- * shape closely enough for log processors that expect { level, time, msg }.
- */
-
 const LEVELS = { trace: 10, debug: 20, info: 30, warn: 40, error: 50, fatal: 60 }
 
 function serializeError(err) {

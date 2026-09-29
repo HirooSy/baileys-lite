@@ -1,7 +1,3 @@
-/**
- * USync (user info sync) query builder + protocols.
- * Combines what used to be 11 files under WAUSync/.
- */
 import { assertNodeErrorFree, getBinaryNodeChild, getBinaryNodeChildren, getBinaryNodeChildString } from '../binary/wa-binary.js'
 
 export class USyncUser {
@@ -70,7 +66,7 @@ export class USyncDeviceProtocol {
 		return { tag: 'devices', attrs: { version: '2' } }
 	}
 	getUserElement() {
-		// TODO: device phashing, ts, expectedTs; currently returns null (matches upstream)
+
 		return null
 	}
 	parser(node) {
@@ -235,7 +231,7 @@ export class USyncQuery {
 	parseUSyncQueryResult(result) {
 		if (result?.attrs.type !== 'result') return
 		const protocolMap = Object.fromEntries(this.protocols.map(protocol => [protocol.name, protocol.parser]))
-		const queryResult = { list: [], sideList: [] } // TODO: implement errors etc.
+		const queryResult = { list: [], sideList: [] }
 		const usyncNode = getBinaryNodeChild(result, 'usync')
 		const listNode = usyncNode ? getBinaryNodeChild(usyncNode, 'list') : undefined
 		if (listNode?.content && Array.isArray(listNode.content)) {

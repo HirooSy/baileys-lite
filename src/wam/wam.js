@@ -1,8 +1,3 @@
-/**
- * WAM (telemetry) binary encoder. Combines BinaryInfo.js + encode.js.
- * WEB_EVENTS/WEB_GLOBALS/flag constants (wam-constants.js) are a pure,
- * effectively auto-generated data table — kept as its own file, unedited.
- */
 import { FLAG_BYTE, FLAG_EVENT, FLAG_EXTENDED, FLAG_FIELD, FLAG_GLOBAL, WEB_EVENTS, WEB_GLOBALS } from './wam-constants.js'
 
 export class BinaryInfo {
@@ -35,9 +30,9 @@ function encodeWAMHeader(binaryInfo) {
 	const headerBuffer = Buffer.alloc(8)
 	headerBuffer.write('WAM', 0, 'utf8')
 	headerBuffer.writeUInt8(binaryInfo.protocolVersion, 3)
-	headerBuffer.writeUInt8(1, 4) // random flag
+	headerBuffer.writeUInt8(1, 4)
 	headerBuffer.writeUInt16BE(binaryInfo.sequence, 5)
-	headerBuffer.writeUInt8(0, 7) // regular channel
+	headerBuffer.writeUInt8(0, 7)
 	binaryInfo.buffer.push(headerBuffer)
 }
 

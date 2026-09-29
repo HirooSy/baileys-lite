@@ -1,9 +1,3 @@
-/**
- * Streaming + static CRC-32 calculator for PNG chunk checksums.
- * Vendored from `pngjs` 7.0.0 (MIT). Only require()/module.exports converted to import/export. See ./LICENSE.
- * Algorithm body unchanged vs. upstream md5 5c5c1edffe5de2d22469f6a49e31dcce.
- * https://github.com/pngjs/pngjs
- */
 "use strict";
 
 let crcTable = [];

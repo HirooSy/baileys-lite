@@ -1,6 +1,3 @@
-/**
- * Chats socket layer (wraps makeSocket). Combines what used to be Socket/chats.js.
- */
 import { proto } from '../../WAProto/index.js'
 import { Boom } from '../foundation/boom.js'
 import { Cache } from '../foundation/cache.js'
@@ -48,7 +45,7 @@ export const makeChatsSocket = config => {
 	const { ev, ws, authState, generateMessageTag, sendNode, query, signalRepository, onUnexpectedError, sendUnifiedSession, registerSocketEndHandler } = sock
 	const getLIDForPN = signalRepository.lidMapping.getLIDForPN.bind(signalRepository.lidMapping)
 	let privacySettings
-	/** Server-assigned AB props for protocol behavior. */
+
 	const serverProps = {
 		privacyTokenOn1to1: true,
 		profilePicPrivacyToken: true,
@@ -127,7 +124,7 @@ export const makeChatsSocket = config => {
 		}
 		return userId
 	}
-	/** update the profile picture for yourself or a group */
+
 	const updateProfilePicture = async (jid, content, dimensions) => {
 		let targetJid
 		if (!jid) throw new Boom('Illegal no-jid profile update. Please specify either your ID or the ID of the chat you wish to update')
@@ -139,7 +136,7 @@ export const makeChatsSocket = config => {
 			content: [{ tag: 'picture', attrs: { type: 'image' }, content: img }]
 		})
 	}
-	/** remove the profile picture for yourself or a group */
+
 	const removeProfilePicture = async jid => {
 		let targetJid
 		if (!jid) throw new Boom('Illegal no-jid profile update. Please specify either your ID or the ID of the chat you wish to update')
@@ -308,7 +305,7 @@ export const makeChatsSocket = config => {
 		const { onMutation } = newAppStateChunkHandler(isInitialSync)
 		for (const key in globalMutationMap) onMutation(globalMutationMap[key])
 	})
-	/** fetch the profile picture of a user/group */
+
 	const profilePictureUrl = async (jid, type = 'image', timeoutMs = 5000, shouldIncludeTcToken = true) => {
 		const normalizedJid = jidNormalizedUser(jid)
 		const isUserJid = isPnUser(normalizedJid) || isLidUser(normalizedJid)
@@ -409,7 +406,7 @@ export const makeChatsSocket = config => {
 			for (const key in mutationMap) onMutation(mutationMap[key])
 		}
 	}
-	/** fetch AB props */
+
 	const fetchProps = async () => {
 		const resultNode = await query({
 			tag: 'iq',

@@ -1,10 +1,3 @@
-/**
- * Auth-state and message-decode utilities. Combines what used to be:
- *   auth-utils.js, pre-key-manager.js, identity-change-handler.js,
- *   decode-wa-message.js, tc-token-utils.js
- *
- * `async_hooks` (AsyncLocalStorage) is Node built-in, kept as-is.
- */
 import { AsyncLocalStorage } from 'node:async_hooks'
 import { randomBytes } from 'node:crypto'
 import { Boom } from '../foundation/boom.js'
@@ -36,11 +29,6 @@ const DEFAULT_CACHE_TTLS = {
 	USER_DEVICES: 5 * 60
 }
 
-/* ------------------------------------------------------------------ */
-/* PreKeyManager                                                       */
-/* ------------------------------------------------------------------ */
-
-/** Manages pre-key operations with proper concurrency control */
 export class PreKeyManager {
 	constructor(store, logger) {
 		this.store = store
@@ -94,7 +82,6 @@ export class PreKeyManager {
 		}
 	}
 
-	/** Validate and process pre-key deletions outside transactions */
 	async validateDeletions(data, keyType) {
 		const keyData = data[keyType]
 		if (!keyData) return
@@ -112,22 +99,10 @@ export class PreKeyManager {
 	}
 }
 
-/* ------------------------------------------------------------------ */
-/* Signal key store caching + transaction capability                   */
-/* ------------------------------------------------------------------ */
-
-// One instance per process: a per-socket AsyncLocalStorage leaks the heap under Node's legacy
-// async-context propagation, where every live instance tags every pending async resource. The
-// value is keyed by store token so a store only ever sees its own context, even when another
-// wrapped store runs inside its transaction.
 const txStorage = new AsyncLocalStorage()
 
-/** Adds caching capability to a SignalKeyStore */
 export function makeCacheableSignalKeyStore(store, logger, _cache) {
-	// max bounds entry count in addition to ttl: this cache holds signal keys (sessions,
-	// pre-keys, sender-keys) for every peer a session has ever talked to, so on a
-	// long-running / multi-session process it can otherwise grow without bound between
-	// TTL sweeps. 8192 matches the default session-store ceiling used elsewhere.
+
 	const cache = _cache || new Cache({ max: 8192, ttl: DEFAULT_CACHE_TTLS.SIGNAL_STORE * 1000 })
 	const cacheMutex = makeMutex()
 
@@ -179,9 +154,8 @@ export function makeCacheableSignalKeyStore(store, logger, _cache) {
 	}
 }
 
-/** Adds DB-like transaction capability to the SignalKeyStore, via AsyncLocalStorage context. */
 export const addTransactionCapability = (state, logger, { maxCommitRetries, delayBetweenTriesMs }) => {
-	const keyQueues = new Map() // concurrency control per signal data type
+	const keyQueues = new Map()
 	const txMutexes = new Map()
 	const txMutexRefCounts = new Map()
 	const preKeyManager = new PreKeyManager(state, logger)
@@ -235,7 +209,7 @@ export const addTransactionCapability = (state, logger, { maxCommitRetries, dela
 	return {
 		get: async (type, ids) => {
 			const ctx = txStorage.getStore()
-			if (!ctx) return state.get(type, ids) // no transaction - direct read, no exclusive lock
+			if (!ctx) return state.get(type, ids)
 
 			const cached = ctx.cache[type] || {}
 			const missing = ids.filter(id => !(id in cached))
@@ -256,7 +230,7 @@ export const addTransactionCapability = (state, logger, { maxCommitRetries, dela
 		set: async data => {
 			const ctx = txStorage.getStore()
 			if (!ctx) {
-				// no transaction - direct write with per-type queue protection
+
 				const types = Object.keys(data)
 				for (const type of types) {
 					if (type === 'pre-key') await preKeyManager.validateDeletions(data, type)
@@ -312,9 +286,6 @@ export const addTransactionCapability = (state, logger, { maxCommitRetries, dela
 	}
 }
 
-/**
- * Returns the authenticated user's JID, or throws a Boom-401 if creds are not yet authenticated.
- */
 export const assertMeId = creds => {
 	const id = creds.me?.id
 	if (!id) throw new Boom('Cannot proceed: socket is not authenticated yet (creds.me.id is missing)', { statusCode: 401 })
@@ -342,10 +313,6 @@ export const initAuthCreds = () => {
 		additionalData: undefined
 	}
 }
-
-/* ------------------------------------------------------------------ */
-/* Identity change handling                                            */
-/* ------------------------------------------------------------------ */
 
 export async function handleIdentityChange(node, ctx) {
 	const from = node.attrs.from
@@ -397,13 +364,9 @@ export async function handleIdentityChange(node, ctx) {
 }
 
 function isStringNullOrEmptyLocal(value) {
-	// eslint-disable-next-line eqeqeq
+
 	return value == null || value === ''
 }
-
-/* ------------------------------------------------------------------ */
-/* Message node decode / decrypt                                       */
-/* ------------------------------------------------------------------ */
 
 export const getDecryptionJid = async (sender, repository) => {
 	if (isLidUser(sender) || isHostedLidUser(sender)) return sender
@@ -434,7 +397,6 @@ export const DECRYPTION_RETRY_CONFIG = {
 	sessionRecordErrors: ['No session record', 'SessionError: No session record']
 }
 
-/** NACK reason codes we send to the server (client → server) */
 export const NACK_REASONS = {
 	SenderReachoutTimelocked: 463,
 	ParsingError: 487,
@@ -452,7 +414,6 @@ export const NACK_REASONS = {
 	DBOperationFailed: 552
 }
 
-/** Server-side error codes returned in ack stanzas (server → client) with dedicated handlers. */
 export const SERVER_ERROR_CODES = {
 	MessageAccountRestriction: '463',
 	SmaxInvalid: '479'
@@ -473,7 +434,6 @@ export const extractAddressingContext = stanza => {
 	return { addressingMode, senderAlt, recipientAlt }
 }
 
-/** Decode the received node as a message. NOTE: this only parses the message, not decrypt. */
 export function decodeMessageNode(stanza, meId, meLid) {
 	let msgType
 	let chatId
@@ -497,8 +457,7 @@ export function decodeMessageNode(stanza, meId, meLid) {
 			if (isMe(from) || isMeLid(from)) fromMe = true
 			chatId = recipient
 		} else {
-			// Peer-routed self stanzas (history sync, app-state sync, etc.) arrive with `from` set to our
-			// own device but no `recipient` attribute — still mark as fromMe so self-only handlers run.
+
 			if (isMe(from) || isMeLid(from)) fromMe = true
 			chatId = from
 		}
@@ -578,7 +537,7 @@ export const decryptMessageNode = (stanza, meId, meLid, repository, logger) => {
 						fullMessage.verifiedBizName = details.verifiedName
 					}
 					if (tag === 'unavailable' && attrs.type === 'view_once') {
-						fullMessage.key.isViewOnce = true // TODO: remove from here and add a STUB TYPE
+						fullMessage.key.isViewOnce = true
 					}
 					if (attrs.count && tag === 'enc') fullMessage.retryCount = Number(attrs.count)
 					if (tag !== 'enc' && tag !== 'plaintext') continue
@@ -642,25 +601,20 @@ export const decryptMessageNode = (stanza, meId, meLid, repository, logger) => {
 	}
 }
 
-/* ------------------------------------------------------------------ */
-/* Trusted-contact ("tctoken") handling                                */
-/* ------------------------------------------------------------------ */
-
 const BOT_PHONE_REGEX = /^1313555\d{4}$|^131655500\d{2}$/
 
-/** Mirrors WA Web's `Wid.isRegularUser()` (user ∧ ¬PSA ∧ ¬Bot). */
 function isRegularUser(jid) {
 	if (!jid) return false
 	const user = jid.split('@')[0] ?? ''
-	if (user === '0') return false // PSA
+	if (user === '0') return false
 	if (BOT_PHONE_REGEX.test(user)) return false
 	if (isJidMetaAI(jid)) return false
 	return !!(isPnUser(jid) || isLidUser(jid) || isHostedPnUser(jid) || isHostedLidUser(jid) || jid.endsWith('@c.us'))
 }
 
-const TC_TOKEN_BUCKET_DURATION = 604800 // 7 days
-const TC_TOKEN_NUM_BUCKETS = 4 // ~28-day rolling window
-/** Sentinel key under `tctoken` store holding a JSON array of tracked storage JIDs. */
+const TC_TOKEN_BUCKET_DURATION = 604800
+const TC_TOKEN_NUM_BUCKETS = 4
+
 export const TC_TOKEN_INDEX_KEY = '__index'
 
 export async function readTcTokenIndex(keys) {
@@ -750,7 +704,7 @@ export async function storeTcTokensFromIqResult({ result, fallbackJid, keys, get
 	const tokenNodes = getBinaryNodeChildren(tokensNode, 'token')
 	for (const tokenNode of tokenNodes) {
 		if (tokenNode.attrs.type !== 'trusted_contact' || !(tokenNode.content instanceof Uint8Array)) continue
-		// In notifications tokenNode.attrs.jid is your own device JID, not the sender's
+
 		const rawJid = jidNormalizedUser(fallbackJid || tokenNode.attrs.jid)
 		if (!isRegularUser(rawJid)) continue
 		const storageJid = await resolveTcTokenJid(rawJid, getLIDForPN)
@@ -758,7 +712,7 @@ export async function storeTcTokensFromIqResult({ result, fallbackJid, keys, get
 		const existingEntry = existingTcData[storageJid]
 		const existingTs = existingEntry?.timestamp ? Number(existingEntry.timestamp) : 0
 		const incomingTs = tokenNode.attrs.t ? Number(tokenNode.attrs.t) : 0
-		if (!incomingTs) continue // timestamp-less tokens would be immediately expired
+		if (!incomingTs) continue
 		if (existingTs > 0 && existingTs > incomingTs) continue
 		await keys.set({
 			tctoken: { [storageJid]: { ...existingEntry, token: Buffer.from(tokenNode.content), timestamp: tokenNode.attrs.t } }

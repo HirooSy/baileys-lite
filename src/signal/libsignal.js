@@ -1,19 +1,5 @@
-/**
- * Native Signal protocol implementation (X3DH + Double Ratchet, 1:1 sessions).
- *
- * Replaces the `libsignal` npm package (WhiskeySockets/libsignal-node 6.0.0),
- * together with its dependencies `curve25519-js` and `protobufjs`.
- * It is a faithful port: same wire format, same session serialization, same
- * error classes and same public API, so existing auth-state / session data
- * stays compatible. Verified against the original package in
- * test/native-deps.mjs (cross-encrypt / decrypt in both directions).
- */
 import * as nodeCrypto from 'node:crypto'
 import { publicFromPrivate, randomX25519, sharedKey, sign as xeddsaSign, verify as xeddsaVerify } from '../foundation/curve25519.js'
-
-/* ------------------------------------------------------------------ */
-/* errors                                                              */
-/* ------------------------------------------------------------------ */
 
 export class SignalError extends Error {}
 
@@ -47,10 +33,6 @@ export class PreKeyError extends SessionError {
 	}
 }
 
-/* ------------------------------------------------------------------ */
-/* crypto                                                              */
-/* ------------------------------------------------------------------ */
-
 const assertBuffer = value => {
 	if (!(value instanceof Buffer)) throw TypeError(`Expected Buffer instead of: ${value.constructor.name}`)
 	return value
@@ -80,9 +62,9 @@ export const crypto = {
 		assertBuffer(data)
 		return nodeCrypto.createHash('sha512').update(data).digest()
 	},
-	// Salts always end up being 32 bytes
+
 	deriveSecrets(input, salt, info, chunks) {
-		// RFC 5869 that only returns the first 3 32-byte chunks
+
 		assertBuffer(input)
 		assertBuffer(salt)
 		assertBuffer(info)
@@ -113,10 +95,6 @@ export const crypto = {
 	}
 }
 
-/* ------------------------------------------------------------------ */
-/* curve (33-byte "DJB type 5" public keys, 32-byte private keys)      */
-/* ------------------------------------------------------------------ */
-
 const KEY_BUNDLE_TYPE = Buffer.from([5])
 const prefixKeyInPublicKey = pubKey => Buffer.concat([KEY_BUNDLE_TYPE, pubKey])
 
@@ -138,9 +116,9 @@ const scrubPubKeyFormat = pubKey => {
 
 const unclampEd25519PrivateKey = clampedSk => {
 	const unclampedSk = new Uint8Array(clampedSk)
-	unclampedSk[0] |= 6 // Ensure last 3 bits match expected `110` pattern
-	unclampedSk[31] |= 128 // Restore the highest bit
-	unclampedSk[31] &= ~64 // Clear the second-highest bit
+	unclampedSk[0] |= 6
+	unclampedSk[31] |= 128
+	unclampedSk[31] &= ~64
 	return unclampedSk
 }
 
@@ -172,10 +150,6 @@ export const curve = {
 	}
 }
 
-/* ------------------------------------------------------------------ */
-/* keyhelper                                                           */
-/* ------------------------------------------------------------------ */
-
 const isNonNegativeInteger = n => typeof n === 'number' && n % 1 === 0 && n >= 0
 
 export const keyhelper = {
@@ -204,10 +178,6 @@ export const keyhelper = {
 	}
 }
 
-/* ------------------------------------------------------------------ */
-/* minimal protobuf (proto2 varint + length-delimited only)            */
-/* ------------------------------------------------------------------ */
-
 const writeVarint = (out, n) => {
 	n = n >>> 0
 	while (n > 127) {
@@ -224,7 +194,7 @@ class PbReader {
 		this.len = buf.length
 	}
 	varint() {
-		// uint32 semantics (protobufjs reads up to 5 bytes, keeps low 32 bits)
+
 		let value = 0
 		for (let i = 0; i < 5; i++) {
 			if (this.pos >= this.len) throw RangeError(`index out of range: ${this.pos} + 1 > ${this.len}`)
@@ -232,7 +202,7 @@ class PbReader {
 			value = (value | ((b & 127) << (7 * i))) >>> 0
 			if (b < 128) return value
 		}
-		// consume any remaining continuation bytes (up to 10 total)
+
 		for (let i = 5; i < 10; i++) {
 			if (this.pos >= this.len) throw RangeError(`index out of range: ${this.pos} + 1 > ${this.len}`)
 			if (this.buf[this.pos++] < 128) return value
@@ -256,7 +226,7 @@ class PbReader {
 				this.pos += 8
 				break
 			case 2: {
-				// NOTE: not `this.pos += this.varint()` — that reads `pos` BEFORE varint() advances it
+
 				const skip = this.varint()
 				this.pos += skip
 				break
@@ -271,7 +241,6 @@ class PbReader {
 	}
 }
 
-/** Build a tiny message class: fields = [[name, fieldNo, 'bytes'|'uint32', encodeOrder]] */
 const defineMessage = (fields, defaults) => {
 	const Msg = function (props) {
 		if (props) for (const k of Object.keys(props)) if (props[k] != null) this[k] = props[k]
@@ -281,7 +250,7 @@ const defineMessage = (fields, defaults) => {
 	Msg.encode = message => {
 		const out = []
 		for (const f of fields) {
-			// protobufjs only writes fields that are OWN properties and non-null
+
 			if (message[f.name] != null && Object.prototype.hasOwnProperty.call(message, f.name)) {
 				if (f.type === 'uint32') {
 					writeVarint(out, (f.no << 3) | 0)
@@ -312,7 +281,6 @@ const defineMessage = (fields, defaults) => {
 	return Msg
 }
 
-// textsecure.WhisperMessage
 export const WhisperMessage = defineMessage(
 	[
 		{ name: 'ephemeralKey', no: 1, type: 'bytes' },
@@ -323,7 +291,6 @@ export const WhisperMessage = defineMessage(
 	{ ephemeralKey: Buffer.alloc(0), counter: 0, previousCounter: 0, ciphertext: Buffer.alloc(0) }
 )
 
-// textsecure.PreKeyWhisperMessage
 export const PreKeyWhisperMessage = defineMessage(
 	[
 		{ name: 'preKeyId', no: 1, type: 'uint32' },
@@ -342,10 +309,6 @@ export const PreKeyWhisperMessage = defineMessage(
 		signedPreKeyId: 0
 	}
 )
-
-/* ------------------------------------------------------------------ */
-/* ProtocolAddress                                                     */
-/* ------------------------------------------------------------------ */
 
 export class ProtocolAddress {
 	static from(encodedAddress) {
@@ -369,17 +332,13 @@ export class ProtocolAddress {
 	}
 }
 
-/* ------------------------------------------------------------------ */
-/* job queue (serializes session I/O per address)                      */
-/* ------------------------------------------------------------------ */
-
 const _queueAsyncBuckets = new Map()
 const _gcLimit = 10000
 
 async function _asyncQueueExecutor(queue, cleanup) {
 	let offt = 0
 	while (true) {
-		const limit = Math.min(queue.length, _gcLimit) // Break up thundering herds for GC duty.
+		const limit = Math.min(queue.length, _gcLimit)
 		for (let i = offt; i < limit; i++) {
 			const job = queue[i]
 			try {
@@ -389,7 +348,7 @@ async function _asyncQueueExecutor(queue, cleanup) {
 			}
 		}
 		if (limit < queue.length) {
-			/* Perform lazy GC of queue for faster iteration. */
+
 			if (limit >= _gcLimit) {
 				queue.splice(0, limit)
 				offt = 0
@@ -414,10 +373,6 @@ const queueJob = (bucket, awaitable) => {
 	if (inactive) _asyncQueueExecutor(queue, () => _queueAsyncBuckets.delete(bucket))
 	return job
 }
-
-/* ------------------------------------------------------------------ */
-/* SessionRecord / SessionEntry                                        */
-/* ------------------------------------------------------------------ */
 
 const BaseKeyType = { OURS: 1, THEIRS: 2 }
 const ChainType = { SENDING: 1, RECEIVING: 2 }
@@ -617,7 +572,7 @@ export class SessionRecord {
 		this.sessions[session.indexInfo.baseKey.toString('base64')] = session
 	}
 	getSessions() {
-		// Return sessions ordered with most recently used first.
+
 		return Array.from(Object.values(this.sessions)).sort((a, b) => {
 			const aUsed = a.indexInfo.used || 0
 			const bUsed = b.indexInfo.used || 0
@@ -663,10 +618,6 @@ export class SessionRecord {
 	}
 }
 
-/* ------------------------------------------------------------------ */
-/* SessionBuilder (X3DH)                                               */
-/* ------------------------------------------------------------------ */
-
 export class SessionBuilder {
 	constructor(storage, protocolAddress) {
 		this.addr = protocolAddress
@@ -711,7 +662,7 @@ export class SessionBuilder {
 			throw new UntrustedIdentityKeyError(this.addr.id, message.identityKey)
 		}
 		if (record.getSession(message.baseKey)) {
-			// This just means we haven't replied.
+
 			return
 		}
 		const preKeyPair = await this.storage.loadPreKey(message.preKeyId)
@@ -775,8 +726,7 @@ export class SessionBuilder {
 			closed: -1
 		}
 		if (isInitiator) {
-			// If we're initiating we go ahead and set our first sending ephemeral key now,
-			// otherwise we figure it out when we first maybeStepRatchet with the remote's ephemeral key
+
 			this.calculateSendingRatchet(session, theirSignedPubKey)
 		}
 		return session
@@ -794,10 +744,6 @@ export class SessionBuilder {
 		ratchet.rootKey = masterKey[0]
 	}
 }
-
-/* ------------------------------------------------------------------ */
-/* SessionCipher (Double Ratchet)                                      */
-/* ------------------------------------------------------------------ */
 
 const VERSION = 3
 
@@ -872,7 +818,7 @@ export class SessionCipher {
 			await this.storeRecord(record)
 			let type, body
 			if (session.pendingPreKey) {
-				type = 3 // prekey bundle
+				type = 3
 				const preKeyMsg = PreKeyWhisperMessage.create({
 					identityKey: ourIdentityKey.pubKey,
 					registrationId: await this.storage.getOurRegistrationId(),
@@ -886,7 +832,7 @@ export class SessionCipher {
 					Buffer.from(PreKeyWhisperMessage.encode(preKeyMsg).finish())
 				])
 			} else {
-				type = 1 // normal
+				type = 1
 				body = result
 			}
 			return { type, body, registrationId: session.registrationId }
@@ -894,8 +840,7 @@ export class SessionCipher {
 	}
 
 	async decryptWithSessions(data, sessions) {
-		// Iterate through the sessions, attempting to decrypt using each one.
-		// Stop and return the result if we get a valid result.
+
 		if (!sessions.length) throw new SessionError('No sessions available')
 		const errs = []
 		for (const session of sessions) {
@@ -924,7 +869,7 @@ export class SessionCipher {
 				throw new UntrustedIdentityKeyError(this.addr.id, remoteIdentityKey)
 			}
 			if (record.isClosed(result.session)) {
-				// It's possible for this to happen when processing a backlog of messages.
+
 				console.warn('Decrypted message with closed session.')
 			}
 			await this.storeRecord(record)
@@ -965,7 +910,7 @@ export class SessionCipher {
 		if (chain.chainType === ChainType.SENDING) throw new Error('Tried to decrypt on a sending chain')
 		this.fillMessageKeys(chain, message.counter)
 		if (!Object.prototype.hasOwnProperty.call(chain.messageKeys, message.counter)) {
-			// Most likely the message was already decrypted and we are trying to process twice.
+
 			throw new MessageCounterError('Key used already or never filled')
 		}
 		const messageKey = chain.messageKeys[message.counter]
@@ -977,7 +922,7 @@ export class SessionCipher {
 		macInput.set(ourIdentityKey.pubKey, 33)
 		macInput[33 * 2] = this._encodeTupleByte(VERSION, VERSION)
 		macInput.set(messageProto, 33 * 2 + 1)
-		// This is where we most likely fail if the session is not a match.
+
 		crypto.verifyMAC(macInput, keys[1], messageBuffer.slice(-8), 8)
 		const plaintext = crypto.decrypt(keys[0], message.ciphertext, keys[2].slice(0, 16))
 		delete session.pendingPreKey
@@ -1001,10 +946,10 @@ export class SessionCipher {
 		const previousRatchet = session.getChain(ratchet.lastRemoteEphemeralKey)
 		if (previousRatchet) {
 			this.fillMessageKeys(previousRatchet, previousCounter)
-			delete previousRatchet.chainKey.key // Close
+			delete previousRatchet.chainKey.key
 		}
 		this.calculateRatchet(session, remoteKey, false)
-		// Now swap the ephemeral key and calculate the new sending chain
+
 		const prevCounter = session.getChain(ratchet.ephemeralKeyPair.pubKey)
 		if (prevCounter) {
 			ratchet.previousCounter = prevCounter.chainKey.counter
@@ -1018,7 +963,7 @@ export class SessionCipher {
 	calculateRatchet(session, remoteKey, sending) {
 		const ratchet = session.currentRatchet
 		const sharedSecret = curve.calculateAgreement(remoteKey, ratchet.ephemeralKeyPair.privKey)
-		const masterKey = crypto.deriveSecrets(sharedSecret, ratchet.rootKey, Buffer.from('WhisperRatchet'), /*chunks*/ 2)
+		const masterKey = crypto.deriveSecrets(sharedSecret, ratchet.rootKey, Buffer.from('WhisperRatchet'),  2)
 		const chainKey = sending ? ratchet.ephemeralKeyPair.pubKey : remoteKey
 		session.addChain(chainKey, {
 			messageKeys: {},

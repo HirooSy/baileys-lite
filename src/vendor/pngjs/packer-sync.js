@@ -1,10 +1,3 @@
-/**
- * Synchronous whole-buffer PNG encode entry point: signature + IHDR + gAMA + deflated IDAT + IEND.
- * Vendored from `pngjs` 7.0.0 (MIT). Only require()/module.exports converted to import/export
- * (zlib/util/assert/buffer -> node: specifiers). See ./LICENSE.
- * Algorithm body unchanged vs. upstream md5 51da0119926dab0998788987873fc853.
- * https://github.com/pngjs/pngjs
- */
 "use strict";
 
 let hasSyncZlib = true;
@@ -28,10 +21,8 @@ const packSync = function (metaData, opt) {
 
   let chunks = [];
 
-  // Signature
   chunks.push(Buffer.from(constants.PNG_SIGNATURE));
 
-  // Header
   chunks.push(packer.packIHDR(metaData.width, metaData.height));
 
   if (metaData.gamma) {
@@ -44,7 +35,6 @@ const packSync = function (metaData, opt) {
     metaData.height
   );
 
-  // compress it
   let compressedData = zlib.deflateSync(
     filteredData,
     packer.getDeflateOptions()
@@ -56,7 +46,6 @@ const packSync = function (metaData, opt) {
   }
   chunks.push(packer.packIDAT(compressedData));
 
-  // End
   chunks.push(packer.packIEND());
 
   return Buffer.concat(chunks);

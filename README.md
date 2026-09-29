@@ -10,9 +10,9 @@
 
 - [x] Support LID/PN/Username.
 - [x] High performance for multi sessions.
-- [x] Native / Zero depedency.
+- [x] Minimal depedency (only `@roamhq/wrtc`, used by calls).
 - [x] Low memory & CPU consumption.
-- [ ] Calls.
+- [x] Calls (audio/video).
 
 ---
 
@@ -153,6 +153,52 @@ await sock.sendMessage(jid, {
     { text: 'Shop Now', url: 'https://shop.example.com' },
     { text: 'Copy Code', copy: 'SALE50' }
   ]
+})
+
+// widget (A2UI): rich components inside the message, can be combined with nativeFlow buttons
+// use `nativeFlow: []` for a widget without buttons
+await sock.sendMessage(jid, {
+  text: 'Full demo of all widget components',
+  footer: 'A2UI Showcase',
+  nativeFlow: [{ text: '🌐 Source', url: 'https://example.com' }],
+  widget: {
+    align: 'center',
+    fallback: 'Widget cannot be loaded on this device', // optional, auto-generated from items if omitted
+    items: [
+      // text: variant 'title' | 'body' | 'caption'
+      { text: 'Welcome to the Widget Demo', variant: 'title' },
+      { text: 'This is a longer description.', variant: 'body' },
+      { text: 'Small caption', variant: 'caption' },
+
+      // icon: rendered as ASCII by default ('[i]'), style 'symbol' for unicode, native for the real Icon component
+      { icon: 'info' },
+      { icon: 'warning', style: 'symbol' },
+      { icon: 'favorite', native: true },
+
+      // media
+      { image: 'https://example.com/banner.jpg', variant: 'header', fit: 'cover', description: 'Promo banner' },
+      { video: 'https://example.com/preview.mp4' },
+      { audio: 'https://example.com/audio.mp3', description: 'Listen to this audio' },
+
+      // divider + button (opens url)
+      { divider: 'horizontal' }, // or 'vertical'
+      { button: 'Open Website', url: 'https://example.com', variant: 'primary' },
+
+      // inputs
+      { input: 'name', label: 'Enter your name', value: '', variant: 'shortText' }, // or 'longText'
+      { input: 'email', label: 'Email', validationRegexp: '^[^@]+@[^@]+\\.[^@]+$' },
+      { checkbox: 'I agree to the terms & conditions', value: false },
+      { choice: ['Red', 'Green', 'Blue'], label: 'Favorite color', variant: 'mutuallyExclusive', displayStyle: 'chips', filterable: true },
+      { choice: [{ label: 'Option A', value: 'a' }, { label: 'Option B', value: 'b' }], label: 'Multi-select', variant: 'multipleSelection', value: ['a'] },
+      { slider: 100, min: 0, value: 50, label: 'Volume' }, // slider = max value
+      { datetime: true, label: 'Pick a date', enableDate: true, enableTime: false },
+
+      // layout, items can be nested
+      { row: [{ text: 'Left' }, { text: 'Center' }, { text: 'Right' }], justify: 'space-between', align: 'center' },
+      { column: [{ text: 'Row 1' }, { text: 'Row 2' }], justify: 'start', align: 'stretch' },
+      { list: [{ text: '• First item' }, { text: '• Second item' }], direction: 'vertical' }
+    ]
+  }
 })
 ```
 </sub></details>
@@ -338,5 +384,85 @@ await sock.sendMessage(jid, { limitSharing: true })
 ```javascript
 // jid can be an array to control exactly who sees a status with mentions
 await sock.sendMessage([contactJid1, contactJid2], { text: 'Status update text' })
+```
+</sub></details>
+
+<details> <summary>📞 Call</summary>
+  <sub>
+
+```javascript
+import Voip from '@hiroosy/baileys-lite/voip'
+
+// Place audio/video calls from the bot session and play media into the call.
+// @roamhq/wrtc is installed automatically. ffmpeg + ffprobe must be in PATH.
+
+// ---- Basic ----
+// create once, after the socket is connected
+const voip = new Voip(sock, {
+  ffprobePath: 'ffprobe', // path to ffprobe binary
+  voipLogLevel: 'warn',   // 'trace' | 'debug' | 'info' | 'warn' | 'error'
+  tmpDir: './tmp'         // temp folder for downloaded media (default os.tmpdir())
+})
+
+// number or jid, non-digits are stripped automatically
+const call = await voip.call('628123456789', './song.mp3')
+
+call.on('ringing', () => console.log('ringing...'))
+call.on('connected', () => console.log('connected'))
+call.on('ended', reason => console.log('ended:', reason))
+call.on('error', err => console.error(err))
+
+await call.hangup() // or call.end()
+
+// ring only, no media
+await voip.call('628123456789')
+
+// ---- Media ----
+// voip.call(jid, media?, resolution?, options?)
+await voip.call(jid, './song.mp3')                      // local file, audio/video detected by extension
+await voip.call(jid, 'https://example.com/song.mp3')    // url is downloaded first (max 20MB audio, 50MB video)
+await voip.call(jid, { audio: './voice.ogg' })          // explicit kind
+await voip.call(jid, { video: './clip.mp4' })
+
+// audio: mp3 ogg opus wav m4a aac flac weba | video: mp4 mov webm mkv avi m4v 3gp
+
+// ---- Video resolution ----
+// '240p' | '360p' | '480p' | '720p' | '1080p' or custom
+// default is 480p, orientation follows the source (portrait/landscape)
+await voip.call(jid, './clip.mp4', '720p')
+await voip.call(jid, './clip.mp4', { width: 640, height: 360, frameRate: 30 })
+
+// ---- Playlist ----
+// items play in order, audio and video can be mixed
+const list = await voip.call(
+  jid,
+  ['./intro.mp3', { video: './clip.mp4' }, 'https://example.com/outro.mp3'],
+  '480p',
+  {
+    loop: false,       // repeat the playlist (default false)
+    autoEndCall: true  // hang up when the playlist ends (default true)
+  }
+)
+
+list.on('item', ({ index, kind, source }) => console.log('playing', index, kind, source))
+list.on('playlist_looped', () => console.log('playlist restarted'))
+list.on('playlist_ended', () => console.log('playlist finished'))
+
+// ---- Silent / Resume ----
+await call.silent(true)   // mute audio and pause video
+await call.silent(false)  // resume
+await call.silent()       // toggle
+console.log(call.isSilenced)
+call.on('silent', state => console.log('silenced:', state))
+
+// ---- Events ----
+// ringing, connected, item, playlist_looped, playlist_ended, silent, ended, error
+
+// ---- Notes ----
+// only one active call at a time, force release a stuck call:
+await voip.end(true)
+// a safety timeout emits `error` if the call never ends (starts at 105s)
+// "Failed to load @roamhq/wrtc" -> native binary, run: npm rebuild @roamhq/wrtc
+//   (Alpine/musl is often unsupported, use a Debian/Ubuntu image)
 ```
 </sub></details>

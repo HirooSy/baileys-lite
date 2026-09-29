@@ -1,11 +1,3 @@
-/**
- * Groups + newsletter socket layers. Combines what used to be Socket/groups.js
- * and Socket/newsletter.js.
- *
- * Wrap order (must match upstream exactly): makeChatsSocket -> makeGroupsSocket
- * -> makeNewsletterSocket. This file's export (makeNewsletterSocket) is what
- * messages-send.js wraps next.
- */
 import { proto } from '../../WAProto/index.js'
 import { Boom } from '../foundation/boom.js'
 import { WAMessageAddressingMode, WAMessageStubType, QueryIds, XWAPaths } from '../constants.js'
@@ -14,10 +6,6 @@ import { generateProfilePicture } from '../utils/media.js'
 import { getBinaryNodeChild, getBinaryNodeChildren, getBinaryNodeChildString, isLidUser, isPnUser, jidEncode, jidNormalizedUser, S_WHATSAPP_NET } from '../binary/wa-binary.js'
 import { executeWMexQuery as genericExecuteWMexQuery } from './socket-core.js'
 import { makeChatsSocket } from './chats.js'
-
-/* ------------------------------------------------------------------ */
-/* Groups                                                               */
-/* ------------------------------------------------------------------ */
 
 export const extractGroupMetadata = result => {
 	const group = getBinaryNodeChild(result, 'group')
@@ -216,10 +204,6 @@ export const makeGroupsSocket = config => {
 		groupFetchAllParticipating
 	}
 }
-
-/* ------------------------------------------------------------------ */
-/* Newsletters (wraps makeGroupsSocket)                                 */
-/* ------------------------------------------------------------------ */
 
 const parseNewsletterCreateResponse = response => {
 	const { id, thread_metadata: thread, viewer_metadata: viewer } = response

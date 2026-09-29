@@ -1,9 +1,3 @@
-/**
- * PNG constants (chunk type codes, color-type/bpp map, signature).
- * Vendored from `pngjs` 7.0.0 (MIT). Only require()/module.exports converted to import/export. See ./LICENSE.
- * Algorithm body unchanged vs. upstream md5 4c253cc05421db7bc712c71848becdaf.
- * https://github.com/pngjs/pngjs
- */
 "use strict";
 
 export default {
@@ -13,16 +7,14 @@ export default {
   TYPE_IEND: 0x49454e44,
   TYPE_IDAT: 0x49444154,
   TYPE_PLTE: 0x504c5445,
-  TYPE_tRNS: 0x74524e53, // eslint-disable-line camelcase
-  TYPE_gAMA: 0x67414d41, // eslint-disable-line camelcase
+  TYPE_tRNS: 0x74524e53,
+  TYPE_gAMA: 0x67414d41,
 
-  // color-type bits
   COLORTYPE_GRAYSCALE: 0,
   COLORTYPE_PALETTE: 1,
   COLORTYPE_COLOR: 2,
-  COLORTYPE_ALPHA: 4, // e.g. grayscale and alpha
+  COLORTYPE_ALPHA: 4,
 
-  // color-type combinations
   COLORTYPE_PALETTE_COLOR: 3,
   COLORTYPE_COLOR_ALPHA: 6,
 

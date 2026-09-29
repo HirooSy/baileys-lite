@@ -1,18 +1,3 @@
-/**
- * AIRich: a fluent builder for WhatsApp's "AI rich response" cards (the same
- * botForwardedMessage/AIRichResponseMessage shape Meta AI messages use — text,
- * code blocks, tables, image/video grids, product/post carousels, sources,
- * suggestion pills, embedded HTML tabs).
- *
- * Unlike a one-shot relayMessage bypass, an AIRich instance is just a content
- * builder: `sock.sendMessage(jid, { aiRich: builder })` (or `.send(jid, opts)`,
- * a shorthand for the same call) is the only way messages leave the socket, so
- * retries, acks, the message store and everything else `sendMessage` already
- * does keeps working exactly as it does for any other message type.
- *
- * `generateWAMessageContent` recognizes the `aiRich` key and calls `.build()`
- * on it (a plain spec object also works — see aiRichBuilderFromSpec).
- */
 import { randomUUID } from 'node:crypto'
 
 const newLayout = (name, data, extra = {}) => ({
@@ -20,11 +5,6 @@ const newLayout = (name, data, extra = {}) => ({
 	view_model: { [Array.isArray(data) ? 'primitives' : 'primitive']: data, __typename: `GenAI${name}LayoutViewModel` }
 })
 
-/**
- * Extracts `[text](url)` hyperlinks, `[](url)` bare citations and `[text|w|h](<url>)`
- * LaTeX images out of markdown-ish text, replacing each with a `{{_KEY_n}}...{{/_KEY_n}}`
- * tag and returning the matching WA inline_entities for the tag keys.
- */
 const extractInlineEntities = (text, { hyperlink = true, citation = true, latex = true } = {}) => {
 	const toEntity = (type, ie) => {
 		if (type === 'hyperlink') {
@@ -138,7 +118,6 @@ const toTableMetadata = (rows, { hyperlink = true, citation = true, latex = true
 	}
 }
 
-/** Best-effort code tokenizer for a handful of common languages; falls back to one DEFAULT block. */
 const KEYWORD_SETS = {
 	javascript: new Set(['break','case','catch','continue','debugger','delete','do','else','finally','for','function','if','in','instanceof','new','return','switch','this','throw','typeof','var','void','while','with','true','false','null','undefined','class','const','let','super','extends','export','import','yield','static','async','await','get','set']),
 	typescript: new Set(['abstract','any','as','asserts','bigint','boolean','declare','enum','implements','infer','interface','is','keyof','module','namespace','never','readonly','require','number','object','override','private','protected','public','satisfies','string','symbol','type','unknown','using','from','break','case','catch','continue','do','else','finally','for','function','if','new','return','switch','this','throw','try','var','void','while','class','const','let','extends','import','export','async','await']),
@@ -232,7 +211,7 @@ const mediaUrl = value => {
 }
 
 export class AIRichBuilder {
-	/** @param {{ sendMessage(jid: string, content: object, options?: object): Promise<any> }} [client] socket to send through; only needed for .send() */
+
 	constructor(client) {
 		this._client = client
 		this._title = ''
@@ -437,10 +416,6 @@ export class AIRichBuilder {
 		return this
 	}
 
-	/**
-	 * addHtml(html) for a single inline HTML tab, or addHtml([html, title], [html2, title2], ..., { url, trustedSources })
-	 * for multiple tabs opened in an embedded-screen sheet.
-	 */
 	addHtml(...args) {
 		let options = {}
 		if (args.length && typeof args[args.length - 1] === 'object' && !Array.isArray(args[args.length - 1])) options = args.pop()
@@ -469,7 +444,6 @@ export class AIRichBuilder {
 		return this
 	}
 
-	/** Assembles the botForwardedMessage-shaped WAMessageContent object (same shape prepareRichResponseMessage returns). */
 	build({ forwarded = true, quoted, quotedParticipant, botJid = '0@bot' } = {}) {
 		const forward = forwarded ? { forwardingScore: 1, isForwarded: true, forwardedAiBotMessageInfo: { botJid }, forwardOrigin: 4 } : {}
 		const qObj = quoted
@@ -490,17 +464,12 @@ export class AIRichBuilder {
 		}
 	}
 
-	/**
-	 * Shorthand for `client.sendMessage(jid, { aiRich: this, ...buildOptions }, sendOptions)` — still goes
-	 * through the socket's normal sendMessage pipeline (retry/ack/message-store), never relayMessage directly.
-	 */
 	async send(jid, { forwarded, quoted, quotedParticipant, botJid, ...sendOptions } = {}) {
 		if (!this._client) throw new Error('AIRichBuilder.send() needs a client — use sock.aiRich() or new AIRichBuilder(sock)')
 		return this._client.sendMessage(jid, { aiRich: this, forwarded, quoted, quotedParticipant, botJid }, sendOptions)
 	}
 }
 
-/** Builds an AIRichBuilder from a plain spec object: { title, footer, text, code:{language,code}, table, image, video, source, product, post, reels, tip, suggest, process, html }. */
 export const aiRichBuilderFromSpec = spec => {
 	const b = new AIRichBuilder()
 	if (spec.title) b.setTitle(spec.title)

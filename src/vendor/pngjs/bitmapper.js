@@ -1,19 +1,11 @@
-/**
- * Raw scanline bytes -> flat RGBA pixel buffer (all bit depths, palette handled upstream).
- * Vendored from `pngjs` 7.0.0 (MIT). Only require()/module.exports converted to import/export. See ./LICENSE.
- * Algorithm body unchanged vs. upstream md5 682312e25be1cfee14b102e855adbeea.
- * https://github.com/pngjs/pngjs
- */
 "use strict";
 
 import * as interlaceUtils from './interlace.js'
 
 let pixelBppMapper = [
-  // 0 - dummy entry
+
   function () {},
 
-  // 1 - L
-  // 0: 0, 1: 0, 2: 0, 3: 0xff
   function (pxData, data, pxPos, rawPos) {
     if (rawPos === data.length) {
       throw new Error("Ran out of data");
@@ -26,8 +18,6 @@ let pixelBppMapper = [
     pxData[pxPos + 3] = 0xff;
   },
 
-  // 2 - LA
-  // 0: 0, 1: 0, 2: 0, 3: 1
   function (pxData, data, pxPos, rawPos) {
     if (rawPos + 1 >= data.length) {
       throw new Error("Ran out of data");
@@ -40,8 +30,6 @@ let pixelBppMapper = [
     pxData[pxPos + 3] = data[rawPos + 1];
   },
 
-  // 3 - RGB
-  // 0: 0, 1: 1, 2: 2, 3: 0xff
   function (pxData, data, pxPos, rawPos) {
     if (rawPos + 2 >= data.length) {
       throw new Error("Ran out of data");
@@ -53,8 +41,6 @@ let pixelBppMapper = [
     pxData[pxPos + 3] = 0xff;
   },
 
-  // 4 - RGBA
-  // 0: 0, 1: 1, 2: 2, 3: 3
   function (pxData, data, pxPos, rawPos) {
     if (rawPos + 3 >= data.length) {
       throw new Error("Ran out of data");
@@ -68,11 +54,9 @@ let pixelBppMapper = [
 ];
 
 let pixelBppCustomMapper = [
-  // 0 - dummy entry
+
   function () {},
 
-  // 1 - L
-  // 0: 0, 1: 0, 2: 0, 3: 0xff
   function (pxData, pixelData, pxPos, maxBit) {
     let pixel = pixelData[0];
     pxData[pxPos] = pixel;
@@ -81,8 +65,6 @@ let pixelBppCustomMapper = [
     pxData[pxPos + 3] = maxBit;
   },
 
-  // 2 - LA
-  // 0: 0, 1: 0, 2: 0, 3: 1
   function (pxData, pixelData, pxPos) {
     let pixel = pixelData[0];
     pxData[pxPos] = pixel;
@@ -91,8 +73,6 @@ let pixelBppCustomMapper = [
     pxData[pxPos + 3] = pixelData[1];
   },
 
-  // 3 - RGB
-  // 0: 0, 1: 1, 2: 2, 3: 0xff
   function (pxData, pixelData, pxPos, maxBit) {
     pxData[pxPos] = pixelData[0];
     pxData[pxPos + 1] = pixelData[1];
@@ -100,8 +80,6 @@ let pixelBppCustomMapper = [
     pxData[pxPos + 3] = maxBit;
   },
 
-  // 4 - RGBA
-  // 0: 0, 1: 1, 2: 2, 3: 3
   function (pxData, pixelData, pxPos) {
     pxData[pxPos] = pixelData[0];
     pxData[pxPos + 1] = pixelData[1];
@@ -176,7 +154,7 @@ function bitRetriever(data, depth) {
 }
 
 function mapImage8Bit(image, pxData, getPxPos, bpp, data, rawPos) {
-  // eslint-disable-line max-params
+
   let imageWidth = image.width;
   let imageHeight = image.height;
   let imagePass = image.index;
@@ -184,14 +162,14 @@ function mapImage8Bit(image, pxData, getPxPos, bpp, data, rawPos) {
     for (let x = 0; x < imageWidth; x++) {
       let pxPos = getPxPos(x, y, imagePass);
       pixelBppMapper[bpp](pxData, data, pxPos, rawPos);
-      rawPos += bpp; //eslint-disable-line no-param-reassign
+      rawPos += bpp;
     }
   }
   return rawPos;
 }
 
 function mapImageCustomBit(image, pxData, getPxPos, bpp, bits, maxBit) {
-  // eslint-disable-line max-params
+
   let imageWidth = image.width;
   let imageHeight = image.height;
   let imagePass = image.index;

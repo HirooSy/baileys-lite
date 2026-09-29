@@ -1,9 +1,3 @@
-/**
- * Chat/app-state sync utilities. Combines what used to be chat-utils.js,
- * event-buffer.js, and sync-action-utils.js.
- *
- * expandAppStateKeys comes from ../foundation/wa-crypto.js (native).
- */
 import { EventEmitter } from 'node:events'
 import { proto } from '../../WAProto/index.js'
 import { expandAppStateKeys } from '../foundation/wa-crypto.js'
@@ -14,10 +8,6 @@ import { aesDecrypt, aesEncrypt, hmacSign, toNumber, trimUndefined, LT_HASH_ANTI
 import { downloadContentFromMessage } from './media.js'
 import { updateMessageWithReaction, updateMessageWithReceipt } from './message-compose.js'
 import { isRealMessage, shouldIncrementChatUnread } from './message-processing.js'
-
-/* ------------------------------------------------------------------ */
-/* App-state (chat-utils): LTHash / patch encode-decode                */
-/* ------------------------------------------------------------------ */
 
 const mutationKeys = keydata => {
 	const keys = expandAppStateKeys(keydata)
@@ -55,7 +45,7 @@ export const makeLtHashGenerator = ({ indexValueMap, hash }) => {
 			const indexMacBase64 = Buffer.from(indexMac).toString('base64')
 			const prevOp = indexValueMap[indexMacBase64]
 			if (operation === proto.SyncdMutation.SyncdOperation.REMOVE) {
-				if (!prevOp) return // WA Web logs+skips; handled downstream by MAC validation / snapshot recovery
+				if (!prevOp) return
 				delete indexValueMap[indexMacBase64]
 			} else {
 				addBuffs.push(valueMac)
@@ -81,10 +71,8 @@ export const ensureLTHashStateVersion = state => {
 
 export const MAX_SYNC_ATTEMPTS = 2
 
-/** WA Web treats missing app-state sync keys as "Blocked" (waits for key arrival), not fatal. */
 export const isMissingKeyError = error => error?.data?.isMissingKey === true
 
-/** TypeError indicates a WASM crash; otherwise give up after MAX_SYNC_ATTEMPTS. Missing keys handled separately. */
 export const isAppStateSyncIrrecoverable = (error, attempts) => attempts >= MAX_SYNC_ATTEMPTS || error?.name === 'TypeError'
 
 export const encodeSyncdPatch = async ({ type, index, syncAction, apiVersion, operation }, myAppStateKeyId, state, getAppStateSyncKey) => {
@@ -137,7 +125,7 @@ export const decodeSyncdMutations = async (msgMutations, initialState, getAppSta
 			key = await getKey(record.keyId.id)
 		} catch (err) {
 			if (isMissingKeyError(err)) throw err
-			continue // other errors -> individual record corruption, skip and keep going
+			continue
 		}
 		const content = record.value.blob
 		const encContent = content.subarray(0, -32)
@@ -301,7 +289,7 @@ export const decodePatches = async (name, syncds, initial, getAppStateSyncKey, o
 				break
 			}
 		}
-		syncd.mutations = [] // clear memory used up by the mutations
+		syncd.mutations = []
 	}
 	return { state: newState, mutationMap }
 }
@@ -549,11 +537,6 @@ export const processSyncAction = (syncAction, ev, me, initialSyncOpts, logger) =
 	}
 }
 
-/* ------------------------------------------------------------------ */
-/* Sync action -> event mapping (pure)                                 */
-/* ------------------------------------------------------------------ */
-
-/** Process contactAction and return events to emit. Pure function - no side effects. */
 export const processContactAction = (action, id, logger) => {
 	const results = []
 	if (!id) {
@@ -562,7 +545,7 @@ export const processContactAction = (action, id, logger) => {
 	}
 	const lidJid = action.lidJid
 	const idIsPn = isPnUser(id)
-	const phoneNumber = idIsPn ? id : action.pnJid || undefined // PN is in index[1], not usually in contactAction.pnJid
+	const phoneNumber = idIsPn ? id : action.pnJid || undefined
 	results.push({
 		event: 'contacts.upsert',
 		data: [{ id, name: action.fullName || action.firstName || action.username || undefined, username: action.username || undefined, lid: lidJid || undefined, phoneNumber }]
@@ -577,10 +560,6 @@ export const emitSyncActionResults = (ev, results) => {
 		else ev.emit('lid-mapping.update', result.data)
 	}
 }
-
-/* ------------------------------------------------------------------ */
-/* Event buffer                                                        */
-/* ------------------------------------------------------------------ */
 
 const BUFFERABLE_EVENT_SET = new Set([
 	'messaging-history.set',
@@ -909,7 +888,6 @@ function append(data, historyCache, event, eventData, logger) {
 	}
 }
 
-/** The event buffer logically consolidates different events into a single event, making data processing more efficient. */
 export const makeEventBuffer = logger => {
 	const ev = new EventEmitter()
 	const historyCache = new Set()

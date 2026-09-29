@@ -1,9 +1,3 @@
-/**
- * Reverses PNG scanline filters (None/Sub/Up/Average/Paeth) during decode.
- * Vendored from `pngjs` 7.0.0 (MIT). Only require()/module.exports converted to import/export. See ./LICENSE.
- * Algorithm body unchanged vs. upstream md5 895c8fa775fd9cab2d41a4e57f1d3948.
- * https://github.com/pngjs/pngjs
- */
 "use strict";
 
 import * as interlaceUtils from './interlace.js'
@@ -47,10 +41,6 @@ let Filter = function (bitmapInfo, dependencies) {
     });
   }
 
-  // when filtering the line we look at the pixel to the left
-  // the spec also says it is done on a byte level regardless of the number of pixels
-  // so if the depth is byte compatible (8 or 16) we subtract the bpp in order to compare back
-  // a pixel rather than just a different byte part. However if we are sub byte, we ignore.
   if (depth === 8) {
     this._xComparison = bpp;
   } else if (depth === 16) {
@@ -174,7 +164,7 @@ Filter.prototype._reverseFilterLine = function (rawData) {
   }
 
   if (currentImage) {
-    // read, using the byte width that may be from the new current image
+
     this.read(currentImage.byteWidth + 1, this._reverseFilterLine.bind(this));
   } else {
     this._lastLine = null;

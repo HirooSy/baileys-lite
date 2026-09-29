@@ -1,25 +1,6 @@
-/**
- * Native link preview (replaces `link-preview-js`). `fetch` + a small, tolerant HTML head scanner.
- *
- * Result shape follows link-preview-js:
- *   HTML page : { url, title, siteName, description, mediaType, contentType, images[], videos[], favicons[] }
- *   image     : { url, mediaType: 'image', contentType, favicons[] }
- *   audio/video/application: { url, mediaType, contentType, favicons[] }
- * Throws Error('... did not receive a valid a url or text') when the text contains no http(s) URL (same message the
- * package used; getUrlInfo relies on it).
- *
- * The HTML scanner reads <meta>, <title>, <link>, <base> and <img> with a state machine that follows the WHATWG HTML
- * tokenizer (quoting, `=` and `/` corner cases, first duplicate attribute wins, unterminated tags dropped, comments,
- * script/style/textarea/title/noscript content treated as text). Named entities: ~100 common ones plus all numeric ones
- * (parse5 knows 2231 named entities; an unknown one is left as written). Verified against cheerio/parse5 in
- * test/native-link-preview.mjs.
- */
-
 const REGEX_VALID_URL = /^(?:https?:\/\/)[^\s]+$/i
 const DEFAULT_UA = 'Mozilla/5.0 (compatible; baileys-lite link preview)'
 const MAX_BYTES = 1024 * 1024
-
-/* ------------------------------ entities ------------------------------ */
 
 const NAMED = {
 	amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: '\u00a0', copy: '©', reg: '®', trade: '™', hellip: '…', mdash: '—', ndash: '–',
@@ -33,14 +14,8 @@ const NAMED = {
 	Ograve: 'Ò', Oacute: 'Ó', Ocirc: 'Ô', Otilde: 'Õ', Ouml: 'Ö', Oslash: 'Ø', Ugrave: 'Ù', Uacute: 'Ú', Ucirc: 'Û', Uuml: 'Ü', Yacute: 'Ý'
 }
 
-// Legacy entities the HTML spec also decodes WITHOUT a trailing semicolon (text context only; see decodeEntities)
 const LEGACY = /^(amp|lt|gt|quot|nbsp|copy|reg|deg|plusmn|times|divide|para|sect|shy|micro|middot|laquo|raquo|iexcl|iquest|cent|pound|yen)$/
 
-/**
- * Named entities follow the HTML rules: `&name;` decodes when known; otherwise the LONGEST legacy prefix that is valid
- * without a semicolon decodes (`&amp8` -> `&8`). Inside an attribute value a semicolon-less match is NOT decoded when the
- * next character is `=` or alphanumeric (so `?a=1&copy=2` in a URL survives).
- */
 const decodeEntities = (s, inAttr = false) => {
 	if (!s.includes('&')) return s
 	return s.replace(/&(?:#(\d+)|#[xX]([0-9a-fA-F]+)|([A-Za-z][A-Za-z0-9]*))(;?)/g, (m, dec, hex, name, semi, offset) => {
@@ -62,19 +37,10 @@ const decodeEntities = (s, inAttr = false) => {
 	})
 }
 
-/* ------------------------------ HTML scanning ------------------------------ */
-
-// Elements whose content is not markup (tokenizer states RCDATA / RAWTEXT / script data). `title` is captured, the rest skipped.
 const TEXT_ELEMENTS = new Set(['script', 'style', 'textarea', 'title', 'xmp', 'iframe', 'noembed', 'noframes', 'noscript'])
 const WS = new Set([' ', '\t', '\n', '\f', '\r'])
 const isAlpha = c => c !== undefined && ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
 
-/**
- * Follows the WHATWG HTML tokenizer for start tags: attribute names/values, quoting, `=` and `/` corner cases,
- * duplicate attributes (first wins), unterminated tags (dropped), comments, bogus comments (`<!...>`, `<?...>`, CDATA in
- * HTML content) and text-only elements. Returns { metas, links, imgs, title, base } — attribute maps with lower-case
- * names and entity-decoded values.
- */
 export function scanHtml(html) {
 	const out = { metas: [], links: [], imgs: [], title: undefined, base: undefined }
 	const n = html.length
@@ -85,15 +51,15 @@ export function scanHtml(html) {
 		i = lt + 1
 		const c = html[i]
 		if (c === '!') {
-			// comment, doctype or bogus comment
+
 			if (html.startsWith('--', i + 1)) {
-				if (html[i + 3] === '>') i += 4 // <!-->
-				else if (html.startsWith('->', i + 3)) i += 5 // <!--->
+				if (html[i + 3] === '>') i += 4
+				else if (html.startsWith('->', i + 3)) i += 5
 				else {
 					const end = html.indexOf('-->', i + 3)
 					const alt = html.indexOf('--!>', i + 3)
 					const e = end === -1 ? alt : alt === -1 ? end : Math.min(end, alt)
-					if (e === -1) break // unterminated comment swallows the rest
+					if (e === -1) break
 					i = e + (html.startsWith('--!>', e) ? 4 : 3)
 				}
 			} else {
@@ -110,7 +76,7 @@ export function scanHtml(html) {
 			continue
 		}
 		if (c === '/') {
-			// end tag: skipped (attributes are irrelevant); "</>" and "</ x>" follow the spec's bogus-comment rules
+
 			const d = html[i + 1]
 			if (d === '>') {
 				i += 2
@@ -121,24 +87,24 @@ export function scanHtml(html) {
 			i = gt + 1
 			continue
 		}
-		if (!isAlpha(c)) continue // a literal '<' in text
-		// ---- start tag ----
+		if (!isAlpha(c)) continue
+
 		let j = i
 		while (j < n && !WS.has(html[j]) && html[j] !== '/' && html[j] !== '>') j++
 		let name = html.slice(i, j).toLowerCase()
-		if (name === 'image') name = 'img' // the tree builder renames <image> to <img>
+		if (name === 'image') name = 'img'
 		const attrs = {}
 		let closed = false
-		// attribute loop (before attribute name state)
+
 		for (;;) {
-			while (j < n && (WS.has(html[j]) || html[j] === '/')) j++ // '/' not followed by '>' is ignored
-			if (j >= n) break // EOF inside the tag: the tag is dropped
+			while (j < n && (WS.has(html[j]) || html[j] === '/')) j++
+			if (j >= n) break
 			if (html[j] === '>') {
 				j++
 				closed = true
 				break
 			}
-			// attribute name: a leading '=' becomes part of the name
+
 			let k = j + 1
 			while (k < n && !WS.has(html[k]) && html[k] !== '/' && html[k] !== '>' && html[k] !== '=') k++
 			const aname = html.slice(j, k).toLowerCase().replace(/\0/g, '\ufffd')
@@ -152,7 +118,7 @@ export function scanHtml(html) {
 				if (q === '"' || q === "'") {
 					const e = html.indexOf(q, j + 1)
 					if (e === -1) {
-						j = n // EOF inside a quoted value: the tag is dropped
+						j = n
 						break
 					}
 					value = html.slice(j + 1, e)
@@ -165,7 +131,7 @@ export function scanHtml(html) {
 				}
 				value = decodeEntities(value, true)
 			}
-			if (!(aname in attrs)) attrs[aname] = value // duplicate attributes: the first one wins
+			if (!(aname in attrs)) attrs[aname] = value
 		}
 		if (!closed) break
 		i = j
@@ -176,7 +142,7 @@ export function scanHtml(html) {
 			if (out.base === undefined && attrs.href) out.base = attrs.href
 		}
 		if (TEXT_ELEMENTS.has(name)) {
-			// content up to the matching end tag is text, not markup
+
 			const re = new RegExp('</' + name + '(?=[\\s/>])', 'i')
 			const m = re.exec(html.slice(i))
 			const end = m ? i + m.index : n
@@ -195,8 +161,6 @@ const resolveUrl = (href, base) => {
 	}
 }
 
-/* ------------------------------ fetching ------------------------------ */
-
 const charsetFrom = (contentType, head) => {
 	const h = /charset\s*=\s*["']?([\w.:-]+)/i.exec(contentType || '')
 	if (h) return h[1]
@@ -214,7 +178,6 @@ const decodeBody = (bytes, contentType) => {
 	}
 }
 
-/** Reads at most `max` bytes; stops early once `</head>` has been seen (everything we need is there). */
 const readBody = async (res, max) => {
 	const reader = res.body?.getReader()
 	if (!reader) return new Uint8Array(await res.arrayBuffer()).subarray(0, max)
@@ -240,11 +203,6 @@ const readBody = async (res, max) => {
 	return buf
 }
 
-/**
- * @param {string} text  a URL, or text containing one
- * @param {{ timeout?: number, headers?: Record<string,string>, followRedirects?: 'follow'|'manual'|'error',
- *           handleRedirects?: (baseUrl: string, forwardedUrl: string) => boolean, maxBytes?: number }} [options]
- */
 export async function getLinkPreview(text, options = {}) {
 	if (typeof text !== 'string') throw new Error('link-preview did not receive a valid a url or text')
 	const detected = text.replace(/\n/g, ' ').split(' ').find(token => REGEX_VALID_URL.test(token))

@@ -1,12 +1,3 @@
-/**
- * Auth-state persistence adapters. Combines what used to be:
- *   use-multi-file-auth-state.js, use-single-file-auth-state.js, use-sqlite-auth-state.js
- *
- * SQLite backend is `node:sqlite` (built into Node, stable release-candidate as of Node 24; no
- * install needed). `opts.database` still accepts any object shaped like `better-sqlite3` (or
- * `node:sqlite`'s own DatabaseSync) if the app wants to bring its own connection/driver — see
- * DB_ADAPTER below for the two shims that bridge the small API differences.
- */
 import { DatabaseSync } from 'node:sqlite'
 import { mkdir, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
@@ -16,18 +7,8 @@ import { BufferJSON } from './wa-protocol-core.js'
 import { Cache } from '../foundation/cache.js'
 import { makeKeyedMutex } from '../foundation/concurrency.js'
 
-/* ------------------------------------------------------------------ */
-/* Multi-file auth state (one JSON file per key)                       */
-/* ------------------------------------------------------------------ */
-
-/**
- * stores the full authentication state in a single folder.
- * Far more efficient than singlefileauthstate.
- *
- * Wouldn't endorse this for anything beyond a bot; use a proper DB for production.
- */
 export const useMultiFileAuthState = async folder => {
-	const fileLock = makeKeyedMutex() // guards concurrent read/write of the same file path
+	const fileLock = makeKeyedMutex()
 
 	const fixFileName = file => file?.replace(/\//g, '__')?.replace(/:/g, '-')
 
@@ -53,11 +34,11 @@ export const useMultiFileAuthState = async folder => {
 				try {
 					await unlink(filePath)
 				} catch {
-					// ignore
+
 				}
 			})
 		} catch {
-			// ignore
+
 		}
 	}
 
@@ -104,10 +85,6 @@ export const useMultiFileAuthState = async folder => {
 	}
 }
 
-/* ------------------------------------------------------------------ */
-/* Single-file auth state (one JSON file, in-memory cached)             */
-/* ------------------------------------------------------------------ */
-
 const SIGNAL_STORE_TTL_MS = 5 * 60 * 1000
 const FLUSH_TIMEOUT_MS = 3000
 
@@ -141,7 +118,7 @@ export const useSingleFileAuthState = async fileName => {
 					await writeFile(tempFile, JSON.stringify(fileData, BufferJSON.replacer))
 					await rename(tempFile, fileName)
 				} catch {
-					// ignore
+
 				}
 			})
 		}, FLUSH_TIMEOUT_MS)
@@ -201,17 +178,6 @@ export const useSingleFileAuthState = async fileName => {
 	}
 }
 
-/* ------------------------------------------------------------------ */
-/* SQLite auth state (built-in `node:sqlite`, no install required)     */
-/* ------------------------------------------------------------------ */
-
-/**
- * `node:sqlite`'s DatabaseSync has no `.pragma()` and no `.transaction()` (the two things
- * `better-sqlite3` offers beyond plain `.exec()`/`.prepare()`). This adapter fills both in with
- * the same net effect, and passes through untouched when `opts.database` is a `better-sqlite3`
- * instance (or anything else that already has real `.pragma`/`.transaction` methods) so bring-
- * your-own-driver keeps working exactly as before.
- */
 function adaptDb(db) {
 	const pragma = typeof db.pragma === 'function' ? stmt => db.pragma(stmt) : stmt => db.exec(`PRAGMA ${stmt}`)
 	const transaction =
@@ -250,8 +216,7 @@ CREATE INDEX IF NOT EXISTS signal_keys_type_idx ON signal_keys(type);
 export async function useSqliteAuthState(opts) {
 	const rawDb = opts.database ?? new DatabaseSync(opts.dbPath)
 	const { db, pragma, transaction } = adaptDb(rawDb)
-	// WAL mode allows concurrent reads alongside a single writer; matches
-	// what SQLite recommends for read-heavy workloads with sporadic writes.
+
 	pragma('journal_mode = WAL')
 	pragma('synchronous = NORMAL')
 	db.exec(CREATE_SCHEMA_SQL)

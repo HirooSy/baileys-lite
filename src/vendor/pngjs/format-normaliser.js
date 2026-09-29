@@ -1,14 +1,8 @@
-/**
- * De-palettizes, applies tRNS transparency, and rescales <8-bit / 16-bit samples to 8-bit RGBA.
- * Vendored from `pngjs` 7.0.0 (MIT). Only require()/module.exports converted to import/export. See ./LICENSE.
- * Algorithm body unchanged vs. upstream md5 99537bc853caf0ed8677477ac8781e6b.
- * https://github.com/pngjs/pngjs
- */
 "use strict";
 
 function dePalette(indata, outdata, width, height, palette) {
   let pxPos = 0;
-  // use values from palette
+
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       let color = palette[indata[pxPos]];
@@ -77,18 +71,18 @@ const formatNormaliser = function (indata, imageData, skipRescale = false) {
   let transColor = imageData.transColor;
   let palette = imageData.palette;
 
-  let outdata = indata; // only different for 16 bits
+  let outdata = indata;
 
   if (colorType === 3) {
-    // paletted
+
     dePalette(indata, outdata, width, height, palette);
   } else {
     if (transColor) {
       replaceTransparentColor(indata, outdata, width, height, transColor);
     }
-    // if it needs scaling
+
     if (depth !== 8 && !skipRescale) {
-      // if we need to change the buffer size
+
       if (depth === 16) {
         outdata = Buffer.alloc(width * height * 4);
       }

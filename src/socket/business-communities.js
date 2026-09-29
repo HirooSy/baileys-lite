@@ -1,12 +1,3 @@
-/**
- * Business + Communities socket layers (the outermost wrappers).
- * Combines Socket/business.js and Socket/communities.js:
- *
- *   makeMessagesRecvSocket -> makeBusinessSocket -> makeCommunitiesSocket
- *
- * makeCommunitiesSocket is what index.js exports as makeWASocket.
- * (Catalog parse helpers such as parseCatalogNode live in utils/message-processing.js.)
- */
 import { proto } from '../../WAProto/index.js'
 import logger from '../foundation/logger.js'
 import { WAMessageStubType } from '../constants.js'
@@ -323,7 +314,7 @@ export const makeBusinessSocket = (config) => {
         return parseProductNode(productNode);
     };
     const productCreate = async (create) => {
-        // ensure isHidden is defined
+
         create.isHidden = !!create.isHidden;
         create = await uploadingNecessaryImagesOfProduct(create, waUploadToServer);
         const createNode = toProductNode(undefined, create);
@@ -586,17 +577,17 @@ export const makeCommunitiesSocket = (config) => {
         communityFetchLinkedGroups: async (jid) => {
             let communityJid = jid;
             let isCommunity = false;
-            // Try to determine if it is a subgroup or a community
+
             const metadata = await sock.groupMetadata(jid);
             if (metadata.linkedParent) {
-                // It is a subgroup, get the community jid
+
                 communityJid = metadata.linkedParent;
             }
             else {
-                // It is a community
+
                 isCommunity = true;
             }
-            // Fetch all subgroups of the community
+
             const result = await communityQuery(communityJid, 'get', [{ tag: 'sub_groups', attrs: {} }]);
             const linkedGroupsData = [];
             const subGroupsNode = getBinaryNodeChild(result, 'sub_groups');
@@ -699,23 +690,14 @@ export const makeCommunitiesSocket = (config) => {
             const result = getBinaryNodeChild(results, 'community');
             return result?.attrs.jid;
         },
-        /**
-         * revoke a v4 invite for someone
-         * @param communityJid community jid
-         * @param invitedJid jid of person you invited
-         * @returns true if successful
-         */
+
         communityRevokeInviteV4: async (communityJid, invitedJid) => {
             const result = await communityQuery(communityJid, 'set', [
                 { tag: 'revoke', attrs: {}, content: [{ tag: 'participant', attrs: { jid: invitedJid } }] }
             ]);
             return !!result;
         },
-        /**
-         * accept a CommunityInviteMessage
-         * @param key the key of the invite message, or optionally only provide the jid of the person who sent the invite
-         * @param inviteMessage the message to accept
-         */
+
         communityAcceptInviteV4: ev.createBufferedFunction(async (key, inviteMessage) => {
             key = typeof key === 'string' ? { remoteJid: key } : key;
             const results = await communityQuery(inviteMessage.groupJid, 'set', [
@@ -728,10 +710,9 @@ export const makeCommunitiesSocket = (config) => {
                     }
                 }
             ]);
-            // if we have the full message key
-            // update the invite message to be expired
+
             if (key.id) {
-                // create new invite message that is expired
+
                 inviteMessage = proto.Message.GroupInviteMessage.fromObject(inviteMessage);
                 inviteMessage.inviteExpiration = 0;
                 inviteMessage.inviteCode = '';
@@ -746,13 +727,13 @@ export const makeCommunitiesSocket = (config) => {
                     }
                 ]);
             }
-            // generate the community add message
+
             await upsertMessage({
                 key: {
                     remoteJid: inviteMessage.groupJid,
                     id: generateMessageIDV2(sock.user?.id),
                     fromMe: false,
-                    participant: key.remoteJid // TODO: investigate if this makes any sense at all
+                    participant: key.remoteJid
                 },
                 messageStubType: WAMessageStubType.GROUP_PARTICIPANT_ADD,
                 messageStubParameters: [JSON.stringify(authState.creds.me)],
@@ -818,7 +799,7 @@ export const extractCommunityMetadata = (result) => {
         memberAddMode,
         participants: getBinaryNodeChildren(community, 'participant').map(({ attrs }) => {
             return {
-                // TODO: IMPLEMENT THE PN/LID FIELDS HERE!!
+
                 id: attrs.jid,
                 admin: (attrs.type || null)
             };

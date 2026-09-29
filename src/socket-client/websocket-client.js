@@ -1,41 +1,13 @@
 import { EventEmitter } from 'node:events'
 import { DEFAULT_ORIGIN } from '../defaults.js'
 
-/**
- * Replaces `ws`, using Node's built-in `WebSocket` (undici-based, Node 22+).
- *
- * Handshake parity with `ws` (verified against a local server that records request headers):
- *   - `Origin`     -> sent (DEFAULT_ORIGIN), like upstream `ws({ origin })`
- *   - `headers`    -> config.options.headers, like upstream
- *   - `dispatcher` -> config.dispatcher (undici Agent/ProxyAgent) is the native equivalent of
- *                     `ws`'s `agent`, so proxies work; a `ws`-style `config.agent` is NOT supported.
- *   - handshake/connect timeout -> emulated with a timer (native WebSocket has no handshakeTimeout)
- *
- * NOTE: `{ headers, dispatcher }` is an undici extension to the WebSocket constructor, not part of the
- * browser standard. That is fine on Node 22+/24, which is what this package requires.
- *
- * Everything downstream (socket-core.js) talks to this class as a plain Node EventEmitter:
- * `.on('message', buf => ...)`, `.on('open')`, `.on('error')`, `.on('close')`, plus its own namespaced
- * events (`TAG:...`, `CB:...`, `frame`) emitted on itself, not on the underlying transport.
- */
-
-/**
- * Dispatcher HTTP/1.1-only, dibuat dari Agent undici BAWAAN Node (tanpa install modul `undici`).
- *
- * Kenapa: undici (Node 24/25/26) menawarkan ALPN ['http/1.1','h2']. Kalau server memilih h2, WebSocket
- * lanjut lewat HTTP/2 ("WebSocket over HTTP2 is experimental") dan handshake ke WhatsApp berakhir
- * "WebSocket error: unknown" (code 408) terus-menerus. WhatsApp butuh WebSocket klasik lewat HTTP/1.1.
- *
- * Caranya: memicu global WebSocket (lazy-load undici bawaan), ambil global dispatcher-nya lewat
- * Symbol.for('undici.globalDispatcher.*'), lalu buat instance baru dari class yang sama dengan allowH2:false.
- */
 let h1Dispatcher
 let h1DispatcherTried = false
 function getH1Dispatcher(logger) {
 	if (h1DispatcherTried) return h1Dispatcher
 	h1DispatcherTried = true
 	try {
-		void globalThis.WebSocket // paksa undici bawaan ter-load & mendaftarkan global dispatcher
+		void globalThis.WebSocket
 		const base =
 			globalThis[Symbol.for('undici.globalDispatcher.2')] ??
 			globalThis[Symbol.for('undici.globalDispatcher.1')]
@@ -95,17 +67,11 @@ export class WebSocketClient extends AbstractSocketClient {
 		this.socket = socket
 		socket.binaryType = 'arraybuffer'
 
-		// emulate ws's `handshakeTimeout`: abort a connection that never opens
 		let handshakeTimer
 		if (connectTimeoutMs > 0) {
 			handshakeTimer = setTimeout(() => {
 				if (socket.readyState === WebSocket.CONNECTING) {
-					// Do NOT call socket.close() synchronously here: Node's undici-based
-					// WebSocket has a known bug (nodejs/undici#4741) where close() while
-					// still CONNECTING dispatches its internal #onSocketClose path
-					// synchronously and can throw a raw TypeError instead of just emitting
-					// 'error'/'close'. Detach our own listeners first so we don't react to
-					// whatever it does, then let the abort happen off this call stack.
+
 					socket.onopen = null
 					socket.onmessage = null
 					socket.onerror = () => {}
@@ -124,11 +90,7 @@ export class WebSocketClient extends AbstractSocketClient {
 		socket.onclose = event => { clearHandshake(); this.emit('close', event.code, event.reason) }
 		socket.onerror = event => {
 			clearHandshake()
-			// undici's ErrorEvent sometimes carries an `error` whose own `.message` is empty
-			// (the useful detail, e.g. ECONNRESET, lives on `.cause`). Fall back through
-			// cause.message/cause.code/event.message so we never emit a blank-message error -
-			// an empty message defeats getCodeFromWSError's classification and previously
-			// caused these to be reported as WebSocket Error () with no real diagnostic.
+
 			const raw = event.error || new Error(event.message || 'WebSocket error')
 			if (!raw.message) {
 				const detail = raw.cause?.message || raw.cause?.code || event.message || 'unknown'
@@ -137,8 +99,7 @@ export class WebSocketClient extends AbstractSocketClient {
 			this.emit('error', raw)
 		}
 		socket.onmessage = event => {
-			// `ws` handed listeners a Buffer/string; the native WebSocket hands back an ArrayBuffer
-			// (binaryType set above) or a string — normalize to match.
+
 			const { data } = event
 			this.emit('message', typeof data === 'string' ? data : Buffer.from(data))
 		}
@@ -151,38 +112,26 @@ export class WebSocketClient extends AbstractSocketClient {
 			this.socket = null
 			return
 		}
-		// Node's undici-based WebSocket has a known bug (nodejs/undici#4741): calling
-		// close() while readyState is still CONNECTING dispatches 'error'/'close'
-		// SYNCHRONOUSLY from inside close() via an internal #onSocketClose path, and on
-		// some Node builds that path throws a raw TypeError instead of emitting cleanly
-		// (this is what crashes the process with "at #onSocketClose (...undici:...)").
-		// So for a still-connecting socket we never call socket.close() at all: just
-		// detach our listeners and drop the reference, and swallow whatever the socket
-		// does on its own afterwards.
+
 		if (socket.readyState === WebSocket.CONNECTING) {
 			socket.onopen = null
 			socket.onmessage = null
 			socket.onerror = () => {}
 			socket.onclose = () => {}
 			this.socket = null
-			// Best-effort abort in a microtask, outside this call stack, so a synchronous
-			// throw from undici's internals can't propagate up into our caller.
+
 			queueMicrotask(() => {
 				try { socket.close() } catch {}
 			})
 			return
 		}
-		// connect()'s onclose handler emits 'close'; here we only wait for it (like `ws`'s once('close')).
-		// Guarded with a timeout: if the underlying transport is stuck (e.g. a wedged TCP
-		// socket), 'close' may never fire and this would otherwise hang teardown forever.
+
 		let onClose
 		const closePromise = new Promise(resolve => { onClose = resolve; this.once('close', onClose) })
 		try {
 			socket.close()
 		} catch {
-			// Same undici race as above can still throw synchronously even outside
-			// CONNECTING (e.g. a close initiated concurrently with a receiver error).
-			// Ignore it; the timeout below still bounds how long we wait.
+
 		}
 		await Promise.race([closePromise, new Promise(resolve => setTimeout(resolve, 5000))])
 		this.off('close', onClose)
@@ -197,7 +146,7 @@ export class WebSocketClient extends AbstractSocketClient {
 		}
 		try {
 			socket.send(str)
-			// native send() is fire-and-forget; defer the callback to keep `ws`'s async-callback semantics
+
 			if (cb) queueMicrotask(() => cb())
 		} catch (err) {
 			cb?.(err)

@@ -1,11 +1,11 @@
 {
   "name": "@hiroosy/baileys-lite",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "A Lightweight Baileys built with NodeJs 22+",
   "repository": {
-  "type": "git",
-  "url": "https://github.com/HirooSy/baileys-lite.git"
-},
+    "type": "git",
+    "url": "https://github.com/HirooSy/baileys-lite.git"
+  },
   "keywords": [
     "whatsapp",
     "automation"
@@ -15,6 +15,7 @@
   "main": "src/index.js",
   "exports": {
     ".": "./src/index.js",
+    "./voip": "./src/voip/index.js",
     "./package.json": "./package.json"
   },
   "files": [
@@ -27,5 +28,8 @@
   },
   "engines": {
     "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "@roamhq/wrtc": ">=0.10.0"
   }
 }

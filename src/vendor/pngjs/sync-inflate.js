@@ -1,10 +1,3 @@
-/**
- * Node-version-independent synchronous zlib inflate (wraps zlib.Inflate's internal handle directly).
- * Vendored from `pngjs` 7.0.0 (MIT). Only require()/module.exports converted to import/export
- * (zlib/util/assert/buffer -> node: specifiers). See ./LICENSE.
- * Algorithm body unchanged vs. upstream md5 91108ad5150178c7643155151266d812.
- * https://github.com/pngjs/pngjs
- */
 "use strict";
 
 import assertModule from 'node:assert'
@@ -25,7 +18,6 @@ function Inflate(opts) {
 
   zlib.Inflate.call(this, opts);
 
-  // Node 8 --> 9 compatibility check
   this._offset = this._offset === undefined ? this._outOffset : this._offset;
   this._buffer = this._buffer || this._outBuffer;
 
@@ -43,7 +35,6 @@ function _close(engine, callback) {
     process.nextTick(callback);
   }
 
-  // Caller may invoke .close after a zlib error (which will null _handle).
   if (!engine._handle) {
     return;
   }
@@ -118,14 +109,14 @@ Inflate.prototype._processChunk = function (chunk, flushFlag, asyncCb) {
   do {
     res = this._handle.writeSync(
       flushFlag,
-      chunk, // in
-      inOff, // in_off
-      availInBefore, // in_len
-      this._buffer, // out
-      this._offset, //out_off
+      chunk,
+      inOff,
+      availInBefore,
+      this._buffer,
+      this._offset,
       availOutBefore
-    ); // out_len
-    // Node 8 --> 9 compatibility check
+    );
+
     res = res || this._writeState;
   } while (!this._hadError && handleChunk(res[0], res[1]));
 

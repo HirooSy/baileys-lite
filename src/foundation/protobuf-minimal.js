@@ -1,19 +1,4 @@
-/**
- * Native replacement for `protobufjs/minimal` (+ @protobufjs/* + long), Node-only.
- *
- * Provides exactly the surface the generated WAProto/index.js consumes:
- *   Reader (BufferReader semantics), Writer (BufferWriter semantics), util, roots.
- * Wire output and decode results are byte/shape-identical to protobufjs 7.5.x —
- * verified by test/native-protobuf.mjs (differential + fuzz against the original).
- *
- * Intentionally NOT supported (unused by WAProto, browser-only in protobufjs):
- * plain-Array buffers, Uint8Array pool, rpc, reflection, eventemitter, float polyfill.
- */
 import { Long } from './long.js'
-
-/* ------------------------------------------------------------------ */
-/* LongBits (lo/hi as unsigned 32-bit) — port of protobufjs util/longbits */
-/* ------------------------------------------------------------------ */
 
 export class LongBits {
 	constructor(lo, hi) {
@@ -91,22 +76,18 @@ export class LongBits {
 	}
 }
 LongBits.zero = new LongBits(0, 0)
-// the shared zero instance must stay immutable-in-effect (zz* return `this`, as in protobufjs)
+
 LongBits.zero.toNumber = () => 0
 LongBits.zero.zzEncode = LongBits.zero.zzDecode = function () {
 	return this
 }
 LongBits.zero.length = () => 1
 
-/* ------------------------------------------------------------------ */
-/* Reader                                                              */
-/* ------------------------------------------------------------------ */
-
 const indexOutOfRange = (reader, writeLength) =>
 	RangeError('index out of range: ' + reader.pos + ' + ' + (writeLength || 1) + ' > ' + reader.len)
 
 function readVarint32NearEnd(reader) {
-	// Safely read up to four bytes of a varint32 near the reader limit
+
 	let value = 0
 	for (let i = 0; i < 4; ++i) {
 		if (reader.pos >= reader.len) throw indexOutOfRange(reader)
@@ -121,12 +102,12 @@ function readLongVarint(reader) {
 	const bits = new LongBits(0, 0)
 	let i = 0
 	if (reader.len - reader.pos > 4) {
-		// fast route (lo)
+
 		for (; i < 4; ++i) {
 			bits.lo = (bits.lo | ((reader.buf[reader.pos] & 127) << (i * 7))) >>> 0
 			if (reader.buf[reader.pos++] < 128) return bits
 		}
-		// 5th
+
 		bits.lo = (bits.lo | ((reader.buf[reader.pos] & 127) << 28)) >>> 0
 		bits.hi = (bits.hi | ((reader.buf[reader.pos] & 127) >> 4)) >>> 0
 		if (reader.buf[reader.pos++] < 128) return bits
@@ -137,12 +118,12 @@ function readLongVarint(reader) {
 			bits.lo = (bits.lo | ((reader.buf[reader.pos] & 127) << (i * 7))) >>> 0
 			if (reader.buf[reader.pos++] < 128) return bits
 		}
-		// 4th — protobufjs reads this byte unchecked and returns regardless of its continuation bit
+
 		bits.lo = (bits.lo | ((reader.buf[reader.pos++] & 127) << (i * 7))) >>> 0
 		return bits
 	}
 	if (reader.len - reader.pos > 4) {
-		// fast route (hi)
+
 		for (; i < 5; ++i) {
 			bits.hi = (bits.hi | ((reader.buf[reader.pos] & 127) << (i * 7 + 3))) >>> 0
 			if (reader.buf[reader.pos++] < 128) return bits
@@ -166,7 +147,6 @@ export class Reader {
 		this.len = buffer.length
 	}
 
-	/** @returns {Reader} BufferReader-equivalent for Buffers; accepts Uint8Array too (like protobufjs) */
 	static create(buffer) {
 		if (Buffer.isBuffer(buffer) || buffer instanceof Uint8Array || Array.isArray(buffer)) return new Reader(buffer)
 		throw Error('illegal buffer')
@@ -250,13 +230,13 @@ export class Reader {
 		this.pos += length
 		if (Array.isArray(this.buf)) return this.buf.slice(start, end)
 		if (start === end) return Buffer.alloc(0)
-		// Buffer#slice = zero-copy VIEW (same as protobufjs BufferReader); Uint8Array input -> subarray
+
 		return Buffer.isBuffer(this.buf) ? this.buf.slice(start, end) : this.buf.subarray(start, end)
 	}
 	string() {
 		if (Buffer.isBuffer(this.buf)) {
-			const len = this.uint32() // modifies pos
-			// BufferReader: clamps to buffer end instead of throwing
+			const len = this.uint32()
+
 			return this.buf.utf8Slice(this.pos, (this.pos = Math.min(this.pos + len, this.len)))
 		}
 		const b = this.bytes()
@@ -298,11 +278,7 @@ export class Reader {
 		return this
 	}
 }
-Reader.recursionLimit = 100 // protoc: CodedInputStream::default_recursion_limit_
-
-/* ------------------------------------------------------------------ */
-/* Writer (linked list of ops, like protobufjs; needed for fork/ldelim) */
-/* ------------------------------------------------------------------ */
+Reader.recursionLimit = 100
 
 class Op {
 	constructor(fn, len, val) {
@@ -360,7 +336,7 @@ const writeDouble = (val, buf, pos) => {
 	Buffer.prototype.writeDoubleLE.call(buf, val, pos)
 }
 const writeBytes = (val, buf, pos) => {
-	buf.set(val, pos) // also works for plain array values
+	buf.set(val, pos)
 }
 const writeString = (val, buf, pos) => {
 	buf.utf8Write(val, pos)
@@ -390,7 +366,7 @@ export class Writer {
 	}
 	int32(value) {
 		return (value |= 0) < 0
-			? this._push(writeVarint64, 10, LongBits.fromNumber(value)) // 10 bytes per spec
+			? this._push(writeVarint64, 10, LongBits.fromNumber(value))
 			: this.uint32(value)
 	}
 	sint32(value) {
@@ -430,7 +406,7 @@ export class Writer {
 		return this._push(writeDouble, 8, value)
 	}
 	bytes(value) {
-		// BufferWriter semantics: base64 strings are decoded
+
 		if (typeof value === 'string' || value instanceof String) value = Buffer.from(value, 'base64')
 		const len = value.length >>> 0
 		this.uint32(len)
@@ -467,14 +443,14 @@ export class Writer {
 		const len = this.len
 		this.reset().uint32(len)
 		if (len) {
-			this.tail.next = head.next // skip noop
+			this.tail.next = head.next
 			this.tail = tail
 			this.len += len
 		}
 		return this
 	}
 	finish() {
-		let head = this.head.next // skip noop
+		let head = this.head.next
 		const buf = Writer.alloc(this.len)
 		let pos = 0
 		while (head) {
@@ -486,11 +462,6 @@ export class Writer {
 	}
 }
 
-/* ------------------------------------------------------------------ */
-/* util                                                                */
-/* ------------------------------------------------------------------ */
-
-// base64 tables (same construction as @protobufjs/base64): B64 = index -> char code, S64 = char code -> index (sparse)
 const B64 = new Array(64)
 const S64 = new Array(123)
 for (let i = 0; i < 64; ) S64[(B64[i] = i < 26 ? i + 65 : i < 52 ? i + 71 : i < 62 ? i - 4 : (i - 59) | 43)] = i++
@@ -508,7 +479,7 @@ export const util = {
 	toJSONOptions: { longs: String, enums: String, bytes: String, json: true },
 	newBuffer: sizeOrArray => (typeof sizeOrArray === 'number' ? Buffer.allocUnsafe(sizeOrArray) : Buffer.from(sizeOrArray)),
 	base64: {
-		/** byte length of the decoded content (tolerates missing padding) — port of @protobufjs/base64 */
+
 		length(string) {
 			let p = string.length
 			if (!p) return 0
@@ -516,13 +487,13 @@ export const util = {
 			while (--p % 4 > 1 && string.charAt(p) === '=') ++n
 			return Math.ceil(string.length * 3) / 4 - n
 		},
-		/** Standard base64 (with '=' padding) of buffer[start, end) — port of @protobufjs/base64 encode. */
+
 		encode(buffer, start, end) {
 			let parts = null
 			let chunk = []
-			let i = 0 // output index
-			let j = 0 // goto index
-			let t // temporary
+			let i = 0
+			let j = 0
+			let t
 			while (start < end) {
 				const b = buffer[start++]
 				switch (j) {
@@ -558,10 +529,7 @@ export const util = {
 			}
 			return String.fromCharCode.apply(String, chunk.slice(0, i))
 		},
-		/**
-		 * Strict standard-alphabet decode. Throws 'invalid encoding' on any character outside
-		 * A-Za-z0-9+/ (so URL-safe '-'/'_', whitespace etc. are REJECTED — unlike Buffer.from(...,'base64')).
-		 */
+
 		decode(string, buffer, offset) {
 			const start = offset
 			let j = 0

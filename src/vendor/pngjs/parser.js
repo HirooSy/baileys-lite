@@ -1,10 +1,3 @@
-/**
- * Chunk-by-chunk PNG parser state machine: IHDR/PLTE/tRNS/gAMA/IDAT/IEND handlers + CRC check.
- * Vendored from `pngjs` 7.0.0 (MIT). Only require()/module.exports converted to import/export
- * (zlib/util/assert/buffer -> node: specifiers). See ./LICENSE.
- * Algorithm body unchanged vs. upstream md5 246405eeea384bf713721b876aecb968.
- * https://github.com/pngjs/pngjs
- */
 "use strict";
 
 import constants from './constants.js'
@@ -18,7 +11,6 @@ let Parser = function (options, dependencies) {
   this._hasIEND = false;
   this._emittedHeadersFinished = false;
 
-  // input flags/metadata
   this._palette = [];
   this._colorType = 0;
 
@@ -60,22 +52,16 @@ Parser.prototype._parseSignature = function (data) {
 };
 
 Parser.prototype._parseChunkBegin = function (data) {
-  // chunk content length
+
   let length = data.readUInt32BE(0);
 
-  // chunk type
   let type = data.readUInt32BE(4);
   let name = "";
   for (let i = 4; i < 8; i++) {
     name += String.fromCharCode(data[i]);
   }
 
-  //console.log('chunk ', name, length);
-
-  // chunk flags
-  let ancillary = Boolean(data[4] & 0x20); // or critical
-  //    priv = Boolean(data[5] & 0x20), // or public
-  //    safeToCopy = Boolean(data[7] & 0x20); // or unsafe
+  let ancillary = Boolean(data[4] & 0x20);
 
   if (!this._hasIHDR && type !== constants.TYPE_IHDR) {
     this.error(new Error("Expected IHDR on beggining"));
@@ -97,7 +83,7 @@ Parser.prototype._parseChunkBegin = function (data) {
   this.read(length + 4, this._skipChunk.bind(this));
 };
 
-Parser.prototype._skipChunk = function (/*data*/) {
+Parser.prototype._skipChunk = function () {
   this.read(8, this._parseChunkBegin.bind(this));
 };
 
@@ -109,7 +95,6 @@ Parser.prototype._parseChunkEnd = function (data) {
   let fileCrc = data.readInt32BE(0);
   let calcCrc = this._crc.crc32();
 
-  // check CRC
   if (this._options.checkCRC && calcCrc !== fileCrc) {
     this.error(new Error("Crc error - " + fileCrc + " - " + calcCrc));
     return;
@@ -129,15 +114,10 @@ Parser.prototype._parseIHDR = function (data) {
   let width = data.readUInt32BE(0);
   let height = data.readUInt32BE(4);
   let depth = data[8];
-  let colorType = data[9]; // bits: 1 palette, 2 color, 4 alpha
+  let colorType = data[9];
   let compr = data[10];
   let filter = data[11];
   let interlace = data[12];
-
-  // console.log('    width', width, 'height', height,
-  //     'depth', depth, 'colorType', colorType,
-  //     'compr', compr, 'filter', filter, 'interlace', interlace
-  // );
 
   if (
     depth !== 8 &&
@@ -194,7 +174,6 @@ Parser.prototype._parsePLTE = function (data) {
   this._crc.write(data);
 
   let entries = Math.floor(data.length / 3);
-  // console.log('Palette:', entries);
 
   for (let i = 0; i < entries; i++) {
     this._palette.push([data[i * 3], data[i * 3 + 1], data[i * 3 + 2], 0xff]);
@@ -212,7 +191,6 @@ Parser.prototype._handleTRNS = function (length) {
 Parser.prototype._parseTRNS = function (data) {
   this._crc.write(data);
 
-  // palette
   if (this._colorType === constants.COLORTYPE_PALETTE_COLOR) {
     if (this._palette.length === 0) {
       this.error(new Error("Transparency chunk must be after palette"));
@@ -228,10 +206,8 @@ Parser.prototype._parseTRNS = function (data) {
     this.palette(this._palette);
   }
 
-  // for colorType 0 (grayscale) and 2 (rgb)
-  // there might be one gray/color defined as transparent
   if (this._colorType === constants.COLORTYPE_GRAYSCALE) {
-    // grey, 2 bytes
+
     this.transColor([data.readUInt16BE(0)]);
   }
   if (this._colorType === constants.COLORTYPE_COLOR) {

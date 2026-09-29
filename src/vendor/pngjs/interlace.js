@@ -1,55 +1,38 @@
-/**
- * Adam7 interlacing: pass geometry + per-pixel position iterator.
- * Vendored from `pngjs` 7.0.0 (MIT). Only require()/module.exports converted to import/export. See ./LICENSE.
- * Algorithm body unchanged vs. upstream md5 5b88af15956679350faec79a91ec6c17.
- * https://github.com/pngjs/pngjs
- */
 "use strict";
-
-// Adam 7
-//   0 1 2 3 4 5 6 7
-// 0 x 6 4 6 x 6 4 6
-// 1 7 7 7 7 7 7 7 7
-// 2 5 6 5 6 5 6 5 6
-// 3 7 7 7 7 7 7 7 7
-// 4 3 6 4 6 3 6 4 6
-// 5 7 7 7 7 7 7 7 7
-// 6 5 6 5 6 5 6 5 6
-// 7 7 7 7 7 7 7 7 7
 
 let imagePasses = [
   {
-    // pass 1 - 1px
+
     x: [0],
     y: [0],
   },
   {
-    // pass 2 - 1px
+
     x: [4],
     y: [0],
   },
   {
-    // pass 3 - 2px
+
     x: [0, 4],
     y: [4],
   },
   {
-    // pass 4 - 4px
+
     x: [2, 6],
     y: [0, 4],
   },
   {
-    // pass 5 - 8px
+
     x: [0, 2, 4, 6],
     y: [2, 6],
   },
   {
-    // pass 6 - 16px
+
     x: [1, 3, 5, 7],
     y: [0, 2, 4, 6],
   },
   {
-    // pass 7 - 32px
+
     x: [0, 1, 2, 3, 4, 5, 6, 7],
     y: [1, 3, 5, 7],
   },

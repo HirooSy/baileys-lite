@@ -1,10 +1,3 @@
-/**
- * Minimal replacement for `@hapi/boom`.
- * Baileys only ever does: `new Boom(message, { statusCode, data })`,
- * `err instanceof Boom`, and reads `err.output.statusCode` / `err.data` / `err.isBoom`.
- * That's the entire surface reproduced here.
- */
-
 const STATUS_TEXT = {
 	400: 'Bad Request',
 	401: 'Unauthorized',

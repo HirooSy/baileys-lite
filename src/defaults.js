@@ -1,7 +1,3 @@
-/**
- * Default connection configuration and misc protocol-level constants.
- * Combines what used to be Defaults/index.js.
- */
 import { proto } from '../WAProto/index.js'
 import { makeLibSignalRepository } from './signal/signal-repository.js'
 import { Browsers, KEY_BUNDLE_TYPE } from './utils/wa-protocol-core.js'
@@ -30,7 +26,7 @@ export const STATUS_EXPIRY_SECONDS = 24 * 60 * 60
 export const PLACEHOLDER_MAX_AGE_SECONDS = 14 * 24 * 60 * 60
 export const NOISE_MODE = 'Noise_XX_25519_AESGCM_SHA256\0\0\0\0'
 export const DICT_VERSION = 3
-// single source of truth lives in utils/wa-protocol-core.js (avoids an ambiguous duplicate under `export *`)
+
 export { KEY_BUNDLE_TYPE }
 export const NOISE_WA_HEADER = Buffer.from([87, 65, 6, DICT_VERSION])
 
