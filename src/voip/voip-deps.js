@@ -211,6 +211,18 @@ export async function createVoipDeps(sock) {
             }
         },
         signalProtocol: {
+            async encryptMessagesBatch(items) {
+                const out = [];
+                for (const item of items) {
+                    const jid = addressToJid(item.address);
+                    const { type, ciphertext } = await sock.signalRepository.encryptMessage({
+                        jid,
+                        data: Buffer.from(item.plaintext)
+                    });
+                    out.push({ type, ciphertext: new Uint8Array(ciphertext) });
+                }
+                return out;
+            },
             async encryptMessage(address, plaintext) {
                 const jid = addressToJid(address);
                 const { type, ciphertext } = await sock.signalRepository.encryptMessage({

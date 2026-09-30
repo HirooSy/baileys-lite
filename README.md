@@ -12,7 +12,7 @@
 - [x] High performance for multi sessions.
 - [x] Minimal depedency (only `@roamhq/wrtc`, used by calls).
 - [x] Low memory & CPU consumption.
-- [x] Calls (audio/video).
+- [x] Calls (audio/video, incoming & outgoing, raise hand, reactions, screen share) powered by the zapo VoIP engine.
 
 ---
 
@@ -401,7 +401,10 @@ import Voip from '@hiroosy/baileys-lite/voip'
 const voip = new Voip(sock, {
   ffprobePath: 'ffprobe', // path to ffprobe binary
   voipLogLevel: 'warn',   // 'trace' | 'debug' | 'info' | 'warn' | 'error'
-  tmpDir: './tmp'         // temp folder for downloaded media (default os.tmpdir())
+  tmpDir: './tmp',        // temp folder for downloaded media (default os.tmpdir())
+  useOriginalRelayPort: false, // relays are dialed on the web-client port 3480 (fixes one-way audio).
+                               // true = use the port the relay advertises (3478)
+  useRawUdpTransport: false    // experimental: raw UDP to the relay instead of WebRTC data channel
 })
 
 // number or jid, non-digits are stripped automatically
@@ -455,10 +458,47 @@ await call.silent()       // toggle
 console.log(call.isSilenced)
 call.on('silent', state => console.log('silenced:', state))
 
+// ---- In-call controls ----
+call.mute(true)                 // mute the mic only (call.mute(false) to unmute)
+call.raiseHand(true)            // raise / lower hand (call.raiseHand(false))
+call.react('👍')                // emoji reaction, returns false if not connected yet
+await call.shareScreen(true)    // announce screen share; needs video on the call, 1:1 only
+await call.shareScreen(false)
+const result = await call.upgradeToVideo()
+// audio -> video mid-call: the peer must accept (about 5s max).
+// result: 'accepted' | 'rejected' | 'rejected_by_timeout' | 'error' | 'timeout' | 'cancelled'
+
 // ---- Events ----
 // ringing, connected, item, playlist_looped, playlist_ended, silent, ended, error
+// from the engine:
+call.on('peer_mute', muted => console.log('peer muted:', muted))
+call.on('hand_raise', ({ jid, raised }) => console.log(jid, raised ? 'raised' : 'lowered'))
+call.on('reaction', reaction => console.log('reaction', reaction))
+call.on('screen_share', share => console.log('screen share', share))
+call.on('peer_video', change => console.log('peer video', change))
+call.on('inbound_audio', pcm => {})    // Float32Array, 16 kHz mono, 60 ms frames
+call.on('inbound_video', frame => {})  // decoded H.264 frame from the peer
+call.on('audio_finished', () => {})    // current audio item reached its end
+call.on('video_upgrade', ({ result }) => {}) // peer did not accept a playlist video item, call stays audio
+
+// ---- Incoming calls ----
+await voip.listen()             // registers the call handlers on the socket, safe to call twice
+voip.on('call_incoming', async call => {
+  console.log('incoming from', call.peerJid, call.callId)
+  await voip.acceptCall(call.callId)      // or: await voip.rejectCall(call.callId)
+})
+voip.on('call_inbound_audio', ({ call, pcm }) => {}) // pcm of the remote side
+voip.on('call_ended', call => console.log('ended', call.callId))
+await voip.hangup(callId)       // end any call by id
+// coordinator events: call_incoming, call_state, call_ended, call_peer_mute, call_inbound_audio,
+// call_inbound_video, call_hand_raise, call_reaction, call_screen_share, call_peer_video_state,
+// call_outbound_audio_finished, call_error
+// voip.coordinator gives the raw engine (feedLiveAudio, feedLiveVideo, setExternalAudioMode, ...)
 
 // ---- Notes ----
+// video from a file is sent as H.264 through the engine; screen share only changes what the peer is
+// told the picture is (the picture itself is whatever video you send)
+// in a playlist on an audio call, the first video item triggers the video upgrade handshake
 // only one active call at a time, force release a stuck call:
 await voip.end(true)
 // a safety timeout emits `error` if the call never ends (starts at 105s)

@@ -9,6 +9,21 @@ const EXT_FEED_PAUSE_FRACTION = 0.12;
 const EXT_FEED_RESUME_FRACTION = 0.06;
 const MAX_DECODE_BYTES = 128 * 1024 * 1024;
 const MAX_STDERR_CHARS = 16 * 1024;
+/** Longest packet the MLow decoder produces, and the aggregation it allows. */
+const MAX_PACKET_MS = 120;
+const MAX_AGGREGATED_FRAMES = 2;
+/** Packets the reorder window waits on before it gives up on a hole. */
+const DEFAULT_REORDER_WINDOW_PACKETS = 4;
+const MAX_REORDER_WINDOW_PACKETS = 16;
+const SEQ_SPACE = 0x1_0000;
+const SEQ_HALF = 0x8000;
+function toPowerOfTwo(value, max) {
+    let size = 1;
+    while (size < value && size < max) {
+        size <<= 1;
+    }
+    return size;
+}
 const ffmpegProbeCache = new Map();
 function probeBinary(bin) {
     return new Promise((resolve) => {
@@ -25,33 +40,35 @@ async function hasFfmpeg(bin) {
     }
     return available;
 }
-
 function createSelfCorrectingInterval(callback, intervalMs) {
     let expected = Date.now() + intervalMs;
     let timer = null;
     let stopped = false;
     function tick() {
-        if (stopped) return;
+        if (stopped)
+            return;
         callback();
         expected += intervalMs;
         const drift = Date.now() - expected;
-
         timer = setTimeout(tick, Math.max(0, intervalMs - drift));
     }
     timer = setTimeout(tick, intervalMs);
     return {
         clear() {
             stopped = true;
-            if (timer) clearTimeout(timer);
+            if (timer)
+                clearTimeout(timer);
         }
     };
 }
+
 export class WaAudioEngine {
     logger;
     audioSender = null;
     audioBuffer = null;
     audioPosition = 0;
     audioFinished = false;
+    loopMode = false;
     onAudioFinished = null;
     playbackInterval = null;
     captureInterval = null;
@@ -62,11 +79,23 @@ export class WaAudioEngine {
     sampleRate;
     captureChunkSize;
     maxBuffer;
+    maxPacketSamples;
     outputSize;
     intervalMs;
+    reorderWindow;
+    reorderMask;
+    reorderFrames;
+    reorderSeqs;
+    reorderHeld = 0;
+    nextPlaybackSeq = -1;
+    playbackSink = null;
+    droppedSamples = 0;
+    reorderedPackets = 0;
+    latePackets = 0;
+    underruns = 0;
     silenceMode = false;
+    muted = false;
     externalMode = false;
-    loopMode = false;
     liveWritePos = 0;
     extStarted = false;
     extPreBufferSize;
@@ -83,17 +112,26 @@ export class WaAudioEngine {
         this.logger = config.logger ?? createNoopLogger();
         this.sampleRate = c.sampleRate;
         this.captureChunkSize = c.captureChunkSize;
-        this.maxBuffer = c.maxBufferSize;
-        this.outputSize = c.playbackOutputSize;
         this.intervalMs = c.intervalMs;
+        const samplesPerMs = this.sampleRate / 1000;
+        this.maxPacketSamples = Math.ceil(samplesPerMs * MAX_PACKET_MS * MAX_AGGREGATED_FRAMES);
+        const requestedCapacity = config.jitterHeadroomPackets === undefined
+            ? c.maxBufferSize
+            : this.maxPacketSamples * Math.trunc(config.jitterHeadroomPackets);
+        this.maxBuffer = Math.max(requestedCapacity, this.maxPacketSamples);
+        this.outputSize = Math.max(c.playbackOutputSize, Math.ceil(samplesPerMs * this.intervalMs));
+        this.reorderWindow = toPowerOfTwo(Math.max(1, Math.trunc(config.reorderWindowPackets ?? DEFAULT_REORDER_WINDOW_PACKETS)), MAX_REORDER_WINDOW_PACKETS);
+        this.reorderMask = this.reorderWindow - 1;
+        this.reorderFrames = new Array(this.reorderWindow).fill(null);
+        this.reorderSeqs = new Int32Array(this.reorderWindow).fill(-1);
         this.circularBuffer = new Float32Array(this.maxBuffer);
         this.captureChunkBuffer = new Float32Array(this.captureChunkSize);
         this.silenceChunkBuffer = new Float32Array(this.captureChunkSize);
         this.playbackOutputBuffer = new Float32Array(this.outputSize);
         this.extPreBufferSize = Math.floor(this.sampleRate * EXT_FEED_RESUME_FRACTION);
         this.extTargetBuffer = Math.floor(this.sampleRate * 0.06);
-        this.extHighWater = Math.floor(this.sampleRate * 0.2);
-        this.extMaxBuffer = Math.floor(this.sampleRate * 0.5);
+        this.extHighWater = Math.floor(this.sampleRate * 0.45);
+        this.extMaxBuffer = Math.floor(this.sampleRate * 0.75);
     }
     setAudioSender(sender) {
         this.audioSender = sender;
@@ -123,6 +161,12 @@ export class WaAudioEngine {
     isExternalMode() {
         return this.externalMode;
     }
+    /**
+     * Append live PCM to the external-mode buffer and return the buffered
+     * level in milliseconds. Bounded: an oversized chunk keeps only its tail,
+     * and overflow drops the oldest samples, so the buffer never grows past
+     * its cap.
+     */
     feedExternalAudio(data) {
         if (!this.externalMode || !this.audioBuffer)
             return 0;
@@ -162,6 +206,11 @@ export class WaAudioEngine {
             return 0;
         return ((this.liveWritePos - this.audioPosition) / this.sampleRate) * 1000;
     }
+    /**
+     * Backpressure watermarks for the live feed, in milliseconds: pause a
+     * producer once the buffered level reaches `pauseMs`, resume once it drains
+     * to `resumeMs`. Derived from the engine config, independent of any call.
+     */
     static feedWatermarksMs() {
         return {
             pauseMs: Math.round(EXT_FEED_PAUSE_FRACTION * 1000),
@@ -187,7 +236,7 @@ export class WaAudioEngine {
         this.audioPosition = 0;
         this.audioFinished = false;
         const duration = this.audioBuffer.length / this.sampleRate;
-        this.logger.media('audio file loaded', {
+        this.logger.debug('audio file loaded', {
             samples: this.audioBuffer.length,
             durationSec: duration
         });
@@ -264,21 +313,94 @@ export class WaAudioEngine {
         if (this.playbackInterval) {
             return;
         }
-        this.logger.debug('starting playback');
+        this.logger.debug('starting playback', {
+            capacitySamples: this.maxBuffer,
+            drainSamples: this.outputSize,
+            reorderWindow: this.reorderWindow
+        });
         this.resetBuffer();
-
-        this.playbackInterval = createSelfCorrectingInterval(() => {
-            this.readFromBuffer(this.outputSize);
+        this.playbackInterval = setInterval(() => {
+            const drained = this.readFromBuffer(this.outputSize);
+            const sink = this.playbackSink;
+            if (!sink || drained === 0) {
+                return;
+            }
+            try {
+                sink(this.playbackOutputBuffer);
+            }
+            catch (err) {
+                this.logger.trace('playback sink failed', { message: toError(err).message });
+            }
         }, this.intervalMs);
     }
     stopPlayback() {
         if (this.playbackInterval) {
-            this.playbackInterval.clear();
+            clearInterval(this.playbackInterval);
             this.playbackInterval = null;
         }
     }
+    /**
+     * Receive the paced playback audio. The callback is handed the engine's own
+     * output buffer, which is overwritten on the next tick, so a consumer that
+     * keeps the samples has to copy them.
+     */
+    setPlaybackSink(sink) {
+        this.playbackSink = sink;
+    }
+    /** Queue decoded audio for playback without any ordering guarantee. */
     onPlaybackData(audioData) {
         this.writeToBuffer(audioData);
+    }
+    /**
+     * Queue decoded audio carrying the RTP sequence number it was decoded
+     * from. A packet that arrives ahead of a missing predecessor waits in a
+     * bounded window until the hole is filled, until the window is exhausted,
+     * or until a packet arrives too far ahead to keep waiting. A packet
+     * playback has already moved past is discarded.
+     */
+    onPlaybackPacket(sequenceNumber, audioData) {
+        const seq = sequenceNumber & 0xffff;
+        if (this.nextPlaybackSeq < 0) {
+            this.writeToBuffer(audioData);
+            this.nextPlaybackSeq = (seq + 1) & 0xffff;
+            return;
+        }
+        const delta = (seq - this.nextPlaybackSeq + SEQ_SPACE) % SEQ_SPACE;
+        if (delta >= SEQ_HALF) {
+            this.latePackets++;
+            this.logger.trace('playback packet arrived too late', {
+                seq,
+                expectedSeq: this.nextPlaybackSeq
+            });
+            return;
+        }
+        if (delta === 0) {
+            this.writeToBuffer(audioData);
+            this.nextPlaybackSeq = (seq + 1) & 0xffff;
+            this.releaseReordered();
+            return;
+        }
+        if (delta < this.reorderWindow) {
+            this.holdReordered(seq, audioData);
+            return;
+        }
+        this.flushReordered();
+        this.writeToBuffer(audioData);
+        this.nextPlaybackSeq = (seq + 1) & 0xffff;
+    }
+    getPlaybackStats() {
+        return {
+            buffered: this.bufferLength,
+            capacity: this.maxBuffer,
+            dropped: this.droppedSamples,
+            reordered: this.reorderedPackets,
+            late: this.latePackets,
+            underruns: this.underruns
+        };
+    }
+    /** Samples the jitter buffer accepts in a single write. */
+    getMaxPacketSamples() {
+        return this.maxPacketSamples;
     }
     startSilenceCapture() {
         if (this.captureInterval) {
@@ -358,6 +480,23 @@ export class WaAudioEngine {
             this.captureInterval = null;
         }
     }
+    /**
+     * Mute the outbound stream without tearing capture down. Capture keeps
+     * ticking and feeds silence, so the encoder's DTX decides what reaches the
+     * wire and the peer's inbound liveness watchdog keeps seeing a live
+     * stream. Stopping capture outright would starve that watchdog on a mute
+     * that outlasts it.
+     */
+    setMuted(muted) {
+        if (this.muted === muted) {
+            return;
+        }
+        this.muted = muted;
+        this.logger.debug('capture mute changed', { muted });
+    }
+    isMuted() {
+        return this.muted;
+    }
     stop() {
         this.stopPlayback();
         this.stopCapture();
@@ -369,27 +508,114 @@ export class WaAudioEngine {
         this.bufferWritePos = 0;
         this.bufferReadPos = 0;
         this.bufferLength = 0;
+        this.clearReordered();
+        this.nextPlaybackSeq = -1;
     }
-    writeToBuffer(data) {
-        for (let i = 0; i < data.length && this.bufferLength < this.maxBuffer; i++) {
-            this.circularBuffer[this.bufferWritePos] = data[i];
-            this.bufferWritePos = (this.bufferWritePos + 1) % this.maxBuffer;
-            this.bufferLength++;
+    holdReordered(seq, data) {
+        const slot = seq & this.reorderMask;
+        const parked = this.reorderFrames[slot];
+        if (parked) {
+            if (this.reorderSeqs[slot] === seq) {
+                this.latePackets++;
+                return;
+            }
+            this.droppedSamples += parked.length;
+        }
+        else {
+            this.reorderHeld++;
+        }
+        this.reorderFrames[slot] = data;
+        this.reorderSeqs[slot] = seq;
+        this.reorderedPackets++;
+    }
+    /** Write every parked packet that is now contiguous with the playout point. */
+    releaseReordered() {
+        while (this.reorderHeld > 0) {
+            const slot = this.nextPlaybackSeq & this.reorderMask;
+            const parked = this.reorderFrames[slot];
+            if (!parked || this.reorderSeqs[slot] !== this.nextPlaybackSeq) {
+                return;
+            }
+            this.reorderFrames[slot] = null;
+            this.reorderSeqs[slot] = -1;
+            this.reorderHeld--;
+            this.writeToBuffer(parked);
+            this.nextPlaybackSeq = (this.nextPlaybackSeq + 1) & 0xffff;
         }
     }
-    readFromBuffer(count) {
-        this.playbackOutputBuffer.fill(0);
-        for (let i = 0; i < count; i++) {
-            if (this.bufferLength > 0) {
-                this.playbackOutputBuffer[i] = this.circularBuffer[this.bufferReadPos];
-                this.bufferReadPos = (this.bufferReadPos + 1) % this.maxBuffer;
-                this.bufferLength--;
+    /** Give up on the hole and write everything parked, in sequence order. */
+    flushReordered() {
+        if (this.reorderHeld === 0) {
+            return;
+        }
+        for (let i = 0; i < this.reorderWindow; i++) {
+            const seq = (this.nextPlaybackSeq + i) & 0xffff;
+            const slot = seq & this.reorderMask;
+            const parked = this.reorderFrames[slot];
+            if (parked && this.reorderSeqs[slot] === seq) {
+                this.writeToBuffer(parked);
             }
         }
-        return this.playbackOutputBuffer;
+        this.clearReordered();
+    }
+    clearReordered() {
+        for (let i = 0; i < this.reorderWindow; i++) {
+            this.reorderFrames[i] = null;
+            this.reorderSeqs[i] = -1;
+        }
+        this.reorderHeld = 0;
+    }
+    writeToBuffer(data) {
+        const capacity = this.maxBuffer;
+        let source = data;
+        if (source.length > capacity) {
+            const truncated = source.length - capacity;
+            this.droppedSamples += truncated;
+            source = source.subarray(truncated);
+        }
+        if (source.length === 0) {
+            return;
+        }
+        const overflow = this.bufferLength + source.length - capacity;
+        if (overflow > 0) {
+            this.bufferReadPos = (this.bufferReadPos + overflow) % capacity;
+            this.bufferLength -= overflow;
+            this.droppedSamples += overflow;
+            this.logger.trace('jitter buffer overflow, dropped oldest', {
+                droppedSamples: overflow,
+                totalDropped: this.droppedSamples
+            });
+        }
+        const head = Math.min(source.length, capacity - this.bufferWritePos);
+        this.circularBuffer.set(source.subarray(0, head), this.bufferWritePos);
+        if (head < source.length) {
+            this.circularBuffer.set(source.subarray(head), 0);
+        }
+        this.bufferWritePos = (this.bufferWritePos + source.length) % capacity;
+        this.bufferLength += source.length;
+    }
+    /** Drain up to `count` samples into the output buffer, returning how many. */
+    readFromBuffer(count) {
+        const out = this.playbackOutputBuffer;
+        const wanted = Math.min(count, out.length);
+        const drained = Math.min(wanted, this.bufferLength);
+        if (drained < wanted) {
+            this.underruns++;
+            out.fill(0, drained, wanted);
+        }
+        if (drained > 0) {
+            const head = Math.min(drained, this.maxBuffer - this.bufferReadPos);
+            out.set(this.circularBuffer.subarray(this.bufferReadPos, this.bufferReadPos + head), 0);
+            if (head < drained) {
+                out.set(this.circularBuffer.subarray(0, drained - head), head);
+            }
+            this.bufferReadPos = (this.bufferReadPos + drained) % this.maxBuffer;
+            this.bufferLength -= drained;
+        }
+        return drained;
     }
     getNextChunk() {
-        if (!this.audioBuffer) {
+        if (this.muted || !this.audioBuffer) {
             return this.silenceChunkBuffer;
         }
         const endPos = this.externalMode ? this.liveWritePos : this.audioBuffer.length;
@@ -430,7 +656,8 @@ export class WaAudioEngine {
             if (this.audioPosition >= endPos) {
                 if (this.loopMode && !this.externalMode && endPos > 0) {
                     this.audioPosition = 0;
-                    if (this.audioPosition >= endPos) break;
+                    if (this.audioPosition >= endPos)
+                        break;
                     continue;
                 }
                 if (!this.externalMode && !this.audioFinished) {

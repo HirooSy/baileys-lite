@@ -1,10 +1,31 @@
-import { uint8TimingSafeEqual } from '../shim/util.js';
-import { writeBigUInt64BE, writeUInt32BE } from '../bytes.js';
+import { setBoundedMapEntry, uint8TimingSafeEqual } from '../shim/util.js';
+import { readUInt32BE, writeBigUInt64BE, writeUInt32BE } from '../bytes.js';
 import { RtpHeader, RtpPacket } from '../media/rtp.js';
 import { SRTP_AUTH_TAG_LEN, SRTP_LABEL } from '../types.js';
 import { aesCtr128, hmacSha1 } from './primitives.js';
 const SRTP_REPLAY_WINDOW = 64n;
 const SRTP_INDEX_MASK = (1n << 64n) - 1n;
+/**
+ * Upper bound on the number of per-SSRC receive contexts an {@link SrtpSession}
+ * or {@link SrtcpSession} keeps at once. Past this bound, the oldest tracked
+ * SSRC is evicted to admit a new one.
+ */
+export const SRTP_MAX_RECV_CONTEXTS = 32;
+/**
+ * SRTCP authentication tag length in bytes. WhatsApp truncates the RTP tag to 4
+ * bytes but keeps the full HMAC-SHA1_80 tag on RTCP: a 4-byte tag here makes the
+ * peer drop every control packet we emit, key-frame requests included.
+ */
+export const SRTCP_AUTH_TAG_LEN = 10;
+const SRTCP_HEADER_LEN = 8;
+const SRTCP_INDEX_LEN = 4;
+const SRTCP_ENCRYPTED_FLAG = 0x80000000;
+const SRTCP_INDEX_MASK = 0x7fffffff;
+const SRTCP_LABEL = {
+    ENCRYPTION: 0x03,
+    AUTH: 0x04,
+    SALT: 0x05
+};
 export class SrtpContext {
     sessionKey;
     sessionSalt;
@@ -140,27 +161,227 @@ export class SrtpContext {
         }
         return this.ivBuffer;
     }
-    computeAuthTag(data, roc, tagLen = SRTP_AUTH_TAG_LEN) {
+    computeAuthTag(data, roc, tagLen) {
         writeUInt32BE(this.rocBuffer, roc, 0);
         const result = hmacSha1(this.authKey, data, this.rocBuffer);
         return result.subarray(0, tagLen);
     }
 }
 export class SrtpSession {
-    sendCtx;
-    recvCtx;
+    static MAX_RECV_CONTEXTS = SRTP_MAX_RECV_CONTEXTS;
+    sendKey;
+    recvKey;
+    sendAuthLen;
+    recvAuthLen;
+    sendContexts = new Map();
+    recvContexts = new Map();
+    sendAuthKeying = null;
     constructor(sendKey, recvKey, sendAuthLen, recvAuthLen) {
-        this.sendCtx = new SrtpContext(sendKey, sendAuthLen);
-        this.recvCtx = new SrtpContext(recvKey, recvAuthLen);
+        this.sendKey = sendKey;
+        this.recvKey = recvKey;
+        this.sendAuthLen = sendAuthLen;
+        this.recvAuthLen = recvAuthLen;
     }
     protect(packet) {
-        return this.sendCtx.protect(packet);
+        let ctx = this.sendContexts.get(packet.header.ssrc);
+        if (!ctx) {
+            ctx = new SrtpContext(this.sendKey, this.sendAuthLen);
+            if (this.sendAuthKeying)
+                ctx.setAuthKeying(this.sendAuthKeying);
+            this.sendContexts.set(packet.header.ssrc, ctx);
+        }
+        return ctx.protect(packet);
     }
     unprotect(data) {
-        return this.recvCtx.unprotect(data);
+        if (data.length < 12) {
+            throw new SrtpError('packet_too_short', `Packet too short: ${data.length} bytes`);
+        }
+        const header = RtpHeader.decode(data);
+        let ctx = this.recvContexts.get(header.ssrc);
+        if (!ctx) {
+            ctx = new SrtpContext(this.recvKey, this.recvAuthLen);
+            const packet = ctx.unprotect(data);
+            setBoundedMapEntry(this.recvContexts, header.ssrc, ctx, SrtpSession.MAX_RECV_CONTEXTS);
+            return packet;
+        }
+        return ctx.unprotect(data);
     }
     setSendAuthKeying(keying) {
-        this.sendCtx.setAuthKeying(keying);
+        this.sendAuthKeying = keying;
+        for (const ctx of this.sendContexts.values())
+            ctx.setAuthKeying(keying);
+    }
+}
+export class SrtcpContext {
+    cipherKey;
+    authKey;
+    salt;
+    authTagLen;
+    index = 0;
+    replayInitialized = false;
+    highestIndex = 0n;
+    replayMask = 0n;
+    ivBuffer = new Uint8Array(16);
+    ssrcBuffer = new Uint8Array(4);
+    indexBuffer = new Uint8Array(4);
+    constructor(keying, authTagLen = SRTCP_AUTH_TAG_LEN) {
+        this.cipherKey = deriveKey(keying.masterKey, keying.masterSalt, SRTCP_LABEL.ENCRYPTION, 16);
+        this.authKey = deriveKey(keying.masterKey, keying.masterSalt, SRTCP_LABEL.AUTH, 20);
+        this.salt = deriveKey(keying.masterKey, keying.masterSalt, SRTCP_LABEL.SALT, 14);
+        this.authTagLen = authTagLen;
+    }
+    protect(rtcp, senderSsrc) {
+        const current = this.index++ & SRTCP_INDEX_MASK;
+        const clearLen = Math.min(SRTCP_HEADER_LEN, rtcp.length);
+        const payload = rtcp.subarray(clearLen);
+        const iv = this.generateIv(senderSsrc, current);
+        const encrypted = aesCtr128(this.cipherKey, iv, payload);
+        const indexOffset = clearLen + encrypted.length;
+        const output = new Uint8Array(indexOffset + SRTCP_INDEX_LEN + this.authTagLen);
+        output.set(rtcp.subarray(0, clearLen), 0);
+        output.set(encrypted, clearLen);
+        writeUInt32BE(output, (SRTCP_ENCRYPTED_FLAG | current) >>> 0, indexOffset);
+        if (this.authTagLen > 0) {
+            const authenticated = output.subarray(0, indexOffset + SRTCP_INDEX_LEN);
+            const tag = hmacSha1(this.authKey, authenticated).subarray(0, this.authTagLen);
+            output.set(tag, authenticated.length);
+        }
+        return output;
+    }
+    /**
+     * Verifies the auth tag and returns the RTCP packet in the clear. The sender
+     * SSRC comes from the header the tag covers, so there is no SSRC argument.
+     *
+     * Replay is checked against the 31-bit SRTCP index the same way
+     * {@link SrtpContext} checks it against its 48-bit RTP index: a sliding
+     * window keyed on the highest index seen, so a relay that captured and
+     * replays an earlier control packet (PLI, FIR, REMB, sender report) is
+     * rejected instead of being decrypted and acted on again.
+     *
+     * @throws {SrtpError} `packet_too_short`, `auth_failed` or `replay`
+     */
+    unprotect(data) {
+        const minLength = SRTCP_HEADER_LEN + SRTCP_INDEX_LEN + this.authTagLen;
+        if (data.length < minLength) {
+            throw new SrtpError('packet_too_short', `SRTCP packet too short: ${data.length}B total, ${minLength}B minimum`);
+        }
+        const authEnd = data.length - this.authTagLen;
+        if (this.authTagLen > 0) {
+            const authenticated = data.subarray(0, authEnd);
+            const expected = hmacSha1(this.authKey, authenticated).subarray(0, this.authTagLen);
+            if (!uint8TimingSafeEqual(expected, data.subarray(authEnd))) {
+                throw new SrtpError('auth_failed', 'SRTCP auth tag verification failed');
+            }
+        }
+        const indexOffset = authEnd - SRTCP_INDEX_LEN;
+        const indexWord = readUInt32BE(data, indexOffset);
+        const index = BigInt(indexWord & SRTCP_INDEX_MASK);
+        if (this.isReplayed(index)) {
+            throw new SrtpError('replay', `SRTCP replay detected: index ${index}`);
+        }
+        if ((indexWord & SRTCP_ENCRYPTED_FLAG) === 0) {
+            this.advanceReplay(index);
+            return data.subarray(0, indexOffset);
+        }
+        const iv = this.generateIv(readUInt32BE(data, 4), indexWord & SRTCP_INDEX_MASK);
+        const decrypted = aesCtr128(this.cipherKey, iv, data.subarray(SRTCP_HEADER_LEN, indexOffset));
+        this.advanceReplay(index);
+        const output = new Uint8Array(SRTCP_HEADER_LEN + decrypted.length);
+        output.set(data.subarray(0, SRTCP_HEADER_LEN), 0);
+        output.set(decrypted, SRTCP_HEADER_LEN);
+        return output;
+    }
+    isReplayed(index) {
+        if (!this.replayInitialized) {
+            return false;
+        }
+        if (index > this.highestIndex) {
+            return false;
+        }
+        const offset = this.highestIndex - index;
+        if (offset >= SRTP_REPLAY_WINDOW) {
+            return true;
+        }
+        return (this.replayMask & (1n << offset)) !== 0n;
+    }
+    advanceReplay(index) {
+        if (this.replayInitialized && index <= this.highestIndex) {
+            const offset = this.highestIndex - index;
+            if (offset < SRTP_REPLAY_WINDOW) {
+                this.replayMask |= 1n << offset;
+            }
+            return;
+        }
+        const shift = this.replayInitialized ? index - this.highestIndex : SRTP_REPLAY_WINDOW;
+        this.replayMask =
+            shift >= SRTP_REPLAY_WINDOW ? 1n : ((this.replayMask << shift) | 1n) & SRTP_INDEX_MASK;
+        this.highestIndex = index;
+        this.replayInitialized = true;
+    }
+    generateIv(ssrc, index) {
+        this.ivBuffer.fill(0);
+        this.ivBuffer.set(this.salt, 0);
+        writeUInt32BE(this.ssrcBuffer, ssrc, 0);
+        for (let i = 0; i < 4; i++) {
+            this.ivBuffer[4 + i] ^= this.ssrcBuffer[i];
+        }
+        writeUInt32BE(this.indexBuffer, index, 0);
+        for (let i = 0; i < 4; i++) {
+            this.ivBuffer[10 + i] ^= this.indexBuffer[i];
+        }
+        return this.ivBuffer;
+    }
+}
+/**
+ * Dispatches incoming SRTCP to one {@link SrtcpContext} per sender SSRC.
+ *
+ * A call's peer emits more than one SRTCP stream on the same relay connection
+ * (audio, main video, video FEC, ...), each with its own 31-bit SRTCP index
+ * counter. A single shared {@link SrtcpContext} interleaves those independent
+ * counters into one replay window, so a packet from stream B looks like an
+ * out-of-window replay relative to stream A's index and gets dropped even
+ * though nothing was actually replayed. Keying the context by the sender SSRC
+ * at bytes 4-7 of the packet — the same field {@link SrtcpContext} already
+ * reads to build the decryption IV — gives each stream its own window, the
+ * way {@link SrtpSession} already does per-SSRC for RTP.
+ */
+export class SrtcpSession {
+    static MAX_RECV_CONTEXTS = SRTP_MAX_RECV_CONTEXTS;
+    keying;
+    authTagLen;
+    contexts = new Map();
+    constructor(keying, authTagLen = SRTCP_AUTH_TAG_LEN) {
+        this.keying = keying;
+        this.authTagLen = authTagLen;
+    }
+    /**
+     * Verifies and decrypts an incoming SRTCP packet, using (and lazily
+     * creating) the {@link SrtcpContext} for its sender SSRC.
+     *
+     * A context for an unseen SSRC is authenticated through
+     * {@link SrtcpContext.unprotect} before it is cached or allowed to evict
+     * an existing entry. `MAX_RECV_CONTEXTS` bounds the cache, so a packet
+     * with a forged SSRC that got inserted first could otherwise evict the
+     * oldest tracked stream and wipe its replay window, letting a captured
+     * packet from that stream be replayed. Caching only after a successful
+     * authentication keeps a forged SSRC from ever reaching the eviction
+     * check.
+     *
+     * @throws {SrtpError} `packet_too_short`, `auth_failed` or `replay`
+     */
+    unprotect(data) {
+        if (data.length < SRTCP_HEADER_LEN) {
+            throw new SrtpError('packet_too_short', `SRTCP packet too short: ${data.length}B total, ${SRTCP_HEADER_LEN}B minimum`);
+        }
+        const ssrc = readUInt32BE(data, 4);
+        let ctx = this.contexts.get(ssrc);
+        if (!ctx) {
+            ctx = new SrtcpContext(this.keying, this.authTagLen);
+            const packet = ctx.unprotect(data);
+            setBoundedMapEntry(this.contexts, ssrc, ctx, SrtcpSession.MAX_RECV_CONTEXTS);
+            return packet;
+        }
+        return ctx.unprotect(data);
     }
 }
 function deriveKey(masterKey, masterSalt, label, length) {

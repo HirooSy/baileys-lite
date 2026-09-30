@@ -2,6 +2,23 @@ import { EMPTY_BYTES, readUInt16BE, readUInt32BE, writeUInt16BE, writeUInt32BE }
 import { randomInt } from '../crypto/primitives.js';
 import { PayloadType } from '../types.js';
 const RTP_VERSION = 2;
+/**
+ * Profile that opens the RTP header extension this session emits, on both the
+ * audio and the video stream.
+ *
+ * It is the one-byte form of RFC 8285, whose profile the RFC writes as
+ * `0xBE 0xDE` on the wire. What goes out from here is `0xDE 0xBE`, and that is
+ * capture observation, not an oversight: the official client was read emitting
+ * the two bytes in this order, and what stood here before this constant was the
+ * same literal repeated on both send paths. The elements behind it follow the
+ * RFC: `(id << 4) | (len - 1)` per element, zero padding up to the 32-bit word.
+ *
+ * Switching to the RFC order is a protocol change, not a style one: it is worth
+ * trying if some extension turns out to be ignored by the peer, but only with a
+ * capture from the other side to confirm it, because today the audio and the
+ * video of this session are accepted with this order.
+ */
+export const WA_RTP_EXTENSION_PROFILE = 0xdebe;
 const MIN_HEADER_SIZE = 12;
 export class RtpHeader {
     version = RTP_VERSION;
@@ -136,77 +153,6 @@ export class RtpPacket {
         return new RtpPacket(header, payload);
     }
 }
-
-export const VideoMediaFrameInfo = { IDR: 0x08, Delta: 0x20 };
-const DEFAULT_VIDEO_RTP_STEP_SAMPLES = Math.round(90000 / 30);
-
-export function videoRtpDurationSamples(durationMs) {
-  if (!durationMs || durationMs <= 0) return DEFAULT_VIDEO_RTP_STEP_SAMPLES;
-  const samples = Math.round((durationMs * 90000) / 1000);
-  return samples || DEFAULT_VIDEO_RTP_STEP_SAMPLES;
-}
-
-function encodeWhatsappVideoExtension(ext) {
-  const hasFrameNumber = ext.frameNumber !== null && ext.frameNumber !== undefined;
-  const out = [];
-  out.push(0x30 | ((hasFrameNumber ? 3 : 1) - 1), ext.mediaFrameInfo & 0xff);
-  if (hasFrameNumber) {
-    out.push((ext.frameNumber >>> 8) & 0xff, ext.frameNumber & 0xff);
-  }
-  out.push(0x51, (ext.initialBandwidth >>> 8) & 0xff, ext.initialBandwidth & 0xff);
-  out.push(0x61, (ext.shortOffset >>> 8) & 0xff, ext.shortOffset & 0xff);
-  out.push(0x91, (ext.transportSequence >>> 8) & 0xff, ext.transportSequence & 0xff);
-  while (out.length % 4 !== 0) out.push(0);
-  return new Uint8Array(out);
-}
-
-export class VideoRtpStream {
-  ssrc;
-  sequenceNumber;
-  timestamp;
-  tsStride;
-  transportSequence = 0;
-  frameNumber = 1;
-  firstPacket = true;
-  constructor(ssrc, tsStride) {
-    this.ssrc = ssrc;
-    this.sequenceNumber = randomInt(0, 65536);
-    this.timestamp = randomInt(0, 0xffffffff);
-    this.tsStride = tsStride;
-  }
-  setTimestampStride(tsStride) {
-    if (!tsStride) return false;
-    this.tsStride = tsStride;
-    return true;
-  }
-
-  nextPacket(lastInAccessUnit, mediaFrameInfo) {
-    const frameNumber = this.firstPacket ? this.frameNumber : null;
-    const ext = {
-      mediaFrameInfo,
-      frameNumber,
-      initialBandwidth: 0,
-      shortOffset: 0,
-      transportSequence: this.transportSequence
-    };
-    const header = new RtpHeader(PayloadType.H264, this.sequenceNumber, this.timestamp, this.ssrc);
-    header.marker = lastInAccessUnit;
-    header.extension = true;
-    header.extensionProfile = 0xdebe;
-    header.extensionData = encodeWhatsappVideoExtension(ext);
-    this.sequenceNumber = (this.sequenceNumber + 1) & 0xffff;
-    this.transportSequence = (this.transportSequence + 1) & 0xffff;
-    if (lastInAccessUnit) {
-      this.timestamp = (this.timestamp + this.tsStride) >>> 0;
-      this.frameNumber = (this.frameNumber + 1) & 0xffff;
-      this.firstPacket = true;
-    } else {
-      this.firstPacket = false;
-    }
-    return header;
-  }
-}
-
 export class RtpSession {
     ssrc;
     payloadType;
@@ -222,6 +168,9 @@ export class RtpSession {
         this.timestamp = randomInt(0, 0xffffffff);
         this.samplesPerPacket = samplesPerPacket;
     }
+    getSsrc() {
+        return this.ssrc;
+    }
     static whatsappOpus(ssrc) {
         return new RtpSession(ssrc, PayloadType.WhatsAppOpus, 16000, 960);
     }
@@ -230,6 +179,12 @@ export class RtpSession {
         header.marker = marker;
         this.sequenceNumber = (this.sequenceNumber + 1) & 0xffff;
         this.timestamp = (this.timestamp + this.samplesPerPacket) >>> 0;
+        return new RtpPacket(header, payload);
+    }
+    createPacketAtTimestamp(payload, timestamp, marker = false) {
+        const header = new RtpHeader(this.payloadType, this.sequenceNumber, timestamp >>> 0, this.ssrc);
+        header.marker = marker;
+        this.sequenceNumber = (this.sequenceNumber + 1) & 0xffff;
         return new RtpPacket(header, payload);
     }
     createPacketWithDuration(payload, durationSamples, marker = false) {

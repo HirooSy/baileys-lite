@@ -77,6 +77,12 @@ export class ActiveCall extends EventEmitter {
     _onError(err) {
         this.emit('error', err);
     }
+    // ---- zapo features, surfaced on the active call ----
+    setMute = (muted) => this.#coordinator.setMute(this.callId, !!muted);
+    raiseHand = (raised = true) => this.#coordinator.setHandRaised(this.callId, !!raised);
+    shareScreen = (sharing = true) => this.#coordinator.setScreenShare(this.callId, !!sharing);
+    react = (emoji) => this.#coordinator.sendReaction(this.callId, emoji);
+    upgradeToVideo = () => this.#coordinator.startVideoMidCall(this.callId);
     end = async () => {
         if (this.#ended)
             return;
@@ -116,6 +122,9 @@ export class VoipClient {
             throw new Error('VoipClient requires { existingSocket }: VOIP always runs on the main bot session now, there is no standalone-device mode.');
         }
     }
+    get coordinator() {
+        return this.#coordinator;
+    }
     connect = async () => {
         if (this.#coordinator && this.#sock === this.#config.existingSocket) {
 
@@ -128,7 +137,9 @@ export class VoipClient {
         const ctx = createVoipCtx(this.#sock, deps, stores, logger, emitter);
         this.#coordinator = new WaVoipCoordinator(ctx, {
             maxConcurrentCalls: 1,
-            logLevel: this.#config.voipLogLevel ?? 'warn'
+            logLevel: this.#config.voipLogLevel ?? 'warn',
+            useOriginalRelayPort: this.#config.useOriginalRelayPort,
+            useRawUdpTransport: this.#config.useRawUdpTransport
         });
     };
     call = async (phoneNumber, opts = {}) => {
@@ -170,7 +181,27 @@ export class VoipClient {
         this.#coordinator.on('call_state', onState);
         this.#coordinator.on('call_ended', onEnded);
         this.#coordinator.on('call_error', onError);
+        // zapo events -> emitted on the ActiveCall (only for this call id)
+        const forwarded = [
+            ['call_peer_mute', 'peer_mute', (c, muted) => [muted]],
+            ['call_hand_raise', 'hand_raise', (c, jid, raised) => [{ jid, raised }]],
+            ['call_reaction', 'reaction', (c, reaction) => [reaction]],
+            ['call_screen_share', 'screen_share', (c, share) => [share]],
+            ['call_peer_video_state', 'peer_video', (c, change) => [change]],
+            ['call_inbound_audio', 'inbound_audio', (c, pcm) => [pcm]],
+            ['call_inbound_video', 'inbound_video', (c, frame) => [frame]],
+            ['call_outbound_audio_finished', 'audio_finished', () => []]
+        ].map(([source, target, shape]) => {
+            const listener = (info, ...rest) => {
+                if (info?.callId === callId)
+                    call.emit(target, ...shape(info, ...rest));
+            };
+            this.#coordinator.on(source, listener);
+            return [source, listener];
+        });
         call.once('ended', () => {
+            for (const [source, listener] of forwarded)
+                this.#coordinator?.off(source, listener);
             this.#coordinator?.off('call_state', onState);
             this.#coordinator?.off('call_ended', onEnded);
             this.#coordinator?.off('call_error', onError);

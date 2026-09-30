@@ -13,6 +13,28 @@ export class CallInfo {
     encryptionKey;
     relayData;
     electedRelayIdx;
+    /**
+     * Remote participants whose hand is raised, keyed by the device JID the stanza arrived
+     * from. An entry survives until that participant lowers the hand.
+     */
+    raisedHands = new Set();
+    /**
+     * Configuration the server sent alongside the offer of this call, in the
+     * `<voip_settings>` node, parsed once on arrival. Absent when the node did
+     * not come or could not be read, and in that case every consumer stays on
+     * the compiled defaults.
+     */
+    voipSettings;
+    /**
+     * Last screen-share state the peer reported. Updated in place, so a `voip_call_state`
+     * listener reads the current value without subscribing to `voip_call_screen_share`.
+     */
+    peerScreenShare;
+    /**
+     * Last video state the peer announced, from its `<video>`. Absent until it sends one,
+     * which only happens on a mid-call change - a call negotiated as video never does.
+     */
+    peerVideoState;
     constructor(init) {
         this.callId = init.callId;
         this.peerJid = init.peerJid;
@@ -27,6 +49,8 @@ export class CallInfo {
         this.encryptionKey = init.encryptionKey;
         this.relayData = init.relayData;
         this.electedRelayIdx = init.electedRelayIdx;
+        this.voipSettings = init.voipSettings;
+        this.peerScreenShare = init.peerScreenShare;
     }
     static newOutgoing(callId, peerJid, ourJid, mediaType) {
         return new CallInfo({
@@ -38,7 +62,9 @@ export class CallInfo {
             stateData: {
                 state: CallState.Initiating,
                 audioMuted: false,
-                videoOff: mediaType !== CallMediaType.Video
+                videoOff: mediaType !== CallMediaType.Video,
+                handRaised: false,
+                screenSharing: false
             }
         });
     }
@@ -53,7 +79,9 @@ export class CallInfo {
             stateData: {
                 state: CallState.IncomingRinging,
                 audioMuted: false,
-                videoOff: mediaType !== CallMediaType.Video
+                videoOff: mediaType !== CallMediaType.Video,
+                handRaised: false,
+                screenSharing: false
             }
         });
     }
@@ -147,6 +175,11 @@ export class CallInfo {
                 s.state = CallState.Ended;
                 s.endedAt = new Date();
                 s.endReason = transition.reason;
+                // In-call affordances do not outlive the call: a hand still up or a share
+                // still on would be read as live on a call that has none.
+                s.handRaised = false;
+                s.screenSharing = false;
+                this.raisedHands.clear();
                 break;
             case 'hold':
                 if (s.state !== CallState.Active) {
@@ -171,6 +204,19 @@ export class CallInfo {
                     throw new InvalidTransition(s.state, transition.type);
                 }
                 s.videoOff = transition.off;
+                break;
+            case 'hand_raise_changed':
+                if (s.state !== CallState.Active) {
+                    throw new InvalidTransition(s.state, transition.type);
+                }
+                s.handRaised = transition.raised;
+                break;
+            // The video stream is the session's condition to check, not this machine's.
+            case 'screen_share_changed':
+                if (s.state !== CallState.Active) {
+                    throw new InvalidTransition(s.state, transition.type);
+                }
+                s.screenSharing = transition.sharing;
                 break;
             default:
                 throw new InvalidTransition(s.state, transition.type);

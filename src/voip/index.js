@@ -190,6 +190,25 @@ class VoipCall extends EventEmitter {
         });
         activeCall.on('ended', (reason) => this._finish(reason));
         activeCall.on('error', (err) => this.emit('error', err));
+        for (const ev of ['peer_mute', 'hand_raise', 'reaction', 'screen_share', 'peer_video', 'inbound_audio', 'inbound_video', 'audio_finished']) {
+            activeCall.on(ev, (...args) => this.emit(ev, ...args));
+        }
+    }
+    // ---- zapo features ----
+    mute(value = true) {
+        return this.#activeCall?.setMute(value);
+    }
+    raiseHand(value = true) {
+        return this.#activeCall?.raiseHand(value);
+    }
+    shareScreen(value = true) {
+        return this.#activeCall?.shareScreen(value);
+    }
+    react(emoji) {
+        return this.#activeCall?.react(emoji) ?? false;
+    }
+    upgradeToVideo() {
+        return this.#activeCall?.upgradeToVideo();
     }
 
     async _advance() {
@@ -222,7 +241,10 @@ class VoipCall extends EventEmitter {
 
                     await this.#coordinator.loadAudio(callId, next.source);
                     if (!previous || previous.kind !== 'video') {
-                        await this.#coordinator.startVideoMidCall(callId);
+                        // zapo runs the upgrade handshake: video only flows once the peer accepts.
+                        const result = await this.#coordinator.startVideoMidCall(callId);
+                        if (result !== 'accepted')
+                            this.emit('video_upgrade', { result });
                     }
                 }
                 else {
@@ -329,17 +351,22 @@ export default class Voip {
     #ffprobePath;
     #tmpDir;
     #voipLogLevel;
+    #relayOpts;
     constructor(conn, opts = {}) {
         this.#conn = conn;
         this.#ffprobePath = opts.ffprobePath || 'ffprobe';
         this.#voipLogLevel = opts.voipLogLevel ?? 'warn';
+        this.#relayOpts = {
+            useOriginalRelayPort: !!opts.useOriginalRelayPort,
+            useRawUdpTransport: !!opts.useRawUdpTransport
+        };
 
         this.#tmpDir = opts.tmpDir;
     }
     #getClient() {
         if (this.#client && this.#clientForConn === this.#conn)
             return this.#client;
-        this.#client = new VoipClient({ existingSocket: this.#conn, voipLogLevel: this.#voipLogLevel });
+        this.#client = new VoipClient({ existingSocket: this.#conn, voipLogLevel: this.#voipLogLevel, ...this.#relayOpts });
         this.#clientForConn = this.#conn;
         return this.#client;
     }
@@ -409,6 +436,44 @@ export default class Voip {
         return call;
     }
 
+    // ---- incoming calls & raw coordinator access (zapo) ------------------------------
+    /** Registers the call handlers on the socket so incoming calls are seen. Idempotent. */
+    async listen() {
+        await this.#getClient().connect();
+        return this;
+    }
+    get coordinator() {
+        return this.#client?.coordinator ?? null;
+    }
+    /**
+     * Subscribe to coordinator events: call_incoming, call_state, call_ended, call_peer_mute,
+     * call_inbound_audio, call_inbound_video, call_hand_raise, call_reaction, call_screen_share,
+     * call_peer_video_state, call_outbound_audio_finished, call_error. Needs listen() first.
+     */
+    on(event, listener) {
+        if (!this.coordinator)
+            throw new Error('Call listen() before subscribing to voip events.');
+        this.coordinator.on(event, listener);
+        return this;
+    }
+    off(event, listener) {
+        this.coordinator?.off(event, listener);
+        return this;
+    }
+    async acceptCall(callId) {
+        return this.#requireCoordinator().acceptCall(callId);
+    }
+    async rejectCall(callId, reason) {
+        return this.#requireCoordinator().rejectCall(callId, reason);
+    }
+    async hangup(callId) {
+        return this.#requireCoordinator().endCall(callId);
+    }
+    #requireCoordinator() {
+        if (!this.coordinator)
+            throw new Error('Call listen() first.');
+        return this.coordinator;
+    }
     async end(force = false) {
         if (!this.#active) {
             return;

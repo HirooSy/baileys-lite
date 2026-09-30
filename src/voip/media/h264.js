@@ -1,244 +1,271 @@
-const H264_STAP_A_TYPE = 24;
-const H264_FUA_TYPE = 28;
-const MTU_PAYLOAD_MAX = 800;
-
-export function auHasIDR(au) {
-  for (const nalu of splitAnnexB(au)) {
-    if (nalu.length > 0 && (nalu[0] & 0x1f) === 5) return true;
-  }
-  return false;
-}
-
-export function packageH264NALU(nalu) {
-  if (!nalu || nalu.length === 0) return [];
-  if (nalu.length <= MTU_PAYLOAD_MAX) {
-    return [nalu.slice()];
-  }
-  const naluHeader = nalu[0];
-  const fbitAndNri = naluHeader & 0xe0;
-  const originalType = naluHeader & 0x1f;
-  const fuIndicator = fbitAndNri | H264_FUA_TYPE;
-
-  const body = nalu.subarray(1);
-  const fragSize = MTU_PAYLOAD_MAX - 2;
-
-  const out = [];
-  let offset = 0;
-  while (offset < body.length) {
-    const end = Math.min(offset + fragSize, body.length);
-    const chunk = body.subarray(offset, end);
-
-    let fuHeader = originalType;
-    if (offset === 0) fuHeader |= 0x80;
-    if (end === body.length) fuHeader |= 0x40;
-
-    const pkt = new Uint8Array(2 + chunk.length);
-    pkt[0] = fuIndicator;
-    pkt[1] = fuHeader;
-    pkt.set(chunk, 2);
-    out.push(pkt);
-
-    offset = end;
-  }
-  return out;
-}
-
-function annexBStartCodeLen(data, offset) {
-  if (
-    offset + 3 < data.length &&
-    data[offset] === 0 &&
-    data[offset + 1] === 0 &&
-    data[offset + 2] === 0 &&
-    data[offset + 3] === 1
-  ) {
-    return 4;
-  }
-  if (offset + 2 < data.length && data[offset] === 0 && data[offset + 1] === 0 && data[offset + 2] === 1) {
-    return 3;
-  }
-  return 0;
-}
-
-export function splitAnnexB(data) {
-  const nalus = [];
-  let start = -1;
-  let i = 0;
-  while (i < data.length) {
-    const sc = annexBStartCodeLen(data, i);
-    if (sc > 0) {
-      if (start >= 0) {
-        let end = i;
-        while (end > start && data[end - 1] === 0) end--;
-        if (end > start) nalus.push(data.subarray(start, end));
-      }
-      i += sc;
-      start = i;
-      continue;
+const START_CODE = new Uint8Array([0, 0, 0, 1]);
+/** Coded slice of an IDR picture: the only NAL type that makes a key frame. */
+const NAL_TYPE_IDR = 5;
+/**
+ * Packetizes an Annex-B access unit into RFC 6184 single-NAL/FU-A payloads.
+ * Single-NAL payloads are views into `data`, not copies, so they stay valid
+ * only until the caller reuses that buffer.
+ */
+export function packetizeH264AnnexB(data, maxPayload = 1100) {
+    if (maxPayload < 3)
+        throw new Error('H264 RTP payload size must be at least 3 bytes');
+    const starts = [];
+    for (let i = 0; i + 3 < data.length;) {
+        const four = data[i] === 0 && data[i + 1] === 0 && data[i + 2] === 0 && data[i + 3] === 1;
+        const three = data[i] === 0 && data[i + 1] === 0 && data[i + 2] === 1;
+        if (four || three) {
+            starts.push({ start: i, size: four ? 4 : 3 });
+            i += four ? 4 : 3;
+        }
+        else
+            i++;
     }
-    i++;
-  }
-  if (start >= 0 && start < data.length) nalus.push(data.subarray(start));
-  return nalus;
+    const nals = [];
+    if (!starts.length && data.length)
+        nals.push(data);
+    for (let i = 0; i < starts.length; i++) {
+        const from = starts[i].start + starts[i].size;
+        const to = i + 1 < starts.length ? starts[i + 1].start : data.length;
+        if (to > from)
+            nals.push(data.subarray(from, to));
+    }
+    const payloads = [];
+    for (const nal of nals) {
+        if (nal.length <= maxPayload) {
+            payloads.push(nal);
+            continue;
+        }
+        const indicator = (nal[0] & 0xe0) | 28;
+        const nalType = nal[0] & 0x1f;
+        const chunkSize = maxPayload - 2;
+        for (let offset = 1; offset < nal.length; offset += chunkSize) {
+            const end = Math.min(nal.length, offset + chunkSize);
+            const payload = new Uint8Array(2 + end - offset);
+            payload[0] = indicator;
+            payload[1] = nalType | (offset === 1 ? 0x80 : 0) | (end === nal.length ? 0x40 : 0);
+            payload.set(nal.subarray(offset, end), 2);
+            payloads.push(payload);
+        }
+    }
+    return payloads;
 }
-
-export function buildAccessUnitPayload(au) {
-  const nalus = splitAnnexB(au);
-  const parts = [];
-  for (const n of nalus) {
-    if (n.length === 0 || (n[0] & 0x1f) === 9) continue;
-    if (parts.length > 0) parts.push(Uint8Array.of(0, 0, 0, 1));
-    parts.push(n);
-  }
-  if (parts.length === 0) return null;
-  let total = 0;
-  for (const p of parts) total += p.length;
-  const out = new Uint8Array(total);
-  let off = 0;
-  for (const p of parts) {
-    out.set(p, off);
-    off += p.length;
-  }
-  return out;
+/**
+ * Reports whether an Annex-B access unit carries an IDR slice. SPS and PPS do
+ * not count: encoders repeat those parameter sets ahead of every frame, so
+ * accepting them would flag every delta frame as a key frame.
+ */
+export function isH264KeyFrame(data) {
+    let startCodes = 0;
+    for (let i = 0; i + 3 < data.length;) {
+        if (data[i] === 0 && data[i + 1] === 0) {
+            if (data[i + 2] === 1) {
+                startCodes++;
+                if ((data[i + 3] & 0x1f) === NAL_TYPE_IDR)
+                    return true;
+                i += 4;
+                continue;
+            }
+            if (data[i + 2] === 0 && data[i + 3] === 1) {
+                startCodes++;
+                if (i + 4 < data.length && (data[i + 4] & 0x1f) === NAL_TYPE_IDR)
+                    return true;
+                i += 5;
+                continue;
+            }
+        }
+        i++;
+    }
+    if (!startCodes && data.length)
+        return (data[0] & 0x1f) === NAL_TYPE_IDR;
+    return false;
 }
-
-const MAX_FU_REASSEMBLY_BYTES = 4 << 20;
-const MAX_ACCESS_UNIT_BYTES = 8 << 20;
-
+/**
+ * RFC 6184 depacketizer for single NAL, STAP-A and FU-A payloads.
+ *
+ * The key-frame flag is derived at flush time from the headers of the NAL
+ * units that actually made it into the access unit, never from the fragments
+ * seen on the way in. A fragment run that is abandoned, replaced or dropped
+ * therefore cannot mark or unmark the frame it never joined, which keeps the
+ * flag correct no matter in what order the packets arrive.
+ */
+/** RTP sequence numbers wrap at this modulus; used to test fragment contiguity. */
+const SEQUENCE_MODULUS = 0x10000;
 export class H264Depacketizer {
-  fuBuf = new Uint8Array(0);
-  fuActive = false;
-  overflow = false;
-
-  depacketize(payload) {
-    if (!payload || payload.length < 1) return [];
-    const naluType = payload[0] & 0x1f;
-    const fbitAndNri = payload[0] & 0xe0;
-
-    if (naluType >= 1 && naluType <= 23) {
-      this.fuActive = false;
-      return [payload.slice()];
-    }
-
-    if (naluType === H264_STAP_A_TYPE) {
-      this.fuActive = false;
-      let body = payload.subarray(1);
-      const out = [];
-      while (body.length >= 2) {
-        const size = (body[0] << 8) | body[1];
-        body = body.subarray(2);
-        if (size <= 0 || size > body.length) return out;
-        out.push(body.slice(0, size));
-        body = body.subarray(size);
-      }
-      return out;
-    }
-
-    if (naluType === H264_FUA_TYPE) {
-      if (payload.length < 2) {
-        this.fuActive = false;
-        return [];
-      }
-      const fuHeader = payload[1];
-      const startBit = fuHeader & 0x80;
-      const endBit = fuHeader & 0x40;
-      const origType = fuHeader & 0x1f;
-      const body = payload.subarray(2);
-
-      if (startBit !== 0) {
-        if (1 + body.length > MAX_FU_REASSEMBLY_BYTES) {
-          this.fuActive = false;
-          this.fuBuf = new Uint8Array(0);
-          this.overflow = true;
-          return [];
+    static MAX_BUFFERED_BYTES = 8 * 1024 * 1024;
+    static NO_FU_RUN = -1;
+    timestamp = null;
+    parts = [];
+    nalHeaders = [];
+    fuParts = [];
+    fuNalType = H264Depacketizer.NO_FU_RUN;
+    fuLastSequence = H264Depacketizer.NO_FU_RUN;
+    bufferedBytes = 0;
+    /**
+     * @param sequenceNumber RTP sequence number of `payload`. Required to tell a
+     * genuine FU-A continuation apart from an orphaned fragment that happens to
+     * share the NAL type of whatever run is already open: {@link appendFuA}
+     * only accepts a continuation whose sequence number immediately follows the
+     * last fragment it appended.
+     */
+    push(payload, timestamp, marker, sequenceNumber) {
+        if (!payload.length)
+            return [];
+        const completed = [];
+        let previous = null;
+        if (this.timestamp !== null && this.timestamp !== timestamp) {
+            /**
+             * Some senders omit the marker, so a timestamp change also ends a
+             * frame. A fragment run still mid-assembly belongs to the frame
+             * that is ending: drop the incomplete NAL but keep the NAL units
+             * that already completed, or one late fragment takes the whole
+             * access unit down with it.
+             */
+            previous = this.flush();
+            this.resetFrame(timestamp);
         }
-        this.fuActive = true;
-        this.fuBuf = new Uint8Array(1 + body.length);
-        this.fuBuf[0] = fbitAndNri | origType;
-        this.fuBuf.set(body, 1);
-      } else if (this.fuActive) {
-        if (this.fuBuf.length + body.length > MAX_FU_REASSEMBLY_BYTES) {
-          this.fuActive = false;
-          this.fuBuf = new Uint8Array(0);
-          this.overflow = true;
-          return [];
+        if (previous)
+            completed.push(previous);
+        if (this.timestamp === null)
+            this.timestamp = timestamp;
+        if (this.bufferedBytes + payload.length + START_CODE.length >
+            H264Depacketizer.MAX_BUFFERED_BYTES) {
+            this.resetFrame(timestamp);
+            return completed;
         }
-        const merged = new Uint8Array(this.fuBuf.length + body.length);
-        merged.set(this.fuBuf, 0);
-        merged.set(body, this.fuBuf.length);
-        this.fuBuf = merged;
-      } else {
-        return [];
-      }
-
-      if (endBit !== 0 && this.fuActive) {
-        this.fuActive = false;
-        const out = this.fuBuf;
-        this.fuBuf = new Uint8Array(0);
-        return [out];
-      }
-      return [];
+        const type = payload[0] & 0x1f;
+        if (type >= 1 && type <= 23)
+            this.appendNal(payload);
+        else if (type === 24)
+            this.appendStapA(payload);
+        else if (type === 28)
+            this.appendFuA(payload, sequenceNumber);
+        else
+            return completed;
+        if (marker && !this.fuParts.length) {
+            const current = this.flush();
+            if (current)
+                completed.push(current);
+        }
+        return completed;
     }
-
-    this.fuActive = false;
-    return [];
-  }
-}
-
-export class H264AccessUnitAssembler {
-  depacketizer = new H264Depacketizer();
-  accessUnit = new Uint8Array(0);
-  expectedSeq = 0;
-  hasSequence = false;
-  keyframeNeeded = false;
-
-  reset() {
-    this.depacketizer = new H264Depacketizer();
-    this.accessUnit = new Uint8Array(0);
-  }
-
-  push(sequence, marker, payload) {
-    let recoveryNeeded = false;
-    if (this.hasSequence && sequence !== this.expectedSeq) {
-      recoveryNeeded = !this.keyframeNeeded;
-      this.reset();
-      this.keyframeNeeded = true;
+    reset() {
+        this.timestamp = null;
+        this.parts = [];
+        this.nalHeaders.length = 0;
+        this.fuParts = [];
+        this.fuNalType = H264Depacketizer.NO_FU_RUN;
+        this.fuLastSequence = H264Depacketizer.NO_FU_RUN;
+        this.bufferedBytes = 0;
     }
-    this.hasSequence = true;
-    this.expectedSeq = (sequence + 1) & 0xffff;
-
-    for (const nalu of this.depacketizer.depacketize(payload)) {
-      if (this.accessUnit.length + 4 + nalu.length > MAX_ACCESS_UNIT_BYTES) {
-        recoveryNeeded = recoveryNeeded || !this.keyframeNeeded;
+    resetFrame(timestamp) {
+        this.parts = [];
+        this.nalHeaders.length = 0;
+        this.fuParts = [];
+        this.fuNalType = H264Depacketizer.NO_FU_RUN;
+        this.fuLastSequence = H264Depacketizer.NO_FU_RUN;
+        this.timestamp = timestamp;
+        this.bufferedBytes = 0;
+    }
+    appendNal(nal) {
+        if (this.bufferedBytes + START_CODE.length + nal.length >
+            H264Depacketizer.MAX_BUFFERED_BYTES) {
+            this.resetFrame(this.timestamp ?? 0);
+            return;
+        }
+        this.parts.push(START_CODE, nal.slice());
+        this.nalHeaders.push(nal[0]);
+        this.bufferedBytes += START_CODE.length + nal.length;
+    }
+    appendStapA(payload) {
+        let offset = 1;
+        while (offset + 2 <= payload.length) {
+            const size = (payload[offset] << 8) | payload[offset + 1];
+            offset += 2;
+            if (!size || offset + size > payload.length)
+                break;
+            this.appendNal(payload.subarray(offset, offset + size));
+            offset += size;
+        }
+    }
+    appendFuA(payload, sequenceNumber) {
+        if (payload.length < 2)
+            return;
+        const indicator = payload[0];
+        const header = payload[1];
+        const start = (header & 0x80) !== 0;
+        const end = (header & 0x40) !== 0;
+        const nalType = header & 0x1f;
+        if (start) {
+            for (const part of this.fuParts)
+                this.bufferedBytes -= part.length;
+            this.fuParts = [new Uint8Array([(indicator & 0xe0) | nalType]), payload.slice(2)];
+            this.fuNalType = nalType;
+            this.fuLastSequence = sequenceNumber;
+            this.bufferedBytes += payload.length - 1;
+        }
+        else if (this.fuNalType === nalType) {
+            if (sequenceNumber === (this.fuLastSequence + 1) % SEQUENCE_MODULUS) {
+                this.fuParts.push(payload.slice(2));
+                this.fuLastSequence = sequenceNumber;
+                this.bufferedBytes += payload.length - 2;
+            }
+            else {
+                /**
+                 * Same NAL type as the run in flight, but not the next sequence
+                 * number after the last fragment it appended: a fragment between
+                 * the two was lost or reordered away. Matching on type alone is
+                 * not enough here, because consecutive NALs commonly share a
+                 * type (slices are all type 1), so the very next run can look
+                 * like a continuation of this one. Abandon the run instead of
+                 * splicing this fragment onto it, or the decoder gets a corrupt
+                 * NAL under the wrong header.
+                 */
+                for (const part of this.fuParts)
+                    this.bufferedBytes -= part.length;
+                this.fuParts = [];
+                this.fuNalType = H264Depacketizer.NO_FU_RUN;
+                this.fuLastSequence = H264Depacketizer.NO_FU_RUN;
+                return;
+            }
+        }
+        else {
+            /**
+             * A continuation fragment whose type does not match the run in
+             * flight: its start fragment was lost or reordered away. Appending
+             * it to whatever run happens to be open would splice one NAL into
+             * another and hand the decoder a corrupt unit under the wrong
+             * header. The run already in flight is left untouched, since this
+             * fragment does not prove anything about it.
+             */
+            return;
+        }
+        if (end) {
+            this.parts.push(START_CODE, ...this.fuParts);
+            this.nalHeaders.push(this.fuParts[0][0]);
+            this.fuParts = [];
+            this.fuNalType = H264Depacketizer.NO_FU_RUN;
+            this.fuLastSequence = H264Depacketizer.NO_FU_RUN;
+        }
+    }
+    flush() {
+        if (!this.parts.length || this.timestamp === null)
+            return null;
+        const size = this.parts.reduce((sum, part) => sum + part.length, 0);
+        const data = new Uint8Array(size);
+        let offset = 0;
+        for (const part of this.parts) {
+            data.set(part, offset);
+            offset += part.length;
+        }
+        let keyFrame = false;
+        for (let index = 0; index < this.nalHeaders.length; index++) {
+            if ((this.nalHeaders[index] & 0x1f) === NAL_TYPE_IDR) {
+                keyFrame = true;
+                break;
+            }
+        }
+        const result = { timestamp: this.timestamp, data, keyFrame };
         this.reset();
-        this.keyframeNeeded = true;
-        break;
-      }
-      const merged = new Uint8Array(this.accessUnit.length + 4 + nalu.length);
-      merged.set(this.accessUnit, 0);
-      merged.set([0, 0, 0, 1], this.accessUnit.length);
-      merged.set(nalu, this.accessUnit.length + 4);
-      this.accessUnit = merged;
+        return result;
     }
-    if (this.depacketizer.overflow) {
-      recoveryNeeded = recoveryNeeded || !this.keyframeNeeded;
-      this.reset();
-      this.keyframeNeeded = true;
-    }
-    if (!marker) {
-      return [null, false, recoveryNeeded];
-    }
-
-    const accessUnit = this.accessUnit;
-    this.reset();
-    if (accessUnit.length === 0) {
-      return [null, false, recoveryNeeded];
-    }
-    if (this.keyframeNeeded) {
-      if (!auHasIDR(accessUnit)) {
-        return [null, false, recoveryNeeded];
-      }
-      this.keyframeNeeded = false;
-    }
-    return [accessUnit, true, recoveryNeeded];
-  }
 }

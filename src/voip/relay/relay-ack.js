@@ -1,6 +1,55 @@
 import { getNodeChildren, getNodeChildrenByTag, getNodeTextContent } from '../shim/transport.js';
 import { base64ToBytes, bytesToBase64 } from '../shim/util.js';
 import { TEXT_DECODER } from '../bytes.js';
+/** A relay advertises its transport endpoints under `te` or `te2`, never both. */
+const RELAY_ENDPOINT_TAGS = ['te2', 'te'];
+/** 4 address bytes + a big-endian u16 port. */
+const IPV4_ENDPOINT_BYTES = 6;
+/** 16 address bytes + a big-endian u16 port. */
+const IPV6_ENDPOINT_BYTES = 18;
+/** An IPv4 block followed by an IPv6 block: one relay reachable over both families. */
+const DUAL_STACK_ENDPOINT_BYTES = IPV4_ENDPOINT_BYTES + IPV6_ENDPOINT_BYTES;
+function parseFlagAttr(value) {
+    if (value === undefined)
+        return undefined;
+    return value === '1' || value === 'true';
+}
+/** RFC 5952 text form: lowercase, leading zeroes dropped, longest zero run collapsed to `::`. */
+function formatIpv6(bytes) {
+    const groups = new Array(8);
+    let bestStart = -1;
+    let bestLen = 0;
+    let runStart = -1;
+    let runLen = 0;
+    for (let i = 0; i < 8; i++) {
+        const value = (bytes[i * 2] << 8) | bytes[i * 2 + 1];
+        groups[i] = value.toString(16);
+        if (value === 0) {
+            if (runStart < 0)
+                runStart = i;
+            runLen++;
+            if (runLen > bestLen) {
+                bestStart = runStart;
+                bestLen = runLen;
+            }
+        }
+        else {
+            runStart = -1;
+            runLen = 0;
+        }
+    }
+    if (bestLen < 2)
+        return groups.join(':');
+    return `${groups.slice(0, bestStart).join(':')}::${groups.slice(bestStart + bestLen).join(':')}`;
+}
+/**
+ * Parses the `<relay>` descriptor out of a call ack, or out of its inner
+ * `<call>` node.
+ *
+ * A dual-stack endpoint is one relay reachable over both families, so it
+ * expands into two entries, IPv4 first, that share every non-address field.
+ * The attributes of the `<relay>` node are copied onto every endpoint.
+ */
 export function parseRelayFromAck(ackNode) {
     const relays = [];
     const participantJids = [];
@@ -37,6 +86,10 @@ export function parseRelayFromAck(ackNode) {
             selfPid = parseInt(relayNode.attrs.self_pid, 10);
         if (relayNode.attrs?.peer_pid)
             peerPid = parseInt(relayNode.attrs.peer_pid, 10);
+        const descriptor = {
+            domainName: relayNode.attrs?.domain_name,
+            enableEdgerayDtlsActiveMode: parseFlagAttr(relayNode.attrs?.enable_edgeray_dtls_active_mode)
+        };
         const relayContent = getNodeChildren(relayNode);
         for (const rc of getNodeChildrenByTag(relayNode, 'participant')) {
             const jid = rc.attrs?.jid;
@@ -98,44 +151,57 @@ export function parseRelayFromAck(ackNode) {
                 }
             }
         }
-        for (const rcNode of getNodeChildrenByTag(relayNode, 'te2')) {
-            const tokenId = rcNode.attrs?.token_id || '0';
-            const authTokenId = rcNode.attrs?.auth_token_id || '';
-            const token = tokens.get(tokenId) || '';
-            const authToken = authTokenId ? authTokens.get(authTokenId) : undefined;
-            const relayName = rcNode.attrs?.relay_name || '';
-            const protocol = rcNode.attrs?.protocol ? parseInt(rcNode.attrs.protocol, 10) : 0;
-            const isFna = rcNode.attrs?.is_fna === '1';
-            if (!(rcNode.content instanceof Uint8Array) || rcNode.content.length < 6)
-                continue;
-            const addrBytes = rcNode.content;
-            const addressBytes = new Uint8Array(addrBytes);
-            if (addrBytes.length === 6) {
-                const ip = `${addrBytes[0]}.${addrBytes[1]}.${addrBytes[2]}.${addrBytes[3]}`;
-                const port = (addrBytes[4] << 8) | addrBytes[5];
-                relays.push({
-                    ip,
-                    port,
-                    token,
+        for (const endpointTag of RELAY_ENDPOINT_TAGS) {
+            for (const rcNode of getNodeChildrenByTag(relayNode, endpointTag)) {
+                const addrBytes = rcNode.content;
+                if (!(addrBytes instanceof Uint8Array))
+                    continue;
+                const addrLength = addrBytes.length;
+                if (addrLength !== IPV4_ENDPOINT_BYTES &&
+                    addrLength !== IPV6_ENDPOINT_BYTES &&
+                    addrLength !== DUAL_STACK_ENDPOINT_BYTES) {
+                    continue;
+                }
+                const tokenId = rcNode.attrs?.token_id || '0';
+                const authTokenId = rcNode.attrs?.auth_token_id || '';
+                const authToken = authTokenId ? authTokens.get(authTokenId) : undefined;
+                const shared = {
+                    token: tokens.get(tokenId) || '',
                     authToken,
                     rawAuthToken: authTokenId ? rawAuthTokens.get(authTokenId) : undefined,
                     rawToken: rawTokens.get(tokenId),
                     key: relayKey,
                     relayId: parseInt(rcNode.attrs?.relay_id || '0', 10),
-                    protocol,
+                    protocol: rcNode.attrs?.protocol ? parseInt(rcNode.attrs.protocol, 10) : 0,
                     c2rRtt: rcNode.attrs?.c2r_rtt ? parseInt(rcNode.attrs.c2r_rtt, 10) : undefined,
-                    relayName,
-                    addressBytes,
+                    relayName: rcNode.attrs?.relay_name || '',
                     authTokenId: authTokenId || tokenId,
-                    isFna
-                });
+                    isFna: rcNode.attrs?.is_fna === '1',
+                    ...descriptor
+                };
+                if (addrLength !== IPV6_ENDPOINT_BYTES) {
+                    const v4 = addrBytes.subarray(0, IPV4_ENDPOINT_BYTES);
+                    relays.push({
+                        ...shared,
+                        ip: `${v4[0]}.${v4[1]}.${v4[2]}.${v4[3]}`,
+                        port: (v4[4] << 8) | v4[5],
+                        addressBytes: new Uint8Array(v4)
+                    });
+                }
+                if (addrLength !== IPV4_ENDPOINT_BYTES) {
+                    const v6 = addrLength === IPV6_ENDPOINT_BYTES
+                        ? addrBytes
+                        : addrBytes.subarray(IPV4_ENDPOINT_BYTES);
+                    relays.push({
+                        ...shared,
+                        ip: formatIpv6(v6),
+                        port: (v6[16] << 8) | v6[17],
+                        addressBytes: new Uint8Array(v6)
+                    });
+                }
             }
         }
     }
-    relays.sort((a, b) => {
-        if (!!a.isFna !== !!b.isFna)
-            return a.isFna ? 1 : -1;
-        return (a.c2rRtt ?? Infinity) - (b.c2rRtt ?? Infinity);
-    });
+    relays.sort((a, b) => (a.c2rRtt ?? Infinity) - (b.c2rRtt ?? Infinity));
     return { relays, participantJids, uuid, selfPid, peerPid, hbhKey };
 }
