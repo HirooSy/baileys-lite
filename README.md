@@ -390,11 +390,6 @@ await sock.aiRich()
 await sock.sendMessage(jid, {
   aiRich: { title: 'Assistant', text: 'Here is what I found:', table: [['Name', 'Score'], ['Alice', '90']] }
 })
-
-// bypass download is on by default, turn it off per message
-await sock.aiRich()
-  .addText('No bypass')
-  .send(jid, { bypassDownload: false })
 ```
 
 **Bypass download:** `send()` edits its own message right after sending, so the client renders the rich response without having to download it first. It only runs for messages that carry a rich response. If the edit fails, the error is thrown with `error.relayedKey` set to the key of the message that was already sent.
