@@ -6,29 +6,22 @@ const FRAME_SIZE = 960;
 const MAX_FRAME_SIZE = 1_920;
 const APPLICATION_VOIP = 2048;
 const SIGNAL_VOICE = 3001;
-/**
- * Smallest concealment unit the codec library accepts (2.5 ms). PLC and FEC
- * lengths must be whole multiples of it, capped at `MAX_FRAME_SIZE` (120 ms).
- */
 const CONCEAL_QUANTUM = MLOW_SAMPLE_RATE / 400;
 const DEFAULT_BITRATE = 15_000;
 const DEFAULT_COMPLEXITY = 5;
 const DEFAULT_MAX_CONCEAL_FRAMES = 5;
+const MAX_LOSS_HINT = 5;
+const SPEECH_TOC_MASK = 0xf8;
+const SPEECH_TOC_60MS = 0x50;
+const TINY_FRAME_BYTES = 18;
+const RENEW_MIN_RMS = 120;
+const RENEW_MIN_GAP_FRAMES = 4;
 const SEQ_SPACE = 0x1_0000;
 const SEQ_HALF = 0x8000;
-/**
- * MLow-specific encoder control requests. The WhatsApp client writes all four,
- * but neither their meaning nor the values it writes are known, so they stay
- * unset unless a caller supplies one.
- */
 export const MLOW_ENCODER_CTL = Object.freeze({
-    /** `OPUS_SET_MLOW_SUBFRAME_IMP` */
     SUBFRAME_IMPORTANCE: 4060,
-    /** `OPUS_SET_MLOW_USE_SP_ACT_FLAT` */
     USE_SPEECH_ACTIVITY_FLATNESS: 4062,
-    /** `OPUS_SET_MLOW_VAD_NON_BINARY` */
     VAD_NON_BINARY: 4066,
-    /** `OPUS_SET_MLOW_VAD_HP_SHARPNESS` */
     VAD_HIGHPASS_SHARPNESS: 4068
 });
 let wasmReady = null;
@@ -64,7 +57,14 @@ export class MLowCodec {
     lastSeq = -1;
     lastDecodedSamples = 0;
     pcmScratch = new Int16Array(FRAME_SIZE);
-    /** Shared read-only zero frame handed out when a decode cannot be salvaged. */
+    lib = null;
+    encoderOptions = null;
+    spareEncoder = null;
+    spareBuilding = false;
+    generation = 0;
+    frameIndex = 0;
+    lastRenewFrame = -1000;
+    renewCount = 0;
     silenceScratch = new Float32Array(MAX_FRAME_SIZE);
     constructor() { }
     static async create(opts = {}) {
@@ -75,12 +75,13 @@ export class MLowCodec {
     async init(opts) {
         this.opts = opts;
         this.logger = opts.logger ?? createNoopLogger();
-        this.packetLossPercent = clampPercent(opts.packetLossPercent ?? 0);
+        this.packetLossPercent = Math.min(MAX_LOSS_HINT, clampPercent(opts.packetLossPercent ?? 0));
         const requestedConcealFrames = opts.maxConcealFrames;
         this.maxConcealFrames = Math.max(0, Math.trunc(Number.isFinite(requestedConcealFrames)
             ? requestedConcealFrames
             : DEFAULT_MAX_CONCEAL_FRAMES));
         const lib = await loadMlowModule();
+        this.lib = lib;
         this.decoder = await lib.createDecoder({
             channels: MLOW_CHANNELS,
             sampleRate: MLOW_SAMPLE_RATE,
@@ -88,19 +89,20 @@ export class MLowCodec {
             maxFrameSize: MAX_FRAME_SIZE
         });
         try {
-            this.encoder = await lib.createEncoder({
+            this.encoderOptions = {
                 channels: MLOW_CHANNELS,
                 sampleRate: MLOW_SAMPLE_RATE,
                 application: APPLICATION_VOIP,
                 frameSize: FRAME_SIZE,
                 useSmpl: true,
-                dtx: true,
+                dtx: opts.dtx ?? false,
                 fec: opts.fec ?? true,
                 packetLossPercent: this.packetLossPercent,
                 bitrate: opts.bitrate ?? DEFAULT_BITRATE,
                 complexity: opts.complexity ?? DEFAULT_COMPLEXITY,
                 signal: SIGNAL_VOICE
-            });
+            };
+            this.encoder = await lib.createEncoder(this.encoderOptions);
         }
         catch (err) {
             this.decoder?.free();
@@ -110,6 +112,83 @@ export class MLowCodec {
         if (opts.tunables) {
             this.applyEncoderTunables(opts.tunables);
         }
+        this.frameIndex = 0;
+        this.lastRenewFrame = -1000;
+        this.prepareSpare();
+        this.logger.warn('[MLOW] encoder ready', {
+            vadRenew: true,
+            bitrate: this.encoderOptions.bitrate,
+            lossHintCap: MAX_LOSS_HINT
+        });
+    }
+    prepareSpare() {
+        if (this.spareEncoder || this.spareBuilding || !this.lib || !this.encoderOptions) {
+            return;
+        }
+        const generation = this.generation;
+        this.spareBuilding = true;
+        const options = { ...this.encoderOptions, packetLossPercent: this.packetLossPercent };
+        this.lib.createEncoder(options).then((enc) => {
+            this.spareBuilding = false;
+            if (generation !== this.generation) {
+                enc.free();
+                return;
+            }
+            const tunables = this.opts?.tunables;
+            if (tunables) {
+                this.writeCtlOn(enc, MLOW_ENCODER_CTL.SUBFRAME_IMPORTANCE, tunables.subframeImportance);
+                this.writeCtlOn(enc, MLOW_ENCODER_CTL.USE_SPEECH_ACTIVITY_FLATNESS, tunables.useSpeechActivityFlatness);
+                this.writeCtlOn(enc, MLOW_ENCODER_CTL.VAD_NON_BINARY, tunables.vadNonBinary);
+                this.writeCtlOn(enc, MLOW_ENCODER_CTL.VAD_HIGHPASS_SHARPNESS, tunables.vadHighpassSharpness);
+            }
+            this.spareEncoder = enc;
+        }, (err) => {
+            this.spareBuilding = false;
+            this.logger.warn('mlow spare encoder unavailable', { message: toError(err).message });
+        });
+    }
+    renewEncoder(pcm, original) {
+        const spare = this.spareEncoder;
+        this.spareEncoder = null;
+        const kept = Uint8Array.from(original);
+        try {
+            const alt = spare.encode(pcm, { frameSize: this.frameSize });
+            if (alt.length > 0 && (alt[0] & SPEECH_TOC_MASK) === SPEECH_TOC_60MS) {
+                const out = Uint8Array.from(alt);
+                const old = this.encoder;
+                this.encoder = spare;
+                try {
+                    spare.setPacketLossPercent(this.packetLossPercent);
+                }
+                catch { }
+                try {
+                    old.free();
+                }
+                catch { }
+                this.renewCount++;
+                this.lastRenewFrame = this.frameIndex;
+                if (this.renewCount === 1 || this.renewCount % 20 === 0) {
+                    this.logger.warn('[MLOW] encoder renewed: frame came out with VAD off', {
+                        renewCount: this.renewCount,
+                        frame: this.frameIndex,
+                        tocBefore: kept[0],
+                        tocAfter: out[0]
+                    });
+                }
+                this.prepareSpare();
+                return out;
+            }
+            spare.free();
+        }
+        catch (err) {
+            this.logger.warn('mlow encoder renew failed', { message: toError(err).message });
+            try {
+                spare.free();
+            }
+            catch { }
+        }
+        this.prepareSpare();
+        return kept;
     }
     encode(float32Audio) {
         if (!this.encoder) {
@@ -119,17 +198,24 @@ export class MLowCodec {
             throw new Error(`[MLowCodec] encode expects ${this.frameSize} samples, got ${float32Audio.length}`);
         }
         const pcm = this.pcmScratch;
+        let sumSq = 0;
         for (let i = 0; i < pcm.length; i++) {
             const sample = Math.max(-1, Math.min(1, float32Audio[i]));
-            pcm[i] = Math.round(sample * 32_767);
+            const v = Math.round(sample * 32_767);
+            pcm[i] = v;
+            sumSq += v * v;
         }
-        return this.encoder.encode(pcm, { frameSize: this.frameSize });
+        const packet = this.encoder.encode(pcm, { frameSize: this.frameSize });
+        this.frameIndex++;
+        if (packet.length > TINY_FRAME_BYTES &&
+            (packet[0] & SPEECH_TOC_MASK) !== SPEECH_TOC_60MS &&
+            this.spareEncoder &&
+            this.frameIndex - this.lastRenewFrame >= RENEW_MIN_GAP_FRAMES &&
+            Math.sqrt(sumSq / pcm.length) >= RENEW_MIN_RMS) {
+            return this.renewEncoder(pcm, packet);
+        }
+        return packet;
     }
-    /**
-     * Decode a single packet. `null` runs packet loss concealment for one
-     * frame instead. Prefer {@link MLowCodec.decodeSequenced} on a live stream:
-     * it detects the gaps this entry point cannot see.
-     */
     decode(mlowFrame) {
         if (!this.decoder) {
             throw new Error('[MLowCodec] decoder not initialized');
@@ -140,23 +226,6 @@ export class MLowCodec {
         const decoded = this.tryDecode(mlowFrame);
         return decoded ?? this.silence(this.concealFrameSize());
     }
-    /**
-     * Decode one inbound packet identified by its RTP sequence number and hand
-     * every resulting PCM frame to `onFrame`, oldest first.
-     *
-     * Gaps since the previous sequence number are filled first: the frame right
-     * before the arriving packet from the in-band FEC copy that packet carries,
-     * anything older by concealment, and nothing past `maxConcealFrames`. A
-     * duplicate or late packet is dropped rather than emitted out of order.
-     *
-     * A packet the decoder rejects is treated the same as one that never
-     * arrived, but only for its own slot: `lastSeq` still advances to just
-     * behind it, so only the rejected packet itself - not the packets
-     * already covered by this call's own gap concealment - is left for the
-     * next packet's FEC copy to recover. Leaving `lastSeq` further back would
-     * hand that already-covered ground to the next gap too, emitting the same
-     * frames twice.
-     */
     decodeSequenced(seq, packet, onFrame) {
         if (!this.decoder) {
             throw new Error('[MLowCodec] decoder not initialized');
@@ -187,17 +256,12 @@ export class MLowCodec {
         this.lastSeq = current;
         onFrame(decoded);
     }
-    /** Forget the inbound sequence position, for example after an SSRC change. */
     resetSequence() {
         this.lastSeq = -1;
         this.lastDecodedSamples = 0;
     }
-    /**
-     * Tell the encoder how much loss to protect against, 0 to 100. FEC only
-     * emits a redundant copy while this is above zero.
-     */
     setExpectedPacketLossPercent(percent) {
-        const next = clampPercent(percent);
+        const next = Math.min(MAX_LOSS_HINT, clampPercent(percent));
         if (next === this.packetLossPercent) {
             return;
         }
@@ -235,7 +299,8 @@ export class MLowCodec {
             plc: this.plcFrames,
             fec: this.fecFrames,
             late: this.lateFrames,
-            concealCapped: this.concealCapped
+            concealCapped: this.concealCapped,
+            vadRenew: this.renewCount
         };
     }
     getFrameSize() {
@@ -259,9 +324,21 @@ export class MLowCodec {
         this.fecFrames = 0;
         this.lateFrames = 0;
         this.concealCapped = 0;
+        this.renewCount = 0;
         this.resetSequence();
     }
     destroy() {
+        if (this.frameIndex > 0) {
+            this.logger.warn('[MLOW] call summary', {
+                frames: this.frameIndex,
+                renewed: this.renewCount,
+                renewedPct: Math.round((1000 * this.renewCount) / this.frameIndex) / 10
+            });
+        }
+        this.generation++;
+        this.spareBuilding = false;
+        this.spareEncoder?.free();
+        this.spareEncoder = null;
         this.encoder?.free();
         this.decoder?.free();
         this.encoder = null;
@@ -334,10 +411,6 @@ export class MLowCodec {
             return this.silence(frameSize);
         }
     }
-    /**
-     * Length to conceal with, tracking the last packet the peer actually sent so
-     * a stream of 20 ms frames is not patched with 60 ms of audio.
-     */
     concealFrameSize() {
         const last = this.lastDecodedSamples;
         if (last <= 0) {
@@ -352,6 +425,17 @@ export class MLowCodec {
     silence(frameSize) {
         const size = frameSize > MAX_FRAME_SIZE ? MAX_FRAME_SIZE : frameSize;
         return this.silenceScratch.subarray(0, size);
+    }
+    writeCtlOn(enc, request, value) {
+        if (value === undefined || !enc) {
+            return;
+        }
+        try {
+            enc.encoderCtl(request, value);
+        }
+        catch (err) {
+            this.logger.warn('mlow spare ctl rejected', { request, message: toError(err).message });
+        }
     }
     writeCtl(request, value) {
         if (value === undefined || !this.encoder) {

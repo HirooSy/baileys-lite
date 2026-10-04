@@ -1,7 +1,6 @@
 import { bytesToHex } from '../shim/util.js';
 import { concatBytes, readBigUInt64BE, readUInt16BE, readUInt32BE, TEXT_DECODER, writeUInt16BE, writeUInt32BE } from '../bytes.js';
 import { hmacSha1, randomBytes } from '../crypto/primitives.js';
-import { encodeProtoLengthDelimited, encodeProtoVarintField } from '../protobuf.js';
 const STUN_MAGIC_COOKIE = 0x2112a442;
 const STUN_FINGERPRINT_XOR = 0x5354554e;
 const STUN_BINDING_REQUEST = 0x0001;
@@ -10,52 +9,20 @@ const WHATSAPP_PING = 0x0801;
 const WHATSAPP_PONG = 0x0802;
 const ATTR_USERNAME = 0x0006;
 const ATTR_MESSAGE_INTEGRITY = 0x0008;
+const ATTR_LIFETIME = 0x000d;
 const ATTR_XOR_RELAYED_ADDRESS = 0x0016;
+const ATTR_REQUESTED_TRANSPORT = 0x0019;
 const ATTR_PRIORITY = 0x0024;
-/**
- * The relay credential: the `<relay>` token, raw bytes, not text.
- *
- * It is not a subscription attribute despite the `SENDER-SUBSCRIPTIONS` label
- * that circulated for it. The real subscription attributes are
- * `SENDER-SUBSCRIPTIONS` (0x4025) and `RECEIVER-SUBSCRIPTION` (0x4021), neither
- * of which this file emits. Treating 0x4000 as a droppable subscription blob
- * and replacing it with a `USERNAME` cost every allocate on the wire.
- */
-const ATTR_RELAY_CREDENTIAL = 0x4000;
+
+const ATTR_SENDER_SUBSCRIPTIONS = 0x4000;
 const ATTR_SSRC_LIST = 0x4024;
+const ATTR_ICE_CONTROLLED = 0x8029;
+const ATTR_XOR_MAPPED_ADDRESS = 0x0020;
 const ATTR_ICE_CONTROLLING = 0x802a;
 const ATTR_FINGERPRINT = 0x8028;
 const DEFAULT_ICE_PRIORITY = 16_777_215;
-const TRANSACTION_ID_LENGTH = 12;
-/** The relay XOR key reads the transaction id as 32-bit words. */
-const RELAY_KEY_WORD_BYTES = 4;
-const STUN_ADDRESS_FAMILY_IPV4 = 0x01;
-const STUN_ADDRESS_FAMILY_IPV6 = 0x02;
-const IPV4_ADDRESS_BYTES = 4;
-const IPV6_ADDRESS_BYTES = 16;
-/** Zero byte, family byte, XOR-masked port, XOR-masked address. */
-const XOR_RELAYED_IPV4_BYTES = 4 + IPV4_ADDRESS_BYTES;
-const XOR_RELAYED_IPV6_BYTES = 4 + IPV6_ADDRESS_BYTES;
-/**
- * Creates the 12-byte transaction id of a relay connection.
- *
- * The id is stable per connection, not per message. This is a parity decision,
- * not an oversight: reverse engineering the official client shows that the STUN
- * message init routine generates no id at all, it only copies a 12-byte field
- * off the connection object into the header at +8, and every builder reads that
- * same source. Since the XOR key of the IPv6 `XOR-RELAYED-ADDRESS` derives from
- * the id sitting in the header, the id that masks the address is always that
- * connection id.
- *
- * Where the official client derives the value from is still unknown: the write
- * site sits in connection init and does not show up in the dumps. What is
- * implemented here is the simplest hypothesis, that the relay demands
- * consistency and nothing more. If the IPv6 legs keep answering 452 after this
- * change, the conclusion is that the relay demands a value derived from
- * something it knows as well, and stability on its own is not enough.
- */
-export function createStunTransactionId() {
-    return randomBytes(TRANSACTION_ID_LENGTH);
+function generateTransactionId() {
+    return randomBytes(12);
 }
 function encodeAttribute(attrType, data) {
     const header = new Uint8Array(4);
@@ -115,17 +82,33 @@ function buildStunMessage(msgType, attrs, transactionId, integrityKey, includeFi
     header.set(transactionId, 8);
     return concatBytes([header, attrsData]);
 }
-/** Every subscription field is a `uint32`; `>>> 0` keeps the coercion this file always did. */
-function encodeProtoUint32Field(fieldNumber, value) {
-    return encodeProtoVarintField(fieldNumber, BigInt(value >>> 0));
+function encodeVarint(value) {
+    const bytes = [];
+    let v = value >>> 0;
+    while (v > 0x7f) {
+        bytes.push((v & 0x7f) | 0x80);
+        v >>>= 7;
+    }
+    bytes.push(v & 0x7f);
+    return new Uint8Array(bytes);
+}
+function encodeProtobufVarintField(fieldNumber, value) {
+    const tag = encodeVarint((fieldNumber << 3) | 0);
+    const val = encodeVarint(value);
+    return concatBytes([tag, val]);
+}
+function encodeProtobufLengthDelimited(fieldNumber, data) {
+    const tag = encodeVarint((fieldNumber << 3) | 2);
+    const len = encodeVarint(data.length);
+    return concatBytes([tag, len, data]);
 }
 export function buildSenderSubscriptions(ssrc) {
     const inner = concatBytes([
-        encodeProtoUint32Field(3, ssrc),
-        encodeProtoUint32Field(5, 0),
-        encodeProtoUint32Field(6, 0)
+        encodeProtobufVarintField(3, ssrc),
+        encodeProtobufVarintField(5, 0),
+        encodeProtobufVarintField(6, 0)
     ]);
-    return encodeProtoLengthDelimited(1, inner);
+    return encodeProtobufLengthDelimited(1, inner);
 }
 export function buildSSRCSubscriptionList(selfSsrcs, peerSsrcs, selfPid, peerPid) {
     const entries = [];
@@ -133,269 +116,128 @@ export function buildSSRCSubscriptionList(selfSsrcs, peerSsrcs, selfPid, peerPid
         if (ssrc === 0)
             continue;
         const inner = concatBytes([
-            encodeProtoUint32Field(1, selfPid),
-            encodeProtoUint32Field(2, 1),
-            encodeProtoUint32Field(3, ssrc)
+            encodeProtobufVarintField(1, selfPid),
+            encodeProtobufVarintField(2, 1),
+            encodeProtobufVarintField(3, ssrc)
         ]);
-        entries.push(encodeProtoLengthDelimited(1, inner));
+        entries.push(encodeProtobufLengthDelimited(1, inner));
     }
     for (const peerSsrc of peerSsrcs) {
         if (peerSsrc === 0)
             continue;
         const inner = concatBytes([
-            encodeProtoUint32Field(1, peerPid),
-            encodeProtoUint32Field(2, 1),
-            encodeProtoUint32Field(3, peerSsrc)
+            encodeProtobufVarintField(1, peerPid),
+            encodeProtobufVarintField(2, 1),
+            encodeProtobufVarintField(3, peerSsrc)
         ]);
-        entries.push(encodeProtoLengthDelimited(1, inner));
+        entries.push(encodeProtobufLengthDelimited(1, inner));
     }
     return concatBytes(entries);
 }
-const CHAR_ZERO = 0x30;
-const CHAR_NINE = 0x39;
-const CHAR_UPPER_A = 0x41;
-const CHAR_UPPER_F = 0x46;
-const CHAR_LOWER_A = 0x61;
-const CHAR_LOWER_F = 0x66;
-const CHAR_DOT = 0x2e;
-const CHAR_COLON = 0x3a;
-const CHAR_PERCENT = 0x25;
-function hexDigit(code) {
-    if (code >= CHAR_ZERO && code <= CHAR_NINE)
-        return code - CHAR_ZERO;
-    if (code >= CHAR_LOWER_A && code <= CHAR_LOWER_F)
-        return code - CHAR_LOWER_A + 10;
-    if (code >= CHAR_UPPER_A && code <= CHAR_UPPER_F)
-        return code - CHAR_UPPER_A + 10;
-    return -1;
-}
-function writeIpv4Address(text, start, end, out, offset) {
-    let octets = 0;
-    let value = 0;
-    let digits = 0;
-    for (let i = start; i <= end; i++) {
-        const code = i < end ? text.charCodeAt(i) : CHAR_DOT;
-        if (code === CHAR_DOT) {
-            if (digits === 0 || digits > 3 || value > 0xff || octets === IPV4_ADDRESS_BYTES) {
-                return false;
-            }
-            out[offset + octets] = value;
-            octets++;
-            value = 0;
-            digits = 0;
+
+const WASM_STREAM_DESCRIPTOR_PLAN = [
+    { participant: 0, layer: 0 },
+    { participant: 0, layer: 1 },
+    { participant: 0, layer: 2 },
+    { participant: 1, layer: 0 },
+    { participant: 1, layer: 1 },
+    { participant: 1, layer: 2 },
+    { participant: 2, layer: 0 },
+    { participant: 2, layer: 1 },
+    { participant: 2, layer: 2 }
+];
+
+export function createWasmStreamDescriptors(streamSsrcs) {
+    const entries = [];
+    for (let i = 0; i < streamSsrcs.length; i++) {
+        const ssrc = streamSsrcs[i];
+        if (ssrc === 0)
             continue;
-        }
-        if (code < CHAR_ZERO || code > CHAR_NINE)
-            return false;
-        value = value * 10 + (code - CHAR_ZERO);
-        digits++;
+        const plan = WASM_STREAM_DESCRIPTOR_PLAN[i];
+        const parts = [];
+        if (plan.participant !== 0)
+            parts.push(encodeProtobufVarintField(1, plan.participant));
+        if (plan.layer !== 0)
+            parts.push(encodeProtobufVarintField(2, plan.layer));
+        parts.push(encodeProtobufVarintField(3, ssrc));
+        entries.push(encodeProtobufLengthDelimited(1, concatBytes(parts)));
     }
-    return octets === IPV4_ADDRESS_BYTES;
+    return concatBytes(entries);
 }
-/**
- * Writes the 16 address bytes of an RFC 4291 textual IPv6 address into `out` at
- * `offset`, covering the compressed `::` run anywhere in the address and the
- * mixed `::ffff:1.2.3.4` tail.
- *
- * Groups are written front to back and the `::` run is closed at the end by
- * sliding everything after it against the tail of the field, so the only
- * allocation is the caller's exact-size attribute buffer.
- */
-function writeIpv6Address(text, out, offset) {
-    let end = text.length;
-    for (let i = 0; i < text.length; i++) {
-        if (text.charCodeAt(i) === CHAR_PERCENT) {
-            end = i;
-            break;
-        }
-    }
-    let hexEnd = end;
-    let v4Start = -1;
-    for (let i = 0; i < end; i++) {
-        if (text.charCodeAt(i) === CHAR_DOT) {
-            v4Start = text.lastIndexOf(':', i) + 1;
-            if (v4Start === 0)
-                return false;
-            hexEnd = v4Start;
-            break;
-        }
-    }
-    let written = 0;
-    let gapAt = -1;
-    let value = 0;
-    let digits = 0;
-    let i = 0;
-    if (end > 0 && text.charCodeAt(0) === CHAR_COLON) {
-        if (end < 2 || text.charCodeAt(1) !== CHAR_COLON)
-            return false;
-        gapAt = 0;
-        i = 2;
-    }
-    for (; i < hexEnd; i++) {
-        const code = text.charCodeAt(i);
-        if (code === CHAR_COLON) {
-            if (digits === 0 || written + 2 > IPV6_ADDRESS_BYTES)
-                return false;
-            out[offset + written] = value >>> 8;
-            out[offset + written + 1] = value & 0xff;
-            written += 2;
-            value = 0;
-            digits = 0;
-            if (i + 1 < hexEnd && text.charCodeAt(i + 1) === CHAR_COLON) {
-                if (gapAt >= 0)
-                    return false;
-                gapAt = written;
-                i++;
-                continue;
-            }
-            if (v4Start < 0 && i + 1 === hexEnd)
-                return false;
-            continue;
-        }
-        const digit = hexDigit(code);
-        if (digit < 0)
-            return false;
-        value = (value << 4) | digit;
-        digits++;
-        if (digits > 4)
-            return false;
-    }
-    if (digits > 0) {
-        if (written + 2 > IPV6_ADDRESS_BYTES)
-            return false;
-        out[offset + written] = value >>> 8;
-        out[offset + written + 1] = value & 0xff;
-        written += 2;
-    }
-    if (v4Start >= 0) {
-        if (written + IPV4_ADDRESS_BYTES > IPV6_ADDRESS_BYTES)
-            return false;
-        if (!writeIpv4Address(text, v4Start, end, out, offset + written))
-            return false;
-        written += IPV4_ADDRESS_BYTES;
-    }
-    if (gapAt < 0)
-        return written === IPV6_ADDRESS_BYTES;
-    if (written >= IPV6_ADDRESS_BYTES)
-        return false;
-    const tail = written - gapAt;
-    const tailAt = IPV6_ADDRESS_BYTES - tail;
-    out.copyWithin(offset + tailAt, offset + gapAt, offset + written);
-    out.fill(0, offset + gapAt, offset + tailAt);
-    return true;
-}
-/**
- * Applies, in place, the IPv6 address XOR key over the 12 bytes of `data` that
- * start at `offset`.
- *
- * The key is not the transaction id as it travels in the header: it is that
- * same id read as three 32-bit words, each one with its bytes reversed. The
- * order was recovered by algebra over two real connections, not deduced from
- * the RFC: the relay echoes back inside the 452 error the address it decoded,
- * and `decoded XOR actual XOR header_id` yields the key it in fact used. Both
- * samples match that order exactly; reversing the whole 12 bytes, or swapping
- * the bytes two at a time, fails on both. The reading is an endianness
- * divergence at a single point: one side treats the id as three host-order
- * uint32s, the other as bytes.
- *
- * The header still carries the id with no swap at all, and STUN responses echo
- * back exactly the value that was sent, so the only thing that diverges is the
- * key.
- *
- * The falsifiable prediction is the IPv6 legs moving from 452 to SUCCESS. If
- * they stay on 452, the pattern was a coincidence of the two samples and this
- * byte order has to be withdrawn.
- */
-function xorWithRelayKeyByteOrder(data, offset, transactionId) {
-    for (let word = 0; word < TRANSACTION_ID_LENGTH; word += RELAY_KEY_WORD_BYTES) {
-        for (let i = 0; i < RELAY_KEY_WORD_BYTES; i++) {
-            data[offset + word + i] ^= transactionId[word + RELAY_KEY_WORD_BYTES - 1 - i];
-        }
-    }
-}
-/**
- * Encodes the relay's own endpoint as the RFC 5389 `XOR-RELAYED-ADDRESS` the
- * relay matches against the socket the allocate arrived on. Both families share
- * the 0x0016 attribute type and differ only in the family byte and the XOR key:
- * IPv4 masks its 4 address bytes with the magic cookie, IPv6 masks its 16 with
- * the cookie followed by the transaction id of the message being built, in the
- * byte order the relay expects in the key (see `xorWithRelayKeyByteOrder`),
- * which is why the transaction id has to be threaded in from the header.
- *
- * Announcing the wrong family is worse than announcing nothing: an IPv6 relay
- * told `0.0.0.0` answers every allocate with a 452 mismatch and forwards no
- * media, so an address that does not parse yields no attribute at all.
- */
-function encodeXorRelayedAddress(ip, port, transactionId) {
-    const isIpv6 = ip.includes(':');
-    const data = new Uint8Array(isIpv6 ? XOR_RELAYED_IPV6_BYTES : XOR_RELAYED_IPV4_BYTES);
+function encodeXorRelayedAddress(ip, port) {
+    const data = new Uint8Array(8);
     data[0] = 0x00;
-    data[1] = isIpv6 ? STUN_ADDRESS_FAMILY_IPV6 : STUN_ADDRESS_FAMILY_IPV4;
+    data[1] = 0x01;
     writeUInt16BE(data, port ^ (STUN_MAGIC_COOKIE >>> 16), 2);
-    if (isIpv6) {
-        if (!writeIpv6Address(ip, data, 4))
-            return undefined;
-    }
-    else if (!writeIpv4Address(ip, 0, ip.length, data, 4)) {
-        return undefined;
-    }
-    for (let i = 0; i < 4; i++) {
-        data[4 + i] ^= (STUN_MAGIC_COOKIE >>> (24 - i * 8)) & 0xff;
-    }
-    if (isIpv6) {
-        xorWithRelayKeyByteOrder(data, 8, transactionId);
-    }
+    const parts = ip.split('.').map(Number);
+    const ipNum = ((parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8) | parts[3]) >>> 0;
+    writeUInt32BE(data, (ipNum ^ STUN_MAGIC_COOKIE) >>> 0, 4);
     return data;
 }
-/**
- * Builds the relay ALLOCATE request, the handshake that opens the media
- * connection. It is not optional: without an allocate success the relay
- * forwards no RTP, and the `0x0801`/`0x0802` ping-pong is only keepalive on a
- * connection the allocate already created.
- *
- * Two distinct credential schemes meet on this socket, and they do not mix:
- *
- * - ICE connectivity checks authenticate with `USERNAME` (0x0006), holding
- *   `remote-ufrag:local-ufrag`, plus MESSAGE-INTEGRITY keyed with the ice-pwd.
- * - This allocate authenticates with the relay token, raw bytes, in
- *   `ATTR_RELAY_CREDENTIAL` (0x4000), plus MESSAGE-INTEGRITY keyed with the
- *   `<relay>` key. It carries no `USERNAME`.
- *
- * Sending the ICE scheme here, a text `USERNAME` in place of the raw token, is
- * answered with a 456 and drops every inbound media packet.
- *
- * `relayCredential` is `relayInfo.rawToken` and `hmacKey` the raw `<relay>` key
- * bytes. `transactionId` is the id of the connection this allocate belongs to,
- * and it lands both in the header and in the IPv6 XOR key; leaving it out is
- * only correct outside a connection, where a one-off id is all there is.
- */
-export function buildAllocateForRelay(relayCredential, ssrcList, hmacKey, relayIp, relayPort, transactionId = createStunTransactionId()) {
+
+export function buildAllocateForRelay(relayToken, streamDescriptors, hmacKey, relayIp, relayPort) {
+    const transactionId = generateTransactionId();
     const parts = [];
-    parts.push(encodeAttribute(ATTR_RELAY_CREDENTIAL, relayCredential));
-    parts.push(encodeAttribute(ATTR_SSRC_LIST, ssrcList));
-    if (relayIp && relayPort) {
-        const xorRelayedAddress = encodeXorRelayedAddress(relayIp, relayPort, transactionId);
-        if (xorRelayedAddress) {
-            parts.push(encodeAttribute(ATTR_XOR_RELAYED_ADDRESS, xorRelayedAddress));
-        }
-    }
+    parts.push(encodeAttribute(ATTR_SENDER_SUBSCRIPTIONS, relayToken));
+    parts.push(encodeAttribute(ATTR_SSRC_LIST, streamDescriptors));
+    parts.push(encodeAttribute(ATTR_XOR_RELAYED_ADDRESS, encodeXorRelayedAddress(relayIp, relayPort)));
     const attrs = concatBytes(parts);
     return buildStunMessage(STUN_ALLOCATE_REQUEST, attrs, transactionId, hmacKey, false);
 }
-/**
- * Builds an ICE connectivity-check binding request.
- *
- * This is the ICE credential path: `username` is `remote-ufrag:local-ufrag` and
- * `hmacKey` the ice-pwd, unlike the allocate above, which authenticates with
- * the raw relay token. `senderSubscriptions` rides in the 0x4000 attribute,
- * which the allocate uses for the relay credential; the shape validated against
- * a live relay puts the subscription protobuf there on binding requests, so it
- * stays that way.
- *
- * `transactionId` is the id of the connection this check belongs to; leaving it
- * out is only correct outside a connection, where a one-off id is all there is.
- */
-export function buildBindingRequestWithSubs(username, hmacKey, senderSubscriptions, includeIceControlling, includeFingerprint, transactionId = createStunTransactionId()) {
+export function buildBindingRequest(username, hmacKey, senderSubscriptions, includeIceControllingOrOptions = true) {
+    const options = typeof includeIceControllingOrOptions === 'boolean'
+        ? { iceRole: includeIceControllingOrOptions ? 'controlling' : 'none' }
+        : (includeIceControllingOrOptions ?? {});
+    const iceRole = options.iceRole ?? 'controlling';
+    const includePriority = options.includePriority ?? true;
+    const includeUsername = options.includeUsername ?? true;
+    const transactionId = generateTransactionId();
+    const usernameAttr = includeUsername ? encodeAttribute(ATTR_USERNAME, username) : undefined;
+    const priorityAttr = includePriority
+        ? (() => {
+            const priorityBuf = new Uint8Array(4);
+            writeUInt32BE(priorityBuf, DEFAULT_ICE_PRIORITY, 0);
+            return encodeAttribute(ATTR_PRIORITY, priorityBuf);
+        })()
+        : undefined;
+    const parts = [];
+    if (usernameAttr)
+        parts.push(usernameAttr);
+    if (priorityAttr)
+        parts.push(priorityAttr);
+    if (iceRole === 'controlling' || iceRole === 'controlled') {
+        const tieBreaker = randomBytes(8);
+        const attrType = iceRole === 'controlled' ? ATTR_ICE_CONTROLLED : ATTR_ICE_CONTROLLING;
+        parts.push(encodeAttribute(attrType, tieBreaker));
+    }
+    if (senderSubscriptions && senderSubscriptions.length > 0) {
+        parts.push(encodeAttribute(ATTR_SENDER_SUBSCRIPTIONS, senderSubscriptions));
+    }
+    const attrs = concatBytes(parts);
+    return buildStunMessage(STUN_BINDING_REQUEST, attrs, transactionId, hmacKey, true);
+}
+
+function encodeXorMappedAddressV4(ip, port) {
+    const octets = ip.split('.').map((s) => Number(s) & 0xff);
+    const buf = new Uint8Array(8);
+    buf[0] = 0x00;
+    buf[1] = 0x01;
+    const xPort = port ^ (STUN_MAGIC_COOKIE >>> 16);
+    writeUInt16BE(buf, xPort, 2);
+    const cookieBytes = new Uint8Array(4);
+    writeUInt32BE(cookieBytes, STUN_MAGIC_COOKIE, 0);
+    for (let i = 0; i < 4; i++) buf[4 + i] = octets[i] ^ cookieBytes[i];
+    return buf;
+}
+
+export function buildBindingSuccessResponse(transactionId, mappedIp, mappedPort, hmacKey) {
+    const xorAddr = encodeXorMappedAddressV4(mappedIp, mappedPort);
+    const attrs = encodeAttribute(ATTR_XOR_MAPPED_ADDRESS, xorAddr);
+    const STUN_BINDING_SUCCESS_RESPONSE = 0x0101;
+    return buildStunMessage(STUN_BINDING_SUCCESS_RESPONSE, attrs, transactionId, hmacKey, true);
+}
+export function buildBindingRequestWithSubs(username, hmacKey, senderSubscriptions, includeIceControlling, includeFingerprint) {
+    const transactionId = generateTransactionId();
     const parts = [];
     if (username && username.length > 0) {
         parts.push(encodeAttribute(ATTR_USERNAME, username));
@@ -408,18 +250,37 @@ export function buildBindingRequestWithSubs(username, hmacKey, senderSubscriptio
         parts.push(encodeAttribute(ATTR_ICE_CONTROLLING, tieBreaker));
     }
     if (senderSubscriptions && senderSubscriptions.length > 0) {
-        parts.push(encodeAttribute(ATTR_RELAY_CREDENTIAL, senderSubscriptions));
+        parts.push(encodeAttribute(ATTR_SENDER_SUBSCRIPTIONS, senderSubscriptions));
     }
     const attrs = concatBytes(parts);
     return buildStunMessage(STUN_BINDING_REQUEST, attrs, transactionId, hmacKey, includeFingerprint);
 }
-/**
- * Builds the bare 0x0801 keepalive the relay answers with a 0x0802 pong.
- *
- * `transactionId` is the id of the connection being kept alive; leaving it out
- * is only correct outside a connection, where a one-off id is all there is.
- */
-export function buildWhatsAppPing(transactionId = createStunTransactionId()) {
+export function buildMinimalBindingWithSubs(senderSubscriptions, includeFingerprint = false) {
+    const transactionId = generateTransactionId();
+    const attrs = encodeAttribute(ATTR_SENDER_SUBSCRIPTIONS, senderSubscriptions);
+    return buildStunMessage(STUN_BINDING_REQUEST, attrs, transactionId, undefined, includeFingerprint);
+}
+export function buildMinimalAllocateWithSubs(senderSubscriptions, includeFingerprint = false) {
+    const transactionId = generateTransactionId();
+    const attrs = encodeAttribute(ATTR_SENDER_SUBSCRIPTIONS, senderSubscriptions);
+    return buildStunMessage(STUN_ALLOCATE_REQUEST, attrs, transactionId, undefined, includeFingerprint);
+}
+export function buildAllocateRequest(username, hmacKey, lifetime = 3600) {
+    const transactionId = generateTransactionId();
+    const parts = [];
+    parts.push(encodeAttribute(ATTR_REQUESTED_TRANSPORT, new Uint8Array([17, 0, 0, 0])));
+    parts.push(encodeAttribute(ATTR_USERNAME, username));
+    const lifetimeBuf = new Uint8Array(4);
+    writeUInt32BE(lifetimeBuf, lifetime, 0);
+    parts.push(encodeAttribute(ATTR_LIFETIME, lifetimeBuf));
+    const attrs = concatBytes(parts);
+    return buildStunMessage(STUN_ALLOCATE_REQUEST, attrs, transactionId, hmacKey, true);
+}
+export function buildRelayBindingSuccess(transactionId, hmacKey) {
+    return buildStunMessage(0x0101, new Uint8Array(0), transactionId, hmacKey, true);
+}
+export function buildWhatsAppPing() {
+    const transactionId = generateTransactionId();
     const header = new Uint8Array(20);
     writeUInt16BE(header, WHATSAPP_PING, 0);
     writeUInt16BE(header, 0, 2);
@@ -442,12 +303,6 @@ export function isRtpPacket(data) {
         return false;
     return (data[0] & 0xc0) === 0x80;
 }
-/** RTCP/SRTCP keeps the RTCP header clear, so it can be demultiplexed before SRTP. */
-export function isRtcpPacket(data) {
-    if (data.length < 8 || (data[0] & 0xc0) !== 0x80)
-        return false;
-    return data[1] >= 192 && data[1] <= 223;
-}
 const STUN_ATTR_NAMES = {
     0x0001: 'MAPPED-ADDRESS',
     0x0006: 'USERNAME',
@@ -460,9 +315,9 @@ const STUN_ATTR_NAMES = {
     0x0020: 'XOR-MAPPED-ADDRESS',
     0x0024: 'PRIORITY',
     0x0025: 'USE-CANDIDATE',
-    0x4000: 'RELAY-CREDENTIAL',
-    0x4021: 'RECEIVER-SUBSCRIPTION',
-    0x4025: 'SENDER-SUBSCRIPTIONS',
+    0x4000: 'SENDER-SUBSCRIPTIONS',
+    0x4001: 'RECEIVER-SUBSCRIPTION',
+    0x4002: 'SUBSCRIPTION-ACK',
     0x8022: 'SOFTWARE',
     0x8028: 'FINGERPRINT',
     0x8029: 'ICE-CONTROLLED',

@@ -1,4 +1,7 @@
 import { randomUUID } from 'node:crypto'
+import { generateMessageIDV2 } from '../utils/wa-protocol-core.js'
+
+const MESSAGE_EDIT_TYPE = 14
 
 const newLayout = (name, data, extra = {}) => ({
 	...extra,
@@ -464,9 +467,44 @@ export class AIRichBuilder {
 		}
 	}
 
-	async send(jid, { forwarded, quoted, quotedParticipant, botJid, ...sendOptions } = {}) {
+	buildEdit(jid, targetKey, editedMessage) {
+		if (!jid) throw new Error('A jid is required to edit an aiRich message')
+		if (!targetKey?.id) throw new Error('A target message id is required to edit an aiRich message')
+		if (!editedMessage) throw new Error('editedMessage does not contain an aiRich response')
+		return {
+			botForwardedMessage: {
+				message: {
+					protocolMessage: {
+						key: { remoteJid: jid, fromMe: true, id: targetKey.id },
+						type: MESSAGE_EDIT_TYPE,
+						editedMessage,
+						timestampMs: Date.now()
+					}
+				}
+			}
+		}
+	}
+
+	async send(jid, { forwarded, quoted, quotedParticipant, botJid, bypassDownload = true, ...sendOptions } = {}) {
 		if (!this._client) throw new Error('AIRichBuilder.send() needs a client — use sock.aiRich() or new AIRichBuilder(sock)')
-		return this._client.sendMessage(jid, { aiRich: this, forwarded, quoted, quotedParticipant, botJid }, sendOptions)
+		const sent = await this._client.sendMessage(jid, { aiRich: this, forwarded, quoted, quotedParticipant, botJid }, sendOptions)
+		const richResponse = sent?.message?.botForwardedMessage?.message?.richResponseMessage
+		if (!bypassDownload || !sent?.key?.id || !richResponse?.unifiedResponse) return sent
+		try {
+			const userId = this._client.user?.id ?? this._client.authState?.creds?.me?.id
+			const edit = this.buildEdit(jid, sent.key, sent.message)
+			await this._client.relayMessage(jid, edit, {
+				messageId: generateMessageIDV2(userId),
+				additionalAttributes: { edit: '1' },
+				additionalNodes: sendOptions.additionalNodes,
+				useCachedGroupMetadata: sendOptions.useCachedGroupMetadata,
+				statusJidList: sendOptions.statusJidList
+			})
+		} catch (error) {
+			error.relayedKey = sent.key
+			throw error
+		}
+		return sent
 	}
 }
 

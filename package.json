@@ -28,8 +28,5 @@
   },
   "engines": {
     "node": ">=22.0.0"
-  },
-  "dependencies": {
-    "@roamhq/wrtc": ">=0.10.0"
   }
 }

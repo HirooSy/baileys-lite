@@ -2,8 +2,6 @@ import { createNoopLogger } from '../shim/core.js';
 import { normalizeDeviceJid } from '../shim/protocol.js';
 import { buildAckNode, getFirstNodeChild } from '../shim/transport.js';
 import { toError } from '../shim/util.js';
-// Penanda untuk messages-recv.js: stanza ini sudah di-ack oleh voip (dengan type yang benar), jangan di-ack lagi oleh handler Baileys.
-export const ACKED_BY_VOIP = Symbol.for('baileys.ackedByVoip');
 const RECEIPT_CALL_TAGS = new Set([
     'offer',
     'accept',
@@ -20,7 +18,6 @@ export async function routeCallStanza(manager, deps, node, logger) {
         return null;
     const tag = inner.tag;
     const peerJid = node.attrs.from;
-    node[ACKED_BY_VOIP] = true;
     await deps.lowLevelCoordinator.sendNode(buildAckNode({
         kind: 'custom',
         ackClass: 'call',
@@ -53,29 +50,26 @@ export async function routeCallStanza(manager, deps, node, logger) {
             await manager.handleCallTransport(node, normalizedPeerJid);
             break;
         case 'terminate':
-            await manager.handleCallTerminate(node, normalizedPeerJid);
+            await manager.handleCallTerminate(node);
             break;
         case 'relaylatency':
             await manager.handleCallRelaylatency(node, normalizedPeerJid);
             break;
         case 'mute_v2':
-            manager.handleCallMuteV2(node, normalizedPeerJid);
+            await manager.handleCallMuteV2(node, normalizedPeerJid);
             break;
         case 'user_action':
             manager.handleCallUserAction(node, normalizedPeerJid);
             break;
-        // A distinct message type, not a variant of `user_action` above, and still sent by
-        // current clients: without this case the hand is lost in `default`.
         case 'raise_hand':
             manager.handleCallRaiseHand(node, normalizedPeerJid);
             break;
-        // `screen_share` negotiates the share; `screen` adds the surface geometry.
         case 'screen_share':
         case 'screen':
             manager.handleCallScreenShare(node);
             break;
         case 'video':
-            manager.handleCallVideoState(node);
+            await manager.handleCallVideo(node, normalizedPeerJid);
             break;
         case 'relay_election':
             manager.handleRelayElection(node);
@@ -97,7 +91,6 @@ export async function routeCallReceipt(deps, node) {
     if (!RECEIPT_CALL_TAGS.has(inner.tag))
         return false;
     const peerJid = node.attrs.from;
-    node[ACKED_BY_VOIP] = true;
     await deps.lowLevelCoordinator.sendNode(buildAckNode({
         kind: 'custom',
         ackClass: 'receipt',

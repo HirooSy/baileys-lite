@@ -26,21 +26,28 @@ export var EndCallReason;
     EndCallReason["Busy"] = "busy";
     EndCallReason["Cancelled"] = "cancelled";
     EndCallReason["Failed"] = "failed";
-    EndCallReason["RelayLost"] = "relay_lost";
     EndCallReason["DoNotDisturb"] = "do_not_disturb";
     EndCallReason["Unknown"] = "unknown";
 })(EndCallReason || (EndCallReason = {}));
 export var PayloadType;
 (function (PayloadType) {
     PayloadType[PayloadType["WhatsAppOpus"] = 120] = "WhatsAppOpus";
-    PayloadType[PayloadType["WhatsAppH264"] = 97] = "WhatsAppH264";
-    PayloadType[PayloadType["WhatsAppVideoFec"] = 103] = "WhatsAppVideoFec";
+
+    PayloadType[PayloadType["H264"] = 97] = "H264";
 })(PayloadType || (PayloadType = {}));
+export const DEFAULT_VIDEO_CONFIG = {
+
+    width: 640,
+    height: 360,
+    frameRate: 20,
+
+    clockRate: 90000
+};
 export const DEFAULT_AUDIO_CONFIG = {
     sampleRate: 16000,
     captureChunkSize: 960,
-    playbackOutputSize: 960,
-    maxBufferSize: 11520,
+    playbackOutputSize: 256,
+    maxBufferSize: 1600,
     intervalMs: 60
 };
 export const SRTP_SEND_AUTH_TAG_LEN = 4;
@@ -51,5 +58,12 @@ export const SRTP_LABEL = {
     AUTH: 0x01,
     SALT: 0x02
 };
+
+export const SRTCP_LABEL = {
+    ENCRYPTION: 0x03,
+    AUTH: 0x04,
+    SALT: 0x05
+};
+export const RTCP_AUTH_TAG_LEN = 10;
 export const WA_RELAY_PORT = 3480;
 export const WA_DTLS_FINGERPRINT = 'sha-256 F9:CA:0C:98:A3:CC:71:D6:42:CE:5A:E2:53:D2:15:20:D3:1B:BA:D8:57:A4:F0:AF:BE:0B:FB:F3:6B:0C:A0:68';

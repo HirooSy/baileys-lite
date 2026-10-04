@@ -1,13 +1,6 @@
 import { concatBytes, EMPTY_BYTES, TEXT_DECODER, TEXT_ENCODER } from '../bytes.js';
 import { encodeProtoLengthDelimited, encodeProtoVarintField } from '../protobuf.js';
-/**
- * Field numbers of the `wa.voip` app-data messages, read off the protobuf descriptors
- * compiled into the official client. Field 2 of `appDataMessage` is live transcription,
- * deliberately not modelled here.
- *
- * The emoji travels as the **UTF-8 glyph** in `reaction` field 2, not as an index into a
- * reaction set, and there is **no `reaction_state` field at all**.
- */
+
 const APP_DATA_PAYLOADS_MESSAGES = 1;
 const APP_DATA_MESSAGE_REACTION_INFO = 1;
 const APP_DATA_MESSAGE_AR_EFFECT_INFO = 3;
@@ -22,10 +15,7 @@ const WIRE_TYPE_FIXED32 = 5;
 const VARINT_CONTINUATION = 0x80;
 const VARINT_PAYLOAD_MASK = 0x7f;
 const VARINT_SHIFT = 7n;
-/**
- * Ceiling on the messages one app-data payload may carry: a local guard, not a protocol
- * constant - the official client bounds the same list at an unrecorded limit.
- */
+
 const MAX_MESSAGES_PER_PAYLOAD = 32;
 function readVarint(data, offset) {
     let value = 0n;
@@ -42,10 +32,7 @@ function readVarint(data, offset) {
     }
     throw new Error('truncated protobuf varint');
 }
-/**
- * Walks the fields of one protobuf message. Unknown fields are skipped rather than
- * rejected: an unmodelled message kind must not cost the reaction beside it.
- */
+
 function* readFields(data) {
     let offset = 0;
     while (offset < data.length) {
@@ -84,12 +71,7 @@ function* readFields(data) {
             throw new Error('truncated protobuf fixed-width field');
     }
 }
-/**
- * Serializes one emoji reaction into an app-data RTP payload, in the list nesting the
- * official receive path parses. No sender, recipient or routing mode: the relay routes app
- * data by the SSRC it arrives on, and routing fields belong to `dataChannelMessage`, a
- * different transport.
- */
+
 export function encodeReactionPayload(reaction) {
     const reactionInfo = concatBytes([
         encodeProtoVarintField(REACTION_INFO_TRANSACTION_ID, reaction.transactionId),
@@ -132,13 +114,7 @@ function decodeArEffectInfo(data, requireTransactionId) {
         return null;
     return { transactionId: transactionId ?? 0n, arEffectId };
 }
-/**
- * Reads one `appDataMessage`. `strict` keeps the fallback reading of
- * {@link decodeAppDataPayload} from inventing a reaction: the two nestings overlap, so a
- * list holding an unmodelled message kind read as a bare message turns its inner bytes
- * into an emoji nobody sent. Demanding the transaction id, which every real sender fills,
- * separates them.
- */
+
 function decodeAppDataMessage(data, strict) {
     let reaction = null;
     let arEffect = null;
@@ -174,12 +150,7 @@ function decodeAsPayloads(data) {
     }
     return { items, truncated };
 }
-/**
- * Reads the payload of one inbound app-data RTP packet. Returns `null` when the bytes
- * carry nothing this package models, including a well-formed payload holding only unread
- * kinds such as live transcription. The list nesting is tried first because the two shapes
- * are only told apart by which one yields a message.
- */
+
 export function decodeAppDataPayload(data) {
     try {
         const nested = decodeAsPayloads(data);
@@ -188,7 +159,6 @@ export function decodeAppDataPayload(data) {
         }
     }
     catch {
-        // A payload that is not a valid list is not thereby an invalid message.
     }
     try {
         const flat = decodeAppDataMessage(data, true);

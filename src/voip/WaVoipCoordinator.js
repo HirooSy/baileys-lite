@@ -13,9 +13,7 @@ export class WaVoipCoordinator {
             deps: ctx.deps,
             stores: ctx.stores,
             logger: this.logger,
-            maxConcurrentCalls: options.maxConcurrentCalls,
-            useOriginalRelayPort: options.useOriginalRelayPort,
-            useRawUdpTransport: options.useRawUdpTransport
+            maxConcurrentCalls: options.maxConcurrentCalls
         });
         this.registerIncomingHandlers(ctx);
         this.wireClientEvents(ctx);
@@ -35,6 +33,24 @@ export class WaVoipCoordinator {
     async loadAudio(callId, audioPath) {
         return this.manager.loadAudio(callId, audioPath);
     }
+    async loadVideo(callId, videoPath) {
+        return this.manager.loadVideo(callId, videoPath);
+    }
+    async enableVideoMidCall(callId) {
+        return this.manager.enableVideoMidCall(callId);
+    }
+    async disableVideoMidCall(callId, options) {
+        return this.manager.disableVideoMidCall(callId, options);
+    }
+    async startVideoMidCall(callId) {
+        return this.manager.startVideoMidCall(callId);
+    }
+    async stopVideoMidCall(callId, options) {
+        return this.manager.stopVideoMidCall(callId, options);
+    }
+    async swapVideoSource(callId, videoPath) {
+        return this.manager.swapVideoSource(callId, videoPath);
+    }
     setMute(callId, muted) {
         this.manager.setMute(callId, muted);
     }
@@ -47,26 +63,11 @@ export class WaVoipCoordinator {
     sendReaction(callId, reaction) {
         return this.manager.sendReaction(callId, reaction);
     }
-    async requestVideoUpgrade(callId) {
-        return this.manager.requestVideoUpgrade(callId);
-    }
-    async acceptVideoUpgrade(callId) {
-        return this.manager.acceptVideoUpgrade(callId);
-    }
-    async rejectVideoUpgrade(callId) {
-        return this.manager.rejectVideoUpgrade(callId);
-    }
-    async cancelVideoUpgrade(callId) {
-        return this.manager.cancelVideoUpgrade(callId);
-    }
     setExternalAudioMode(callId, enabled) {
         this.manager.setExternalAudioMode(callId, enabled);
     }
     feedLiveAudio(callId, data) {
         return this.manager.feedLiveAudio(callId, data);
-    }
-    feedLiveVideo(callId, data, timestampUs) {
-        return this.manager.feedLiveVideo(callId, data, timestampUs);
     }
     getLiveBufferMs(callId) {
         return this.manager.getLiveBufferMs(callId);
@@ -132,32 +133,23 @@ export class WaVoipCoordinator {
         this.manager.on('call_ended', (call) => {
             ctx.emit('voip_call_ended', call);
         });
-        this.manager.on('call_peer_mute', (call, muted) => {
-            ctx.emit('voip_call_peer_mute', { call, muted });
-        });
         this.manager.on('call_inbound_audio', (call, pcm) => {
             ctx.emit('voip_call_inbound_audio', { call, pcm });
         });
-        this.manager.on('call_inbound_video_rtp', (call, packet) => {
-            ctx.emit('voip_call_inbound_video_rtp', { call, packet });
-        });
-        this.manager.on('call_inbound_video', (call, frame) => {
-            ctx.emit('voip_call_inbound_video', { call, frame });
-        });
-        this.manager.on('call_screen_share', (call, share) => {
-            ctx.emit('voip_call_screen_share', { call, share });
-        });
-        this.manager.on('call_peer_video_state', (call, change) => {
-            ctx.emit('voip_call_peer_video_state', { call, change });
-        });
         this.manager.on('call_outbound_audio_finished', (call) => {
             ctx.emit('voip_call_outbound_audio_finished', call);
+        });
+        this.manager.on('call_peer_mute', (call, muted) => {
+            ctx.emit('voip_call_peer_mute', { call, muted });
         });
         this.manager.on('call_hand_raise', (call, participantJid, raised) => {
             ctx.emit('voip_call_hand_raise', { call, participantJid, raised });
         });
         this.manager.on('call_reaction', (call, reaction) => {
             ctx.emit('voip_call_reaction', { call, reaction });
+        });
+        this.manager.on('call_screen_share', (call, share) => {
+            ctx.emit('voip_call_screen_share', { call, share });
         });
         this.manager.on('call_error', (error) => {
             ctx.emit('voip_call_error', error);

@@ -81,7 +81,7 @@ export class ActiveCall extends EventEmitter {
     raiseHand = (raised = true) => this.#coordinator.setHandRaised(this.callId, !!raised);
     shareScreen = (sharing = true) => this.#coordinator.setScreenShare(this.callId, !!sharing);
     react = (emoji) => this.#coordinator.sendReaction(this.callId, emoji);
-    upgradeToVideo = () => this.#coordinator.requestVideoUpgrade(this.callId);
+    upgradeToVideo = () => this.#coordinator.startVideoMidCall(this.callId);
     end = async () => {
         if (this.#ended)
             return;
@@ -98,6 +98,12 @@ export class ActiveCall extends EventEmitter {
         }
     };
     waitForEnd = () => this.#endPromise;
+    get connected() {
+        return this.#connectedEmitted;
+    }
+    get ended() {
+        return this.#ended;
+    }
     _forceEnd = (reason) => {
         if (this.#ended)
             return;
@@ -148,11 +154,8 @@ export class VoipClient {
         const ctx = createVoipCtx(this.#sock, deps, stores, logger, emitter);
         this.#coordinator = new WaVoipCoordinator(ctx, {
             maxConcurrentCalls: this.#config.maxConcurrentCalls ?? 1,
-            logLevel: this.#config.voipLogLevel ?? 'warn',
-            useOriginalRelayPort: this.#config.useOriginalRelayPort,
-            useRawUdpTransport: this.#config.useRawUdpTransport
+            logLevel: this.#config.voipLogLevel ?? 'warn'
         });
-        // Socket Baileys putus -> relay/UDP/timer call tidak boleh menggantung, dan waitForEnd() harus selesai.
         const sock = this.#sock;
         const onUpdate = (update) => {
             if (update?.connection !== 'close')
@@ -162,10 +165,10 @@ export class VoipClient {
             logger.warn('voip: socket closed, tearing down active calls');
             this.#teardown('connection_closed');
         };
-        sock.ev.on('connection.update', onUpdate);
+        sock.ev?.on?.('connection.update', onUpdate);
         this.#offSocketClose = () => {
             try {
-                sock.ev.off('connection.update', onUpdate);
+                sock.ev?.off?.('connection.update', onUpdate);
             }
             catch { }
         };
@@ -177,7 +180,6 @@ export class VoipClient {
         this.#offSocketClose = null;
         for (const call of calls) {
             try {
-                // _forceEnd lebih dulu: socket sudah mati, endCall() lewat jaringan pasti gagal/menggantung
                 call._forceEnd(reason);
             }
             catch { }
@@ -199,12 +201,12 @@ export class VoipClient {
         const callId = await coordinator.startCall({
             peerJid,
             isVideo: !!opts.isVideo,
-            audioFile
+            audioFile,
+            videoConfig: opts.videoConfig
         });
         if (this.#coordinator !== coordinator) {
             throw new Error('Connection closed while placing the call.');
         }
-
         if (audioFile) {
             try {
                 await coordinator.loadAudio(callId, audioFile);
@@ -212,12 +214,21 @@ export class VoipClient {
                 console.error(`[ VOIP ] Failed to load audio "${audioFile}" for call ${callId}:`, e?.message || e);
             }
         }
+        if (opts.isVideo && opts.videoSource) {
+            try {
+                await coordinator.loadVideo(callId, opts.videoSource);
+            } catch (e) {
+                console.error(`[ VOIP ] Failed to load video "${opts.videoSource}" for call ${callId}:`, e?.message || e);
+            }
+        }
         if (this.#coordinator !== coordinator) {
             throw new Error('Connection closed while placing the call.');
         }
+        return this.#track(coordinator, callId, durationMs);
+    };
+    #track = (coordinator, callId, durationMs) => {
         const call = new ActiveCall(coordinator, callId, durationMs);
         this.#activeCalls.set(callId, call);
-
         call.coordinator = coordinator;
         const onState = (info) => call._onState(info);
         const onEnded = (info) => call._onEnded(info);
@@ -229,13 +240,12 @@ export class VoipClient {
         coordinator.on('call_state', onState);
         coordinator.on('call_ended', onEnded);
         coordinator.on('call_error', onError);
-        // coordinator events -> emitted on the ActiveCall (only for this call id)
         const forwarded = [
             ['call_peer_mute', 'peer_mute', (c, muted) => [muted]],
             ['call_hand_raise', 'hand_raise', (c, jid, raised) => [{ jid, raised }]],
             ['call_reaction', 'reaction', (c, reaction) => [reaction]],
             ['call_screen_share', 'screen_share', (c, share) => [share]],
-            ['call_peer_video_state', 'peer_video', (c, change) => [change]],
+            ['call_video_state', 'peer_video', (c, change) => [change]],
             ['call_inbound_audio', 'inbound_audio', (c, pcm) => [pcm]],
             ['call_inbound_video', 'inbound_video', (c, frame) => [frame]],
             ['call_outbound_audio_finished', 'audio_finished', () => []]
@@ -256,6 +266,40 @@ export class VoipClient {
             if (this.#activeCalls.get(callId) === call)
                 this.#activeCalls.delete(callId);
         });
+        return call;
+    };
+    answer = async (callId, opts = {}) => {
+        const coordinator = this.#coordinator;
+        if (!this.#sock || !coordinator)
+            throw new Error('Not connected. Call connect() first.');
+        const info = coordinator.getCall(callId);
+        if (!info)
+            throw new Error(`Unknown call ${callId}.`);
+        if (!info.canAccept)
+            throw new Error(`Call ${callId} cannot be accepted right now.`);
+        const call = this.#track(coordinator, callId, opts.durationMs ?? 0);
+        try {
+            await coordinator.acceptCall(callId);
+        }
+        catch (err) {
+            call._forceEnd('failed');
+            throw err;
+        }
+        const audioFile = opts.audioSource && opts.audioSource !== 'silence' ? opts.audioSource : undefined;
+        if (audioFile) {
+            try {
+                await coordinator.loadAudio(callId, audioFile);
+            } catch (e) {
+                console.error(`[ VOIP ] Failed to load audio "${audioFile}" for call ${callId}:`, e?.message || e);
+            }
+        }
+        if (opts.videoSource) {
+            try {
+                await coordinator.loadVideo(callId, opts.videoSource);
+            } catch (e) {
+                console.error(`[ VOIP ] Failed to load video "${opts.videoSource}" for call ${callId}:`, e?.message || e);
+            }
+        }
         return call;
     };
     disconnect = () => {

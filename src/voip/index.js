@@ -2,6 +2,42 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { EventEmitter } from 'node:events';
 import { VoipClient } from './voipClient.js';
+import { CallDirection, CallMediaType } from './types.js';
+
+const RESOLUTION_PRESETS = {
+    '240p': { width: 320, height: 240, frameRate: 20 },
+    '360p': { width: 640, height: 360, frameRate: 30 },
+    '480p': { width: 854, height: 480, frameRate: 30 },
+    '720p': { width: 1280, height: 720, frameRate: 30 },
+    '1080p': { width: 1920, height: 1080, frameRate: 30 },
+};
+
+function resolveVideoConfig(resolution, sourceDims) {
+    if (!resolution) {
+        if (!sourceDims?.width || !sourceDims?.height)
+            return undefined;
+        return applyOrientation(RESOLUTION_PRESETS['480p'], sourceDims);
+    }
+    if (typeof resolution === 'object')
+        return resolution;
+    const key = String(resolution).trim().toLowerCase();
+    const preset = RESOLUTION_PRESETS[key];
+    if (!preset) {
+        const known = Object.keys(RESOLUTION_PRESETS).join(', ');
+        throw new Error(`Unknown resolution "${resolution}". Use one of: ${known}, or pass { width, height, frameRate } directly.`);
+    }
+    return applyOrientation(preset, sourceDims);
+}
+
+function applyOrientation(preset, sourceDims) {
+    if (!sourceDims?.width || !sourceDims?.height)
+        return { ...preset };
+    const sourceIsPortrait = sourceDims.height > sourceDims.width;
+    const presetIsPortrait = preset.height > preset.width;
+    if (sourceIsPortrait === presetIsPortrait)
+        return { ...preset };
+    return { ...preset, width: preset.height, height: preset.width };
+}
 
 const VIDEO_EXTENSIONS = /\.(mp4|mov|webm|mkv|avi|m4v|3gp)(\?|#|$)/i;
 const AUDIO_EXTENSIONS = /\.(mp3|ogg|opus|wav|m4a|aac|flac|weba)(\?|#|$)/i;
@@ -54,7 +90,6 @@ async function probeMedia(filePath, ffprobePath) {
         const videoStream = parsed?.streams?.find((s) => s.codec_type === 'video');
         let width = videoStream?.width || null;
         let height = videoStream?.height || null;
-
         const rotation = getEffectiveRotation(videoStream);
         if (width && height && Math.abs(rotation) % 180 === 90) {
             [width, height] = [height, width];
@@ -83,11 +118,13 @@ function getEffectiveRotation(videoStream) {
 async function normalizeItem(item, ffprobePath, tmpDir) {
     let kind;
     let rawSource;
+    let autoAdvance = false;
     if (typeof item === 'string') {
         rawSource = item;
         kind = detectKind(item) ?? 'audio';
     }
     else if (item && typeof item === 'object') {
+        autoAdvance = !!item.autoAdvance;
         if (item.video) {
             rawSource = item.video;
             kind = 'video';
@@ -103,15 +140,11 @@ async function normalizeItem(item, ffprobePath, tmpDir) {
     else {
         throw new Error('Playlist item must be a string or an object.');
     }
-    if (kind === 'video') {
-        throw new Error('Video playlist item is not supported (audio files only). ' +
-            'Send video frames yourself via voip.coordinator.feedLiveVideo(), or use call.upgradeToVideo() to ask the peer to switch to video.');
-    }
     let source = rawSource;
     let isTemp = false;
     if (isUrl(rawSource)) {
-        const extHint = '.audio';
-        const maxBytes = 20 * 1024 * 1024;
+        const extHint = kind === 'video' ? '.mp4' : '.audio';
+        const maxBytes = kind === 'video' ? 50 * 1024 * 1024 : 20 * 1024 * 1024;
         source = await downloadToTemp(rawSource, extHint, maxBytes, tmpDir);
         isTemp = true;
     }
@@ -120,7 +153,12 @@ async function normalizeItem(item, ffprobePath, tmpDir) {
     }
     const probed = await probeMedia(source, ffprobePath);
     const durationMs = probed.durationMs ?? undefined;
-    return { kind, source, isTemp, durationMs };
+    const result = { kind, source, isTemp, durationMs, autoAdvance };
+    if (kind === 'video' && probed.width && probed.height) {
+        result.sourceWidth = probed.width;
+        result.sourceHeight = probed.height;
+    }
+    return result;
 }
 
 class VoipCall extends EventEmitter {
@@ -134,16 +172,21 @@ class VoipCall extends EventEmitter {
     #loop;
     #onItemAdvance;
     #target;
+    #autoDowngrade;
+    #startVideoOnFirst;
+    #videoDown = false;
     #silenced = false;
     _itemTimer = null;
     constructor(items, onRelease, opts = {}) {
         super();
         this.#items = items;
         this.#onRelease = onRelease;
-        this.#target = opts.target ?? null;
         this.#autoEndCall = opts.autoEndCall === undefined ? true : !!opts.autoEndCall;
         this.#loop = !!opts.loop;
         this.#onItemAdvance = opts.onItemAdvance;
+        this.#target = opts.target ?? null;
+        this.#autoDowngrade = opts.autoDowngrade === undefined ? true : !!opts.autoDowngrade;
+        this.#startVideoOnFirst = !!opts.startVideoOnFirst;
     }
     async _attach(activeCall) {
         this.#activeCall = activeCall;
@@ -155,6 +198,17 @@ class VoipCall extends EventEmitter {
         });
         activeCall.on('ended', (reason) => this._finish(reason));
         activeCall.on('error', (err) => this.emit('error', err));
+        activeCall.on('peer_video', (change) => {
+            this._onPeerVideo(change).catch((err) => this.emit('error', err));
+        });
+        if (activeCall.ended) {
+            this._finish('ended');
+            return;
+        }
+        if (activeCall.connected) {
+            this.emit('connected');
+            this._advance().catch((err) => this.emit('error', err));
+        }
         for (const ev of ['peer_mute', 'hand_raise', 'reaction', 'screen_share', 'peer_video', 'inbound_audio', 'inbound_video', 'audio_finished']) {
             activeCall.on(ev, (...args) => this.emit(ev, ...args));
         }
@@ -177,8 +231,33 @@ class VoipCall extends EventEmitter {
     react(emoji) {
         return this.#activeCall?.react(emoji) ?? false;
     }
-    upgradeToVideo() {
-        return this.#activeCall?.upgradeToVideo();
+    async upgradeToVideo() {
+        await this.#activeCall?.upgradeToVideo();
+        this.#videoDown = false;
+    }
+    get isVideoDowngraded() {
+        return this.#videoDown;
+    }
+    async _onPeerVideo(change) {
+        if (!this.#autoDowngrade || this.#ended || this.#silenced || this.#videoDown)
+            return;
+        if (change?.direction !== 'inbound' || change.active || !change.allOff)
+            return;
+        const current = this.#items[this.#index];
+        if (current?.kind !== 'video')
+            return;
+        const callId = this.#activeCall?.callId;
+        if (!callId)
+            return;
+        this.#videoDown = true;
+        try {
+            await this.#coordinator.stopVideoMidCall(callId, { keepSource: true });
+            this.emit('downgraded');
+        }
+        catch (err) {
+            this.#videoDown = false;
+            throw new Error(`Failed to downgrade call to audio: ${err?.message || err}`);
+        }
     }
 
     async _advance() {
@@ -201,18 +280,43 @@ class VoipCall extends EventEmitter {
                 return;
             }
         }
-
         const isFirst = previous === null && this.#index === 0;
+        if (isFirst && next.kind === 'video' && this.#startVideoOnFirst) {
+            try {
+                await this.#coordinator.startVideoMidCall(this.#activeCall.callId);
+            }
+            catch (err) {
+                this.emit('error', new Error(`Failed to start video: ${err?.message || err}`));
+            }
+        }
         if (!isFirst) {
             const callId = this.#activeCall.callId;
+            const videoRunning = previous?.kind === 'video' && !this.#videoDown;
             try {
-                await this.#coordinator.loadAudio(callId, next.source);
+                if (next.kind === 'video') {
+                    if (previous && previous.kind === 'video') {
+                        await this.#coordinator.swapVideoSource(callId, next.source);
+                    }
+                    else {
+                        await this.#coordinator.loadVideo(callId, next.source);
+                    }
+                    await this.#coordinator.loadAudio(callId, next.source);
+                    if (!videoRunning) {
+                        await this.#coordinator.startVideoMidCall(callId);
+                    }
+                }
+                else {
+                    await this.#coordinator.loadAudio(callId, next.source);
+                    if (videoRunning) {
+                        await this.#coordinator.stopVideoMidCall(callId, { keepSource: true });
+                    }
+                }
+                this.#videoDown = false;
             }
             catch (err) {
                 this.emit('error', new Error(`Failed to advance to playlist item ${this.#index} (${next.kind} "${next.source}"): ${err?.message || err}`));
             }
             finally {
-
                 if (!this.#loop) {
                     this._cleanupItem(previous);
                 }
@@ -220,8 +324,7 @@ class VoipCall extends EventEmitter {
         }
         this.emit('item', { index: this.#index, kind: next.kind, source: next.source });
         this.#onItemAdvance?.(next);
-
-        if (next.durationMs) {
+        if ((next.kind !== 'video' || next.autoAdvance) && next.durationMs) {
             this._itemTimer = setTimeout(() => {
                 this._advance().catch((err) => this.emit('error', err));
             }, next.durationMs);
@@ -260,9 +363,14 @@ class VoipCall extends EventEmitter {
         const callId = this.#activeCall?.callId;
         if (!callId)
             return this.#silenced;
+        const current = this.#items[this.#index];
         try {
             if (next) {
                 await this.#coordinator.setMute(callId, true);
+                if (current?.kind === 'video' && !this.#videoDown) {
+                    await this.#coordinator.stopVideoMidCall(callId, { keepSource: true });
+                    this.#videoDown = true;
+                }
                 if (this._itemTimer) {
                     clearTimeout(this._itemTimer);
                     this._itemTimer = null;
@@ -270,6 +378,11 @@ class VoipCall extends EventEmitter {
             }
             else {
                 await this.#coordinator.setMute(callId, false);
+                if (current?.kind === 'video') {
+                    await this.#coordinator.startVideoMidCall(callId);
+                    this.#videoDown = false;
+                }
+
             }
             this.emit('silent', this.#silenced);
         }
@@ -298,7 +411,6 @@ export default class Voip {
     #ffprobePath;
     #tmpDir;
     #voipLogLevel;
-    #relayOpts;
     constructor(conn, opts = {}) {
         this.#conn = conn;
         this.#ffprobePath = opts.ffprobePath || 'ffprobe';
@@ -306,11 +418,6 @@ export default class Voip {
         this.#maxConcurrentCalls = opts.maxConcurrentCalls ?? 1;
         if (!Number.isSafeInteger(this.#maxConcurrentCalls) || this.#maxConcurrentCalls < 1)
             throw new Error('maxConcurrentCalls must be a positive integer.');
-        this.#relayOpts = {
-            useOriginalRelayPort: !!opts.useOriginalRelayPort,
-            useRawUdpTransport: !!opts.useRawUdpTransport
-        };
-
         this.#tmpDir = opts.tmpDir;
     }
     #getClient() {
@@ -319,8 +426,7 @@ export default class Voip {
         this.#client = new VoipClient({
             existingSocket: this.#conn,
             voipLogLevel: this.#voipLogLevel,
-            maxConcurrentCalls: this.#maxConcurrentCalls,
-            ...this.#relayOpts
+            maxConcurrentCalls: this.#maxConcurrentCalls
         });
         this.#clientForConn = this.#conn;
         return this.#client;
@@ -332,13 +438,59 @@ export default class Voip {
         return this.#maxConcurrentCalls;
     }
 
-    // `resolution` tetap ada agar signature lama tidak rusak; video dari file sudah tidak didukung.
-    async call(jid, media, resolution, options = {}) {
+    #assertCapacity() {
         if (this.#calls.size + this.#pending >= this.#maxConcurrentCalls)
             throw new Error(`Maximum concurrent calls reached (${this.#maxConcurrentCalls}), wait for a call to end.`);
+    }
+    async call(jid, media, resolution, options = {}) {
+        this.#assertCapacity();
         const targetJid = String(jid || '').replace(/\D/g, '');
         if (!targetJid)
             throw new Error('Invalid phone number / jid.');
+        return this.#launch(targetJid, media, resolution, options, (client, first, videoConfig) => client.call(targetJid, {
+            audioSource: first.source,
+            isVideo: first.kind === 'video',
+            ...(first.kind === 'video' ? { videoSource: first.source } : {}),
+            durationMs: 0,
+            videoConfig,
+        }));
+    }
+    async accept(callId, media, resolution, options = {}) {
+        await this.listen();
+        this.#assertCapacity();
+        const info = this.coordinator.getCall(callId);
+        if (!info)
+            throw new Error(`Unknown call ${callId}.`);
+        if (!info.canAccept)
+            throw new Error(`Call ${callId} cannot be accepted right now.`);
+        const callIsVideo = info.mediaType === CallMediaType.Video;
+        return this.#launch(info.peerJid, media, resolution, { ...options, startVideoOnFirst: !callIsVideo }, (client, first) => client.answer(callId, {
+            audioSource: first.source,
+            videoSource: first.kind === 'video' ? first.source : undefined,
+            durationMs: 0,
+        }));
+    }
+    async reject(callId, reason) {
+        await this.listen();
+        return this.coordinator.rejectCall(callId, reason);
+    }
+    get incoming() {
+        return (this.coordinator?.getCalls() ?? []).filter((info) => info.direction === CallDirection.Incoming && info.isRinging);
+    }
+    onIncoming(listener) {
+        const coordinator = this.#requireCoordinator();
+        const wrapped = (info) => listener({
+            callId: info.callId,
+            jid: info.peerJid,
+            creator: info.callCreator,
+            isVideo: info.mediaType === CallMediaType.Video,
+            canAccept: info.canAccept,
+            info,
+        });
+        coordinator.on('call_incoming', wrapped);
+        return () => coordinator.off('call_incoming', wrapped);
+    }
+    async #launch(targetJid, media, resolution, options, begin) {
         this.#pending++;
         let reserved = true;
         const releaseReservation = () => {
@@ -347,9 +499,15 @@ export default class Voip {
             reserved = false;
             this.#pending--;
         };
+        const items = [];
+        const cleanupItems = () => {
+            for (const item of items) {
+                if (item?.isTemp && fs.existsSync(item.source))
+                    fs.unlink(item.source, () => { });
+            }
+        };
         try {
             const rawItems = Array.isArray(media) ? media : [media ?? 'silence'];
-            const items = [];
             for (const raw of rawItems) {
                 if (raw === 'silence' || raw == null) {
                     items.push({ kind: 'audio', source: 'silence', isTemp: false });
@@ -358,6 +516,7 @@ export default class Voip {
                 items.push(await normalizeItem(raw, this.#ffprobePath, this.#tmpDir));
             }
             const first = items[0];
+            const videoConfig = resolveVideoConfig(resolution, { width: first.sourceWidth, height: first.sourceHeight });
             const client = this.#getClient();
             await client.connect();
             const safetyTimer = { handle: null };
@@ -370,13 +529,16 @@ export default class Voip {
                 }, ms);
             };
             const rescheduleSafetyForItem = (item) => {
-
-                const windowMs = Math.max(item?.durationMs ?? 120_000, 45_000) + 60_000;
+                const windowMs = item?.kind === 'video'
+                    ? 10 * 60_000
+                    : Math.max(item?.durationMs ?? 120_000, 45_000) + 60_000;
                 scheduleSafety(windowMs);
             };
             const call = new VoipCall(items, () => { this.#calls.delete(call); }, {
                 autoEndCall: options.autoEndCall,
                 loop: options.loop,
+                autoDowngrade: options.autoDowngrade,
+                startVideoOnFirst: options.startVideoOnFirst,
                 target: targetJid,
                 onItemAdvance: rescheduleSafetyForItem,
             });
@@ -385,11 +547,7 @@ export default class Voip {
             scheduleSafety(105_000);
             let activeCall;
             try {
-                activeCall = await client.call(targetJid, {
-
-                    audioSource: first.source,
-                    durationMs: 0,
-                });
+                activeCall = await begin(client, first, videoConfig);
             }
             catch (err) {
                 clearTimeout(safetyTimer.handle);
@@ -399,8 +557,11 @@ export default class Voip {
             activeCall.on('ended', () => clearTimeout(safetyTimer.handle));
             activeCall.on('error', () => clearTimeout(safetyTimer.handle));
             await call._attach(activeCall);
-
             return call;
+        }
+        catch (err) {
+            cleanupItems();
+            throw err;
         }
         finally {
             releaseReservation();
@@ -426,7 +587,6 @@ export default class Voip {
             : { jid: list[index], error: result.reason });
     }
 
-    /** Registers the call handlers on the socket so incoming calls are seen. Idempotent. */
     async listen() {
         await this.#getClient().connect();
         return this;
@@ -434,11 +594,6 @@ export default class Voip {
     get coordinator() {
         return this.#client?.coordinator ?? null;
     }
-    /**
-     * Subscribe to coordinator events: call_incoming, call_state, call_ended, call_peer_mute,
-     * call_inbound_audio, call_inbound_video, call_hand_raise, call_reaction, call_screen_share,
-     * call_peer_video_state, call_outbound_audio_finished, call_error. Needs listen() first.
-     */
     on(event, listener) {
         if (!this.coordinator)
             throw new Error('Call listen() before subscribing to voip events.');

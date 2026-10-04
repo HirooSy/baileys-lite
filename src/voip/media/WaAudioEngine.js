@@ -1,5 +1,6 @@
 import { execFile, spawn } from 'node:child_process';
 import { access } from 'node:fs/promises';
+import { monitorEventLoopDelay } from 'node:perf_hooks';
 import { createNoopLogger } from '../shim/core.js';
 import { toBytesView, toError } from '../shim/util.js';
 import { concatBytes, TEXT_DECODER } from '../bytes.js';
@@ -9,19 +10,6 @@ const EXT_FEED_PAUSE_FRACTION = 0.12;
 const EXT_FEED_RESUME_FRACTION = 0.06;
 const MAX_DECODE_BYTES = 128 * 1024 * 1024;
 const MAX_STDERR_CHARS = 16 * 1024;
-const MAX_PACKET_MS = 120;
-const MAX_AGGREGATED_FRAMES = 2;
-const DEFAULT_REORDER_WINDOW_PACKETS = 4;
-const MAX_REORDER_WINDOW_PACKETS = 16;
-const SEQ_SPACE = 0x1_0000;
-const SEQ_HALF = 0x8000;
-function toPowerOfTwo(value, max) {
-    let size = 1;
-    while (size < value && size < max) {
-        size <<= 1;
-    }
-    return size;
-}
 const ffmpegProbeCache = new Map();
 function probeBinary(bin) {
     return new Promise((resolve) => {
@@ -37,6 +25,27 @@ async function hasFfmpeg(bin) {
         }
     }
     return available;
+}
+
+function createSelfCorrectingInterval(callback, intervalMs) {
+    let expected = Date.now() + intervalMs;
+    let timer = null;
+    let stopped = false;
+    function tick() {
+        if (stopped) return;
+        callback();
+        expected += intervalMs;
+        const drift = Date.now() - expected;
+
+        timer = setTimeout(tick, Math.max(0, intervalMs - drift));
+    }
+    timer = setTimeout(tick, intervalMs);
+    return {
+        clear() {
+            stopped = true;
+            if (timer) clearTimeout(timer);
+        }
+    };
 }
 export class WaAudioEngine {
     logger;
@@ -54,23 +63,14 @@ export class WaAudioEngine {
     sampleRate;
     captureChunkSize;
     maxBuffer;
-    maxPacketSamples;
     outputSize;
     intervalMs;
-    reorderWindow;
-    reorderMask;
-    reorderFrames;
-    reorderSeqs;
-    reorderHeld = 0;
-    nextPlaybackSeq = -1;
-    playbackSink = null;
-    droppedSamples = 0;
-    reorderedPackets = 0;
-    latePackets = 0;
-    underruns = 0;
     silenceMode = false;
-    muted = false;
+    lastTickPerf = 0;
+    pacing = { ticks: 0, late90: 0, late200: 0, burst20: 0, maxGap: 0 };
+    loopDelay = null;
     externalMode = false;
+    loopMode = false;
     liveWritePos = 0;
     extStarted = false;
     extPreBufferSize;
@@ -87,29 +87,23 @@ export class WaAudioEngine {
         this.logger = config.logger ?? createNoopLogger();
         this.sampleRate = c.sampleRate;
         this.captureChunkSize = c.captureChunkSize;
+        this.maxBuffer = c.maxBufferSize;
+        this.outputSize = c.playbackOutputSize;
         this.intervalMs = c.intervalMs;
-        const samplesPerMs = this.sampleRate / 1000;
-        this.maxPacketSamples = Math.ceil(samplesPerMs * MAX_PACKET_MS * MAX_AGGREGATED_FRAMES);
-        const requestedCapacity = config.jitterHeadroomPackets === undefined
-            ? c.maxBufferSize
-            : this.maxPacketSamples * Math.trunc(config.jitterHeadroomPackets);
-        this.maxBuffer = Math.max(requestedCapacity, this.maxPacketSamples);
-        this.outputSize = Math.max(c.playbackOutputSize, Math.ceil(samplesPerMs * this.intervalMs));
-        this.reorderWindow = toPowerOfTwo(Math.max(1, Math.trunc(config.reorderWindowPackets ?? DEFAULT_REORDER_WINDOW_PACKETS)), MAX_REORDER_WINDOW_PACKETS);
-        this.reorderMask = this.reorderWindow - 1;
-        this.reorderFrames = new Array(this.reorderWindow).fill(null);
-        this.reorderSeqs = new Int32Array(this.reorderWindow).fill(-1);
         this.circularBuffer = new Float32Array(this.maxBuffer);
         this.captureChunkBuffer = new Float32Array(this.captureChunkSize);
         this.silenceChunkBuffer = new Float32Array(this.captureChunkSize);
         this.playbackOutputBuffer = new Float32Array(this.outputSize);
         this.extPreBufferSize = Math.floor(this.sampleRate * EXT_FEED_RESUME_FRACTION);
         this.extTargetBuffer = Math.floor(this.sampleRate * 0.06);
-        this.extHighWater = Math.floor(this.sampleRate * 0.45);
-        this.extMaxBuffer = Math.floor(this.sampleRate * 0.75);
+        this.extHighWater = Math.floor(this.sampleRate * 0.2);
+        this.extMaxBuffer = Math.floor(this.sampleRate * 0.5);
     }
     setAudioSender(sender) {
         this.audioSender = sender;
+    }
+    setLoopMode(enabled) {
+        this.loopMode = enabled;
     }
     setOnAudioFinished(callback) {
         this.onAudioFinished = callback;
@@ -197,7 +191,7 @@ export class WaAudioEngine {
         this.audioPosition = 0;
         this.audioFinished = false;
         const duration = this.audioBuffer.length / this.sampleRate;
-        this.logger.debug('audio file loaded', {
+        this.logger.media('audio file loaded', {
             samples: this.audioBuffer.length,
             durationSec: duration
         });
@@ -274,80 +268,20 @@ export class WaAudioEngine {
         if (this.playbackInterval) {
             return;
         }
-        this.logger.debug('starting playback', {
-            capacitySamples: this.maxBuffer,
-            drainSamples: this.outputSize,
-            reorderWindow: this.reorderWindow
-        });
+        this.logger.debug('starting playback');
         this.resetBuffer();
-        this.playbackInterval = setInterval(() => {
-            const drained = this.readFromBuffer(this.outputSize);
-            const sink = this.playbackSink;
-            if (!sink || drained === 0) {
-                return;
-            }
-            try {
-                sink(this.playbackOutputBuffer);
-            }
-            catch (err) {
-                this.logger.trace('playback sink failed', { message: toError(err).message });
-            }
+        this.playbackInterval = createSelfCorrectingInterval(() => {
+            this.readFromBuffer(this.outputSize);
         }, this.intervalMs);
     }
     stopPlayback() {
         if (this.playbackInterval) {
-            clearInterval(this.playbackInterval);
+            this.playbackInterval.clear();
             this.playbackInterval = null;
         }
     }
-    setPlaybackSink(sink) {
-        this.playbackSink = sink;
-    }
     onPlaybackData(audioData) {
         this.writeToBuffer(audioData);
-    }
-    onPlaybackPacket(sequenceNumber, audioData) {
-        const seq = sequenceNumber & 0xffff;
-        if (this.nextPlaybackSeq < 0) {
-            this.writeToBuffer(audioData);
-            this.nextPlaybackSeq = (seq + 1) & 0xffff;
-            return;
-        }
-        const delta = (seq - this.nextPlaybackSeq + SEQ_SPACE) % SEQ_SPACE;
-        if (delta >= SEQ_HALF) {
-            this.latePackets++;
-            this.logger.trace('playback packet arrived too late', {
-                seq,
-                expectedSeq: this.nextPlaybackSeq
-            });
-            return;
-        }
-        if (delta === 0) {
-            this.writeToBuffer(audioData);
-            this.nextPlaybackSeq = (seq + 1) & 0xffff;
-            this.releaseReordered();
-            return;
-        }
-        if (delta < this.reorderWindow) {
-            this.holdReordered(seq, audioData);
-            return;
-        }
-        this.flushReordered();
-        this.writeToBuffer(audioData);
-        this.nextPlaybackSeq = (seq + 1) & 0xffff;
-    }
-    getPlaybackStats() {
-        return {
-            buffered: this.bufferLength,
-            capacity: this.maxBuffer,
-            dropped: this.droppedSamples,
-            reordered: this.reorderedPackets,
-            late: this.latePackets,
-            underruns: this.underruns
-        };
-    }
-    getMaxPacketSamples() {
-        return this.maxPacketSamples;
     }
     startSilenceCapture() {
         if (this.captureInterval) {
@@ -355,7 +289,7 @@ export class WaAudioEngine {
         }
         this.silenceMode = true;
         this.logger.debug('starting silence capture for pre-accept warmup');
-        this.captureInterval = setInterval(() => {
+        this.captureInterval = createSelfCorrectingInterval(() => {
             if (this.audioSender) {
                 try {
                     this.audioSender.sendCapturedAudio(this.silenceChunkBuffer);
@@ -368,7 +302,7 @@ export class WaAudioEngine {
     }
     startCapture() {
         if (this.captureInterval && this.silenceMode) {
-            clearInterval(this.captureInterval);
+            this.captureInterval.clear();
             this.captureInterval = null;
         }
         if (this.captureInterval) {
@@ -397,8 +331,24 @@ export class WaAudioEngine {
             }
         }
         let frameCount = 0;
-        this.captureInterval = setInterval(() => {
+        this.lastTickPerf = 0;
+        try {
+            this.loopDelay ??= monitorEventLoopDelay({ resolution: 10 });
+            this.loopDelay.enable();
+        }
+        catch { }
+        this.captureInterval = createSelfCorrectingInterval(() => {
             frameCount++;
+            const nowPerf = performance.now();
+            if (this.lastTickPerf) {
+                const gap = nowPerf - this.lastTickPerf;
+                this.pacing.ticks++;
+                if (gap > 90) this.pacing.late90++;
+                if (gap > 200) this.pacing.late200++;
+                if (gap < 20) this.pacing.burst20++;
+                if (gap > this.pacing.maxGap) this.pacing.maxGap = gap;
+            }
+            this.lastTickPerf = nowPerf;
             const chunk = this.getNextChunk();
             if (this.audioSender) {
                 try {
@@ -421,21 +371,27 @@ export class WaAudioEngine {
             }
         }, this.intervalMs);
     }
+    takePacingStats() {
+        const p = this.pacing;
+        const out = { ...p, maxGap: Math.round(p.maxGap) };
+        if (this.loopDelay) {
+            out.loopP50 = Math.round(this.loopDelay.percentile(50) / 1e6);
+            out.loopP99 = Math.round(this.loopDelay.percentile(99) / 1e6);
+            out.loopMax = Math.round(this.loopDelay.max / 1e6);
+            this.loopDelay.reset();
+        }
+        this.pacing = { ticks: 0, late90: 0, late200: 0, burst20: 0, maxGap: 0 };
+        return out;
+    }
     stopCapture() {
         if (this.captureInterval) {
-            clearInterval(this.captureInterval);
+            this.captureInterval.clear();
             this.captureInterval = null;
         }
-    }
-    setMuted(muted) {
-        if (this.muted === muted) {
-            return;
+        try {
+            this.loopDelay?.disable();
         }
-        this.muted = muted;
-        this.logger.debug('capture mute changed', { muted });
-    }
-    isMuted() {
-        return this.muted;
+        catch { }
     }
     stop() {
         this.stopPlayback();
@@ -448,111 +404,27 @@ export class WaAudioEngine {
         this.bufferWritePos = 0;
         this.bufferReadPos = 0;
         this.bufferLength = 0;
-        this.clearReordered();
-        this.nextPlaybackSeq = -1;
-    }
-    holdReordered(seq, data) {
-        const slot = seq & this.reorderMask;
-        const parked = this.reorderFrames[slot];
-        if (parked) {
-            if (this.reorderSeqs[slot] === seq) {
-                this.latePackets++;
-                return;
-            }
-            this.droppedSamples += parked.length;
-        }
-        else {
-            this.reorderHeld++;
-        }
-        this.reorderFrames[slot] = data;
-        this.reorderSeqs[slot] = seq;
-        this.reorderedPackets++;
-    }
-    releaseReordered() {
-        while (this.reorderHeld > 0) {
-            const slot = this.nextPlaybackSeq & this.reorderMask;
-            const parked = this.reorderFrames[slot];
-            if (!parked || this.reorderSeqs[slot] !== this.nextPlaybackSeq) {
-                return;
-            }
-            this.reorderFrames[slot] = null;
-            this.reorderSeqs[slot] = -1;
-            this.reorderHeld--;
-            this.writeToBuffer(parked);
-            this.nextPlaybackSeq = (this.nextPlaybackSeq + 1) & 0xffff;
-        }
-    }
-    flushReordered() {
-        if (this.reorderHeld === 0) {
-            return;
-        }
-        for (let i = 0; i < this.reorderWindow; i++) {
-            const seq = (this.nextPlaybackSeq + i) & 0xffff;
-            const slot = seq & this.reorderMask;
-            const parked = this.reorderFrames[slot];
-            if (parked && this.reorderSeqs[slot] === seq) {
-                this.writeToBuffer(parked);
-            }
-        }
-        this.clearReordered();
-    }
-    clearReordered() {
-        for (let i = 0; i < this.reorderWindow; i++) {
-            this.reorderFrames[i] = null;
-            this.reorderSeqs[i] = -1;
-        }
-        this.reorderHeld = 0;
     }
     writeToBuffer(data) {
-        const capacity = this.maxBuffer;
-        let source = data;
-        if (source.length > capacity) {
-            const truncated = source.length - capacity;
-            this.droppedSamples += truncated;
-            source = source.subarray(truncated);
+        for (let i = 0; i < data.length && this.bufferLength < this.maxBuffer; i++) {
+            this.circularBuffer[this.bufferWritePos] = data[i];
+            this.bufferWritePos = (this.bufferWritePos + 1) % this.maxBuffer;
+            this.bufferLength++;
         }
-        if (source.length === 0) {
-            return;
-        }
-        const overflow = this.bufferLength + source.length - capacity;
-        if (overflow > 0) {
-            this.bufferReadPos = (this.bufferReadPos + overflow) % capacity;
-            this.bufferLength -= overflow;
-            this.droppedSamples += overflow;
-            this.logger.trace('jitter buffer overflow, dropped oldest', {
-                droppedSamples: overflow,
-                totalDropped: this.droppedSamples
-            });
-        }
-        const head = Math.min(source.length, capacity - this.bufferWritePos);
-        this.circularBuffer.set(source.subarray(0, head), this.bufferWritePos);
-        if (head < source.length) {
-            this.circularBuffer.set(source.subarray(head), 0);
-        }
-        this.bufferWritePos = (this.bufferWritePos + source.length) % capacity;
-        this.bufferLength += source.length;
     }
     readFromBuffer(count) {
-        const out = this.playbackOutputBuffer;
-        const wanted = Math.min(count, out.length);
-        const drained = Math.min(wanted, this.bufferLength);
-        if (drained < wanted) {
-            this.underruns++;
-            out.fill(0, drained, wanted);
-        }
-        if (drained > 0) {
-            const head = Math.min(drained, this.maxBuffer - this.bufferReadPos);
-            out.set(this.circularBuffer.subarray(this.bufferReadPos, this.bufferReadPos + head), 0);
-            if (head < drained) {
-                out.set(this.circularBuffer.subarray(0, drained - head), head);
+        this.playbackOutputBuffer.fill(0);
+        for (let i = 0; i < count; i++) {
+            if (this.bufferLength > 0) {
+                this.playbackOutputBuffer[i] = this.circularBuffer[this.bufferReadPos];
+                this.bufferReadPos = (this.bufferReadPos + 1) % this.maxBuffer;
+                this.bufferLength--;
             }
-            this.bufferReadPos = (this.bufferReadPos + drained) % this.maxBuffer;
-            this.bufferLength -= drained;
         }
-        return drained;
+        return this.playbackOutputBuffer;
     }
     getNextChunk() {
-        if (this.muted || !this.audioBuffer) {
+        if (!this.audioBuffer) {
             return this.silenceChunkBuffer;
         }
         const endPos = this.externalMode ? this.liveWritePos : this.audioBuffer.length;
@@ -591,6 +463,11 @@ export class WaAudioEngine {
         this.captureChunkBuffer.fill(0);
         for (let i = 0; i < this.captureChunkSize; i++) {
             if (this.audioPosition >= endPos) {
+                if (this.loopMode && !this.externalMode && endPos > 0) {
+                    this.audioPosition = 0;
+                    if (this.audioPosition >= endPos) break;
+                    continue;
+                }
                 if (!this.externalMode && !this.audioFinished) {
                     this.audioFinished = true;
                     this.logger.debug('audio playback finished, sending silence');

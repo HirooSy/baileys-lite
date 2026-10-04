@@ -205,27 +205,3 @@ function resolveOptionalPositive(value, name) {
 export function resolvePositive(value, fallback, name) {
     return resolveOptionalPositive(value, name) ?? fallback;
 }
-
-export function tryAsNumber(value) {
-    if (typeof value === 'number' && Number.isFinite(value))
-        return value;
-    if (typeof value === 'string') {
-        const normalized = value.trim();
-        if (normalized.length === 0)
-            return null;
-        const parsed = Number(normalized);
-        return Number.isFinite(parsed) ? parsed : null;
-    }
-    return null;
-}
-export function setBoundedMapEntry(map, key, value, maxEntries, onEvict) {
-    map.delete(key);
-    map.set(key, value);
-    while (map.size > maxEntries) {
-        const oldest = map.entries().next().value;
-        if (!oldest)
-            break;
-        map.delete(oldest[0]);
-        onEvict?.(oldest[0], oldest[1]);
-    }
-}

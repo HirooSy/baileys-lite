@@ -10,15 +10,15 @@
 
 - [x] Support LID/PN/Username.
 - [x] High performance for multi sessions.
-- [x] Minimal dependency.
+- [x] Zero dependency.
 - [x] Low memory & CPU consumption.
-- [x] Calls: multi call, incoming & outgoing, raise hand, reactions, upgrade mid-call.
+- [x] Calls: Video & Audio.
 
 ---
 
 ## Install
 
-Needs **Node.js 22+** and FFmpeg. Calls also need `ffprobe` in `PATH`.
+Needs **Node.js 22+** and FFmpeg. Calls also need `ffprobe` in `PATH`. No native or WebRTC dependencies are required.
 
 ```bash
 npm install @hiroosy/baileys-lite
@@ -390,7 +390,14 @@ await sock.aiRich()
 await sock.sendMessage(jid, {
   aiRich: { title: 'Assistant', text: 'Here is what I found:', table: [['Name', 'Score'], ['Alice', '90']] }
 })
+
+// bypass download is on by default, turn it off per message
+await sock.aiRich()
+  .addText('No bypass')
+  .send(jid, { bypassDownload: false })
 ```
+
+**Bypass download:** `send()` edits its own message right after sending, so the client renders the rich response without having to download it first. It only runs for messages that carry a rich response. If the edit fails, the error is thrown with `error.relayedKey` set to the key of the message that was already sent.
 
 <details> <summary align=center>All AiRich Methods</summary>
 
@@ -413,7 +420,8 @@ await sock.sendMessage(jid, {
 | `addProcess(title)` | In-progress status indicator |
 | `addHtml(...)` | One inline HTML block, or `[html, title]` tab pairs |
 | `build(opts?)` | Build the raw content without sending |
-| `send(jid, opts?)` | Shorthand for `sendMessage(jid, { aiRich: this, ...opts })` |
+| `buildEdit(jid, key, message)` | Builds the edit payload used by bypass download |
+| `send(jid, opts?)` | Sends the message. `opts.bypassDownload` (default `true`) sends the follow-up edit. Other options go to `sendMessage` |
 
 </details>
 
@@ -512,9 +520,7 @@ const voip = new Voip(sock, {
   ffprobePath: 'ffprobe',
   voipLogLevel: 'warn',         // trace | debug | info | warn | error
   tmpDir: './tmp',              // temp folder for downloads
-  maxConcurrentCalls: 1,        // see Multi Call
-  useOriginalRelayPort: true,  // true = relay port 3478, false = web port 3480
-  useRawUdpTransport: false     // experimental
+  maxConcurrentCalls: 1         // see Multi Call
 })
 
 const call = await voip.call('628123456789', './song.mp3')
@@ -531,25 +537,30 @@ await voip.call('628123456789')
 
 ```javascript
 await voip.call(jid, './song.mp3')                    // local file
-await voip.call(jid, 'https://example.com/song.mp3')  // url, downloaded first (max 20MB)
+await voip.call(jid, 'https://example.com/song.mp3')  // url, downloaded first (audio max 20MB, video max 50MB)
 await voip.call(jid, { audio: './voice.ogg' })
+await voip.call(jid, './clip.mp4', '720p')            // video call
 
 // audio: mp3 ogg opus wav m4a aac flac weba
-// video files are rejected, send frames with voip.coordinator.feedLiveVideo()
+// video: mp4 mov webm mkv avi m4v 3gp
 
-// playlist, items play in order
+// resolution (third argument): '240p' | '360p' | '480p' | '720p' | '1080p'
+// or { width, height, frameRate }. Default is 480p, portrait sources are rotated automatically.
+
+// playlist, items play in order and can mix audio and video
 const list = await voip.call(
   jid,
-  ['./intro.mp3', './song.mp3', 'https://example.com/outro.mp3'],
-  undefined,
+  ['./intro.mp3', './clip.mp4', 'https://example.com/outro.mp3'],
+  '480p',
   {
-    loop: false,       // repeat the playlist
-    autoEndCall: true  // hang up when the playlist ends
+    loop: false,           // repeat the playlist
+    autoEndCall: true,     // hang up when the playlist ends
+    autoDowngrade: true    // drop to audio when the peer turns every camera off
   }
 )
 ```
 
-`jid` can be a number or a jid, non-digits are removed. The third argument is unused and only kept for older code.
+`jid` can be a number or a jid, non-digits are removed.
 
 </details>
 
@@ -586,6 +597,7 @@ call.on('error', err => {})
 call.on('item', ({ index, kind, source }) => {})
 call.on('playlist_looped', () => {})
 call.on('playlist_ended', () => {})
+call.on('downgraded', () => {})         // video dropped to audio
 call.on('silent', state => {})
 
 call.on('peer_mute', muted => {})
