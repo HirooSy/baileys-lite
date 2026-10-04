@@ -613,7 +613,7 @@ export const getBizBinaryNode = message => {
 		}
 	}
 
-	if (flowMsg || message.buttonsMessage || message.templateMessage) {
+	if (flowMsg || message.interactiveMessage?.carouselMessage || message.buttonsMessage || message.templateMessage) {
 		return { tag: 'biz', attrs: bizAttributes, content: [MIXED_NATIVE_FLOW, qualityContent] }
 	}
 

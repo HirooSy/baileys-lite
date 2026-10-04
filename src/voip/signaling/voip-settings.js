@@ -2,19 +2,13 @@ import { createNoopLogger } from '../shim/core.js';
 import { findNodeChild, getNodeChildren } from '../shim/transport.js';
 import { base64ToBytes, toError } from '../shim/util.js';
 import { TEXT_DECODER } from '../bytes.js';
-/** Name of the node the server attaches to the offer with the call configuration. */
 const VOIP_SETTINGS_TAG = 'voip_settings';
 /**
  * The only value ever observed in the node attribute of the same name. Any
  * other value marks a variant whose format this client has no sample to decode.
  */
 const UNCOMPRESSED_ATTR = 'uncompressed';
-/** The video rate-control section, where the video RTCP gates live. */
 const VIDEO_RATE_CONTROL_SECTION = 'vid_rc';
-/**
- * The audio rate-control section (`audio_nack_*`, `dtx`, `mlow_*`,
- * `target_bitrate`), where the RTCP interval lives.
- */
 const RATE_CONTROL_SECTION = 'rc';
 /** The gate that turns RTCP REMB off for this call. */
 const DISABLE_RTCP_REMB_KEY = 'disable_rtcp_remb';
@@ -138,7 +132,6 @@ export class WaVoipSettings {
         const root = toSection(JSON.parse(text));
         return root ? new WaVoipSettings(root) : null;
     }
-    /** How many top-level sections there are, useful for logging only. */
     get sectionCount() {
         return Object.keys(this.root).length;
     }
@@ -199,7 +192,6 @@ export class WaVoipSettings {
         return value > 0 ? value : null;
     }
 }
-/** The `<voip_settings>` node on `node` itself, on a child, or on a grandchild. */
 function findVoipSettingsNode(node) {
     if (node.tag === VOIP_SETTINGS_TAG)
         return node;

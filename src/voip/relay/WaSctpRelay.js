@@ -4,7 +4,7 @@ function loadWrtc() {
     if (!wrtcPromise) {
         wrtcPromise = import('@roamhq/wrtc').then((mod) => mod.default ?? mod).catch((err) => {
             wrtcPromise = null;
-            throw new Error(`voip: gagal memuat @roamhq/wrtc (dependency bawaan). Coba "npm rebuild @roamhq/wrtc" atau install ulang paket. (${err?.message || err})`);
+            throw new Error(`voip: failed to load @roamhq/wrtc (bundled dependency). Try "npm rebuild @roamhq/wrtc" or reinstall the package. (${err?.message || err})`);
         });
     }
     return wrtcPromise;
@@ -223,7 +223,6 @@ export class WaSctpRelay extends EventEmitter {
         this.connections.set(connectionId, conn);
         return conn;
     }
-    /** Dials a leg that is already registered, over the configured transport. */
     async startConnection(conn) {
         const connectionId = conn.id;
         const relayInfo = conn.relayInfo;
@@ -587,11 +586,6 @@ export class WaSctpRelay extends EventEmitter {
         });
         return sent;
     }
-    /**
-     * Builds the SSRC list an allocate carries, falling back to the single
-     * inbound and outbound SSRCs when the per-stream lists have not been
-     * handed over yet.
-     */
     buildAllocateSsrcList() {
         const selfSsrcs = this.selfStreamSsrcs.length ? this.selfStreamSsrcs : [this.audioSsrc];
         const peerSsrcs = this.peerStreamSsrcs.length
@@ -988,7 +982,6 @@ export class WaSctpRelay extends EventEmitter {
         await Promise.all(legs.map((conn) => this.startConnection(conn)));
         this.logger.debug('sctp relay configuration done', { connected: this.stats.connected });
     }
-    /** Sends to every open connection and reports whether any of them took it. */
     broadcast(data) {
         let sent = false;
         for (const conn of this.connections.values()) {

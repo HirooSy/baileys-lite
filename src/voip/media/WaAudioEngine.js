@@ -9,10 +9,8 @@ const EXT_FEED_PAUSE_FRACTION = 0.12;
 const EXT_FEED_RESUME_FRACTION = 0.06;
 const MAX_DECODE_BYTES = 128 * 1024 * 1024;
 const MAX_STDERR_CHARS = 16 * 1024;
-/** Longest packet the MLow decoder produces, and the aggregation it allows. */
 const MAX_PACKET_MS = 120;
 const MAX_AGGREGATED_FRAMES = 2;
-/** Packets the reorder window waits on before it gives up on a hole. */
 const DEFAULT_REORDER_WINDOW_PACKETS = 4;
 const MAX_REORDER_WINDOW_PACKETS = 16;
 const SEQ_SPACE = 0x1_0000;
@@ -40,35 +38,12 @@ async function hasFfmpeg(bin) {
     }
     return available;
 }
-function createSelfCorrectingInterval(callback, intervalMs) {
-    let expected = Date.now() + intervalMs;
-    let timer = null;
-    let stopped = false;
-    function tick() {
-        if (stopped)
-            return;
-        callback();
-        expected += intervalMs;
-        const drift = Date.now() - expected;
-        timer = setTimeout(tick, Math.max(0, intervalMs - drift));
-    }
-    timer = setTimeout(tick, intervalMs);
-    return {
-        clear() {
-            stopped = true;
-            if (timer)
-                clearTimeout(timer);
-        }
-    };
-}
-
 export class WaAudioEngine {
     logger;
     audioSender = null;
     audioBuffer = null;
     audioPosition = 0;
     audioFinished = false;
-    loopMode = false;
     onAudioFinished = null;
     playbackInterval = null;
     captureInterval = null;
@@ -136,9 +111,6 @@ export class WaAudioEngine {
     setAudioSender(sender) {
         this.audioSender = sender;
     }
-    setLoopMode(enabled) {
-        this.loopMode = enabled;
-    }
     setOnAudioFinished(callback) {
         this.onAudioFinished = callback;
     }
@@ -161,12 +133,6 @@ export class WaAudioEngine {
     isExternalMode() {
         return this.externalMode;
     }
-    /**
-     * Append live PCM to the external-mode buffer and return the buffered
-     * level in milliseconds. Bounded: an oversized chunk keeps only its tail,
-     * and overflow drops the oldest samples, so the buffer never grows past
-     * its cap.
-     */
     feedExternalAudio(data) {
         if (!this.externalMode || !this.audioBuffer)
             return 0;
@@ -206,11 +172,6 @@ export class WaAudioEngine {
             return 0;
         return ((this.liveWritePos - this.audioPosition) / this.sampleRate) * 1000;
     }
-    /**
-     * Backpressure watermarks for the live feed, in milliseconds: pause a
-     * producer once the buffered level reaches `pauseMs`, resume once it drains
-     * to `resumeMs`. Derived from the engine config, independent of any call.
-     */
     static feedWatermarksMs() {
         return {
             pauseMs: Math.round(EXT_FEED_PAUSE_FRACTION * 1000),
@@ -339,25 +300,12 @@ export class WaAudioEngine {
             this.playbackInterval = null;
         }
     }
-    /**
-     * Receive the paced playback audio. The callback is handed the engine's own
-     * output buffer, which is overwritten on the next tick, so a consumer that
-     * keeps the samples has to copy them.
-     */
     setPlaybackSink(sink) {
         this.playbackSink = sink;
     }
-    /** Queue decoded audio for playback without any ordering guarantee. */
     onPlaybackData(audioData) {
         this.writeToBuffer(audioData);
     }
-    /**
-     * Queue decoded audio carrying the RTP sequence number it was decoded
-     * from. A packet that arrives ahead of a missing predecessor waits in a
-     * bounded window until the hole is filled, until the window is exhausted,
-     * or until a packet arrives too far ahead to keep waiting. A packet
-     * playback has already moved past is discarded.
-     */
     onPlaybackPacket(sequenceNumber, audioData) {
         const seq = sequenceNumber & 0xffff;
         if (this.nextPlaybackSeq < 0) {
@@ -398,7 +346,6 @@ export class WaAudioEngine {
             underruns: this.underruns
         };
     }
-    /** Samples the jitter buffer accepts in a single write. */
     getMaxPacketSamples() {
         return this.maxPacketSamples;
     }
@@ -408,7 +355,7 @@ export class WaAudioEngine {
         }
         this.silenceMode = true;
         this.logger.debug('starting silence capture for pre-accept warmup');
-        this.captureInterval = createSelfCorrectingInterval(() => {
+        this.captureInterval = setInterval(() => {
             if (this.audioSender) {
                 try {
                     this.audioSender.sendCapturedAudio(this.silenceChunkBuffer);
@@ -421,7 +368,7 @@ export class WaAudioEngine {
     }
     startCapture() {
         if (this.captureInterval && this.silenceMode) {
-            this.captureInterval.clear();
+            clearInterval(this.captureInterval);
             this.captureInterval = null;
         }
         if (this.captureInterval) {
@@ -450,7 +397,7 @@ export class WaAudioEngine {
             }
         }
         let frameCount = 0;
-        this.captureInterval = createSelfCorrectingInterval(() => {
+        this.captureInterval = setInterval(() => {
             frameCount++;
             const chunk = this.getNextChunk();
             if (this.audioSender) {
@@ -476,17 +423,10 @@ export class WaAudioEngine {
     }
     stopCapture() {
         if (this.captureInterval) {
-            this.captureInterval.clear();
+            clearInterval(this.captureInterval);
             this.captureInterval = null;
         }
     }
-    /**
-     * Mute the outbound stream without tearing capture down. Capture keeps
-     * ticking and feeds silence, so the encoder's DTX decides what reaches the
-     * wire and the peer's inbound liveness watchdog keeps seeing a live
-     * stream. Stopping capture outright would starve that watchdog on a mute
-     * that outlasts it.
-     */
     setMuted(muted) {
         if (this.muted === muted) {
             return;
@@ -528,7 +468,6 @@ export class WaAudioEngine {
         this.reorderSeqs[slot] = seq;
         this.reorderedPackets++;
     }
-    /** Write every parked packet that is now contiguous with the playout point. */
     releaseReordered() {
         while (this.reorderHeld > 0) {
             const slot = this.nextPlaybackSeq & this.reorderMask;
@@ -543,7 +482,6 @@ export class WaAudioEngine {
             this.nextPlaybackSeq = (this.nextPlaybackSeq + 1) & 0xffff;
         }
     }
-    /** Give up on the hole and write everything parked, in sequence order. */
     flushReordered() {
         if (this.reorderHeld === 0) {
             return;
@@ -594,7 +532,6 @@ export class WaAudioEngine {
         this.bufferWritePos = (this.bufferWritePos + source.length) % capacity;
         this.bufferLength += source.length;
     }
-    /** Drain up to `count` samples into the output buffer, returning how many. */
     readFromBuffer(count) {
         const out = this.playbackOutputBuffer;
         const wanted = Math.min(count, out.length);
@@ -654,12 +591,6 @@ export class WaAudioEngine {
         this.captureChunkBuffer.fill(0);
         for (let i = 0; i < this.captureChunkSize; i++) {
             if (this.audioPosition >= endPos) {
-                if (this.loopMode && !this.externalMode && endPos > 0) {
-                    this.audioPosition = 0;
-                    if (this.audioPosition >= endPos)
-                        break;
-                    continue;
-                }
                 if (!this.externalMode && !this.audioFinished) {
                     this.audioFinished = true;
                     this.logger.debug('audio playback finished, sending silence');

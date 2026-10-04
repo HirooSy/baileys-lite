@@ -6,37 +6,154 @@
   <img height="25" alt="node version" src="https://img.shields.io/badge/NodeJS_>=22-000000.svg?&style=for-the-badge&logo=node.js&logoColor=green" />
 </p>
 
-**High-Performace Javascript Baileys**, Built for high-scalability workloads, multi-session operation, and full user configurability.
+**High-Performance Javascript Baileys**, built for high-scalability workloads, multi-session operation, and full user configurability.
 
 - [x] Support LID/PN/Username.
 - [x] High performance for multi sessions.
-- [x] Minimal depedency (only `@roamhq/wrtc`, used by calls).
+- [x] Minimal dependency.
 - [x] Low memory & CPU consumption.
-- [x] Calls (audio/video, incoming & outgoing, raise hand, reactions, screen share) powered by the zapo VoIP engine.
+- [x] Calls: multi call, incoming & outgoing, raise hand, reactions, upgrade mid-call.
 
 ---
 
-## Requirements
-
-- Node.js **22 or newer** (the library uses the native global `WebSocket` and other modern built-ins).
-- FFMPEG
-
 ## Install
+
+Needs **Node.js 22+** and FFmpeg. Calls also need `ffprobe` in `PATH`.
 
 ```bash
 npm install @hiroosy/baileys-lite
 ```
 
+## Quick Start
+
+```javascript
+import makeWASocket, {
+  useMultiFileAuthState,
+  DisconnectReason,
+  extractMessageContent
+} from '@hiroosy/baileys-lite'
+
+const PHONE_NUMBER = '' // '628123456789' = pairing code
+const PAIR_CODE = ''    // optional custom 8-char code
+
+const start = async () => {
+  const { state, saveCreds } = await useMultiFileAuthState('./session')
+
+  const sock = makeWASocket({
+    auth: state,
+    printQRInTerminal: !PHONE_NUMBER,
+    syncFullHistory: false
+  })
+
+  sock.ev.on('creds.update', saveCreds)
+
+  let pairingRequested = false
+  sock.ev.on('connection.update', async ({ connection, lastDisconnect, qr }) => {
+    if (qr && PHONE_NUMBER && !pairingRequested) {
+      pairingRequested = true
+      try {
+        console.log('Pairing code:', await sock.requestPairingCode(PHONE_NUMBER, PAIR_CODE || undefined))
+      } catch (err) {
+        console.error('Could not request a pairing code:', err.message)
+      }
+    }
+
+    if (connection === 'open') console.log('Connected as', sock.user?.id)
+
+    if (connection === 'close') {
+      const code = lastDisconnect?.error?.output?.statusCode
+      if (code === DisconnectReason.loggedOut) {
+        return console.log('Logged out. Delete ./session and run again to link a new device.')
+      }
+      if (code === DisconnectReason.connectionReplaced) {
+        return console.log('This session was opened somewhere else. Not reconnecting.')
+      }
+      console.log(`Connection closed (${code}), reconnecting...`)
+      setTimeout(start, 1000)
+    }
+  })
+
+  sock.ev.on('messages.upsert', async ({ messages, type }) => {
+    if (type !== 'notify') return
+    for (const m of messages) {
+      if (m.key.fromMe || !m.message) continue
+      const content = extractMessageContent(m.message)
+      const text = content?.conversation || content?.extendedTextMessage?.text
+      if (text === '!ping') {
+        await sock.sendMessage(m.key.remoteJid, { text: 'pong' }, { quoted: m }).catch(console.error)
+      }
+    }
+  })
+}
+
+start()
+```
+
+- **QR:** leave `PHONE_NUMBER` empty and scan it from *Linked devices* → *Link a device*.
+- **Pairing code:** set `PHONE_NUMBER`, choose *Link with phone number instead*, type the code.
+- **Custom pairing code:** set `PAIR_CODE` to any 8 characters. Empty gives a random one.
+
+Send `!ping` from another number and the bot answers `pong`. The login is saved in `./session`, so keep it private and out of git.
+
+<details> <summary>Common options</summary>
+
+| Option | Default | Notes |
+|---|---|---|
+| `auth` | – | Required. `state` from an auth helper. |
+| `browser` | `Browsers.macOS('Chrome')` | Device name in *Linked devices*. Also `Browsers.ubuntu()`, `.windows()`, `.appropriate()`. |
+| `printQRInTerminal` | `false` | Print every QR in the terminal. `qr` is always emitted in `connection.update`. |
+| `qrTimeout` | `60000`, then `20000` | How long each QR stays valid. |
+| `syncFullHistory` | `true` | `false` is lighter for bots. |
+| `markOnlineOnConnect` | `true` | `false` keeps notifications on your phone. |
+| `connectTimeoutMs` | `20000` | Timeout of the opening handshake. |
+| `keepAliveIntervalMs` | `30000` | Ping interval. |
+| `defaultQueryTimeoutMs` | `60000` | Timeout of a server request. |
+| `getMessage` | returns `undefined` | Return the stored message for a key so retries and poll votes can be decrypted. |
+| `disableStickyRouting` | `false` | `true` stops sending `ED` in the URL and the `sticky_routing` cookie. |
+| `waWebSocketUrl` | `wss://web.whatsapp.com/ws/chat` | Custom endpoint only. |
+| `logger` | built-in | A pino-style logger. |
+
+</details>
+
+<details> <summary>Session Type Choices </summary>
+
+All helpers return `{ state, saveCreds }`, so they are interchangeable.
+
+```javascript
+import { useMultiFileAuthState, useSingleFileAuthState, useSqliteAuthState } from '@hiroosy/baileys-lite'
+
+const a = await useMultiFileAuthState('./session')             // one file per key
+const b = await useSingleFileAuthState('./session.json')       // one file, flushed in batches
+const c = await useSqliteAuthState({ dbPath: './session.db' }) // SQLite, best for many sessions
+```
+
+</details>
+
+<details> <summary>Disconnect Status</summary>
+
+`lastDisconnect.error.output.statusCode` matches `DisconnectReason`:
+
+| Code | `DisconnectReason` | Meaning |
+|---|---|---|
+| `401` | `loggedOut` | Device removed or session invalid. Delete the session and link again. |
+| `440` | `connectionReplaced` | Opened somewhere else. Do not reconnect. |
+| `515` | `restartRequired` | Normal after pairing. Reconnect. |
+| `428` / `408` | `connectionClosed` / `connectionLost` / `timedOut` | Network drop. Reconnect. |
+| `500` | `badSession` | Server rejected the stream. Reconnect. |
+
+When the server closes the socket, `lastDisconnect.error.data` has `wsCode` and `wsReason`.
+
+</details>
+
+---
 
 ## SendMessage
 
-<details> <summary>📖 Basic</summary>
-  <sub>
+<details> <summary>Basic</summary>
 
 ```javascript
 await sock.sendMessage(jid, { text: 'Hello there!' })
 
-// quoted, mentions, ephemeral
 await sock.sendMessage(jid, { text: 'Hi @6281234567890', mentions: ['6281234567890@s.whatsapp.net'] }, {
   quoted: m,
   ephemeralExpiration: 86400
@@ -48,10 +165,10 @@ await sock.sendMessage(jid, {
   contacts: { contacts: [{ displayName: 'HirooSy', vcard: 'BEGIN:VCARD\nVERSION:3.0\nFN:HirooSy\nTEL;type=CELL:+6281234567890\nEND:VCARD' }] }
 })
 ```
-</sub></details>
 
-<details> <summary>🖼️ Media</summary>
-  <sub>
+</details>
+
+<details> <summary>Media</summary>
 
 ```javascript
 await sock.sendMessage(jid, { image: { url: './photo.jpg' }, caption: 'Nice view' })
@@ -65,7 +182,7 @@ await sock.sendMessage(jid, { image: { url: './photo.jpg' }, viewOnce: true })
 await sock.sendMessage(jid, { video: { url: './clip.mp4' }, ptv: true })
 await sock.sendMessage(jid, { image: { url: './surprise.jpg' }, caption: 'Peekaboo', spoiler: true })
 
-// album: several media sent as one linked group
+// album
 await sock.sendMessage(jid, {
   album: [
     { image: { url: './1.jpg' } },
@@ -74,18 +191,18 @@ await sock.sendMessage(jid, {
   ]
 })
 ```
-</sub></details>
 
-<details> <summary>📍 Location</summary>
-  <sub>
+</details>
+
+<details> <summary>Location</summary>
 
 ```javascript
 await sock.sendMessage(jid, { location: { degreesLatitude: -6.2088, degreesLongitude: 106.8456, name: 'Monas' } })
 ```
-</sub></details>
 
-<details> <summary>🧾 Product</summary>
-  <sub>
+</details>
+
+<details> <summary>Product</summary>
 
 ```javascript
 await sock.sendMessage(jid, {
@@ -100,13 +217,13 @@ await sock.sendMessage(jid, {
   }
 })
 ```
-</sub></details>
 
-<details> <summary>🛒 Carousel</summary>
-  <sub>
+</details>
+
+<details> <summary>Carousel</summary>
 
 ```javascript
-// card header only supports image / video / product (not location / document)
+// card header: image, video or product only
 await sock.sendMessage(jid, {
   text: 'Check out our new arrivals:',
   footer: 'HirooSy',
@@ -116,16 +233,17 @@ await sock.sendMessage(jid, {
     {
       businessOwnerJid: '1234567890@s.whatsapp.net',
       product: { title: 'Wireless Mouse', productImage: { url: './mouse.png' } },
-      title: 'Wireless Mouse', caption: '$19.99',
+      title: 'Wireless Mouse',
+      caption: '$19.99',
       nativeFlow: [{ text: 'Buy Now', id: 'buy_mouse' }]
     }
   ]
 })
 ```
-</sub></details>
 
-<details> <summary>🔖 NativeFlow Button</summary>
-  <sub>
+</details>
+
+<details> <summary>NativeFlow Button</summary>
 
 ```javascript
 await sock.sendMessage(jid, {
@@ -143,7 +261,7 @@ await sock.sendMessage(jid, {
   ]
 })
 
-// with a media header — use caption instead of text, plus image / video / document / location / product
+// media header: use caption instead of text (image, video, document, location, product)
 await sock.sendMessage(jid, {
   image: { url: './promo.jpg' },
   title: 'Flash Sale',
@@ -155,36 +273,29 @@ await sock.sendMessage(jid, {
   ]
 })
 
-// widget (A2UI): rich components inside the message, can be combined with nativeFlow buttons
-// use `nativeFlow: []` for a widget without buttons
+// widget (A2UI): can be combined with buttons, or use nativeFlow: [] for none
 await sock.sendMessage(jid, {
-  text: 'Full demo of all widget components',
+  text: 'Widget demo',
   footer: 'A2UI Showcase',
   nativeFlow: [{ text: '🌐 Source', url: 'https://example.com' }],
   widget: {
     align: 'center',
-    fallback: 'Widget cannot be loaded on this device', // optional, auto-generated from items if omitted
+    fallback: 'Widget cannot be loaded on this device', // optional
     items: [
-      // text: variant 'title' | 'body' | 'caption'
-      { text: 'Welcome to the Widget Demo', variant: 'title' },
+      { text: 'Welcome to the Widget Demo', variant: 'title' }, // title | body | caption
       { text: 'This is a longer description.', variant: 'body' },
-      { text: 'Small caption', variant: 'caption' },
 
-      // icon: rendered as ASCII by default ('[i]'), style 'symbol' for unicode, native for the real Icon component
       { icon: 'info' },
       { icon: 'warning', style: 'symbol' },
       { icon: 'favorite', native: true },
 
-      // media
       { image: 'https://example.com/banner.jpg', variant: 'header', fit: 'cover', description: 'Promo banner' },
       { video: 'https://example.com/preview.mp4' },
       { audio: 'https://example.com/audio.mp3', description: 'Listen to this audio' },
 
-      // divider + button (opens url)
       { divider: 'horizontal' }, // or 'vertical'
       { button: 'Open Website', url: 'https://example.com', variant: 'primary' },
 
-      // inputs
       { input: 'name', label: 'Enter your name', value: '', variant: 'shortText' }, // or 'longText'
       { input: 'email', label: 'Email', validationRegexp: '^[^@]+@[^@]+\\.[^@]+$' },
       { checkbox: 'I agree to the terms & conditions', value: false },
@@ -193,7 +304,6 @@ await sock.sendMessage(jid, {
       { slider: 100, min: 0, value: 50, label: 'Volume' }, // slider = max value
       { datetime: true, label: 'Pick a date', enableDate: true, enableTime: false },
 
-      // layout, items can be nested
       { row: [{ text: 'Left' }, { text: 'Center' }, { text: 'Right' }], justify: 'space-between', align: 'center' },
       { column: [{ text: 'Row 1' }, { text: 'Row 2' }], justify: 'start', align: 'stretch' },
       { list: [{ text: '• First item' }, { text: '• Second item' }], direction: 'vertical' }
@@ -201,13 +311,13 @@ await sock.sendMessage(jid, {
   }
 })
 ```
-</sub></details>
 
-<details> <summary>🔘 Legacy Button</summary>
-  <sub>
+</details>
+
+<details> <summary>Legacy Button</summary>
 
 ```javascript
-// pre-native-flow format — prefer nativeFlow above for new bots
+// old format, prefer nativeFlow
 await sock.sendMessage(jid, {
   text: 'Choose one:',
   footer: 'HirooSy',
@@ -218,104 +328,103 @@ await sock.sendMessage(jid, {
   ]
 })
 ```
-</sub></details>
 
-<details> <summary>↩️ Button/List Replies</summary>
-  <sub>
+</details>
+
+<details> <summary>Button/List Replies</summary>
 
 ```javascript
-// simulate/relay a user's tap — mainly for bot-to-bot or automated-response flows
+// send a reply as if a user tapped a button
 await sock.sendMessage(jid, { buttonReply: { id: 'yes_1', displayText: 'Yes' }, type: 'plain' })
 await sock.sendMessage(jid, { listReply: { id: 'row1', title: 'Row 1', description: 'desc' } })
 await sock.sendMessage(jid, { flowReply: { name: 'single_select', paramsJson: JSON.stringify({ id: 'row1' }) } })
 ```
-</sub></details>
 
-<details> <summary>📊 Poll</summary>
-  <sub>
+</details>
+
+<details> <summary>Poll</summary>
 
 ```javascript
 await sock.sendMessage(jid, {
   poll: { name: 'Favorite language?', values: ['JavaScript', 'Python', 'Rust'], selectableCount: 1 }
 })
 
-// quiz polls are newsletter-only and require correctAnswer
+// quiz polls: newsletter only, need correctAnswer
 await sock.sendMessage(newsletterJid, {
   poll: { name: 'Capital of Japan?', values: ['Tokyo', 'Osaka'], pollType: 1, correctAnswer: 'Tokyo' }
 })
 
-// final tally snapshot for a poll you created
+// final tally of a poll you created
 await sock.sendMessage(jid, {
   pollResult: { name: 'Favorite language?', votes: [{ name: 'JavaScript', voteCount: 12 }, { name: 'Python', voteCount: 9 }] }
 })
 ```
-</sub></details>
 
-<details> <summary>🗓️ AI Rich</summary>
-  <sub>
+</details>
+
+<details> <summary>AI Rich</summary>
 
 ```javascript
 await sock.aiRich()
-    .setTitle('Ai Rich Message')
-    .addText('[HyperLink](https://example.com)\nCitation [](https://example.com)')
-    .addImage('https://example.com/image.png')
-    .addCode('javascript', `console.log('Hello World')`)
-    .addHtml(['<html>Hello world</html>', 'Tab 1'], ['<html>Hi twin</html>', 'Tab 2'])
-    .addTable([
-        ['Name', 'HirooSy'],
-        ['Bio', 'Im developer'],
-        ['Age', '67']
-    ])
-    .addSource([['https://example.com/favicon.ico', 'https://example.com', 'Source']])
-    .addTip('Tip Text')
-    .addSuggest(['Continue', 'Cancel'])
-    .send(jid, { quoted: m })
+  .setTitle('Ai Rich Message')
+  .addText('[HyperLink](https://example.com)\nCitation [](https://example.com)')
+  .addImage('https://example.com/image.png')
+  .addCode('javascript', `console.log('Hello World')`)
+  .addHtml(['<html>Hello world</html>', 'Tab 1'], ['<html>Hi twin</html>', 'Tab 2'])
+  .addTable([
+    ['Name', 'HirooSy'],
+    ['Bio', 'Im developer'],
+    ['Age', '67']
+  ])
+  .addSource([['https://example.com/favicon.ico', 'https://example.com', 'Source']])
+  .addTip('Tip Text')
+  .addSuggest(['Continue', 'Cancel'])
+  .send(jid, { quoted: m })
 
 // animated progress
 await sock.aiRich()
   .addProcess('Loading...')
   .send(jid)
 
-// plain-spec shorthand, no builder chain
+// shorthand without the builder
 await sock.sendMessage(jid, {
   aiRich: { title: 'Assistant', text: 'Here is what I found:', table: [['Name', 'Score'], ['Alice', '90']] }
 })
 ```
 
-<details> <summary><sub>All AiRich Methods</sub></summary>
+<details> <summary align=center>All AiRich Methods</summary>
 
 | Method | Purpose |
 | --- | --- |
 | `setTitle(title)` | Disclaimer label shown on the message |
 | `setFooter(footer)` | Trailing metadata text block |
 | `setContextInfo(obj)` | Merges extra fields into `contextInfo` |
-| `addText(text, opts?)` | Markdown text; auto-extracts `[text](url)` links, `[](url)` citations, `[text\|w\|h](<url>)` LaTeX |
+| `addText(text, opts?)` | Markdown text. Extracts `[text](url)` links, `[](url)` citations, `[text\|w\|h](<url>)` LaTeX |
 | `addCode(language, code)` | Syntax-highlighted code block |
 | `addTable(rows, opts?)` | `[[header...], [row...], ...]` array of strings |
-| `addImage(image)` | `string \| Buffer \| array` — image grid |
+| `addImage(image)` | `string \| Buffer \| array`, shown as a grid |
 | `addVideo(video)` | `string \| Buffer \| { url, mimeType?, duration? } \| array` |
-| `addSource(sources)` | `[icon, url, text][]` — source/citation cards |
-| `addProduct(data)` | Product card(s) — object or array for a carousel |
-| `addPost(data)` | Social-post card(s) — object or array for a carousel |
-| `addReels(data)` | Reel card(s) — object or array |
-| `addTip(text)` | Small metadata/tip text line |
-| `addSuggest(suggestion, opts?)` | Follow-up suggestion pill(s) |
+| `addSource(sources)` | `[icon, url, text][]` source cards |
+| `addProduct(data)` | Product card, or an array for a carousel |
+| `addPost(data)` | Social-post card, or an array for a carousel |
+| `addReels(data)` | Reel card, or an array |
+| `addTip(text)` | Small tip line |
+| `addSuggest(suggestion, opts?)` | Follow-up suggestion pill |
 | `addProcess(title)` | In-progress status indicator |
 | `addHtml(...)` | One inline HTML block, or `[html, title]` tab pairs |
-| `build(opts?)` | Assemble the raw content without sending |
+| `build(opts?)` | Build the raw content without sending |
 | `send(jid, opts?)` | Shorthand for `sendMessage(jid, { aiRich: this, ...opts })` |
 
 </details>
-</sub></details>
 
-<details> <summary>📦 Sticker</summary>
-  <sub>
+</details>
+
+<details> <summary>Sticker</summary>
 
 ```javascript
-// single sticker
 await sock.sendMessage(jid, { sticker: { url: './sticker.webp' } })
 
-// sticker pack — needs `sharp` or `@napi-rs/image` installed, max 60, requires a cover
+// sticker pack: needs sharp or @napi-rs/image, max 60, cover required
 await sock.sendMessage(jid, {
   stickers: [{ data: { url: './s1.webp' } }, { data: { url: './s2.webp' } }],
   cover: { url: './cover.webp' },
@@ -323,36 +432,36 @@ await sock.sendMessage(jid, {
   publisher: 'HirooSy'
 })
 ```
-</sub></details>
 
-<details> <summary>✏️ Message Actions</summary>
-  <sub>
+</details>
+
+<details> <summary>Message Actions</summary>
 
 ```javascript
-await sock.sendMessage(jid, { pin: m.key, type: 1, time: 86400 })   // type: 0 unpin, 1 pin
-await sock.sendMessage(jid, { keep: m.key, type: 1 })               // type: 0 remove, 1 keep
+await sock.sendMessage(jid, { pin: m.key, type: 1, time: 86400 }) // type: 0 unpin, 1 pin
+await sock.sendMessage(jid, { keep: m.key, type: 1 })             // type: 0 remove, 1 keep
 await sock.sendMessage(jid, { text: 'Updated text', edit: m.key })
 await sock.sendMessage(jid, { delete: m.key })
 
-// group only — toggle disappearing messages
-await sock.sendMessage(groupJid, { disappearingMessagesInChat: true })    // 7 days
-await sock.sendMessage(groupJid, { disappearingMessagesInChat: 86400 })   // custom seconds
-await sock.sendMessage(groupJid, { disappearingMessagesInChat: false })   // off
+// group only: disappearing messages
+await sock.sendMessage(groupJid, { disappearingMessagesInChat: true })   // 7 days
+await sock.sendMessage(groupJid, { disappearingMessagesInChat: 86400 })  // custom seconds
+await sock.sendMessage(groupJid, { disappearingMessagesInChat: false })  // off
 ```
-</sub></details>
 
-<details> <summary>🗓️ Event</summary>
-  <sub>
+</details>
+
+<details> <summary>Event</summary>
 
 ```javascript
 await sock.sendMessage(jid, {
   event: { name: 'Team Sync', description: 'Discuss the Q1 roadmap', startDate: new Date(Date.now() + 3600_000) }
 })
 ```
-</sub></details>
 
-<details> <summary>💳 Payments & Business</summary>
-  <sub>
+</details>
+
+<details> <summary>Payments & Business</summary>
 
 ```javascript
 await sock.sendMessage(jid, { requestPaymentFrom: recipientJid, text: 'Payment for order #123' })
@@ -360,7 +469,7 @@ await sock.sendMessage(jid, { paymentInviteServiceType: 1 })
 await sock.sendMessage(jid, { orderText: 'Your order summary', thumbnail: fs.readFileSync('./order-thumb.jpg') })
 await sock.sendMessage(jid, { document: { url: './invoice.pdf' }, mimetype: 'application/pdf', invoiceNote: 'Invoice #1024' })
 
-// sponsored ad card attached to any message
+// sponsored ad card on any message
 await sock.sendMessage(jid, {
   text: 'Check this deal!',
   externalAdReply: { title: 'Big Sale', body: '50% off', thumbnail: fs.readFileSync('./thumb.jpg'), mediaType: 1, url: 'https://example.com' }
@@ -373,136 +482,185 @@ await sock.sendMessage(jid, {
   groupInvite: { jid: groupJid, inviteCode: code, inviteExpiration: Date.now() + 3600_000, subject: 'My Group', text: 'Join us!' }
 })
 
-// disable further forwarding of a message
+// disable forwarding
 await sock.sendMessage(jid, { limitSharing: true })
 ```
-</sub></details>
 
-<details> <summary>📤 Status</summary>
-  <sub>
+</details>
+
+<details> <summary>Status</summary>
 
 ```javascript
-// jid can be an array to control exactly who sees a status with mentions
+// jid can be an array to choose who sees the status
 await sock.sendMessage([contactJid1, contactJid2], { text: 'Status update text' })
 ```
-</sub></details>
 
-<details> <summary>📞 Call</summary>
-  <sub>
+</details>
+
+---
+
+## Call
+
+Calls need `ffmpeg` and `ffprobe` in `PATH`. Create one `Voip` per socket once it is open. After a reconnect there is a new socket, so create a new `Voip`.
+
+<details> <summary>Quick start</summary>
 
 ```javascript
 import Voip from '@hiroosy/baileys-lite/voip'
 
-// Place audio/video calls from the bot session and play media into the call.
-// @roamhq/wrtc is installed automatically. ffmpeg + ffprobe must be in PATH.
-
-// ---- Basic ----
-// create once, after the socket is connected
 const voip = new Voip(sock, {
-  ffprobePath: 'ffprobe', // path to ffprobe binary
-  voipLogLevel: 'warn',   // 'trace' | 'debug' | 'info' | 'warn' | 'error'
-  tmpDir: './tmp',        // temp folder for downloaded media (default os.tmpdir())
-  useOriginalRelayPort: false, // relays are dialed on the web-client port 3480 (fixes one-way audio).
-                               // true = use the port the relay advertises (3478)
-  useRawUdpTransport: false    // experimental: raw UDP to the relay instead of WebRTC data channel
+  ffprobePath: 'ffprobe',
+  voipLogLevel: 'warn',         // trace | debug | info | warn | error
+  tmpDir: './tmp',              // temp folder for downloads
+  maxConcurrentCalls: 1,        // see Multi Call
+  useOriginalRelayPort: true,  // true = relay port 3478, false = web port 3480
+  useRawUdpTransport: false     // experimental
 })
 
-// number or jid, non-digits are stripped automatically
 const call = await voip.call('628123456789', './song.mp3')
-
-call.on('ringing', () => console.log('ringing...'))
-call.on('connected', () => console.log('connected'))
-call.on('ended', reason => console.log('ended:', reason))
-call.on('error', err => console.error(err))
 
 await call.hangup() // or call.end()
 
 // ring only, no media
 await voip.call('628123456789')
+```
 
-// ---- Media ----
-// voip.call(jid, media?, resolution?, options?)
-await voip.call(jid, './song.mp3')                      // local file, audio/video detected by extension
-await voip.call(jid, 'https://example.com/song.mp3')    // url is downloaded first (max 20MB audio, 50MB video)
-await voip.call(jid, { audio: './voice.ogg' })          // explicit kind
-await voip.call(jid, { video: './clip.mp4' })
+</details>
 
-// audio: mp3 ogg opus wav m4a aac flac weba | video: mp4 mov webm mkv avi m4v 3gp
+<details> <summary>Media & Playlist</summary>
 
-// ---- Video resolution ----
-// '240p' | '360p' | '480p' | '720p' | '1080p' or custom
-// default is 480p, orientation follows the source (portrait/landscape)
-await voip.call(jid, './clip.mp4', '720p')
-await voip.call(jid, './clip.mp4', { width: 640, height: 360, frameRate: 30 })
+```javascript
+await voip.call(jid, './song.mp3')                    // local file
+await voip.call(jid, 'https://example.com/song.mp3')  // url, downloaded first (max 20MB)
+await voip.call(jid, { audio: './voice.ogg' })
 
-// ---- Playlist ----
-// items play in order, audio and video can be mixed
+// audio: mp3 ogg opus wav m4a aac flac weba
+// video files are rejected, send frames with voip.coordinator.feedLiveVideo()
+
+// playlist, items play in order
 const list = await voip.call(
   jid,
-  ['./intro.mp3', { video: './clip.mp4' }, 'https://example.com/outro.mp3'],
-  '480p',
+  ['./intro.mp3', './song.mp3', 'https://example.com/outro.mp3'],
+  undefined,
   {
-    loop: false,       // repeat the playlist (default false)
-    autoEndCall: true  // hang up when the playlist ends (default true)
+    loop: false,       // repeat the playlist
+    autoEndCall: true  // hang up when the playlist ends
   }
 )
+```
 
-list.on('item', ({ index, kind, source }) => console.log('playing', index, kind, source))
-list.on('playlist_looped', () => console.log('playlist restarted'))
-list.on('playlist_ended', () => console.log('playlist finished'))
+`jid` can be a number or a jid, non-digits are removed. The third argument is unused and only kept for older code.
 
-// ---- Silent / Resume ----
-await call.silent(true)   // mute audio and pause video
-await call.silent(false)  // resume
-await call.silent()       // toggle
+</details>
+
+<details> <summary>Controls</summary>
+
+```javascript
+await call.silent(true)       // silence audio
+await call.silent(false)      // resume
+await call.silent()           // toggle
 console.log(call.isSilenced)
-call.on('silent', state => console.log('silenced:', state))
 
-// ---- In-call controls ----
-call.mute(true)                 // mute the mic only (call.mute(false) to unmute)
-call.raiseHand(true)            // raise / lower hand (call.raiseHand(false))
-call.react('👍')                // emoji reaction, returns false if not connected yet
-await call.shareScreen(true)    // announce screen share; needs video on the call, 1:1 only
+call.mute(true)               // mic only
+call.raiseHand(true)
+call.react('👍')              // false if not connected yet
+await call.shareScreen(true)  // needs video, 1:1 only
 await call.shareScreen(false)
+
 const result = await call.upgradeToVideo()
-// audio -> video mid-call: the peer must accept (about 5s max).
-// result: 'accepted' | 'rejected' | 'rejected_by_timeout' | 'error' | 'timeout' | 'cancelled'
+// 'accepted' | 'rejected' | 'rejected_by_timeout' | 'error' | 'timeout' | 'cancelled'
+```
 
-// ---- Events ----
-// ringing, connected, item, playlist_looped, playlist_ended, silent, ended, error
-// from the engine:
-call.on('peer_mute', muted => console.log('peer muted:', muted))
-call.on('hand_raise', ({ jid, raised }) => console.log(jid, raised ? 'raised' : 'lowered'))
-call.on('reaction', reaction => console.log('reaction', reaction))
-call.on('screen_share', share => console.log('screen share', share))
-call.on('peer_video', change => console.log('peer video', change))
-call.on('inbound_audio', pcm => {})    // Float32Array, 16 kHz mono, 60 ms frames
-call.on('inbound_video', frame => {})  // decoded H.264 frame from the peer
-call.on('audio_finished', () => {})    // current audio item reached its end
-call.on('video_upgrade', ({ result }) => {}) // peer did not accept a playlist video item, call stays audio
+`shareScreen` only tells the peer a screen is shared. The picture is whatever you feed to `voip.coordinator.feedLiveVideo()`.
 
-// ---- Incoming calls ----
-await voip.listen()             // registers the call handlers on the socket, safe to call twice
+</details>
+
+<details> <summary>Events</summary>
+
+```javascript
+call.on('ringing', () => {})
+call.on('connected', () => {})
+call.on('ended', reason => {})          // 'connection_closed' if the socket drops
+call.on('error', err => {})
+
+call.on('item', ({ index, kind, source }) => {})
+call.on('playlist_looped', () => {})
+call.on('playlist_ended', () => {})
+call.on('silent', state => {})
+
+call.on('peer_mute', muted => {})
+call.on('hand_raise', ({ jid, raised }) => {})
+call.on('reaction', reaction => {})
+call.on('screen_share', share => {})
+call.on('peer_video', change => {})
+call.on('inbound_audio', pcm => {})     // Float32Array, 16 kHz mono, 60 ms
+call.on('inbound_video', frame => {})   // decoded H.264 frame
+call.on('audio_finished', () => {})     // current audio item reached its end
+```
+
+</details>
+
+<details> <summary>Incoming Calls</summary>
+
+```javascript
+await voip.listen() // register the call handlers, safe to call twice
+
 voip.on('call_incoming', async call => {
   console.log('incoming from', call.peerJid, call.callId)
-  await voip.acceptCall(call.callId)      // or: await voip.rejectCall(call.callId)
+  await voip.acceptCall(call.callId)
 })
-voip.on('call_inbound_audio', ({ call, pcm }) => {}) // pcm of the remote side
-voip.on('call_ended', call => console.log('ended', call.callId))
-await voip.hangup(callId)       // end any call by id
-// coordinator events: call_incoming, call_state, call_ended, call_peer_mute, call_inbound_audio,
-// call_inbound_video, call_hand_raise, call_reaction, call_screen_share, call_peer_video_state,
-// call_outbound_audio_finished, call_error
-// voip.coordinator gives the raw engine (feedLiveAudio, feedLiveVideo, setExternalAudioMode, ...)
 
-// ---- Notes ----
-// video from a file is sent as H.264 through the engine; screen share only changes what the peer is
-// told the picture is (the picture itself is whatever video you send)
-// in a playlist on an audio call, the first video item triggers the video upgrade handshake
-// only one active call at a time, force release a stuck call:
-await voip.end(true)
-// a safety timeout emits `error` if the call never ends (starts at 105s)
-// "Failed to load @roamhq/wrtc" -> native binary, run: npm rebuild @roamhq/wrtc
-//   (Alpine/musl is often unsupported, use a Debian/Ubuntu image)
+voip.on('call_inbound_audio', ({ call, pcm }) => {})
+voip.on('call_ended', call => console.log('ended', call.callId))
+
+await voip.rejectCall(callId)
+await voip.hangup(callId)
+
+// events: call_incoming, call_state, call_ended, call_peer_mute, call_inbound_audio,
+// call_inbound_video, call_hand_raise, call_reaction, call_screen_share,
+// call_peer_video_state, call_outbound_audio_finished, call_error
 ```
-</sub></details>
+
+`voip.coordinator` is the raw engine (`feedLiveAudio`, `feedLiveVideo`, `setExternalAudioMode`, ...).
+
+</details>
+
+<details> <summary>Multi Call</summary>
+
+```javascript
+const voip = new Voip(sock, { maxConcurrentCalls: 3 })
+
+// one by one
+const a = await voip.call('628111111111', './song.mp3')
+const b = await voip.call('628222222222', './song.mp3')
+
+// many numbers at once
+const results = await voip.callMany(
+  ['628111111111', '628222222222', '628333333333'],
+  './song.mp3'
+)
+
+for (const { jid, call, error } of results) {
+  if (error) {
+    console.log(jid, 'failed:', error.message)
+    continue
+  }
+  call.on('ended', reason => console.log(jid, 'ended:', reason))
+  call.on('error', err => console.error(jid, err))
+}
+
+voip.calls                  // active calls
+voip.calls[0].callId
+voip.calls[0].target        // dialed number
+await voip.hangup(callId)   // end one call
+await voip.end()            // end all calls
+await voip.end(true)        // only release the slots
+```
+
+- `maxConcurrentCalls` defaults to `1`. Each call gets its own relay, codec and audio.
+- Incoming calls count toward the limit too.
+- A call over the limit throws `Maximum concurrent calls reached`. In `callMany()` it is returned as `error` for that number and the rest still go through.
+- `callMany()` takes the same media and options as `call()` and calls duplicate numbers once.
+- A safety timeout emits `error` if a call never ends (starts at 105s).
+
+</details>

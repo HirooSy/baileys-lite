@@ -1,11 +1,5 @@
 const START_CODE = new Uint8Array([0, 0, 0, 1]);
-/** Coded slice of an IDR picture: the only NAL type that makes a key frame. */
 const NAL_TYPE_IDR = 5;
-/**
- * Packetizes an Annex-B access unit into RFC 6184 single-NAL/FU-A payloads.
- * Single-NAL payloads are views into `data`, not copies, so they stay valid
- * only until the caller reuses that buffer.
- */
 export function packetizeH264AnnexB(data, maxPayload = 1100) {
     if (maxPayload < 3)
         throw new Error('H264 RTP payload size must be at least 3 bytes');
@@ -49,11 +43,6 @@ export function packetizeH264AnnexB(data, maxPayload = 1100) {
     }
     return payloads;
 }
-/**
- * Reports whether an Annex-B access unit carries an IDR slice. SPS and PPS do
- * not count: encoders repeat those parameter sets ahead of every frame, so
- * accepting them would flag every delta frame as a key frame.
- */
 export function isH264KeyFrame(data) {
     let startCodes = 0;
     for (let i = 0; i + 3 < data.length;) {
@@ -79,16 +68,6 @@ export function isH264KeyFrame(data) {
         return (data[0] & 0x1f) === NAL_TYPE_IDR;
     return false;
 }
-/**
- * RFC 6184 depacketizer for single NAL, STAP-A and FU-A payloads.
- *
- * The key-frame flag is derived at flush time from the headers of the NAL
- * units that actually made it into the access unit, never from the fragments
- * seen on the way in. A fragment run that is abandoned, replaced or dropped
- * therefore cannot mark or unmark the frame it never joined, which keeps the
- * flag correct no matter in what order the packets arrive.
- */
-/** RTP sequence numbers wrap at this modulus; used to test fragment contiguity. */
 const SEQUENCE_MODULUS = 0x10000;
 export class H264Depacketizer {
     static MAX_BUFFERED_BYTES = 8 * 1024 * 1024;
@@ -100,26 +79,12 @@ export class H264Depacketizer {
     fuNalType = H264Depacketizer.NO_FU_RUN;
     fuLastSequence = H264Depacketizer.NO_FU_RUN;
     bufferedBytes = 0;
-    /**
-     * @param sequenceNumber RTP sequence number of `payload`. Required to tell a
-     * genuine FU-A continuation apart from an orphaned fragment that happens to
-     * share the NAL type of whatever run is already open: {@link appendFuA}
-     * only accepts a continuation whose sequence number immediately follows the
-     * last fragment it appended.
-     */
     push(payload, timestamp, marker, sequenceNumber) {
         if (!payload.length)
             return [];
         const completed = [];
         let previous = null;
         if (this.timestamp !== null && this.timestamp !== timestamp) {
-            /**
-             * Some senders omit the marker, so a timestamp change also ends a
-             * frame. A fragment run still mid-assembly belongs to the frame
-             * that is ending: drop the incomplete NAL but keep the NAL units
-             * that already completed, or one late fragment takes the whole
-             * access unit down with it.
-             */
             previous = this.flush();
             this.resetFrame(timestamp);
         }
@@ -210,16 +175,6 @@ export class H264Depacketizer {
                 this.bufferedBytes += payload.length - 2;
             }
             else {
-                /**
-                 * Same NAL type as the run in flight, but not the next sequence
-                 * number after the last fragment it appended: a fragment between
-                 * the two was lost or reordered away. Matching on type alone is
-                 * not enough here, because consecutive NALs commonly share a
-                 * type (slices are all type 1), so the very next run can look
-                 * like a continuation of this one. Abandon the run instead of
-                 * splicing this fragment onto it, or the decoder gets a corrupt
-                 * NAL under the wrong header.
-                 */
                 for (const part of this.fuParts)
                     this.bufferedBytes -= part.length;
                 this.fuParts = [];
@@ -229,14 +184,6 @@ export class H264Depacketizer {
             }
         }
         else {
-            /**
-             * A continuation fragment whose type does not match the run in
-             * flight: its start fragment was lost or reordered away. Appending
-             * it to whatever run happens to be open would splice one NAL into
-             * another and hand the decoder a corrupt unit under the wrong
-             * header. The run already in flight is left untouched, since this
-             * fragment does not prove anything about it.
-             */
             return;
         }
         if (end) {

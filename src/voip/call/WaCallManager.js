@@ -91,7 +91,6 @@ export class WaCallManager extends EventEmitter {
         const session = this.getSessionOrThrow(callId);
         await session.setScreenShare(sharing);
     }
-    /** Sends an emoji reaction. `false` when nothing went on the wire. */
     sendReaction(callId, reaction) {
         const session = this.getSessionOrThrow(callId);
         return session.sendReaction(reaction);

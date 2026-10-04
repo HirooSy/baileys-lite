@@ -26,7 +26,6 @@ export var EndCallReason;
     EndCallReason["Busy"] = "busy";
     EndCallReason["Cancelled"] = "cancelled";
     EndCallReason["Failed"] = "failed";
-    /** The call had a media path and lost it, with no leg left to carry it. */
     EndCallReason["RelayLost"] = "relay_lost";
     EndCallReason["DoNotDisturb"] = "do_not_disturb";
     EndCallReason["Unknown"] = "unknown";
@@ -35,12 +34,6 @@ export var PayloadType;
 (function (PayloadType) {
     PayloadType[PayloadType["WhatsAppOpus"] = 120] = "WhatsAppOpus";
     PayloadType[PayloadType["WhatsAppH264"] = 97] = "WhatsAppH264";
-    /**
-     * Lowest payload type of WhatsApp's proprietary Reed-Solomon video FEC
-     * family, which the client emits as `103 + 3k`. Not an RTX stream: the
-     * payload is opaque parity, with no prefix and no original sequence number,
-     * and it travels on the FEC stream's own SSRC.
-     */
     PayloadType[PayloadType["WhatsAppVideoFec"] = 103] = "WhatsAppVideoFec";
 })(PayloadType || (PayloadType = {}));
 export const DEFAULT_AUDIO_CONFIG = {
@@ -60,10 +53,3 @@ export const SRTP_LABEL = {
 };
 export const WA_RELAY_PORT = 3480;
 export const WA_DTLS_FINGERPRINT = 'sha-256 F9:CA:0C:98:A3:CC:71:D6:42:CE:5A:E2:53:D2:15:20:D3:1B:BA:D8:57:A4:F0:AF:BE:0B:FB:F3:6B:0C:A0:68';
-
-export const DEFAULT_VIDEO_CONFIG = {
-    width: 640,
-    height: 360,
-    frameRate: 20,
-    clockRate: 90000
-};

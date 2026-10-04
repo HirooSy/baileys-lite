@@ -77,12 +77,11 @@ export class ActiveCall extends EventEmitter {
     _onError(err) {
         this.emit('error', err);
     }
-    // ---- zapo features, surfaced on the active call ----
     setMute = (muted) => this.#coordinator.setMute(this.callId, !!muted);
     raiseHand = (raised = true) => this.#coordinator.setHandRaised(this.callId, !!raised);
     shareScreen = (sharing = true) => this.#coordinator.setScreenShare(this.callId, !!sharing);
     react = (emoji) => this.#coordinator.sendReaction(this.callId, emoji);
-    upgradeToVideo = () => this.#coordinator.startVideoMidCall(this.callId);
+    upgradeToVideo = () => this.#coordinator.requestVideoUpgrade(this.callId);
     end = async () => {
         if (this.#ended)
             return;
@@ -115,7 +114,9 @@ export class VoipClient {
     #config;
     #sock = null;
     #coordinator = null;
-    #activeCall = null;
+    #activeCalls = new Map();
+    #offSocketClose = null;
+    #connecting = null;
     constructor(config) {
         this.#config = config;
         if (!config?.existingSocket) {
@@ -125,63 +126,110 @@ export class VoipClient {
     get coordinator() {
         return this.#coordinator;
     }
-    connect = async () => {
+    get activeCalls() {
+        return [...this.#activeCalls.values()];
+    }
+    connect = () => {
         if (this.#coordinator && this.#sock === this.#config.existingSocket) {
-
-            return;
+            return Promise.resolve();
         }
+        if (!this.#connecting) {
+            this.#connecting = this.#setup().finally(() => {
+                this.#connecting = null;
+            });
+        }
+        return this.#connecting;
+    };
+    #setup = async () => {
         this.#sock = this.#config.existingSocket;
         const { deps, stores } = await createVoipDeps(this.#sock);
         const logger = createConsoleLogger(this.#config.voipLogLevel ?? 'warn');
         const emitter = new EventEmitter();
         const ctx = createVoipCtx(this.#sock, deps, stores, logger, emitter);
         this.#coordinator = new WaVoipCoordinator(ctx, {
-            maxConcurrentCalls: 1,
+            maxConcurrentCalls: this.#config.maxConcurrentCalls ?? 1,
             logLevel: this.#config.voipLogLevel ?? 'warn',
             useOriginalRelayPort: this.#config.useOriginalRelayPort,
             useRawUdpTransport: this.#config.useRawUdpTransport
         });
+        // Socket Baileys putus -> relay/UDP/timer call tidak boleh menggantung, dan waitForEnd() harus selesai.
+        const sock = this.#sock;
+        const onUpdate = (update) => {
+            if (update?.connection !== 'close')
+                return;
+            if (this.#sock !== sock)
+                return;
+            logger.warn('voip: socket closed, tearing down active calls');
+            this.#teardown('connection_closed');
+        };
+        sock.ev.on('connection.update', onUpdate);
+        this.#offSocketClose = () => {
+            try {
+                sock.ev.off('connection.update', onUpdate);
+            }
+            catch { }
+        };
     };
+    #teardown(reason) {
+        const calls = [...this.#activeCalls.values()];
+        this.#activeCalls.clear();
+        this.#offSocketClose?.();
+        this.#offSocketClose = null;
+        for (const call of calls) {
+            try {
+                // _forceEnd lebih dulu: socket sudah mati, endCall() lewat jaringan pasti gagal/menggantung
+                call._forceEnd(reason);
+            }
+            catch { }
+        }
+        try {
+            this.#coordinator?.dispose();
+        }
+        catch { }
+        this.#sock = null;
+        this.#coordinator = null;
+    }
     call = async (phoneNumber, opts = {}) => {
-        if (!this.#sock || !this.#coordinator)
+        const coordinator = this.#coordinator;
+        if (!this.#sock || !coordinator)
             throw new Error('Not connected. Call connect() first.');
-        if (this.#activeCall)
-            throw new Error('A call is already active.');
         const durationMs = opts.durationMs ?? 120_000;
         const peerJid = await resolvePeerLid(this.#sock, phoneNumber);
         const audioFile = opts.audioSource && opts.audioSource !== 'silence' ? opts.audioSource : undefined;
-        const callId = await this.#coordinator.startCall({
+        const callId = await coordinator.startCall({
             peerJid,
             isVideo: !!opts.isVideo,
-            audioFile,
-            videoConfig: opts.videoConfig
+            audioFile
         });
+        if (this.#coordinator !== coordinator) {
+            throw new Error('Connection closed while placing the call.');
+        }
 
         if (audioFile) {
             try {
-                await this.#coordinator.loadAudio(callId, audioFile);
+                await coordinator.loadAudio(callId, audioFile);
             } catch (e) {
                 console.error(`[ VOIP ] Failed to load audio "${audioFile}" for call ${callId}:`, e?.message || e);
             }
         }
-        if (opts.isVideo && opts.videoSource) {
-            try {
-                await this.#coordinator.loadVideo(callId, opts.videoSource);
-            } catch (e) {
-                console.error(`[ VOIP ] Failed to load video "${opts.videoSource}" for call ${callId}:`, e?.message || e);
-            }
+        if (this.#coordinator !== coordinator) {
+            throw new Error('Connection closed while placing the call.');
         }
-        const call = new ActiveCall(this.#coordinator, callId, durationMs);
-        this.#activeCall = call;
+        const call = new ActiveCall(coordinator, callId, durationMs);
+        this.#activeCalls.set(callId, call);
 
-        call.coordinator = this.#coordinator;
+        call.coordinator = coordinator;
         const onState = (info) => call._onState(info);
         const onEnded = (info) => call._onEnded(info);
-        const onError = (err) => call._onError(err);
-        this.#coordinator.on('call_state', onState);
-        this.#coordinator.on('call_ended', onEnded);
-        this.#coordinator.on('call_error', onError);
-        // zapo events -> emitted on the ActiveCall (only for this call id)
+        const onError = (err) => {
+            if (err?.callId && err.callId !== callId)
+                return;
+            call._onError(err);
+        };
+        coordinator.on('call_state', onState);
+        coordinator.on('call_ended', onEnded);
+        coordinator.on('call_error', onError);
+        // coordinator events -> emitted on the ActiveCall (only for this call id)
         const forwarded = [
             ['call_peer_mute', 'peer_mute', (c, muted) => [muted]],
             ['call_hand_raise', 'hand_raise', (c, jid, raised) => [{ jid, raised }]],
@@ -196,30 +244,27 @@ export class VoipClient {
                 if (info?.callId === callId)
                     call.emit(target, ...shape(info, ...rest));
             };
-            this.#coordinator.on(source, listener);
+            coordinator.on(source, listener);
             return [source, listener];
         });
         call.once('ended', () => {
             for (const [source, listener] of forwarded)
-                this.#coordinator?.off(source, listener);
-            this.#coordinator?.off('call_state', onState);
-            this.#coordinator?.off('call_ended', onEnded);
-            this.#coordinator?.off('call_error', onError);
-            if (this.#activeCall === call)
-                this.#activeCall = null;
+                coordinator.off(source, listener);
+            coordinator.off('call_state', onState);
+            coordinator.off('call_ended', onEnded);
+            coordinator.off('call_error', onError);
+            if (this.#activeCalls.get(callId) === call)
+                this.#activeCalls.delete(callId);
         });
         return call;
     };
     disconnect = () => {
-        try {
-            this.#activeCall?.end();
+        for (const call of this.#activeCalls.values()) {
+            try {
+                call.end()?.catch?.(() => { });
+            }
+            catch { }
         }
-        catch { }
-        try {
-            this.#coordinator?.dispose();
-        }
-        catch { }
-        this.#sock = null;
-        this.#coordinator = null;
+        this.#teardown('disconnected');
     };
 }

@@ -32,6 +32,7 @@ import { BinaryInfo } from '../wam/wam.js'
 import { USyncQuery, USyncUser } from './usync.js'
 import { normalizeUsername, isValidUsername, isValidUsernameKey } from '../utils/username.js'
 import { WebSocketClient } from '../socket-client/websocket-client.js'
+import { generateQR } from '../foundation/qrcode-terminal.js'
 
 const wMexQuery = (variables, queryId, query, generateMessageTag) =>
 	query({
@@ -65,12 +66,6 @@ export const makeSocket = config => {
 	const uqTagId = generateMdTagPrefix()
 	const generateMessageTag = () => `${uqTagId}${epoch++}`
 
-	if (printQRInTerminal) {
-		logger.warn(
-			{},
-			'⚠️ The printQRInTerminal option has been deprecated. You will no longer receive QR codes in the terminal automatically. Please listen to the connection.update event yourself and handle the QR your way. You can remove this message by removing this opttion. This message will be removed in a future version.'
-		)
-	}
 	if (browser[1].toLocaleLowerCase().includes('android')) {
 		logger.warn('⚠️ Using the Android browser is experimental and may lead to unexpected behavior. Use at your own risk.')
 	}
@@ -80,15 +75,25 @@ export const makeSocket = config => {
 		logger.warn('⚠️ DANGER: DISABLING ALL SYNC BY shouldSyncHistoryMsg PREVENTS BAILEYS FROM ACCESSING INITIAL LID MAPPINGS, LEADING TO INSTABILIY AND SESSION ERRORS')
 	}
 
-	const url = typeof waWebSocketUrl === 'string' ? new URL(waWebSocketUrl) : waWebSocketUrl
+	const url = new URL(typeof waWebSocketUrl === 'string' ? waWebSocketUrl : waWebSocketUrl.href) // salinan: jangan mutasi URL milik pemanggil
 	if (config.mobile || url.protocol === 'tcp:') throw new Boom('Mobile API is not supported anymore', { statusCode: DisconnectReason.loggedOut })
-	if (url.protocol === 'wss' && authState?.creds?.routingInfo) url.searchParams.append('ED', authState.creds.routingInfo.toString('base64url'))
+	const routingInfo = authState?.creds?.routingInfo
+	let wsConfig = config
+	if (routingInfo?.length && !config.disableStickyRouting && (url.protocol === 'wss:' || url.protocol === 'ws:')) {
+		if (!url.searchParams.has('ED')) url.searchParams.set('ED', Buffer.from(routingInfo).toString('base64url'))
+		const headers = { ...(config.options?.headers || {}) }
+		const cookieKey = Object.keys(headers).find(k => k.toLowerCase() === 'cookie')
+		const cookie = cookieKey ? headers[cookieKey] : ''
+		if (cookieKey) delete headers[cookieKey]
+		headers.Cookie = cookie.includes('sticky_routing=') ? cookie : cookie ? `${cookie}; sticky_routing=` : 'sticky_routing='
+		wsConfig = { ...config, options: { ...(config.options || {}), headers } }
+	}
 
 	const ephemeralKeyPair = Curve.generateKeyPair()
 
 	const noise = makeNoiseHandler({ keyPair: ephemeralKeyPair, NOISE_HEADER: NOISE_WA_HEADER, logger, routingInfo: authState?.creds?.routingInfo })
 
-	const ws = new WebSocketClient(url, config)
+	const ws = new WebSocketClient(url, wsConfig)
 	ws.connect()
 	const sendPromise = promisify(ws.send)
 
@@ -415,6 +420,7 @@ export const makeSocket = config => {
 	}
 
 	const onMessageReceived = async data => {
+		try {
 		await noise.decodeFrame(data, frame => {
 			lastDateRecv = new Date()
 			let anyTriggered = false
@@ -436,6 +442,13 @@ export const makeSocket = config => {
 				if (!anyTriggered && logger.level === 'debug') logger.debug({ unhandled: true, msgId, fromMe: false, frame }, 'communication recv')
 			}
 		})
+		} catch (err) {
+			// satu-satunya error yang sampai sini: gagal decrypt frame (counter noise tidak sinkron) -> koneksi tidak bisa dipakai lagi.
+			// ditangani agar tidak jadi unhandled rejection yang mematikan proses.
+			if (closed) return
+			logger.error({ err }, 'failed to process inbound frame, closing connection')
+			void end(new Boom('Connection Terminated (inbound frame failed)', { statusCode: DisconnectReason.connectionLost, data: { cause: err } }))
+		}
 	}
 
 	const end = async error => {
@@ -451,6 +464,7 @@ export const makeSocket = config => {
 		consecutivePingFailures = 0
 
 		ws.removeAllListeners()
+		ws.on('error', () => {}) // error telat dari socket yang sedang ditutup tidak boleh jadi uncaught exception
 
 		noise.destroy?.()
 		signalRepository.close?.()
@@ -553,8 +567,9 @@ export const makeSocket = config => {
 	}
 
 	const requestPairingCode = async (phoneNumber, customPairingCode) => {
-		const pairingCode = customPairingCode ?? bytesToCrockford(randomBytes(5))
-		if (customPairingCode && customPairingCode?.length !== 8) throw new Error('Custom pairing code must be exactly 8 chars')
+		const customCode = customPairingCode == null ? '' : String(customPairingCode)
+		if (customCode && customCode.length !== 8) throw new Error('Custom pairing code must be exactly 8 characters')
+		const pairingCode = customCode || bytesToCrockford(randomBytes(5))
 		authState.creds.pairingCode = pairingCode
 		authState.creds.me = { id: jidEncode(phoneNumber, 's.whatsapp.net'), name: '~' }
 		ev.emit('creds.update', authState.creds)
@@ -603,7 +618,11 @@ export const makeSocket = config => {
 		}
 	})
 	ws.on('error', mapWebSocketError(end))
-	ws.on('close', () => void end(new Boom('Connection Terminated', { statusCode: DisconnectReason.connectionClosed })))
+	ws.on('close', (code, reason) => {
+		const wsReason = reason ? String(reason) : ''
+		logger.info({ wsCode: code, wsReason }, 'websocket closed')
+		void end(new Boom('Connection Terminated', { statusCode: DisconnectReason.connectionClosed, data: { wsCode: code, wsReason } }))
+	})
 
 	ws.on('CB:xmlstreamend', () => void end(new Boom('Connection Terminated by Server', { statusCode: DisconnectReason.connectionClosed })))
 
@@ -626,6 +645,7 @@ export const makeSocket = config => {
 			const ref = refNode.content.toString('utf-8')
 			const qr = buildPairingQRData(ref, noiseKeyB64, identityKeyB64, advB64, browser)
 			ev.emit('connection.update', { qr })
+			if (printQRInTerminal) generateQR(qr, { small: true }, output => console.log('\n' + output))
 			qrTimer = setTimeout(genPairQR, qrMs)
 			qrMs = qrTimeout || 20000
 		}

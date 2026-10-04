@@ -25,6 +25,7 @@ export * from './wam/wam-constants.js'
 export * from './socket/usync.js'
 
 export * from './foundation/ai-rich.js'
+export * from './foundation/qrcode-terminal.js'
 export * from './utils/wa-protocol-core.js'
 export * from './utils/auth-state-core.js'
 export * from './utils/auth-state-storage.js'

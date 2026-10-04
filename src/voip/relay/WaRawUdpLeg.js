@@ -42,7 +42,6 @@ export const RAW_UDP_RETURN_PATH_TIMEOUT_MS = 5_000;
  * of hanging up on a peer that is merely slow.
  */
 export const RAW_UDP_RETURN_PATH_STALL_MS = 10_000;
-/** Reason `onFailure` reports when the return-path window closes unanswered. */
 export const RAW_UDP_NO_RETURN_PATH = 'raw_udp_no_return_path';
 /**
  * A media leg that talks to the relay over raw UDP: no ICE, no DTLS, no SCTP,
@@ -90,11 +89,9 @@ export class WaRawUdpLeg {
         this.returnPathTimeoutMs = options.returnPathTimeoutMs ?? RAW_UDP_RETURN_PATH_TIMEOUT_MS;
         this.stallTimeoutMs = options.stallTimeoutMs ?? RAW_UDP_RETURN_PATH_STALL_MS;
     }
-    /** Whether the socket is bound and has not been closed since. */
     get isOpen() {
         return this.opened && !this.closed;
     }
-    /** Whether media has arrived from the relay at least once, which confirms the leg. */
     get hasReturnPath() {
         return this.returnPathSeen;
     }

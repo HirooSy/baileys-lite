@@ -16,7 +16,7 @@ function getH1Dispatcher(logger) {
 			h1Dispatcher = new Agent({ allowH2: false })
 		}
 	} catch (err) {
-		logger?.warn?.({ err }, 'gagal membuat dispatcher HTTP/1.1, pakai default undici')
+		logger?.warn?.({ err }, 'failed to create HTTP/1.1 dispatcher, falling back to the undici default')
 	}
 	return h1Dispatcher
 }
@@ -34,6 +34,11 @@ export class WebSocketClient extends AbstractSocketClient {
 	constructor(...args) {
 		super(...args)
 		this.socket = null
+	}
+
+	emitError(err) {
+		if (this.listenerCount('error') > 0) this.emit('error', err)
+		else this.config?.logger?.debug?.({ err }, 'ws error ignored (no listener)')
 	}
 
 	get isOpen() {
@@ -76,7 +81,7 @@ export class WebSocketClient extends AbstractSocketClient {
 					socket.onmessage = null
 					socket.onerror = () => {}
 					socket.onclose = () => {}
-					this.emit('error', new Error('Opening handshake has timed out'))
+					this.emitError(new Error('Opening handshake has timed out'))
 					queueMicrotask(() => {
 						try { socket.close() } catch {}
 					})
@@ -96,7 +101,7 @@ export class WebSocketClient extends AbstractSocketClient {
 				const detail = raw.cause?.message || raw.cause?.code || event.message || 'unknown'
 				raw.message = `WebSocket error: ${detail}`
 			}
-			this.emit('error', raw)
+			this.emitError(raw)
 		}
 		socket.onmessage = event => {
 

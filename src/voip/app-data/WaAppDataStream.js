@@ -186,7 +186,6 @@ export class WaAppDataStream {
         }
         return fresh;
     }
-    /** Drops the send buffer and stops every timer of this stream. */
     close() {
         this.clearOutgoing();
         this.seenTransactions.clear();

@@ -30,7 +30,6 @@ export const WA_AUDIO_CALL_SSRC_SLOTS = [
     WA_SSRC_SLOT.AUDIO.OOB_NACK,
     WA_SSRC_SLOT.APP_DATA.MAIN
 ];
-/** Slots a video call negotiates: the audio stack plus the video streams. */
 export const WA_VIDEO_CALL_SSRC_SLOTS = [
     ...WA_AUDIO_CALL_SSRC_SLOTS,
     WA_SSRC_SLOT.VIDEO.MAIN,

@@ -169,7 +169,6 @@ function hexDigit(code) {
         return code - CHAR_UPPER_A + 10;
     return -1;
 }
-/** Writes the four dotted-decimal octets of `text[start, end)` into `out` at `offset`. */
 function writeIpv4Address(text, start, end, out, offset) {
     let octets = 0;
     let value = 0;

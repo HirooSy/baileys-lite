@@ -63,7 +63,6 @@ export class MLowCodec {
     maxConcealFrames = DEFAULT_MAX_CONCEAL_FRAMES;
     lastSeq = -1;
     lastDecodedSamples = 0;
-    /** Reused PCM staging buffer for the encoder, one full frame wide. */
     pcmScratch = new Int16Array(FRAME_SIZE);
     /** Shared read-only zero frame handed out when a decode cannot be salvaged. */
     silenceScratch = new Float32Array(MAX_FRAME_SIZE);
@@ -219,10 +218,6 @@ export class MLowCodec {
     getExpectedPacketLossPercent() {
         return this.packetLossPercent;
     }
-    /**
-     * Write the requests in {@link MLOW_ENCODER_CTL}; absent fields are left
-     * untouched. The values survive {@link MLowCodec.reset}.
-     */
     applyEncoderTunables(tunables) {
         if (!this.encoder) {
             throw new Error('[MLowCodec] encoder not initialized');
@@ -288,7 +283,6 @@ export class MLowCodec {
         }
         onFrame(this.recoverPrevious(nextPacket, frameSize));
     }
-    /** Decode one packet against the live decoder, or `null` if it was rejected. */
     tryDecode(mlowFrame) {
         if (!this.decoder) {
             return null;

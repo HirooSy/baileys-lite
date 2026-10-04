@@ -3,42 +3,6 @@ import path from 'node:path';
 import { EventEmitter } from 'node:events';
 import { VoipClient } from './voipClient.js';
 
-const RESOLUTION_PRESETS = {
-    '240p': { width: 320, height: 240, frameRate: 20 },
-    '360p': { width: 640, height: 360, frameRate: 30 },
-    '480p': { width: 854, height: 480, frameRate: 30 },
-    '720p': { width: 1280, height: 720, frameRate: 30 },
-    '1080p': { width: 1920, height: 1080, frameRate: 30 },
-};
-
-function resolveVideoConfig(resolution, sourceDims) {
-    if (!resolution) {
-        if (!sourceDims?.width || !sourceDims?.height)
-            return undefined;
-
-        return applyOrientation(RESOLUTION_PRESETS['480p'], sourceDims);
-    }
-    if (typeof resolution === 'object')
-        return resolution;
-    const key = String(resolution).trim().toLowerCase();
-    const preset = RESOLUTION_PRESETS[key];
-    if (!preset) {
-        const known = Object.keys(RESOLUTION_PRESETS).join(', ');
-        throw new Error(`Unknown resolution "${resolution}". Use one of: ${known}, or pass { width, height, frameRate } directly.`);
-    }
-    return applyOrientation(preset, sourceDims);
-}
-
-function applyOrientation(preset, sourceDims) {
-    if (!sourceDims?.width || !sourceDims?.height)
-        return { ...preset };
-    const sourceIsPortrait = sourceDims.height > sourceDims.width;
-    const presetIsPortrait = preset.height > preset.width;
-    if (sourceIsPortrait === presetIsPortrait)
-        return { ...preset };
-    return { ...preset, width: preset.height, height: preset.width };
-}
-
 const VIDEO_EXTENSIONS = /\.(mp4|mov|webm|mkv|avi|m4v|3gp)(\?|#|$)/i;
 const AUDIO_EXTENSIONS = /\.(mp3|ogg|opus|wav|m4a|aac|flac|weba)(\?|#|$)/i;
 
@@ -139,11 +103,15 @@ async function normalizeItem(item, ffprobePath, tmpDir) {
     else {
         throw new Error('Playlist item must be a string or an object.');
     }
+    if (kind === 'video') {
+        throw new Error('Video playlist item is not supported (audio files only). ' +
+            'Send video frames yourself via voip.coordinator.feedLiveVideo(), or use call.upgradeToVideo() to ask the peer to switch to video.');
+    }
     let source = rawSource;
     let isTemp = false;
     if (isUrl(rawSource)) {
-        const extHint = kind === 'video' ? '.mp4' : '.audio';
-        const maxBytes = kind === 'video' ? 50 * 1024 * 1024 : 20 * 1024 * 1024;
+        const extHint = '.audio';
+        const maxBytes = 20 * 1024 * 1024;
         source = await downloadToTemp(rawSource, extHint, maxBytes, tmpDir);
         isTemp = true;
     }
@@ -152,12 +120,7 @@ async function normalizeItem(item, ffprobePath, tmpDir) {
     }
     const probed = await probeMedia(source, ffprobePath);
     const durationMs = probed.durationMs ?? undefined;
-    const result = { kind, source, isTemp, durationMs };
-    if (kind === 'video' && probed.width && probed.height) {
-        result.sourceWidth = probed.width;
-        result.sourceHeight = probed.height;
-    }
-    return result;
+    return { kind, source, isTemp, durationMs };
 }
 
 class VoipCall extends EventEmitter {
@@ -170,12 +133,14 @@ class VoipCall extends EventEmitter {
     #autoEndCall;
     #loop;
     #onItemAdvance;
+    #target;
     #silenced = false;
     _itemTimer = null;
     constructor(items, onRelease, opts = {}) {
         super();
         this.#items = items;
         this.#onRelease = onRelease;
+        this.#target = opts.target ?? null;
         this.#autoEndCall = opts.autoEndCall === undefined ? true : !!opts.autoEndCall;
         this.#loop = !!opts.loop;
         this.#onItemAdvance = opts.onItemAdvance;
@@ -194,7 +159,12 @@ class VoipCall extends EventEmitter {
             activeCall.on(ev, (...args) => this.emit(ev, ...args));
         }
     }
-    // ---- zapo features ----
+    get callId() {
+        return this.#activeCall?.callId ?? null;
+    }
+    get target() {
+        return this.#target;
+    }
     mute(value = true) {
         return this.#activeCall?.setMute(value);
     }
@@ -236,24 +206,7 @@ class VoipCall extends EventEmitter {
         if (!isFirst) {
             const callId = this.#activeCall.callId;
             try {
-                if (next.kind === 'video') {
-                    await this.#coordinator.loadVideo(callId, next.source);
-
-                    await this.#coordinator.loadAudio(callId, next.source);
-                    if (!previous || previous.kind !== 'video') {
-                        // zapo runs the upgrade handshake: video only flows once the peer accepts.
-                        const result = await this.#coordinator.startVideoMidCall(callId);
-                        if (result !== 'accepted')
-                            this.emit('video_upgrade', { result });
-                    }
-                }
-                else {
-                    await this.#coordinator.loadAudio(callId, next.source);
-                    if (previous && previous.kind === 'video') {
-
-                        await this.#coordinator.stopVideoMidCall(callId, { keepSource: true });
-                    }
-                }
+                await this.#coordinator.loadAudio(callId, next.source);
             }
             catch (err) {
                 this.emit('error', new Error(`Failed to advance to playlist item ${this.#index} (${next.kind} "${next.source}"): ${err?.message || err}`));
@@ -268,7 +221,7 @@ class VoipCall extends EventEmitter {
         this.emit('item', { index: this.#index, kind: next.kind, source: next.source });
         this.#onItemAdvance?.(next);
 
-        if (next.kind !== 'video' && next.durationMs) {
+        if (next.durationMs) {
             this._itemTimer = setTimeout(() => {
                 this._advance().catch((err) => this.emit('error', err));
             }, next.durationMs);
@@ -307,13 +260,9 @@ class VoipCall extends EventEmitter {
         const callId = this.#activeCall?.callId;
         if (!callId)
             return this.#silenced;
-        const current = this.#items[this.#index];
         try {
             if (next) {
                 await this.#coordinator.setMute(callId, true);
-                if (current?.kind === 'video') {
-                    await this.#coordinator.stopVideoMidCall(callId, { keepSource: true });
-                }
                 if (this._itemTimer) {
                     clearTimeout(this._itemTimer);
                     this._itemTimer = null;
@@ -321,10 +270,6 @@ class VoipCall extends EventEmitter {
             }
             else {
                 await this.#coordinator.setMute(callId, false);
-                if (current?.kind === 'video') {
-                    await this.#coordinator.startVideoMidCall(callId);
-                }
-
             }
             this.emit('silent', this.#silenced);
         }
@@ -347,7 +292,9 @@ export default class Voip {
     #conn;
     #client = null;
     #clientForConn = null;
-    #active = null;
+    #calls = new Set();
+    #pending = 0;
+    #maxConcurrentCalls;
     #ffprobePath;
     #tmpDir;
     #voipLogLevel;
@@ -356,6 +303,9 @@ export default class Voip {
         this.#conn = conn;
         this.#ffprobePath = opts.ffprobePath || 'ffprobe';
         this.#voipLogLevel = opts.voipLogLevel ?? 'warn';
+        this.#maxConcurrentCalls = opts.maxConcurrentCalls ?? 1;
+        if (!Number.isSafeInteger(this.#maxConcurrentCalls) || this.#maxConcurrentCalls < 1)
+            throw new Error('maxConcurrentCalls must be a positive integer.');
         this.#relayOpts = {
             useOriginalRelayPort: !!opts.useOriginalRelayPort,
             useRawUdpTransport: !!opts.useRawUdpTransport
@@ -366,77 +316,116 @@ export default class Voip {
     #getClient() {
         if (this.#client && this.#clientForConn === this.#conn)
             return this.#client;
-        this.#client = new VoipClient({ existingSocket: this.#conn, voipLogLevel: this.#voipLogLevel, ...this.#relayOpts });
+        this.#client = new VoipClient({
+            existingSocket: this.#conn,
+            voipLogLevel: this.#voipLogLevel,
+            maxConcurrentCalls: this.#maxConcurrentCalls,
+            ...this.#relayOpts
+        });
         this.#clientForConn = this.#conn;
         return this.#client;
     }
+    get calls() {
+        return [...this.#calls];
+    }
+    get maxConcurrentCalls() {
+        return this.#maxConcurrentCalls;
+    }
 
+    // `resolution` tetap ada agar signature lama tidak rusak; video dari file sudah tidak didukung.
     async call(jid, media, resolution, options = {}) {
-        if (this.#active)
-            throw new Error('A call is already in progress, wait for it to finish.');
+        if (this.#calls.size + this.#pending >= this.#maxConcurrentCalls)
+            throw new Error(`Maximum concurrent calls reached (${this.#maxConcurrentCalls}), wait for a call to end.`);
         const targetJid = String(jid || '').replace(/\D/g, '');
         if (!targetJid)
             throw new Error('Invalid phone number / jid.');
-        const rawItems = Array.isArray(media) ? media : [media ?? 'silence'];
-        const items = [];
-        for (const raw of rawItems) {
-            if (raw === 'silence' || raw == null) {
-                items.push({ kind: 'audio', source: 'silence', isTemp: false });
-                continue;
-            }
-            items.push(await normalizeItem(raw, this.#ffprobePath, this.#tmpDir));
-        }
-        const first = items[0];
-        const videoConfig = resolveVideoConfig(resolution, { width: first.sourceWidth, height: first.sourceHeight });
-        const client = this.#getClient();
-        await client.connect();
-        const safetyTimer = { handle: null };
-        const scheduleSafety = (ms) => {
-            if (safetyTimer.handle)
-                clearTimeout(safetyTimer.handle);
-            safetyTimer.handle = setTimeout(() => {
-                call.emit('error', new Error('Safety timeout — call never reached ended/error.'));
-                this.#active = null;
-            }, ms);
+        this.#pending++;
+        let reserved = true;
+        const releaseReservation = () => {
+            if (!reserved)
+                return;
+            reserved = false;
+            this.#pending--;
         };
-        const rescheduleSafetyForItem = (item) => {
-
-            const windowMs = item?.kind === 'video'
-                ? 10 * 60_000
-                : Math.max(item?.durationMs ?? 120_000, 45_000) + 60_000;
-            scheduleSafety(windowMs);
-        };
-        const call = new VoipCall(items, () => { this.#active = null; }, {
-            autoEndCall: options.autoEndCall,
-            loop: options.loop,
-            onItemAdvance: rescheduleSafetyForItem,
-        });
-        this.#active = call;
-        scheduleSafety(105_000);
-        let activeCall;
         try {
-            activeCall = await client.call(targetJid, {
+            const rawItems = Array.isArray(media) ? media : [media ?? 'silence'];
+            const items = [];
+            for (const raw of rawItems) {
+                if (raw === 'silence' || raw == null) {
+                    items.push({ kind: 'audio', source: 'silence', isTemp: false });
+                    continue;
+                }
+                items.push(await normalizeItem(raw, this.#ffprobePath, this.#tmpDir));
+            }
+            const first = items[0];
+            const client = this.#getClient();
+            await client.connect();
+            const safetyTimer = { handle: null };
+            const scheduleSafety = (ms) => {
+                if (safetyTimer.handle)
+                    clearTimeout(safetyTimer.handle);
+                safetyTimer.handle = setTimeout(() => {
+                    call.emit('error', new Error('Safety timeout — call never reached ended/error.'));
+                    this.#calls.delete(call);
+                }, ms);
+            };
+            const rescheduleSafetyForItem = (item) => {
 
-                audioSource: first.source,
-                isVideo: first.kind === 'video',
-                ...(first.kind === 'video' ? { videoSource: first.source } : {}),
-                durationMs: 0,
-                videoConfig,
+                const windowMs = Math.max(item?.durationMs ?? 120_000, 45_000) + 60_000;
+                scheduleSafety(windowMs);
+            };
+            const call = new VoipCall(items, () => { this.#calls.delete(call); }, {
+                autoEndCall: options.autoEndCall,
+                loop: options.loop,
+                target: targetJid,
+                onItemAdvance: rescheduleSafetyForItem,
             });
-        }
-        catch (err) {
-            clearTimeout(safetyTimer.handle);
-            this.#active = null;
-            throw err;
-        }
-        activeCall.on('ended', () => clearTimeout(safetyTimer.handle));
-        activeCall.on('error', () => clearTimeout(safetyTimer.handle));
-        await call._attach(activeCall);
+            this.#calls.add(call);
+            releaseReservation();
+            scheduleSafety(105_000);
+            let activeCall;
+            try {
+                activeCall = await client.call(targetJid, {
 
-        return call;
+                    audioSource: first.source,
+                    durationMs: 0,
+                });
+            }
+            catch (err) {
+                clearTimeout(safetyTimer.handle);
+                call._finish('failed');
+                throw err;
+            }
+            activeCall.on('ended', () => clearTimeout(safetyTimer.handle));
+            activeCall.on('error', () => clearTimeout(safetyTimer.handle));
+            await call._attach(activeCall);
+
+            return call;
+        }
+        finally {
+            releaseReservation();
+        }
     }
 
-    // ---- incoming calls & raw coordinator access (zapo) ------------------------------
+    async callMany(targets, media, resolution, options = {}) {
+        const seen = new Set();
+        const list = [];
+        for (const target of Array.isArray(targets) ? targets : [targets]) {
+            const key = String(target ?? '').replace(/\D/g, '') || String(target ?? '');
+            if (seen.has(key))
+                continue;
+            seen.add(key);
+            list.push(target);
+        }
+        if (!list.length)
+            throw new Error('callMany needs at least one target.');
+        await this.listen();
+        const settled = await Promise.allSettled(list.map((jid) => this.call(jid, media, resolution, options)));
+        return settled.map((result, index) => result.status === 'fulfilled'
+            ? { jid: list[index], call: result.value }
+            : { jid: list[index], error: result.reason });
+    }
+
     /** Registers the call handlers on the socket so incoming calls are seen. Idempotent. */
     async listen() {
         await this.#getClient().connect();
@@ -475,13 +464,10 @@ export default class Voip {
         return this.coordinator;
     }
     async end(force = false) {
-        if (!this.#active) {
-            return;
-        }
         if (force) {
-            this.#active = null;
+            this.#calls.clear();
             return;
         }
-        await this.#active.hangup();
+        await Promise.all([...this.#calls].map((call) => call.hangup()));
     }
 }

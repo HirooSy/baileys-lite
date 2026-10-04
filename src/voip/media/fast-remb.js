@@ -66,7 +66,6 @@ const FAST_REMB_PRESENCE_BITMAP = 0x01;
  * has to fit in 1 to 16 bytes.
  */
 export const WA_FAST_REMB_PAYLOAD_LENGTH = 1 + WA_FAST_REMB_BITRATE_ENCODING.byteLength;
-/** The whole element: the id/len byte plus the content. */
 export const WA_FAST_REMB_ELEMENT_LENGTH = 1 + WA_FAST_REMB_PAYLOAD_LENGTH;
 /**
  * Content of the element, written into `target` from `offset`: the presence

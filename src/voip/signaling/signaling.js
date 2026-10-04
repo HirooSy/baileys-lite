@@ -10,7 +10,7 @@ export async function encodeWAMessage(message) {
 }
 async function encodeSignedDeviceIdentity(account) {
     // baileys-lite (voip-deps.js) hands over the identity already encoded; a decoded
-    // ADVSignedDeviceIdentity object (zapo style) is encoded here.
+    // ADVSignedDeviceIdentity object is encoded here.
     if (account instanceof Uint8Array)
         return account;
     const proto = await getProto();
@@ -547,7 +547,6 @@ export function buildMuteV2Stanza(peerDeviceJid, callId, callCreator, muted) {
         ]
     };
 }
-/** Reads the state carried by an inbound `<mute_v2>` node. */
 export function parseMuteV2(inner) {
     const rawMuteState = inner.attrs?.['mute-state'];
     let muted = null;

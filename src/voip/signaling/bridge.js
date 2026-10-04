@@ -2,6 +2,8 @@ import { createNoopLogger } from '../shim/core.js';
 import { normalizeDeviceJid } from '../shim/protocol.js';
 import { buildAckNode, getFirstNodeChild } from '../shim/transport.js';
 import { toError } from '../shim/util.js';
+// Penanda untuk messages-recv.js: stanza ini sudah di-ack oleh voip (dengan type yang benar), jangan di-ack lagi oleh handler Baileys.
+export const ACKED_BY_VOIP = Symbol.for('baileys.ackedByVoip');
 const RECEIPT_CALL_TAGS = new Set([
     'offer',
     'accept',
@@ -18,6 +20,7 @@ export async function routeCallStanza(manager, deps, node, logger) {
         return null;
     const tag = inner.tag;
     const peerJid = node.attrs.from;
+    node[ACKED_BY_VOIP] = true;
     await deps.lowLevelCoordinator.sendNode(buildAckNode({
         kind: 'custom',
         ackClass: 'call',
@@ -94,6 +97,7 @@ export async function routeCallReceipt(deps, node) {
     if (!RECEIPT_CALL_TAGS.has(inner.tag))
         return false;
     const peerJid = node.attrs.from;
+    node[ACKED_BY_VOIP] = true;
     await deps.lowLevelCoordinator.sendNode(buildAckNode({
         kind: 'custom',
         ackClass: 'receipt',

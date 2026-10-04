@@ -28,7 +28,6 @@ const MAX_REPORT_BLOCKS = 31;
  * the widest count its own bits can hold.
  */
 const MAX_VIDEO_REPORT_BLOCKS = 15;
-/** Sender report header plus sender info, where the first report block starts. */
 const SR_REPORT_BLOCK_OFFSET = 28;
 /**
  * One report block as WhatsApp lays it out: the 24 bytes of RFC 3550 section
@@ -37,9 +36,7 @@ const SR_REPORT_BLOCK_OFFSET = 28;
  * count from the byte length.
  */
 const SR_REPORT_BLOCK_LENGTH = 32;
-/** Where the two WhatsApp words start inside a report block. */
 const SR_BLOCK_EXTENSION_OFFSET = 24;
-/** Four big-endian u32s closing the sender report, written once after the blocks. */
 const SR_PACKET_TRAILER_LENGTH = 16;
 const SDES_LENGTH = 32;
 /** Saturation bounds of the signed 24-bit cumulative loss field. */
@@ -54,12 +51,10 @@ const SR_BLOCK_COUNTER_PER_PACKET = 161;
 const SR_BLOCK_CONVERGED = 0x24800;
 /** Packet trailer word 3: centre of the 0x4e00-0x5400 band the live metric stayed in. */
 const SR_TRAILER_LIVE_METRIC = 0x5000;
-/** Where that metric sits in the packet trailer. The other three words are zero. */
 const SR_TRAILER_LIVE_METRIC_OFFSET = 12;
 const HEX_DIGITS = TEXT_ENCODER.encode('0123456789abcdef');
 const CNAME_HOST_PREFIX = TEXT_ENCODER.encode('@pj');
 const CNAME_HOST_SUFFIX = TEXT_ENCODER.encode('.org');
-/** Feedback message types carried in the low 5 bits of the first PSFB byte. */
 const FMT_PICTURE_LOSS_INDICATION = 1;
 const FMT_FULL_INTRA_REQUEST = 4;
 const FMT_RECEIVER_ESTIMATED_MAX_BITRATE = 15;
@@ -91,14 +86,12 @@ const WA_VIDEO_PROFILE_BIT = 0x10;
  * a randomization the client was observed doing.
  */
 const REPORT_INTERVAL_JITTER = 0.1;
-/** Ticks one millisecond of a stream clock covers, the unit the rate divides by. */
 const TICKS_PER_MS = 1000;
 /**
  * Reported when the caller passes no statistics: no source identified and
  * nothing measured. Module scope keeps the default off the per-report path.
  */
 const NO_RECEPTION = { ssrc: 0 };
-/** Whether the caller passed several sources to report on or a single one. */
 function isReceptionList(reception) {
     return Array.isArray(reception);
 }
@@ -112,7 +105,6 @@ const SEQUENCE_WRAP_THRESHOLD = 0x8000;
 /** The loss fraction is an 8-bit field, so it scales by 256 and saturates at 255. */
 const FRACTION_LOST_SCALE = 256;
 const MAX_FRACTION_LOST = 255;
-/** Smoothing divisor of the jitter estimator of RFC 3550 appendix A.8. */
 const JITTER_GAIN = 16;
 /** The delay since the last sender report counts in units of 1/65536 second. */
 const DLSR_UNITS_PER_SECOND = 65536;
@@ -163,7 +155,6 @@ export class RtpStreamReception {
     constructor(clockRate) {
         this.clockRate = clockRate;
     }
-    /** SSRC the stream turned out to carry, or 0 before the first packet. */
     get sourceSsrc() {
         return this.stats.ssrc;
     }
@@ -286,7 +277,6 @@ export class RtpStreamReception {
                 : 0;
         return stats;
     }
-    /** Drops every statistic, as at the start of a call. */
     reset() {
         const stats = this.stats;
         stats.ssrc = 0;
@@ -355,7 +345,6 @@ export class RtpStreamReception {
         }
     }
 }
-/** `interval` spread over the jitter band, as the next interval to wait out. */
 function randomizeInterval(interval) {
     return Math.round(interval * (1 + REPORT_INTERVAL_JITTER * (Math.random() * 2 - 1)));
 }
@@ -399,7 +388,6 @@ export class SenderReportSchedule {
     static onMediaClock(intervalMs, clockRate) {
         return new SenderReportSchedule(intervalMs * (clockRate / TICKS_PER_MS));
     }
-    /** Schedule driven by elapsed wall time, the counter a video stream uses. */
     static onWallClock(intervalMs) {
         return new SenderReportSchedule(intervalMs);
     }
@@ -424,18 +412,12 @@ export class SenderReportSchedule {
         this.threshold = randomizeInterval(this.interval);
         return true;
     }
-    /** Drops the interval and redraws the threshold, as at the start of a call. */
     reset() {
         this.started = false;
         this.last = 0;
         this.threshold = randomizeInterval(this.interval);
     }
 }
-/**
- * One extended report block at `offset`: the six words of RFC 3550 section
- * 6.4.1 describing what this endpoint received from `reception.ssrc`, then the
- * two WhatsApp words that close every block.
- */
 function writeReportBlock(report, offset, reception, blockCounter) {
     const packetsLost = Math.max(MIN_PACKETS_LOST, Math.min(MAX_PACKETS_LOST, reception.packetsLost ?? 0));
     const extendedHighestSequence = (((reception.cycles ?? 0) & 0xffff) << 16) | ((reception.highestSequence ?? 0) & 0xffff);
@@ -598,21 +580,14 @@ export function buildFullIntraRequest(senderSsrc, mediaSsrc, sequenceNumber) {
     packet[16] = sequenceNumber & 0xff;
     return packet;
 }
-/** `REMB` in ASCII, the four bytes that open the FCI and identify the format. */
 const REMB_IDENTIFIER = 0x52454d42;
-/** Width of the bitrate mantissa. The exponent takes the 6 bits right above it. */
 const REMB_MANTISSA_BITS = 18;
 /** Largest representable mantissa, where it saturates and the exponent has to rise. */
 const REMB_MAX_MANTISSA = (1 << REMB_MANTISSA_BITS) - 1;
-/** Largest exponent the 6 bits of the field can represent. */
 const REMB_MAX_EXPONENT = 0x3f;
-/** Shift of the byte that counts the SSRCs, inside the word that carries the bitrate. */
 const REMB_SSRC_COUNT_SHIFT = 24;
-/** FCI of a REMB on one source: identifier, count, bitrate and the SSRC. */
 const REMB_FCI_LENGTH = 12;
-/** Where the count-plus-bitrate word starts inside the packet. */
 const REMB_BAND_OFFSET = 16;
-/** Where the listed SSRC starts inside the packet. */
 const REMB_SSRC_OFFSET = 20;
 const MS_PER_SECOND = 1000;
 const BITS_PER_OCTET = 8;

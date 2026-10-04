@@ -66,6 +66,7 @@ export const DEFAULT_CONNECTION_CONFIG = {
 	retryRequestDelayMs: 250,
 	maxMsgRetryCount: 5,
 	fireInitQueries: true,
+	disableStickyRouting: false,
 	auth: undefined,
 	markOnlineOnConnect: true,
 	syncFullHistory: true,

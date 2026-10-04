@@ -5,6 +5,7 @@ import { createLogger } from '../foundation/logger.js'
 import { md5, hkdf, LTHashAntiTampering } from '../foundation/wa-crypto.js'
 import { Boom } from '../foundation/boom.js'
 import { proto } from '../../WAProto/index.js'
+import { DisconnectReason } from '../constants.js'
 import {
 	getAllBinaryNodeChildren,
 	getBinaryNodeChild,
@@ -341,13 +342,23 @@ export const getStatusFromReceiptType = type => {
 	return status
 }
 
-const CODE_MAP = { conflict: 428 }
+const CODE_MAP = { conflict: DisconnectReason.connectionReplaced }
 
 export const getErrorCodeFromStreamError = node => {
 	const [reasonNode] = getAllBinaryNodeChildren(node)
 	let reason = reasonNode?.tag || 'unknown'
-	const statusCode = +(node.attrs.code || CODE_MAP[reason] || 500)
-	if (statusCode === 515) reason = 'restart required'
+	let statusCode = +(node.attrs.code || CODE_MAP[reason] || DisconnectReason.badSession)
+	// <conflict type="replaced"/> = sesi tergantikan koneksi lain (440, jangan reconnect otomatis).
+	// conflict dengan type lain = device dicabut dari ponsel -> sesi tidak valid lagi (401).
+	if (reason === 'conflict' && !node.attrs.code) {
+		if (reasonNode?.attrs?.type === 'replaced') {
+			statusCode = DisconnectReason.connectionReplaced
+		} else {
+			statusCode = DisconnectReason.loggedOut
+			reason = 'device removed'
+		}
+	}
+	if (statusCode === DisconnectReason.restartRequired) reason = 'restart required'
 	return { reason, statusCode }
 }
 
@@ -712,6 +723,7 @@ export const makeNoiseHandler = ({ keyPair: { private: privateKey, public: publi
 	let pendingOnFrame = null
 	let introHeader
 	let destroyed = false
+	let decodeChain = Promise.resolve()
 
 	const MAX_IN_BYTES = 10 * 1024 * 1024
 
@@ -768,18 +780,29 @@ export const makeNoiseHandler = ({ keyPair: { private: privateKey, public: publi
 	}
 	const processData = async onFrame => {
 		let size
-		while (true) {
+		while (!destroyed) {
 			if (inBytes.length < 3) return
 			size = (inBytes[0] << 16) | (inBytes[1] << 8) | inBytes[2]
 			if (inBytes.length < size + 3) return
 			let frame = inBytes.subarray(3, size + 3)
 			inBytes = inBytes.subarray(size + 3)
 			if (transport) {
-				const result = transport.decrypt(frame)
-				frame = await decodeBinaryNode(result)
+				const result = transport.decrypt(frame) // gagal decrypt = counter tidak sinkron lagi -> biarkan melempar (fatal)
+				try {
+					frame = await decodeBinaryNode(result)
+				} catch (err) {
+					logger.error({ err, size }, 'failed to decode frame, skipping')
+					continue
+				}
+				if (destroyed) return
 			}
 			if (logger.level === 'trace') logger.trace({ msg: frame?.attrs?.id }, 'recv frame')
-			onFrame(frame)
+			// listener sinkron yang melempar tidak boleh membuang sisa frame yang sudah terbaca dari buffer
+			try {
+				onFrame(frame)
+			} catch (err) {
+				logger.error({ err, id: frame?.attrs?.id, tag: frame?.tag }, 'frame handler threw')
+			}
 		}
 	}
 
@@ -833,21 +856,28 @@ export const makeNoiseHandler = ({ keyPair: { private: privateKey, public: publi
 			frame.set(data, introSize + 3)
 			return frame
 		},
-		decodeFrame: async (newData, onFrame) => {
-			if (destroyed) return
-			if (isWaitingForTransport) {
-				inBytes = Buffer.concat([inBytes, newData])
-				pendingOnFrame = onFrame
-			} else {
-				inBytes = inBytes.length === 0 ? Buffer.from(newData) : Buffer.concat([inBytes, newData])
+		decodeFrame: (newData, onFrame) => {
+			const run = async () => {
+				if (destroyed) return
+				if (isWaitingForTransport) {
+					inBytes = Buffer.concat([inBytes, newData])
+					pendingOnFrame = onFrame
+				} else {
+					inBytes = inBytes.length === 0 ? Buffer.from(newData) : Buffer.concat([inBytes, newData])
+				}
+				if (inBytes.length > MAX_IN_BYTES) {
+					logger.error({ bufferedBytes: inBytes.length, max: MAX_IN_BYTES }, 'noise handler inBytes buffer exceeded cap, clearing')
+					inBytes = Buffer.alloc(0)
+					pendingOnFrame = null
+					return
+				}
+				if (!isWaitingForTransport) await processData(onFrame)
 			}
-			if (inBytes.length > MAX_IN_BYTES) {
-				logger.error({ bufferedBytes: inBytes.length, max: MAX_IN_BYTES }, 'noise handler inBytes buffer exceeded cap, clearing')
-				inBytes = Buffer.alloc(0)
-				pendingOnFrame = null
-				return
-			}
-			if (!isWaitingForTransport) await processData(onFrame)
+			// rantai: tiap pemanggilan menunggu yang sebelumnya selesai; error tidak meracuni rantai,
+			// tapi tetap diteruntukkan ke pemanggil lewat promise yang dikembalikan
+			const result = decodeChain.then(run)
+			decodeChain = result.catch(() => {})
+			return result
 		},
 
 		destroy: () => {

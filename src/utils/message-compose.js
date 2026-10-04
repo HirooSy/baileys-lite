@@ -240,6 +240,8 @@ export const tokenizeCode = (code, language = 'javascript') => {
 	return blocks
 }
 
+const CODE_HIGHLIGHT_NAME = ['DEFAULT', 'KEYWORD', 'METHOD', 'STR', 'NUMBER', 'COMMENT']
+
 export const toUnified = (submessages, uuid) => ({
 	response_id: uuid || randomUUID(),
 	sections: submessages.map(submessage => {
@@ -250,7 +252,7 @@ export const toUnified = (submessages, uuid) => ({
 					view_model: {
 						primitive: {
 							language: codeMetadata.codeLanguage,
-							code_blocks: codeMetadata.codeBlocks.map(block => ({ content: block.codeContent, type: CodeHighlightType[block.highlightType] })),
+							code_blocks: codeMetadata.codeBlocks.map(block => ({ content: block.codeContent, type: CODE_HIGHLIGHT_NAME[block.highlightType] ?? 'DEFAULT' })),
 							__typename: 'GenAICodeUXPrimitive'
 						},
 						__typename: 'GenAISingleLayoutViewModel'
@@ -739,7 +741,6 @@ const prepareStickerPackMessage = async (message, options) => {
 	return WAProto.Message.StickerPackMessage.fromObject(obj)
 }
 
-// ---- nativeFlow widget (A2UI / bloksWidget) ----
 // Text inside a bloksWidget uses a system font without color-emoji glyphs, so icons
 // default to plain ASCII. `style: 'symbol'` uses simple unicode symbols instead.
 const WIDGET_ICON_ASCII = {
@@ -959,6 +960,22 @@ export const hasValidAlbumMedia = message => !!(message.imageMessage || message.
 export const hasValidInteractiveHeader = message =>
 	!!(message.imageMessage || message.videoMessage || message.documentMessage || message.productMessage || message.locationMessage)
 export const hasValidCarouselHeader = message => !!(message.imageMessage || message.videoMessage || message.productMessage)
+
+// Tempat contextInfo (mentions, externalAdReply, groupStatus, spoiler, contextInfo) untuk konten `m`.
+// Object.keys(m)[0] salah untuk pesan aiRich/richResponse: key pertamanya `messageContextInfo`, dan isi
+// sebenarnya terbungkus botForwardedMessage -> richResponseMessage (di situlah contextInfo dibaca klien).
+const getContextInfoHolder = m => {
+	const pick = obj => Object.keys(obj || {}).find(k => k !== 'messageContextInfo' && k !== 'senderKeyDistributionMessage')
+	const type = pick(m)
+	if (!type) return undefined
+	let holder = m[type]
+	if (type === 'botForwardedMessage' && holder?.message) {
+		const inner = holder.message
+		const innerType = pick(inner)
+		if (innerType && inner[innerType]) holder = inner[innerType]
+	}
+	return holder
+}
 
 export const generateWAMessageContent = async (message, options) => {
 	let m = {}
@@ -1241,7 +1258,8 @@ export const generateWAMessageContent = async (message, options) => {
 			hydratedTemplate.hydratedContentText = message.text
 		} else {
 			if (hasOptionalProperty(message, 'caption')) {
-				hydratedTemplate.hydratedTitleText = message.title
+				// oneof 'title': teks judul dan media header tidak boleh terisi bersamaan
+				if (!hasValidInteractiveHeader(m) && message.title) hydratedTemplate.hydratedTitleText = message.title
 				hydratedTemplate.hydratedContentText = message.caption
 			}
 			Object.assign(hydratedTemplate, m)
@@ -1259,14 +1277,16 @@ export const generateWAMessageContent = async (message, options) => {
 		if (hasOptionalProperty(message, 'text')) {
 			interactiveMessage.body = { text: message.text }
 		} else {
-			if (hasOptionalProperty(message, 'caption')) {
-				const isValidHeader = hasValidInteractiveHeader(m)
-				if (!isValidHeader) throw new Boom('Invalid media type for interactive message header', { statusCode: 400 })
-				interactiveMessage.header = { title: message.title || '', subtitle: message.subtitle || '', hasMediaAttachment: isValidHeader }
-				interactiveMessage.body = { text: message.caption }
+			const isValidHeader = hasValidInteractiveHeader(m)
+			if (!isValidHeader) {
+				if (hasOptionalProperty(message, 'caption')) throw new Boom('Invalid media type for interactive message header', { statusCode: 400 })
+				throw new Boom('nativeFlow needs `text`, or a media (image/video/document/location/product) with an optional `caption`', { statusCode: 400 })
 			}
-			if (hasOptionalProperty(message, 'thumbnail') && !!message.thumbnail) interactiveMessage.jpegThumbnail = message.thumbnail
+			// header media selalu dibuat, juga saat caption tidak diisi (sebelumnya: TypeError pada Object.assign(undefined, m))
+			interactiveMessage.header = { title: message.title || '', subtitle: message.subtitle || '', hasMediaAttachment: true }
 			Object.assign(interactiveMessage.header, m)
+			interactiveMessage.body = { text: hasOptionalProperty(message, 'caption') ? message.caption : '' }
+			if (hasOptionalProperty(message, 'thumbnail') && !!message.thumbnail) interactiveMessage.jpegThumbnail = message.thumbnail
 		}
 		if (hasOptionalProperty(message, 'audioFooter')) {
 			const { audioMessage } = await prepareWAMessageMedia({ audio: message.audioFooter }, options)
@@ -1283,19 +1303,26 @@ export const generateWAMessageContent = async (message, options) => {
 					message.cards.map(async card => {
 						let carouselHeader = {}
 						if (hasNonNullishProperty(card, 'product')) carouselHeader.productMessage = await prepareProductMessage(card, options)
-						else carouselHeader = await prepareWAMessageMedia(card, options).catch(() => ({}))
+						else {
+							try {
+								carouselHeader = await prepareWAMessageMedia(card, options)
+							} catch (err) {
+								// kalau card memang membawa media, error upload/baca file harus sampai ke pemanggil, bukan tersamar jadi "Invalid media type"
+								if (card.image || card.video) throw err
+								carouselHeader = {}
+							}
+						}
 						const isValidHeader = hasValidCarouselHeader(carouselHeader)
 						if (!isValidHeader) throw new Boom('Invalid media type for carousel card', { statusCode: 400 })
-						const carouselCard = { nativeFlowMessage: prepareNativeFlowButtons(card.nativeFlow ? card : []) }
+						const carouselCard = { nativeFlowMessage: prepareNativeFlowButtons(card.nativeFlow ? card : { nativeFlow: [] }) }
+						// header media wajib ada di setiap card (dulu hilang kalau card memakai `text`, dan TypeError kalau tanpa `caption`)
+						carouselCard.header = { title: card.title || '', subtitle: card.subtitle || '', hasMediaAttachment: true }
+						Object.assign(carouselCard.header, carouselHeader)
 						if (hasOptionalProperty(card, 'text')) {
 							carouselCard.body = { text: card.text }
 						} else {
-							if (hasOptionalProperty(card, 'caption')) {
-								carouselCard.header = { title: card.title || '', subtitle: card.subtitle || '', hasMediaAttachment: isValidHeader }
-								carouselCard.body = { text: card.caption }
-							}
+							if (hasOptionalProperty(card, 'caption')) carouselCard.body = { text: card.caption }
 							if (hasOptionalProperty(card, 'thumbnail') && !!card.thumbnail) carouselCard.jpegThumbnail = card.thumbnail
-							Object.assign(carouselCard.header, carouselHeader)
 						}
 						if (hasOptionalProperty(card, 'audioFooter')) {
 							const { audioMessage } = await prepareWAMessageMedia({ audio: card.audioFooter }, options)
@@ -1353,8 +1380,7 @@ export const generateWAMessageContent = async (message, options) => {
 	}
 
 	if (hasOptionalProperty(message, 'externalAdReply') && !!message.externalAdReply) {
-		const messageType = Object.keys(m)[0]
-		const key = m[messageType]
+		const key = getContextInfoHolder(m)
 		const content = message.externalAdReply
 		if ('thumbnail' in content && !Buffer.isBuffer(content.thumbnail)) throw new Boom('Thumbnail must in buffer type', { statusCode: 400 })
 		if (content.url != null && typeof content.url !== 'string') throw new Boom('externalAdReply.url must be a string', { statusCode: 400 })
@@ -1372,12 +1398,11 @@ export const generateWAMessageContent = async (message, options) => {
 		delete externalAdReply.subTitle
 		delete externalAdReply.largeThumbnail
 		delete externalAdReply.url
-		if ('contextInfo' in key && !!key.contextInfo) key.contextInfo.externalAdReply = { ...key.contextInfo.externalAdReply, ...externalAdReply }
+		if (key && 'contextInfo' in key && !!key.contextInfo) key.contextInfo.externalAdReply = { ...key.contextInfo.externalAdReply, ...externalAdReply }
 		else if (key) key.contextInfo = { externalAdReply }
 	}
 	if ((hasOptionalProperty(message, 'mentions') && message.mentions?.length) || (hasOptionalProperty(message, 'mentionAll') && message.mentionAll)) {
-		const messageType = Object.keys(m)[0]
-		const key = m[messageType]
+		const key = getContextInfoHolder(m)
 		if (key && 'contextInfo' in key) {
 			key.contextInfo = key.contextInfo || {}
 			if (message.mentions?.length) key.contextInfo.mentionedJid = message.mentions
@@ -1387,23 +1412,20 @@ export const generateWAMessageContent = async (message, options) => {
 		}
 	}
 	if (hasOptionalProperty(message, 'contextInfo') && !!message.contextInfo) {
-		const messageType = Object.keys(m)[0]
-		const key = m[messageType]
-		if ('contextInfo' in key && !!key.contextInfo) key.contextInfo = { ...key.contextInfo, ...message.contextInfo }
+		const key = getContextInfoHolder(m)
+		if (key && 'contextInfo' in key && !!key.contextInfo) key.contextInfo = { ...key.contextInfo, ...message.contextInfo }
 		else if (key) key.contextInfo = message.contextInfo
 	}
 	if (hasOptionalProperty(message, 'groupStatus') && !!message.groupStatus) {
-		const messageType = Object.keys(m)[0]
-		const key = m[messageType]
-		if ('contextInfo' in key && !!key.contextInfo) key.contextInfo.isGroupStatus = message.groupStatus
+		const key = getContextInfoHolder(m)
+		if (key && 'contextInfo' in key && !!key.contextInfo) key.contextInfo.isGroupStatus = message.groupStatus
 		else if (key) key.contextInfo = { isGroupStatus: message.groupStatus }
 		m = { groupStatusMessageV2: { message: m } }
 		delete message.groupStatus
 	}
 	if (hasOptionalProperty(message, 'spoiler') && !!message.spoiler) {
-		const messageType = Object.keys(m)[0]
-		const key = m[messageType]
-		if ('contextInfo' in key && !!key.contextInfo) key.contextInfo.isSpoiler = message.spoiler
+		const key = getContextInfoHolder(m)
+		if (key && 'contextInfo' in key && !!key.contextInfo) key.contextInfo.isSpoiler = message.spoiler
 		else if (key) key.contextInfo = { isSpoiler: message.spoiler }
 		m = { spoilerMessage: { message: m } }
 		delete message.spoiler
@@ -1705,6 +1727,6 @@ const isWebPBuffer = buffer =>
 	buffer[11] === 0x50
 
 export const shouldIncludeBizBinaryNode = message =>
-	!!(message.buttonsMessage || message.listMessage || message.templateMessage || (message.interactiveMessage && message.interactiveMessage.nativeFlowMessage))
+	!!(message.buttonsMessage || message.listMessage || message.templateMessage || (message.interactiveMessage && (message.interactiveMessage.nativeFlowMessage || message.interactiveMessage.carouselMessage)))
 
 export { AssociationType }

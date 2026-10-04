@@ -1272,7 +1272,8 @@ export const makeMessagesRecvSocket = (config) => {
             ]);
         }
         finally {
-            await sendMessageAck(node).catch(ackErr => logger.error({ ackErr }, 'failed to ack receipt'));
+            if (!node[Symbol.for('baileys.ackedByVoip')])
+                await sendMessageAck(node).catch(ackErr => logger.error({ ackErr }, 'failed to ack receipt'));
         }
     };
     const handleNotification = async (node) => {
@@ -1526,7 +1527,8 @@ export const makeMessagesRecvSocket = (config) => {
             logger.error({ error, node: binaryNodeToString(node) }, 'error in handling call');
         }
         finally {
-            await sendMessageAck(node).catch(ackErr => logger.error({ ackErr }, 'failed to ack call'));
+            if (!node[Symbol.for('baileys.ackedByVoip')])
+                await sendMessageAck(node).catch(ackErr => logger.error({ ackErr }, 'failed to ack call'));
         }
     };
     const handleBadAck = async ({ attrs }) => {

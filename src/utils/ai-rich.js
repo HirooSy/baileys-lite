@@ -244,7 +244,7 @@ export class AIRichBuilder {
 	addText(text, { hyperlink = true, citation = true, latex = true } = {}) {
 		if (typeof text !== 'string') throw new TypeError('Text must be a string')
 		const { text: extractedText, inline_entities } = extractInlineEntities(text, { hyperlink, citation, latex })
-		this._submessages.push({ messageType: 2, messageText: extractedText, inlineEntities: inline_entities })
+		this._submessages.push({ messageType: 2, messageText: extractedText })
 		this._sections.push(newLayout('Single', { text: extractedText, ...(inline_entities.length ? { inline_entities } : {}), __typename: 'GenAIMarkdownTextUXPrimitive' }))
 		return this
 	}
@@ -370,7 +370,7 @@ export class AIRichBuilder {
 			contentItemsMetadata: { contentType: 1, itemsMetadata: reels.map(item => ({ reelItem: { title: item.username ?? '', profileIconUrl: item._avatar, thumbnailUrl: item._thumbnail, videoUrl: item.videoUrl ?? item.url ?? '' } })) }
 		})
 		reels.forEach((item, idx) =>
-			this._richResponseSources.push({ provider: '', thumbnailCDNURL: item._thumbnail, sourceProviderURL: item.videoUrl ?? item.url ?? '', sourceQuery: '', faviconCDNURL: item._avatar, citationNumber: idx + 1, sourceTitle: item.username ?? '' })
+			this._richResponseSources.push({ thumbnailCdnUrl: item._thumbnail, sourceProviderUrl: item.videoUrl ?? item.url ?? '', sourceQuery: '', faviconCdnUrl: item._avatar, citationNumber: idx + 1, sourceTitle: item.username ?? '' })
 		)
 		this._sections.push(
 			newLayout(
