@@ -59,6 +59,10 @@ export const executeWMexQuery = async (variables, queryId, dataPath, query, gene
 	throw new Boom(`Failed to ${action}, unexpected response structure.`, { statusCode: 400, data: result })
 }
 
+// requestPairingCode() menaruh me = { id, name: '~' } sebagai penanda sementara; pair-success menggantinya dengan identitas asli
+// sekaligus mengisi creds.account. Selama account belum ada, me itu hanyalah sisa pairing yang belum selesai.
+const isUnfinishedPairing = creds => creds?.me?.name === '~' && !creds.account
+
 export const makeSocket = config => {
 	const { waWebSocketUrl, connectTimeoutMs, logger, keepAliveIntervalMs, browser, auth: authState, printQRInTerminal, defaultQueryTimeoutMs, transactionOpts, qrTimeout, makeSignalRepository } = config
 	const publicWAMBuffer = new BinaryInfo()
@@ -282,6 +286,15 @@ export const makeSocket = config => {
 
 	const ev = makeEventBuffer(logger)
 	const { creds } = authState
+
+	// Sisa pairing yang tidak pernah selesai bukan sesi login: requestPairingCode() mengisi creds.me sementara (name '~')
+	// dan itu ikut tersimpan. Kalau dibiarkan, validateConnection() mengirim LOGIN untuk nomor yang belum terdaftar,
+	// server membalas 401 (loggedOut) dan sesi macet selamanya tanpa pernah meminta pairing lagi.
+	if (isUnfinishedPairing(creds)) {
+		logger.info({ me: creds.me?.id }, 'discarding unfinished pairing state from a previous attempt')
+		creds.me = undefined
+		creds.registered = false
+	}
 
 	const keys = addTransactionCapability(authState.keys, logger, transactionOpts)
 	const signalRepository = makeSignalRepository({ creds, keys }, logger, pnFromLIDUSync)
@@ -510,47 +523,69 @@ export const makeSocket = config => {
 
 	let consecutivePingFailures = 0
 	const MAX_PING_FAILURES = 3
-	const startKeepAliveRequest = () =>
-		(keepAliveReq = setInterval(() => {
+	const runKeepAliveCheck = () => {
+		if (closed) return
+		if (!lastDateRecv) lastDateRecv = new Date()
+		const diff = Date.now() - lastDateRecv.getTime()
+
+		if (diff > keepAliveIntervalMs * 2 + 5000) {
+			logger.warn({ diff, keepAliveIntervalMs }, 'connection silent for too long')
+			void end(new Boom('Connection was lost', { statusCode: DisconnectReason.connectionLost }))
+			return
+		}
+		if (!ws.isOpen) {
+			logger.warn('keep alive called when WS not open')
+			return
+		}
+		if (keepAliveInFlight) {
+			logger.trace('keep alive skipped: ping already in flight')
+			return
+		}
+
+		if (diff < keepAliveIntervalMs / 2) {
+			logger.trace('keep alive skipped: recent inbound activity', { diff })
+			return
+		}
+		keepAliveInFlight = true
+		query({ tag: 'iq', attrs: { id: generateMessageTag(), to: S_WHATSAPP_NET, type: 'get', xmlns: 'w:p' }, content: [{ tag: 'ping', attrs: {} }] }, keepAliveIntervalMs)
+			.then(() => {
+
+				consecutivePingFailures = 0
+			})
+			.catch(err => {
+				consecutivePingFailures++
+				logger.warn({ trace: err.stack, consecutivePingFailures, maxFailures: MAX_PING_FAILURES }, 'keep alive ping failed')
+				if (consecutivePingFailures >= MAX_PING_FAILURES) {
+					logger.warn('max ping failures reached, closing connection')
+					void end(new Boom('Connection was lost (ping failures)', { statusCode: DisconnectReason.connectionLost, data: { cause: err } }))
+				}
+			})
+			.finally(() => {
+				keepAliveInFlight = false
+			})
+	}
+
+	// Timer yang telat lebih dari ini berarti event loop sempat macet, bukan jaringan yang diam.
+	const KEEPALIVE_STALL_TOLERANCE_MS = 1000
+	let lastKeepAliveTick = 0
+	const startKeepAliveRequest = () => {
+		lastKeepAliveTick = Date.now()
+		keepAliveReq = setInterval(() => {
+			const now = Date.now()
+			const stalledMs = Math.max(0, now - lastKeepAliveTick - keepAliveIntervalMs)
+			lastKeepAliveTick = now
 			if (!lastDateRecv) lastDateRecv = new Date()
-			const diff = Date.now() - lastDateRecv.getTime()
-
-			if (diff > keepAliveIntervalMs * 2 + 5000) {
-				logger.warn({ diff, keepAliveIntervalMs }, 'connection silent for too long')
-				void end(new Boom('Connection was lost', { statusCode: DisconnectReason.connectionLost }))
-				return
+			if (stalledMs > KEEPALIVE_STALL_TOLERANCE_MS) {
+				// Event loop sempat macet (mis. penulisan DB sinkron saat login pertama: ratusan pre-key + sync awal).
+				// Selama macet frame dari server tidak bisa dibaca, jadi lamanya macet tidak boleh dihitung sebagai "server diam";
+				// kalau dihitung, koneksi yang sehat diputus dengan "Connection was lost" (408) begitu loop bebas lagi.
+				lastDateRecv = new Date(Math.min(now, lastDateRecv.getTime() + stalledMs))
+				logger.warn({ stalledMs, keepAliveIntervalMs }, 'event loop was blocked, keep-alive silence window shifted')
 			}
-			if (!ws.isOpen) {
-				logger.warn('keep alive called when WS not open')
-				return
-			}
-			if (keepAliveInFlight) {
-				logger.trace('keep alive skipped: ping already in flight')
-				return
-			}
-
-			if (diff < keepAliveIntervalMs / 2) {
-				logger.trace('keep alive skipped: recent inbound activity', { diff })
-				return
-			}
-			keepAliveInFlight = true
-			query({ tag: 'iq', attrs: { id: generateMessageTag(), to: S_WHATSAPP_NET, type: 'get', xmlns: 'w:p' }, content: [{ tag: 'ping', attrs: {} }] }, keepAliveIntervalMs)
-				.then(() => {
-
-					consecutivePingFailures = 0
-				})
-				.catch(err => {
-					consecutivePingFailures++
-					logger.warn({ trace: err.stack, consecutivePingFailures, maxFailures: MAX_PING_FAILURES }, 'keep alive ping failed')
-					if (consecutivePingFailures >= MAX_PING_FAILURES) {
-						logger.warn('max ping failures reached, closing connection')
-						void end(new Boom('Connection was lost (ping failures)', { statusCode: DisconnectReason.connectionLost, data: { cause: err } }))
-					}
-				})
-				.finally(() => {
-					keepAliveInFlight = false
-				})
-		}, keepAliveIntervalMs))
+			// Penilaian ditunda ke fase check supaya frame yang sudah menumpuk di socket terbaca (fase poll) lebih dulu.
+			setImmediate(runKeepAliveCheck)
+		}, keepAliveIntervalMs)
+	}
 
 	const sendPassiveIq = tag => query({ tag: 'iq', attrs: { to: S_WHATSAPP_NET, xmlns: 'passive', type: 'set' }, content: [{ tag, attrs: {} }] })
 
@@ -569,27 +604,44 @@ export const makeSocket = config => {
 	const requestPairingCode = async (phoneNumber, customPairingCode) => {
 		const customCode = customPairingCode == null ? '' : String(customPairingCode)
 		if (customCode && customCode.length !== 8) throw new Error('Custom pairing code must be exactly 8 characters')
+		// "+62 812-3456-7890" / "0812..." dll: jid hanya boleh berisi digit nomor internasional
+		const phone = String(phoneNumber ?? '').replace(/\D/g, '')
+		if (phone.length < 7 || phone.length > 15) throw new Error('Invalid phone number: use the international format, digits only (e.g. 6281234567890)')
+		if (authState.creds.account) throw new Boom('Session is already paired, log out before requesting a new pairing code', { statusCode: 400 })
+		// Socket yang sudah mati (mis. user terlalu lama mengetik nomor sampai refs QR habis & koneksi ditutup) tidak boleh
+		// menyentuh creds: creds.me sementara yang ikut tersimpan membuat start berikutnya LOGIN dan ditolak 401.
+		if (closed || !ws.isOpen) throw new Boom('Connection Closed', { statusCode: DisconnectReason.connectionClosed })
+
+		const previous = { me: authState.creds.me, pairingCode: authState.creds.pairingCode }
 		const pairingCode = customCode || bytesToCrockford(randomBytes(5))
 		authState.creds.pairingCode = pairingCode
-		authState.creds.me = { id: jidEncode(phoneNumber, 's.whatsapp.net'), name: '~' }
+		authState.creds.me = { id: jidEncode(phone, 's.whatsapp.net'), name: '~' }
 		ev.emit('creds.update', authState.creds)
-		await sendNode({
-			tag: 'iq',
-			attrs: { to: S_WHATSAPP_NET, type: 'set', id: generateMessageTag(), xmlns: 'md' },
-			content: [
-				{
-					tag: 'link_code_companion_reg',
-					attrs: { jid: authState.creds.me.id, stage: 'companion_hello', should_show_push_notification: 'true' },
-					content: [
-						{ tag: 'link_code_pairing_wrapped_companion_ephemeral_pub', attrs: {}, content: await generatePairingKey() },
-						{ tag: 'companion_server_auth_key_pub', attrs: {}, content: authState.creds.noiseKey.public },
-						{ tag: 'companion_platform_id', attrs: {}, content: getCompanionPlatformId(browser) },
-						{ tag: 'companion_platform_display', attrs: {}, content: `${browser[1]} (${browser[0]})` },
-						{ tag: 'link_code_pairing_nonce', attrs: {}, content: '0' }
-					]
-				}
-			]
-		})
+		try {
+			await sendNode({
+				tag: 'iq',
+				attrs: { to: S_WHATSAPP_NET, type: 'set', id: generateMessageTag(), xmlns: 'md' },
+				content: [
+					{
+						tag: 'link_code_companion_reg',
+						attrs: { jid: authState.creds.me.id, stage: 'companion_hello', should_show_push_notification: 'true' },
+						content: [
+							{ tag: 'link_code_pairing_wrapped_companion_ephemeral_pub', attrs: {}, content: await generatePairingKey() },
+							{ tag: 'companion_server_auth_key_pub', attrs: {}, content: authState.creds.noiseKey.public },
+							{ tag: 'companion_platform_id', attrs: {}, content: getCompanionPlatformId(browser) },
+							{ tag: 'companion_platform_display', attrs: {}, content: `${browser[1]} (${browser[0]})` },
+							{ tag: 'link_code_pairing_nonce', attrs: {}, content: '0' }
+						]
+					}
+				]
+			})
+		} catch (error) {
+			// permintaan tidak sampai ke server: kembalikan creds seperti sebelum dipanggil
+			authState.creds.me = previous.me
+			authState.creds.pairingCode = previous.pairingCode
+			ev.emit('creds.update', authState.creds)
+			throw error
+		}
 		return authState.creds.pairingCode
 	}
 
