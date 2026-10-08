@@ -243,7 +243,24 @@ export const makeNewsletterSocket = config => {
 			return parseNewsletterCreateResponse(rawResponse)
 		},
 		newsletterUpdate,
-		newsletterSubscribers: async jid => executeWMexQuery({ newsletter_id: jid }, QueryIds.SUBSCRIBERS, XWAPaths.xwa2_newsletter_subscribers),
+		newsletterFollowers: async (jid, count = 100) => executeWMexQuery({ input: { newsletter_id: jid, count } }, QueryIds.FOLLOWERS, XWAPaths.xwa2_newsletter_followers),
+		newsletterSubscribers: async (jid, count = 100) => {
+			const response = await executeWMexQuery({ input: { newsletter_id: jid, count } }, QueryIds.FOLLOWERS, XWAPaths.xwa2_newsletter_followers)
+			return (response?.followers?.edges ?? []).map(edge => ({
+				id: edge?.node?.id,
+				phoneNumber: edge?.node?.pn,
+				displayName: edge?.node?.display_name,
+				username: edge?.node?.username_info?.username,
+				role: edge?.role,
+				followTime: edge?.follow_time
+			}))
+		},
+		newsletterInsights: async (jid, metrics = ['NET_FOLLOWS', 'UNFOLLOWS']) => executeWMexQuery({ input: { newsletter_id: jid, metrics } }, QueryIds.INSIGHTS, XWAPaths.xwa2_newsletter_admin_insights),
+		newsletterAdminInfo: async jid => executeWMexQuery({ newsletter_id: jid }, QueryIds.ADMIN_INFO, XWAPaths.xwa2_newsletter_admin_count),
+		newsletterPendingAdminInvites: async jid => {
+			const response = await executeWMexQuery({ newsletter_id: jid }, QueryIds.PENDING_ADMIN_INVITES, XWAPaths.xwa2_newsletter_admin_count)
+			return (response?.pending_admin_invites ?? []).map(invite => ({ id: invite?.user?.id, phoneNumber: invite?.user?.pn }))
+		},
 		newsletterSubscribed: async () => executeWMexQuery({}, QueryIds.SUBSCRIBED, XWAPaths.xwa2_newsletter_subscribed),
 		newsletterMetadata: async (type, key) => {
 			const variables = { fetch_creation_time: true, fetch_full_image: true, fetch_viewer_metadata: true, input: { key, type: type.toUpperCase() } }

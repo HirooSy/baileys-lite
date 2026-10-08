@@ -23,7 +23,8 @@ export const LabelAssociationType = { Chat: 'label_jid', Message: 'label_message
 
 export const XWAPaths = {
 	xwa2_newsletter_create: 'xwa2_newsletter_create',
-	xwa2_newsletter_subscribers: 'xwa2_newsletter_subscribers',
+	xwa2_newsletter_followers: 'xwa2_newsletter_followers',
+	xwa2_newsletter_admin_insights: 'xwa2_newsletter_admin_insights',
 	xwa2_newsletter_subscribed: 'xwa2_newsletter_subscribed',
 	xwa2_newsletter_view: 'xwa2_newsletter_view',
 	xwa2_newsletter_metadata: 'xwa2_newsletter',
@@ -45,7 +46,10 @@ export const QueryIds = {
 	CREATE: '8823471724422422',
 	UPDATE_METADATA: '24250201037901610',
 	METADATA: '6563316087068696',
-	SUBSCRIBERS: '9783111038412085',
+	PENDING_ADMIN_INVITES: '9783111038412085',
+	FOLLOWERS: '27472091235714801',
+	INSIGHTS: '9853618868050977',
+	ADMIN_INFO: '26278439461859188',
 	SUBSCRIBED: '6388546374527196',
 	FOLLOW: '24404358912487870',
 	UNFOLLOW: '9767147403369991',
