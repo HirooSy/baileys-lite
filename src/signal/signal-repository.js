@@ -7,7 +7,7 @@ import { SenderKeyName, SenderKeyRecord, GroupCipher, GroupSessionBuilder, Sende
 
 export class LIDMappingStore {
 	constructor(keys, logger, pnToLIDFunc) {
-		this.mappingCache = new Cache({ ttl: 3 * 24 * 60 * 60 * 1000, updateAgeOnGet: true })
+		this.mappingCache = new Cache({ ttl: 3 * 24 * 60 * 60 * 1000, max: 10000, updateAgeOnGet: true })
 		this.inflightLIDLookups = new Map()
 		this.inflightPNLookups = new Map()
 		this.keys = keys
