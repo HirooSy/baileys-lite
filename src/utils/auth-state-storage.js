@@ -1,4 +1,3 @@
-import { DatabaseSync } from 'node:sqlite'
 import { mkdir, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { proto } from '../../WAProto/index.js'
@@ -6,6 +5,7 @@ import { initAuthCreds } from './auth-state-core.js'
 import { BufferJSON } from './wa-protocol-core.js'
 import { Cache } from '../foundation/cache.js'
 import { makeKeyedMutex } from '../foundation/concurrency.js'
+import { SqlDatabase } from '../foundation/sql-database.js'
 
 export const useMultiFileAuthState = async folder => {
 	const fileLock = makeKeyedMutex()
@@ -214,7 +214,7 @@ CREATE INDEX IF NOT EXISTS signal_keys_type_idx ON signal_keys(type);
 `
 
 export async function useSqliteAuthState(opts) {
-	const rawDb = opts.database ?? new DatabaseSync(opts.dbPath)
+	const rawDb = opts.database ?? new SqlDatabase(opts.dbPath)
 	const { db, pragma, transaction } = adaptDb(rawDb)
 
 	pragma('journal_mode = WAL')

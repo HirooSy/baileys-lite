@@ -1,5 +1,9 @@
 import { EventEmitter } from 'node:events'
 import { DEFAULT_ORIGIN } from '../defaults.js'
+import { NativeWebSocket } from './native-websocket.js'
+
+const WebSocketImpl = globalThis.WebSocket ?? NativeWebSocket
+const usingNativeWebSocket = WebSocketImpl === NativeWebSocket
 
 let h1Dispatcher
 let h1DispatcherTried = false
@@ -42,19 +46,19 @@ export class WebSocketClient extends AbstractSocketClient {
 	}
 
 	get isOpen() {
-		return this.socket?.readyState === WebSocket.OPEN
+		return this.socket?.readyState === WebSocketImpl.OPEN
 	}
 
 	get isClosed() {
-		return this.socket === null || this.socket?.readyState === WebSocket.CLOSED
+		return this.socket === null || this.socket?.readyState === WebSocketImpl.CLOSED
 	}
 
 	get isClosing() {
-		return this.socket === null || this.socket?.readyState === WebSocket.CLOSING
+		return this.socket === null || this.socket?.readyState === WebSocketImpl.CLOSING
 	}
 
 	get isConnecting() {
-		return this.socket?.readyState === WebSocket.CONNECTING
+		return this.socket?.readyState === WebSocketImpl.CONNECTING
 	}
 
 	connect() {
@@ -62,20 +66,24 @@ export class WebSocketClient extends AbstractSocketClient {
 
 		const { options, connectTimeoutMs, dispatcher } = this.config || {}
 		const wsOptions = { headers: { Origin: DEFAULT_ORIGIN, ...(options?.headers || {}) } }
-		const h1 = dispatcher || getH1Dispatcher(this.config?.logger)
-		if (h1) wsOptions.dispatcher = h1
+		if (usingNativeWebSocket) {
+			if (dispatcher) this.config?.logger?.warn?.('`dispatcher` is ignored by the built-in WebSocket fallback; proxies are not applied')
+		} else {
+			const h1 = dispatcher || getH1Dispatcher(this.config?.logger)
+			if (h1) wsOptions.dispatcher = h1
+		}
 		if (this.config?.agent) {
-			this.config.logger?.warn?.('`agent` is not supported by the native WebSocket; pass an undici `dispatcher` (e.g. ProxyAgent) instead')
+			this.config.logger?.warn?.('`agent` is not supported by the WebSocket client; pass an undici `dispatcher` (e.g. ProxyAgent) on Node.js 22+ instead')
 		}
 
-		const socket = new WebSocket(this.url, wsOptions)
+		const socket = new WebSocketImpl(this.url, wsOptions)
 		this.socket = socket
 		socket.binaryType = 'arraybuffer'
 
 		let handshakeTimer
 		if (connectTimeoutMs > 0) {
 			handshakeTimer = setTimeout(() => {
-				if (socket.readyState === WebSocket.CONNECTING) {
+				if (socket.readyState === WebSocketImpl.CONNECTING) {
 
 					socket.onopen = null
 					socket.onmessage = null
@@ -113,12 +121,12 @@ export class WebSocketClient extends AbstractSocketClient {
 	async close() {
 		const socket = this.socket
 		if (!socket) return
-		if (socket.readyState === WebSocket.CLOSED) {
+		if (socket.readyState === WebSocketImpl.CLOSED) {
 			this.socket = null
 			return
 		}
 
-		if (socket.readyState === WebSocket.CONNECTING) {
+		if (socket.readyState === WebSocketImpl.CONNECTING) {
 			socket.onopen = null
 			socket.onmessage = null
 			socket.onerror = () => {}
@@ -145,7 +153,7 @@ export class WebSocketClient extends AbstractSocketClient {
 
 	send(str, cb) {
 		const socket = this.socket
-		if (!socket || socket.readyState !== WebSocket.OPEN) {
+		if (!socket || socket.readyState !== WebSocketImpl.OPEN) {
 			cb?.(new Error('WebSocket is not open'))
 			return false
 		}

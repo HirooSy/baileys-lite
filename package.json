@@ -1,7 +1,7 @@
 {
   "name": "@hiroosy/baileys-lite",
-  "version": "0.2.7",
-  "description": "A Lightweight Baileys built with NodeJs 22+",
+  "version": "0.2.8",
+  "description": "A Lightweight Baileys built with NodeJs 18+",
   "repository": {
     "type": "git",
     "url": "https://github.com/HirooSy/baileys-lite.git"
@@ -27,6 +27,6 @@
     "preinstall": "node ./engine-requirements.js"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=18.0.0"
   }
 }

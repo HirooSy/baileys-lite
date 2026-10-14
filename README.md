@@ -3,7 +3,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/@hiroosy/baileys-lite"><img height="25" alt="npm version" src="https://img.shields.io/npm/v/@hiroosy/baileys-lite?color=CB3837&style=for-the-badge&logo=npm" /></a>
   <a href="https://www.npmjs.com/package/@hiroosy/baileys-lite"><img height="25" alt="npm package size" src="https://img.shields.io/npm/unpacked-size/@hiroosy/baileys-lite?label=size&color=2F855A&style=for-the-badge&logo=npm" /></a>
-  <img height="25" alt="node version" src="https://img.shields.io/badge/NodeJS_>=22-000000.svg?&style=for-the-badge&logo=node.js&logoColor=green" />
+  <img height="25" alt="node version" src="https://img.shields.io/badge/NodeJS_>=18-000000.svg?&style=for-the-badge&logo=node.js&logoColor=green" />
 </p>
 
 **High-Performance Javascript Baileys**, built for high-scalability workloads, multi-session operation, and full user configurability.
@@ -18,7 +18,7 @@
 
 ## Install
 
-Needs **Node.js 22+** and FFmpeg. Calls also need `ffprobe` in `PATH`. No native or WebRTC dependencies are required.
+Needs **Node.js 18+** and FFmpeg. Calls also need `ffprobe` in `PATH`. No native or WebRTC dependencies are required.
 
 ```bash
 npm install @hiroosy/baileys-lite
@@ -124,7 +124,7 @@ import { useMultiFileAuthState, useSingleFileAuthState, useSqliteAuthState } fro
 
 const a = await useMultiFileAuthState('./session')             // one file per key
 const b = await useSingleFileAuthState('./session.json')       // one file, flushed in batches
-const c = await useSqliteAuthState({ dbPath: './session.db' }) // SQLite, best for many sessions
+const c = await useSqliteAuthState({ dbPath: './session.db' }) // native SQL store, best for many sessions
 ```
 
 </details>
