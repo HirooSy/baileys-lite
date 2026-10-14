@@ -1,4 +1,5 @@
-import { deflateRawSync, crc32 } from 'node:zlib'
+import { deflateRawSync } from 'node:zlib'
+import * as zlib from 'node:zlib'
 
 function dosDateTime(date = new Date()) {
 	const dosTime = (date.getHours() << 11) | (date.getMinutes() << 5) | (date.getSeconds() >> 1)
@@ -8,7 +9,7 @@ function dosDateTime(date = new Date()) {
 
 function crc32Of(buf) {
 
-	if (typeof crc32 === 'function') return crc32(buf) >>> 0
+	if (typeof zlib.crc32 === 'function') return zlib.crc32(buf) >>> 0
 	return crc32Fallback(buf)
 }
 
