@@ -1,7 +1,8 @@
 import { appendFileSync, existsSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
 
 const MAGIC = '{"nsql":1}'
-const COMPACT_MIN_BYTES = 1024 * 1024
+const COMPACT_MIN_BYTES = 256 * 1024
+const COMPACT_GROWTH_RATIO = 0.5
 const CONTROL = new Set(['begin', 'commit', 'rollback'])
 const TOKEN = /\s+|'((?:[^']|'')*)'|"([^"]*)"|`([^`]*)`|\[([^\]]*)\]|(\d+\.?\d*(?:[eE][+-]?\d+)?|\.\d+(?:[eE][+-]?\d+)?)|([A-Za-z_]\w*)|([(),;=?*.-])/y
 
@@ -15,6 +16,8 @@ class SqlError extends Error {
 const lower = name => name.toLowerCase()
 
 const keyOf = (table, row) => JSON.stringify(table.pk.map(i => row[i]))
+
+const sameRow = (a, b) => a.length === b.length && a.every((v, i) => v === b[i])
 
 const bind = (count, params) => {
 	if (params.length !== count) throw new SqlError(`expected ${count} parameters, got ${params.length}`)
@@ -361,7 +364,7 @@ export class SqlDatabase {
 		const values = bind(stmt.paramCount, params)
 		return this.#statement(() => {
 			const result = this.#execute(stmt, values)
-			if (stmt.write && result.changes) this.#pending.push([stmt.text, values])
+			if (stmt.write && result.changes && !result.noop) this.#pending.push([stmt.text, values])
 			return result
 		})
 	}
@@ -533,6 +536,7 @@ export class SqlDatabase {
 		if (action === 'nothing') return { changes: 0, rows: [] }
 		if (action === 'update') return this.#upsertConflict(table, rowKey, existing, stmt.onConflict.sets, row, params)
 		if (stmt.replace) {
+			if (sameRow(existing, row)) return { changes: 1, rows: [], noop: true }
 			this.#storeRow(table, rowKey, row)
 			return { changes: 1, rows: [] }
 		}
@@ -548,6 +552,8 @@ export class SqlDatabase {
 		}
 		if (table.pk.some(i => next[i] !== existing[i])) throw new SqlError('primary key cannot be changed on conflict')
 		this.#checkNotNull(table, next)
+		// rewriting identical data (e.g. saveCreds with unchanged creds) must not grow the log
+		if (sameRow(existing, next)) return { changes: 1, rows: [], noop: true }
 		this.#storeRow(table, rowKey, next)
 		return { changes: 1, rows: [] }
 	}
@@ -653,8 +659,13 @@ export class SqlDatabase {
 		for (const line of lines.slice(1)) this.#replay(line)
 		this.#path = path
 		this.#logBytes = this.#baseBytes = Buffer.byteLength(text)
-		if (fresh) writeFileSync(path, text)
-		else if (tail !== '') this.#compact()
+		if (fresh) {
+			writeFileSync(path, text)
+		} else if (tail !== '' || lines.length > 2) {
+			// torn write, or the log holds more than a single snapshot line: rewrite as a clean
+			// snapshot so baseBytes reflects live data and old bloated files shrink on first open
+			this.#compact()
+		}
 	}
 
 	#replay(line) {
@@ -678,7 +689,10 @@ export class SqlDatabase {
 	}
 
 	#maybeCompact() {
-		if (this.#path === null || this.#logBytes < COMPACT_MIN_BYTES || this.#logBytes < 2 * this.#baseBytes) return
+		if (this.#path === null) return
+		// baseBytes is always the size of a clean snapshot, so garbage = logBytes - baseBytes
+		const garbage = this.#logBytes - this.#baseBytes
+		if (garbage < Math.max(COMPACT_MIN_BYTES, this.#baseBytes * COMPACT_GROWTH_RATIO)) return
 		try {
 			this.#compact()
 		} catch {}
