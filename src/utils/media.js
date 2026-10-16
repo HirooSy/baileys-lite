@@ -193,7 +193,7 @@ const thumbWithLibrary = async (lib, bufferOrFilePath, width) => {
 	} else if ('jimp' in lib && lib.jimp?.Jimp) {
 		const jimp = await lib.jimp.Jimp.read(bufferOrFilePath)
 		const dimensions = { width: jimp.width, height: jimp.height }
-		const buffer = await jimp.resize({ w: width, mode: lib.jimp.ResizeStrategy.BILINEAR }).getBuffer('image/jpeg', { quality: 50 })
+		const buffer = await jimp.resize({ w: width, mode: lib.jimp.ResizeStrategy?.BILINEAR }).getBuffer('image/jpeg', { quality: 50 })
 		return { buffer, original: dimensions }
 	} else {
 		throw new Boom('No image processing library available')
@@ -201,7 +201,7 @@ const thumbWithLibrary = async (lib, bufferOrFilePath, width) => {
 }
 
 // Never leave a media message without jpegThumbnail just because sharp / @napi-rs/image / jimp is not installed:
-// fall back to the built-in decoder (JPEG/PNG) and ffmpeg (see foundation/image-thumb.js).
+// fall back to ffmpeg (see foundation/image-thumb.js).
 export const extractImageThumb = async (bufferOrFilePath, width = 32) => {
 	if (bufferOrFilePath instanceof Readable) bufferOrFilePath = await toBuffer(bufferOrFilePath)
 	let libraryError
@@ -239,7 +239,7 @@ export const generateProfilePicture = async (mediaUpload, dimensions) => {
 		const jimp = await lib.jimp.Jimp.read(buffer)
 		const min = Math.min(jimp.width, jimp.height)
 		const cropped = jimp.crop({ x: 0, y: 0, w: min, h: min })
-		img = cropped.resize({ w, h, mode: lib.jimp.ResizeStrategy.BILINEAR }).getBuffer('image/jpeg', { quality: 80 })
+		img = cropped.resize({ w, h, mode: lib.jimp.ResizeStrategy?.BILINEAR }).getBuffer('image/jpeg', { quality: 80 })
 	} else {
 		throw new Boom('No image processing library available')
 	}

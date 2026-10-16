@@ -1,5 +1,4 @@
 import { randomUUID } from 'node:crypto'
-import { generateMessageIDV2 } from '../utils/wa-protocol-core.js'
 
 const MESSAGE_EDIT_TYPE = 14
 
@@ -487,24 +486,7 @@ export class AIRichBuilder {
 
 	async send(jid, { forwarded, quoted, quotedParticipant, botJid, bypassDownload = true, ...sendOptions } = {}) {
 		if (!this._client) throw new Error('AIRichBuilder.send() needs a client — use sock.aiRich() or new AIRichBuilder(sock)')
-		const sent = await this._client.sendMessage(jid, { aiRich: this, forwarded, quoted, quotedParticipant, botJid }, sendOptions)
-		const richResponse = sent?.message?.botForwardedMessage?.message?.richResponseMessage
-		if (!bypassDownload || !sent?.key?.id || !richResponse?.unifiedResponse) return sent
-		try {
-			const userId = this._client.user?.id ?? this._client.authState?.creds?.me?.id
-			const edit = this.buildEdit(jid, sent.key, sent.message)
-			await this._client.relayMessage(jid, edit, {
-				messageId: generateMessageIDV2(userId),
-				additionalAttributes: { edit: '1' },
-				additionalNodes: sendOptions.additionalNodes,
-				useCachedGroupMetadata: sendOptions.useCachedGroupMetadata,
-				statusJidList: sendOptions.statusJidList
-			})
-		} catch (error) {
-			error.relayedKey = sent.key
-			throw error
-		}
-		return sent
+		return this._client.sendMessage(jid, { aiRich: this, forwarded, quoted, quotedParticipant, botJid }, { ...sendOptions, bypassDownload })
 	}
 }
 

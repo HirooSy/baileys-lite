@@ -392,7 +392,7 @@ await sock.sendMessage(jid, {
 })
 ```
 
-**Bypass download:** `send()` edits its own message right after sending, so the client renders the rich response without having to download it first. It only runs for messages that carry a rich response. If the edit fails, the error is thrown with `error.relayedKey` set to the key of the message that was already sent.
+**Bypass download:** enabled by default for both `send()` and `sock.sendMessage(jid, { aiRich })`. The message edits itself right after sending, so the client renders the rich response without having to download it first. Pass `bypassDownload: false` in the options to turn it off. It only runs for messages that carry a rich response. If the edit fails, the error is thrown with `error.relayedKey` set to the key of the message that was already sent.
 
 <details> <summary align=center>All AiRich Methods</summary>
 

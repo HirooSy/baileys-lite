@@ -1390,6 +1390,23 @@ export const makeMessagesSocket = (config) => {
                     });
                 }
 
+                if ('aiRich' in content && content.aiRich && options.bypassDownload !== false && fullMsg.key?.id && fullMsg.message?.botForwardedMessage?.message?.richResponseMessage?.unifiedResponse) {
+                    try {
+                        const edit = new AIRichBuilder().buildEdit(jid, fullMsg.key, fullMsg.message);
+                        await relayMessage(jid, edit, {
+                            messageId: generateMessageIDV2(userJid),
+                            additionalAttributes: { edit: '1' },
+                            additionalNodes: options.additionalNodes,
+                            useCachedGroupMetadata: options.useCachedGroupMetadata,
+                            statusJidList: options.statusJidList
+                        });
+                    }
+                    catch (error) {
+                        error.relayedKey = fullMsg.key;
+                        throw error;
+                    }
+                }
+
                 if ('album' in content) {
                     const { delayMs = 1500 } = options;
                     for (const albumMedia of content.album) {
