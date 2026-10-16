@@ -10,6 +10,7 @@ import { join } from 'node:path'
 import { Readable, Transform } from 'node:stream'
 import { proto } from '../../WAProto/index.js'
 import { Boom } from '../foundation/boom.js'
+import { extractImageThumbFallback } from '../foundation/image-thumb.js'
 import { getBinaryNodeChild, getBinaryNodeChildBuffer, jidNormalizedUser } from '../binary/wa-binary.js'
 import { aesDecryptGCM, aesEncryptGCM, hkdf } from './wa-protocol-core.js'
 import { generateMessageIDV2 } from './wa-protocol-core.js'
@@ -75,8 +76,10 @@ const NEWSLETTER_MEDIA_PATH_MAP = {
 const getTmpFilesDirectory = () => tmpdir()
 
 let imageProcessingLibrary
+let imageProcessingLibraryMissing = false
 export const getImageProcessingLibrary = async () => {
 	if (imageProcessingLibrary) return imageProcessingLibrary
+	if (imageProcessingLibraryMissing) throw new Boom('No image processing library available')
 	const [sharp, image, jimp] = await Promise.all([
 		import('sharp').catch(() => {}),
 		import('@napi-rs/image').catch(() => {}),
@@ -85,7 +88,10 @@ export const getImageProcessingLibrary = async () => {
 	if (sharp) imageProcessingLibrary = { sharp }
 	else if (image) imageProcessingLibrary = { image }
 	else if (jimp) imageProcessingLibrary = { jimp }
-	else throw new Boom('No image processing library available')
+	else {
+		imageProcessingLibraryMissing = true
+		throw new Boom('No image processing library available')
+	}
 	return imageProcessingLibrary
 }
 
@@ -172,9 +178,7 @@ export const extractVideoThumb = async (path, time, size) => {
 	return buffer
 }
 
-export const extractImageThumb = async (bufferOrFilePath, width = 32) => {
-	if (bufferOrFilePath instanceof Readable) bufferOrFilePath = await toBuffer(bufferOrFilePath)
-	const lib = await getImageProcessingLibrary()
+const thumbWithLibrary = async (lib, bufferOrFilePath, width) => {
 	if ('sharp' in lib && lib.sharp?.default) {
 		const img = lib.sharp.default(bufferOrFilePath)
 		const dimensions = await img.metadata()
@@ -193,6 +197,24 @@ export const extractImageThumb = async (bufferOrFilePath, width = 32) => {
 		return { buffer, original: dimensions }
 	} else {
 		throw new Boom('No image processing library available')
+	}
+}
+
+// Never leave a media message without jpegThumbnail just because sharp / @napi-rs/image / jimp is not installed:
+// fall back to the built-in decoder (JPEG/PNG) and ffmpeg (see foundation/image-thumb.js).
+export const extractImageThumb = async (bufferOrFilePath, width = 32) => {
+	if (bufferOrFilePath instanceof Readable) bufferOrFilePath = await toBuffer(bufferOrFilePath)
+	let libraryError
+	try {
+		return await thumbWithLibrary(await getImageProcessingLibrary(), bufferOrFilePath, width)
+	} catch (err) {
+		libraryError = err
+	}
+	try {
+		return await extractImageThumbFallback(bufferOrFilePath, width)
+	} catch (err) {
+		if (libraryError && libraryError.message !== 'No image processing library available') err.message += ` (image library error: ${libraryError.message})`
+		throw err
 	}
 }
 

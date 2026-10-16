@@ -1066,6 +1066,9 @@ export const makeMessagesSocket = (config) => {
         else if (message.groupInviteMessage) {
             return 'url';
         }
+        else if (message.albumMessage) {
+            return 'collection';
+        }
         return '';
     };
     const issuePrivacyTokens = async (jids, timestamp) => {

@@ -485,11 +485,11 @@ export class AIRichBuilder {
 		}
 	}
 
-	async send(jid, { forwarded, quoted, quotedParticipant, botJid, ...sendOptions } = {}) {
+	async send(jid, { forwarded, quoted, quotedParticipant, botJid, bypassDownload = true, ...sendOptions } = {}) {
 		if (!this._client) throw new Error('AIRichBuilder.send() needs a client — use sock.aiRich() or new AIRichBuilder(sock)')
 		const sent = await this._client.sendMessage(jid, { aiRich: this, forwarded, quoted, quotedParticipant, botJid }, sendOptions)
 		const richResponse = sent?.message?.botForwardedMessage?.message?.richResponseMessage
-		if (!sent?.key?.id || !richResponse?.unifiedResponse) return sent
+		if (!bypassDownload || !sent?.key?.id || !richResponse?.unifiedResponse) return sent
 		try {
 			const userId = this._client.user?.id ?? this._client.authState?.creds?.me?.id
 			const edit = this.buildEdit(jid, sent.key, sent.message)
@@ -506,6 +506,28 @@ export class AIRichBuilder {
 		}
 		return sent
 	}
+}
+
+const isPlainObject = v => !!v && typeof v === 'object' && !Array.isArray(v) && !Buffer.isBuffer(v)
+
+// spec.html accepts: 'html' | ['html', 'Tab title'] | [['html', 'Tab 1'], ['html', 'Tab 2']]
+// optionally with spec.htmlOptions = { url, trustedSources }, or a trailing/second options object.
+// Before, the options had no way in through the spec form and trusted_sources was always [].
+const addHtmlFromSpec = (builder, html, htmlOptions) => {
+	let options = isPlainObject(htmlOptions) ? { ...htmlOptions } : {}
+	let items
+	if (!Array.isArray(html)) {
+		items = [html]
+	} else if (Array.isArray(html[0])) {
+		items = [...html]
+	} else if (html.length === 2 && typeof html[0] === 'string' && isPlainObject(html[1])) {
+		items = [html[0]]
+		options = { ...html[1], ...options }
+	} else {
+		items = [html]
+	}
+	if (isPlainObject(items[items.length - 1])) options = { ...items.pop(), ...options }
+	builder.addHtml(...items, options)
 }
 
 export const aiRichBuilderFromSpec = spec => {
@@ -525,6 +547,6 @@ export const aiRichBuilderFromSpec = spec => {
 	if (spec.tip) b.addTip(spec.tip)
 	if (spec.suggest) b.addSuggest(spec.suggest, spec.suggestOptions)
 	if (spec.process) b.addProcess(spec.process)
-	if (spec.html) b.addHtml(...(Array.isArray(spec.html[0]) ? spec.html : [spec.html]))
+	if (spec.html) addHtmlFromSpec(b, spec.html, spec.htmlOptions)
 	return b
 }
