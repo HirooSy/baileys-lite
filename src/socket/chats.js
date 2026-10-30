@@ -1,6 +1,7 @@
 import { proto } from '../../WAProto/index.js'
 import { Boom } from '../foundation/boom.js'
 import { Cache } from '../foundation/cache.js'
+import { requestTrim } from '../foundation/memory.js'
 import { makeMutex } from '../foundation/concurrency.js'
 import { DEFAULT_CACHE_TTLS, HISTORY_SYNC_PAUSED_TIMEOUT_MS, PROCESSABLE_HISTORY_TYPES } from '../defaults.js'
 import { ALL_WA_PATCH_NAMES, SyncState } from '../constants.js'
@@ -501,6 +502,7 @@ export const makeChatsSocket = config => {
 				syncState = SyncState.Online
 				logger.info('App state sync complete, transitioning to Online state and flushing buffer')
 				ev.flush()
+				requestTrim(5000)
 				const accountSyncCounter = (authState.creds.accountSyncCounter || 0) + 1
 				ev.emit('creds.update', { accountSyncCounter })
 			}

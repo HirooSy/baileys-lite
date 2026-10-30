@@ -717,7 +717,8 @@ export const makeNoiseHandler = ({ keyPair: { private: privateKey, public: publi
 	let decKey = hash
 	let counter = 0
 	let sentIntro = false
-	let inBytes = Buffer.alloc(0)
+	const EMPTY_BYTES = Buffer.alloc(0)
+	let inBytes = EMPTY_BYTES
 	let transport = null
 	let isWaitingForTransport = false
 	let pendingOnFrame = null
@@ -785,7 +786,7 @@ export const makeNoiseHandler = ({ keyPair: { private: privateKey, public: publi
 			size = (inBytes[0] << 16) | (inBytes[1] << 8) | inBytes[2]
 			if (inBytes.length < size + 3) return
 			let frame = inBytes.subarray(3, size + 3)
-			inBytes = inBytes.subarray(size + 3)
+			inBytes = inBytes.length === size + 3 ? EMPTY_BYTES : inBytes.subarray(size + 3)
 			if (transport) {
 				const result = transport.decrypt(frame) // gagal decrypt = counter tidak sinkron lagi -> biarkan melempar (fatal)
 				try {
@@ -863,11 +864,11 @@ export const makeNoiseHandler = ({ keyPair: { private: privateKey, public: publi
 					inBytes = Buffer.concat([inBytes, newData])
 					pendingOnFrame = onFrame
 				} else {
-					inBytes = inBytes.length === 0 ? Buffer.from(newData) : Buffer.concat([inBytes, newData])
+					inBytes = inBytes.length === 0 ? newData : Buffer.concat([inBytes, newData])
 				}
 				if (inBytes.length > MAX_IN_BYTES) {
 					logger.error({ bufferedBytes: inBytes.length, max: MAX_IN_BYTES }, 'noise handler inBytes buffer exceeded cap, clearing')
-					inBytes = Buffer.alloc(0)
+					inBytes = EMPTY_BYTES
 					pendingOnFrame = null
 					return
 				}
@@ -882,7 +883,7 @@ export const makeNoiseHandler = ({ keyPair: { private: privateKey, public: publi
 
 		destroy: () => {
 			destroyed = true
-			inBytes = Buffer.alloc(0)
+			inBytes = EMPTY_BYTES
 			pendingOnFrame = null
 			transport = null
 		}

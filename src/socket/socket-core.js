@@ -33,6 +33,7 @@ import { USyncQuery, USyncUser } from './usync.js'
 import { normalizeUsername, isValidUsername, isValidUsernameKey } from '../utils/username.js'
 import { WebSocketClient } from '../socket-client/websocket-client.js'
 import { generateQR } from '../foundation/qrcode-terminal.js'
+import { retainMemoryGuard } from '../foundation/memory.js'
 
 const wMexQuery = (variables, queryId, query, generateMessageTag) =>
 	query({
@@ -93,6 +94,7 @@ export const makeSocket = config => {
 		wsConfig = { ...config, options: { ...(config.options || {}), headers } }
 	}
 
+	const releaseMemoryGuard = retainMemoryGuard(config.memoryTrim)
 	const ephemeralKeyPair = Curve.generateKeyPair()
 
 	const noise = makeNoiseHandler({ keyPair: ephemeralKeyPair, NOISE_HEADER: NOISE_WA_HEADER, logger, routingInfo: authState?.creds?.routingInfo })
@@ -481,6 +483,7 @@ export const makeSocket = config => {
 
 		noise.destroy?.()
 		signalRepository.close?.()
+		releaseMemoryGuard()
 		if (!ws.isClosed && !ws.isClosing) {
 			try {
 

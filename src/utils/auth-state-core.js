@@ -100,10 +100,11 @@ export class PreKeyManager {
 }
 
 const txStorage = new AsyncLocalStorage()
+const SIGNAL_CACHE_BYTES = 6 * 1024 * 1024
 
 export function makeCacheableSignalKeyStore(store, logger, _cache) {
 
-	const cache = _cache || new Cache({ max: 8192, ttl: DEFAULT_CACHE_TTLS.SIGNAL_STORE * 1000 })
+	const cache = _cache || new Cache({ max: 2048, maxBytes: SIGNAL_CACHE_BYTES, ttl: DEFAULT_CACHE_TTLS.SIGNAL_STORE * 1000 })
 	const cacheMutex = makeMutex()
 
 	function getUniqueId(type, id) {

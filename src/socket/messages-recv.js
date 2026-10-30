@@ -79,13 +79,13 @@ export const makeMessagesRecvSocket = (config) => {
 
     const msgRetryCache = config.msgRetryCounterCache ||
         new Cache({
-            max: 8192,
+            max: 2048,
             stdTTL: DEFAULT_CACHE_TTLS.MSG_RETRY,
             useClones: false
         });
     const callOfferCache = config.callOfferCache ||
         new Cache({
-            max: 2048,
+            max: 256,
             stdTTL: DEFAULT_CACHE_TTLS.CALL_OFFER,
             useClones: false
         });
@@ -1336,7 +1336,7 @@ export const makeMessagesRecvSocket = (config) => {
             }
             await messageMutex.mutex(async () => {
                 await decrypt();
-                if (msg.key?.remoteJid && msg.key?.id && msg.message && messageRetryManager) {
+                if (msg.key?.fromMe && msg.key?.remoteJid && msg.key?.id && msg.message && messageRetryManager) {
                     messageRetryManager.addRecentMessage(msg.key.remoteJid, msg.key.id, msg.message);
                 }
 
@@ -1715,6 +1715,8 @@ export const makeMessagesRecvSocket = (config) => {
             callOfferCache.close();
         }
         identityAssertDebounce.close();
+        inFlightPreKeyLow.clear();
+        inFlight463Recoveries.clear();
         sendActiveReceipts = false;
     });
     async function pruneExpiredTcTokens() {

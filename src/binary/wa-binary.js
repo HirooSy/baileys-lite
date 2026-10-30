@@ -1,5 +1,5 @@
 import { promisify } from 'node:util'
-import { inflate } from 'node:zlib'
+import { inflate, inflateSync } from 'node:zlib'
 import { randomBytes } from 'node:crypto'
 import { Boom } from '../foundation/boom.js'
 import * as constants from './wa-binary-constants.js'
@@ -255,10 +255,12 @@ const encodeBinaryNodeInner = ({ tag, attrs, content }, opts, buffer) => {
 }
 
 const inflatePromise = promisify(inflate)
+const SYNC_INFLATE_MAX_BYTES = 256 * 1024
 
 export const decompressingIfRequired = async buffer => {
 	if (2 & buffer.readUInt8()) {
-		buffer = await inflatePromise(buffer.slice(1))
+		const compressed = buffer.subarray(1)
+		buffer = compressed.length <= SYNC_INFLATE_MAX_BYTES ? inflateSync(compressed) : await inflatePromise(compressed)
 	} else {
 		buffer = buffer.slice(1)
 	}

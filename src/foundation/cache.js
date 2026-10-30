@@ -1,14 +1,78 @@
+const SIZE_NODE_BUDGET = 4000
+
+export const estimateSize = value => {
+	let total = 0
+	let nodes = 0
+	const stack = [value]
+	const seen = new Set()
+	while (stack.length && nodes < SIZE_NODE_BUDGET) {
+		const v = stack.pop()
+		nodes++
+		switch (typeof v) {
+			case 'string':
+				total += 16 + v.length
+				break
+			case 'number':
+			case 'boolean':
+			case 'bigint':
+				total += 8
+				break
+			case 'object': {
+				if (v === null) {
+					total += 8
+					break
+				}
+				if (ArrayBuffer.isView(v)) {
+					total += 32 + v.byteLength
+					break
+				}
+				if (v instanceof ArrayBuffer) {
+					total += 32 + v.byteLength
+					break
+				}
+				if (seen.has(v)) break
+				seen.add(v)
+				if (Array.isArray(v)) {
+					total += 16 + v.length * 8
+					for (let i = 0; i < v.length; i++) stack.push(v[i])
+				} else {
+					const keys = Object.keys(v)
+					total += 32 + keys.length * 16
+					for (let i = 0; i < keys.length; i++) {
+						total += keys[i].length
+						stack.push(v[keys[i]])
+					}
+				}
+				break
+			}
+			default:
+				break
+		}
+	}
+	if (stack.length) total += stack.length * 64
+	return total
+}
+
 export class Cache {
 	constructor(options = {}) {
 		this.ttl = options.ttl ?? (options.stdTTL ? options.stdTTL * 1000 : 0)
 		this.max = options.max || Infinity
+		this.maxBytes = options.maxBytes || 0
+		this.sizeOf = options.sizeOf || estimateSize
 		this.updateAgeOnGet = !!options.updateAgeOnGet
 		this.dispose = options.dispose || (() => {})
 		this._store = new Map()
+		this._bytes = 0
 
 		if (this.ttl > 0) {
-			this._sweeper = setInterval(() => this._sweep(), Math.min(this.ttl, 60_000))
-			this._sweeper.unref?.()
+			const ref = new WeakRef(this)
+			const timer = setInterval(() => {
+				const cache = ref.deref()
+				if (cache) cache._sweep()
+				else clearInterval(timer)
+			}, Math.min(this.ttl, 60_000))
+			timer.unref?.()
+			this._sweeper = timer
 		}
 	}
 
@@ -16,13 +80,23 @@ export class Cache {
 		return this.ttl > 0 && entry.expiresAt !== 0 && entry.expiresAt <= Date.now()
 	}
 
+	_remove(key, entry) {
+		this._store.delete(key)
+		this._bytes -= entry.size
+		this.dispose(entry.value, key)
+	}
+
 	_sweep() {
 		const now = Date.now()
 		for (const [key, entry] of this._store) {
-			if (entry.expiresAt !== 0 && entry.expiresAt <= now) {
-				this._store.delete(key)
-				this.dispose(entry.value, key)
-			}
+			if (entry.expiresAt !== 0 && entry.expiresAt <= now) this._remove(key, entry)
+		}
+	}
+
+	_evict() {
+		while (this._store.size > this.max || (this.maxBytes > 0 && this._bytes > this.maxBytes && this._store.size > 1)) {
+			const oldestKey = this._store.keys().next().value
+			this._remove(oldestKey, this._store.get(oldestKey))
 		}
 	}
 
@@ -30,13 +104,11 @@ export class Cache {
 		const entry = this._store.get(key)
 		if (!entry) return undefined
 		if (this._isExpired(entry)) {
-			this._store.delete(key)
-			this.dispose(entry.value, key)
+			this._remove(key, entry)
 			return undefined
 		}
 		if (this.updateAgeOnGet && this.ttl > 0) {
 			entry.expiresAt = Date.now() + this.ttl
-
 			this._store.delete(key)
 			this._store.set(key, entry)
 		}
@@ -44,17 +116,15 @@ export class Cache {
 	}
 
 	set(key, value) {
-		if (this._store.has(key)) this._store.delete(key)
-		this._store.set(key, {
-			value,
-			expiresAt: this.ttl > 0 ? Date.now() + this.ttl : 0
-		})
-		while (this._store.size > this.max) {
-			const oldestKey = this._store.keys().next().value
-			const oldest = this._store.get(oldestKey)
-			this._store.delete(oldestKey)
-			this.dispose(oldest.value, oldestKey)
+		const previous = this._store.get(key)
+		if (previous) {
+			this._store.delete(key)
+			this._bytes -= previous.size
 		}
+		const size = this.maxBytes > 0 ? this.sizeOf(value) : 0
+		this._store.set(key, { value, size, expiresAt: this.ttl > 0 ? Date.now() + this.ttl : 0 })
+		this._bytes += size
+		this._evict()
 		return true
 	}
 
@@ -62,8 +132,7 @@ export class Cache {
 		const entry = this._store.get(key)
 		if (!entry) return false
 		if (this._isExpired(entry)) {
-			this._store.delete(key)
-			this.dispose(entry.value, key)
+			this._remove(key, entry)
 			return false
 		}
 		return true
@@ -72,14 +141,15 @@ export class Cache {
 	delete(key) {
 		const entry = this._store.get(key)
 		if (!entry) return false
-		this._store.delete(key)
-		this.dispose(entry.value, key)
+		this._remove(key, entry)
 		return true
 	}
 
 	clear() {
-		for (const [key, entry] of this._store) this.dispose(entry.value, key)
+		const entries = [...this._store]
 		this._store.clear()
+		this._bytes = 0
+		for (const [key, entry] of entries) this.dispose(entry.value, key)
 	}
 
 	flushAll() {
@@ -95,6 +165,7 @@ export class Cache {
 			clearInterval(this._sweeper)
 			this._sweeper = undefined
 		}
+		this.clear()
 	}
 
 	mget(keys) {
@@ -113,6 +184,10 @@ export class Cache {
 
 	get size() {
 		return this._store.size
+	}
+
+	get bytes() {
+		return this._bytes
 	}
 }
 

@@ -44,11 +44,27 @@ function longToNumber(value, unsigned) {
 	return Number(value);
 }
 
+const $lazy = (target, name, factory) => {
+	const define = value => Object.defineProperty(target, name, { value, writable: true, configurable: true, enumerable: true });
+	Object.defineProperty(target, name, {
+		configurable: true,
+		enumerable: true,
+		get() {
+			const value = factory();
+			define(value);
+			return value;
+		},
+		set(value) {
+			define(value);
+		}
+	});
+};
+
 export const proto = $root.proto = (() => {
 
     const proto = {};
 
-    proto.ADVDeviceIdentity = (function() {
+    $lazy(proto, "ADVDeviceIdentity", function() {
 
         function ADVDeviceIdentity(p) {
             if (p)
@@ -265,17 +281,17 @@ export const proto = $root.proto = (() => {
         };
 
         return ADVDeviceIdentity;
-    })();
+    });
 
-    proto.ADVEncryptionType = (function() {
+    $lazy(proto, "ADVEncryptionType", function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "E2EE"] = 0;
         values[valuesById[1] = "HOSTED"] = 1;
         values[valuesById[2] = "NON_E2EE"] = 2;
         return values;
-    })();
+    });
 
-    proto.ADVKeyIndexList = (function() {
+    $lazy(proto, "ADVKeyIndexList", function() {
 
         function ADVKeyIndexList(p) {
             this.validIndexes = [];
@@ -491,9 +507,9 @@ export const proto = $root.proto = (() => {
         };
 
         return ADVKeyIndexList;
-    })();
+    });
 
-    proto.ADVSignedDeviceIdentity = (function() {
+    $lazy(proto, "ADVSignedDeviceIdentity", function() {
 
         function ADVSignedDeviceIdentity(p) {
             if (p)
@@ -658,9 +674,9 @@ export const proto = $root.proto = (() => {
         };
 
         return ADVSignedDeviceIdentity;
-    })();
+    });
 
-    proto.ADVSignedDeviceIdentityHMAC = (function() {
+    $lazy(proto, "ADVSignedDeviceIdentityHMAC", function() {
 
         function ADVSignedDeviceIdentityHMAC(p) {
             if (p)
@@ -816,9 +832,9 @@ export const proto = $root.proto = (() => {
         };
 
         return ADVSignedDeviceIdentityHMAC;
-    })();
+    });
 
-    proto.ADVSignedKeyIndexList = (function() {
+    $lazy(proto, "ADVSignedKeyIndexList", function() {
 
         function ADVSignedKeyIndexList(p) {
             if (p)
@@ -960,9 +976,9 @@ export const proto = $root.proto = (() => {
         };
 
         return ADVSignedKeyIndexList;
-    })();
+    });
 
-    proto.AIHomeState = (function() {
+    $lazy(proto, "AIHomeState", function() {
 
         function AIHomeState(p) {
             this.capabilityOptions = [];
@@ -1124,7 +1140,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.AIHomeState";
         };
 
-        AIHomeState.AIHomeOption = (function() {
+        $lazy(AIHomeState, "AIHomeOption", function() {
 
             function AIHomeOption(p) {
                 if (p)
@@ -1385,7 +1401,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.AIHomeState.AIHomeOption";
             };
 
-            AIHomeOption.AIHomeActionType = (function() {
+            $lazy(AIHomeOption, "AIHomeActionType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "PROMPT"] = 0;
                 values[valuesById[1] = "CREATE_IMAGE"] = 1;
@@ -1394,15 +1410,15 @@ export const proto = $root.proto = (() => {
                 values[valuesById[4] = "COLLABORATE"] = 4;
                 values[valuesById[5] = "OPEN_GREETING_CARD"] = 5;
                 return values;
-            })();
+            });
 
             return AIHomeOption;
-        })();
+        });
 
         return AIHomeState;
-    })();
+    });
 
-    proto.AIMediaCollectionMessage = (function() {
+    $lazy(proto, "AIMediaCollectionMessage", function() {
 
         function AIMediaCollectionMessage(p) {
             if (p)
@@ -1535,9 +1551,9 @@ export const proto = $root.proto = (() => {
         };
 
         return AIMediaCollectionMessage;
-    })();
+    });
 
-    proto.AIMediaCollectionMetadata = (function() {
+    $lazy(proto, "AIMediaCollectionMetadata", function() {
 
         function AIMediaCollectionMetadata(p) {
             if (p)
@@ -1650,9 +1666,9 @@ export const proto = $root.proto = (() => {
         };
 
         return AIMediaCollectionMetadata;
-    })();
+    });
 
-    proto.AIMetadataOperation = (function() {
+    $lazy(proto, "AIMetadataOperation", function() {
 
         function AIMetadataOperation(p) {
             if (p)
@@ -1747,9 +1763,9 @@ export const proto = $root.proto = (() => {
         };
 
         return AIMetadataOperation;
-    })();
+    });
 
-    proto.AIQueryFanout = (function() {
+    $lazy(proto, "AIQueryFanout", function() {
 
         function AIQueryFanout(p) {
             if (p)
@@ -1896,9 +1912,9 @@ export const proto = $root.proto = (() => {
         };
 
         return AIQueryFanout;
-    })();
+    });
 
-    proto.AIRegenerateMetadata = (function() {
+    $lazy(proto, "AIRegenerateMetadata", function() {
 
         function AIRegenerateMetadata(p) {
             if (p)
@@ -2023,9 +2039,9 @@ export const proto = $root.proto = (() => {
         };
 
         return AIRegenerateMetadata;
-    })();
+    });
 
-    proto.AIRichResponseCodeMetadata = (function() {
+    $lazy(proto, "AIRichResponseCodeMetadata", function() {
 
         function AIRichResponseCodeMetadata(p) {
             this.codeBlocks = [];
@@ -2148,7 +2164,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.AIRichResponseCodeMetadata";
         };
 
-        AIRichResponseCodeMetadata.AIRichResponseCodeBlock = (function() {
+        $lazy(AIRichResponseCodeMetadata, "AIRichResponseCodeBlock", function() {
 
             function AIRichResponseCodeBlock(p) {
                 if (p)
@@ -2290,9 +2306,9 @@ export const proto = $root.proto = (() => {
             };
 
             return AIRichResponseCodeBlock;
-        })();
+        });
 
-        AIRichResponseCodeMetadata.AIRichResponseCodeHighlightType = (function() {
+        $lazy(AIRichResponseCodeMetadata, "AIRichResponseCodeHighlightType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "AI_RICH_RESPONSE_CODE_HIGHLIGHT_DEFAULT"] = 0;
             values[valuesById[1] = "AI_RICH_RESPONSE_CODE_HIGHLIGHT_KEYWORD"] = 1;
@@ -2301,12 +2317,12 @@ export const proto = $root.proto = (() => {
             values[valuesById[4] = "AI_RICH_RESPONSE_CODE_HIGHLIGHT_NUMBER"] = 4;
             values[valuesById[5] = "AI_RICH_RESPONSE_CODE_HIGHLIGHT_COMMENT"] = 5;
             return values;
-        })();
+        });
 
         return AIRichResponseCodeMetadata;
-    })();
+    });
 
-    proto.AIRichResponseContentItemsMetadata = (function() {
+    $lazy(proto, "AIRichResponseContentItemsMetadata", function() {
 
         function AIRichResponseContentItemsMetadata(p) {
             this.itemsMetadata = [];
@@ -2442,7 +2458,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.AIRichResponseContentItemsMetadata";
         };
 
-        AIRichResponseContentItemsMetadata.AIRichResponseContentItemMetadata = (function() {
+        $lazy(AIRichResponseContentItemsMetadata, "AIRichResponseContentItemMetadata", function() {
 
             function AIRichResponseContentItemMetadata(p) {
                 if (p)
@@ -2537,9 +2553,9 @@ export const proto = $root.proto = (() => {
             };
 
             return AIRichResponseContentItemMetadata;
-        })();
+        });
 
-        AIRichResponseContentItemsMetadata.AIRichResponseReelItem = (function() {
+        $lazy(AIRichResponseContentItemsMetadata, "AIRichResponseReelItem", function() {
 
             function AIRichResponseReelItem(p) {
                 if (p)
@@ -2692,19 +2708,19 @@ export const proto = $root.proto = (() => {
             };
 
             return AIRichResponseReelItem;
-        })();
+        });
 
-        AIRichResponseContentItemsMetadata.ContentType = (function() {
+        $lazy(AIRichResponseContentItemsMetadata, "ContentType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "DEFAULT"] = 0;
             values[valuesById[1] = "CAROUSEL"] = 1;
             return values;
-        })();
+        });
 
         return AIRichResponseContentItemsMetadata;
-    })();
+    });
 
-    proto.AIRichResponseDynamicMetadata = (function() {
+    $lazy(proto, "AIRichResponseDynamicMetadata", function() {
 
         function AIRichResponseDynamicMetadata(p) {
             if (p)
@@ -2883,18 +2899,18 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.AIRichResponseDynamicMetadata";
         };
 
-        AIRichResponseDynamicMetadata.AIRichResponseDynamicMetadataType = (function() {
+        $lazy(AIRichResponseDynamicMetadata, "AIRichResponseDynamicMetadataType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "AI_RICH_RESPONSE_DYNAMIC_METADATA_TYPE_UNKNOWN"] = 0;
             values[valuesById[1] = "AI_RICH_RESPONSE_DYNAMIC_METADATA_TYPE_IMAGE"] = 1;
             values[valuesById[2] = "AI_RICH_RESPONSE_DYNAMIC_METADATA_TYPE_GIF"] = 2;
             return values;
-        })();
+        });
 
         return AIRichResponseDynamicMetadata;
-    })();
+    });
 
-    proto.AIRichResponseGridImageMetadata = (function() {
+    $lazy(proto, "AIRichResponseGridImageMetadata", function() {
 
         function AIRichResponseGridImageMetadata(p) {
             this.imageUrls = [];
@@ -3020,9 +3036,9 @@ export const proto = $root.proto = (() => {
         };
 
         return AIRichResponseGridImageMetadata;
-    })();
+    });
 
-    proto.AIRichResponseImageURL = (function() {
+    $lazy(proto, "AIRichResponseImageURL", function() {
 
         function AIRichResponseImageURL(p) {
             if (p)
@@ -3155,9 +3171,9 @@ export const proto = $root.proto = (() => {
         };
 
         return AIRichResponseImageURL;
-    })();
+    });
 
-    proto.AIRichResponseInlineImageMetadata = (function() {
+    $lazy(proto, "AIRichResponseInlineImageMetadata", function() {
 
         function AIRichResponseInlineImageMetadata(p) {
             if (p)
@@ -3328,18 +3344,18 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.AIRichResponseInlineImageMetadata";
         };
 
-        AIRichResponseInlineImageMetadata.AIRichResponseImageAlignment = (function() {
+        $lazy(AIRichResponseInlineImageMetadata, "AIRichResponseImageAlignment", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "AI_RICH_RESPONSE_IMAGE_LAYOUT_LEADING_ALIGNED"] = 0;
             values[valuesById[1] = "AI_RICH_RESPONSE_IMAGE_LAYOUT_TRAILING_ALIGNED"] = 1;
             values[valuesById[2] = "AI_RICH_RESPONSE_IMAGE_LAYOUT_CENTER_ALIGNED"] = 2;
             return values;
-        })();
+        });
 
         return AIRichResponseInlineImageMetadata;
-    })();
+    });
 
-    proto.AIRichResponseLatexMetadata = (function() {
+    $lazy(proto, "AIRichResponseLatexMetadata", function() {
 
         function AIRichResponseLatexMetadata(p) {
             this.expressions = [];
@@ -3462,7 +3478,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.AIRichResponseLatexMetadata";
         };
 
-        AIRichResponseLatexMetadata.AIRichResponseLatexExpression = (function() {
+        $lazy(AIRichResponseLatexMetadata, "AIRichResponseLatexExpression", function() {
 
             function AIRichResponseLatexExpression(p) {
                 if (p)
@@ -3715,12 +3731,12 @@ export const proto = $root.proto = (() => {
             };
 
             return AIRichResponseLatexExpression;
-        })();
+        });
 
         return AIRichResponseLatexMetadata;
-    })();
+    });
 
-    proto.AIRichResponseMapMetadata = (function() {
+    $lazy(proto, "AIRichResponseMapMetadata", function() {
 
         function AIRichResponseMapMetadata(p) {
             this.annotations = [];
@@ -3923,7 +3939,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.AIRichResponseMapMetadata";
         };
 
-        AIRichResponseMapMetadata.AIRichResponseMapAnnotation = (function() {
+        $lazy(AIRichResponseMapMetadata, "AIRichResponseMapAnnotation", function() {
 
             function AIRichResponseMapAnnotation(p) {
                 if (p)
@@ -4096,12 +4112,12 @@ export const proto = $root.proto = (() => {
             };
 
             return AIRichResponseMapAnnotation;
-        })();
+        });
 
         return AIRichResponseMapMetadata;
-    })();
+    });
 
-    proto.AIRichResponseMessage = (function() {
+    $lazy(proto, "AIRichResponseMessage", function() {
 
         function AIRichResponseMessage(p) {
             this.submessages = [];
@@ -4282,16 +4298,16 @@ export const proto = $root.proto = (() => {
         };
 
         return AIRichResponseMessage;
-    })();
+    });
 
-    proto.AIRichResponseMessageType = (function() {
+    $lazy(proto, "AIRichResponseMessageType", function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "AI_RICH_RESPONSE_TYPE_UNKNOWN"] = 0;
         values[valuesById[1] = "AI_RICH_RESPONSE_TYPE_STANDARD"] = 1;
         return values;
-    })();
+    });
 
-    proto.AIRichResponseSubMessage = (function() {
+    $lazy(proto, "AIRichResponseSubMessage", function() {
 
         function AIRichResponseSubMessage(p) {
             if (p)
@@ -4625,9 +4641,9 @@ export const proto = $root.proto = (() => {
         };
 
         return AIRichResponseSubMessage;
-    })();
+    });
 
-    proto.AIRichResponseSubMessageType = (function() {
+    $lazy(proto, "AIRichResponseSubMessageType", function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "AI_RICH_RESPONSE_UNKNOWN"] = 0;
         values[valuesById[1] = "AI_RICH_RESPONSE_GRID_IMAGE"] = 1;
@@ -4640,9 +4656,9 @@ export const proto = $root.proto = (() => {
         values[valuesById[8] = "AI_RICH_RESPONSE_LATEX"] = 8;
         values[valuesById[9] = "AI_RICH_RESPONSE_CONTENT_ITEMS"] = 9;
         return values;
-    })();
+    });
 
-    proto.AIRichResponseTableMetadata = (function() {
+    $lazy(proto, "AIRichResponseTableMetadata", function() {
 
         function AIRichResponseTableMetadata(p) {
             this.rows = [];
@@ -4765,7 +4781,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.AIRichResponseTableMetadata";
         };
 
-        AIRichResponseTableMetadata.AIRichResponseTableRow = (function() {
+        $lazy(AIRichResponseTableMetadata, "AIRichResponseTableRow", function() {
 
             function AIRichResponseTableRow(p) {
                 this.items = [];
@@ -4887,12 +4903,12 @@ export const proto = $root.proto = (() => {
             };
 
             return AIRichResponseTableRow;
-        })();
+        });
 
         return AIRichResponseTableMetadata;
-    })();
+    });
 
-    proto.AIRichResponseUnifiedResponse = (function() {
+    $lazy(proto, "AIRichResponseUnifiedResponse", function() {
 
         function AIRichResponseUnifiedResponse(p) {
             if (p)
@@ -4988,18 +5004,18 @@ export const proto = $root.proto = (() => {
         };
 
         return AIRichResponseUnifiedResponse;
-    })();
+    });
 
-    proto.AISubscriptionRequestType = (function() {
+    $lazy(proto, "AISubscriptionRequestType", function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "UNSPECIFIED"] = 0;
         values[valuesById[1] = "THINK_HARD"] = 1;
         values[valuesById[2] = "IMAGE_GEN"] = 2;
         values[valuesById[3] = "VIDEO_GEN"] = 3;
         return values;
-    })();
+    });
 
-    proto.AISubscriptionUpsellMetadata = (function() {
+    $lazy(proto, "AISubscriptionUpsellMetadata", function() {
 
         function AISubscriptionUpsellMetadata(p) {
             if (p)
@@ -5113,9 +5129,9 @@ export const proto = $root.proto = (() => {
         };
 
         return AISubscriptionUpsellMetadata;
-    })();
+    });
 
-    proto.AIThreadInfo = (function() {
+    $lazy(proto, "AIThreadInfo", function() {
 
         function AIThreadInfo(p) {
             if (p)
@@ -5231,7 +5247,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.AIThreadInfo";
         };
 
-        AIThreadInfo.AIThreadClientInfo = (function() {
+        $lazy(AIThreadInfo, "AIThreadClientInfo", function() {
 
             function AIThreadClientInfo(p) {
                 if (p)
@@ -5364,19 +5380,19 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.AIThreadInfo.AIThreadClientInfo";
             };
 
-            AIThreadClientInfo.AIThreadType = (function() {
+            $lazy(AIThreadClientInfo, "AIThreadType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "DEFAULT"] = 1;
                 values[valuesById[2] = "INCOGNITO"] = 2;
                 values[valuesById[3] = "SIDE_CHAT"] = 3;
                 return values;
-            })();
+            });
 
             return AIThreadClientInfo;
-        })();
+        });
 
-        AIThreadInfo.AIThreadServerInfo = (function() {
+        $lazy(AIThreadInfo, "AIThreadServerInfo", function() {
 
             function AIThreadServerInfo(p) {
                 if (p)
@@ -5469,12 +5485,12 @@ export const proto = $root.proto = (() => {
             };
 
             return AIThreadServerInfo;
-        })();
+        });
 
         return AIThreadInfo;
-    })();
+    });
 
-    proto.Account = (function() {
+    $lazy(proto, "Account", function() {
 
         function Account(p) {
             if (p)
@@ -5627,9 +5643,9 @@ export const proto = $root.proto = (() => {
         };
 
         return Account;
-    })();
+    });
 
-    proto.ActionLink = (function() {
+    $lazy(proto, "ActionLink", function() {
 
         function ActionLink(p) {
             if (p)
@@ -5742,9 +5758,9 @@ export const proto = $root.proto = (() => {
         };
 
         return ActionLink;
-    })();
+    });
 
-    proto.AutoDownloadSettings = (function() {
+    $lazy(proto, "AutoDownloadSettings", function() {
 
         function AutoDownloadSettings(p) {
             if (p)
@@ -5897,9 +5913,9 @@ export const proto = $root.proto = (() => {
         };
 
         return AutoDownloadSettings;
-    })();
+    });
 
-    proto.AvatarUserSettings = (function() {
+    $lazy(proto, "AvatarUserSettings", function() {
 
         function AvatarUserSettings(p) {
             if (p)
@@ -6012,9 +6028,9 @@ export const proto = $root.proto = (() => {
         };
 
         return AvatarUserSettings;
-    })();
+    });
 
-    proto.BizAccountLinkInfo = (function() {
+    $lazy(proto, "BizAccountLinkInfo", function() {
 
         function BizAccountLinkInfo(p) {
             if (p)
@@ -6228,23 +6244,23 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BizAccountLinkInfo";
         };
 
-        BizAccountLinkInfo.AccountType = (function() {
+        $lazy(BizAccountLinkInfo, "AccountType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "ENTERPRISE"] = 0;
             return values;
-        })();
+        });
 
-        BizAccountLinkInfo.HostStorageType = (function() {
+        $lazy(BizAccountLinkInfo, "HostStorageType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "ON_PREMISE"] = 0;
             values[valuesById[1] = "FACEBOOK"] = 1;
             return values;
-        })();
+        });
 
         return BizAccountLinkInfo;
-    })();
+    });
 
-    proto.BizAccountPayload = (function() {
+    $lazy(proto, "BizAccountPayload", function() {
 
         function BizAccountPayload(p) {
             if (p)
@@ -6362,9 +6378,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BizAccountPayload;
-    })();
+    });
 
-    proto.BizIdentityInfo = (function() {
+    $lazy(proto, "BizIdentityInfo", function() {
 
         function BizIdentityInfo(p) {
             if (p)
@@ -6661,32 +6677,32 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BizIdentityInfo";
         };
 
-        BizIdentityInfo.ActualActorsType = (function() {
+        $lazy(BizIdentityInfo, "ActualActorsType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "SELF"] = 0;
             values[valuesById[1] = "BSP"] = 1;
             return values;
-        })();
+        });
 
-        BizIdentityInfo.HostStorageType = (function() {
+        $lazy(BizIdentityInfo, "HostStorageType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "ON_PREMISE"] = 0;
             values[valuesById[1] = "FACEBOOK"] = 1;
             return values;
-        })();
+        });
 
-        BizIdentityInfo.VerifiedLevelValue = (function() {
+        $lazy(BizIdentityInfo, "VerifiedLevelValue", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN"] = 0;
             values[valuesById[1] = "LOW"] = 1;
             values[valuesById[2] = "HIGH"] = 2;
             return values;
-        })();
+        });
 
         return BizIdentityInfo;
-    })();
+    });
 
-    proto.BotAgeCollectionMetadata = (function() {
+    $lazy(proto, "BotAgeCollectionMetadata", function() {
 
         function BotAgeCollectionMetadata(p) {
             if (p)
@@ -6831,17 +6847,17 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotAgeCollectionMetadata";
         };
 
-        BotAgeCollectionMetadata.AgeCollectionType = (function() {
+        $lazy(BotAgeCollectionMetadata, "AgeCollectionType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "O18_BINARY"] = 0;
             values[valuesById[1] = "WAFFLE"] = 1;
             return values;
-        })();
+        });
 
         return BotAgeCollectionMetadata;
-    })();
+    });
 
-    proto.BotAgentDeepLinkMetadata = (function() {
+    $lazy(proto, "BotAgentDeepLinkMetadata", function() {
 
         function BotAgentDeepLinkMetadata(p) {
             if (p)
@@ -6934,9 +6950,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotAgentDeepLinkMetadata;
-    })();
+    });
 
-    proto.BotAgentMetadata = (function() {
+    $lazy(proto, "BotAgentMetadata", function() {
 
         function BotAgentMetadata(p) {
             if (p)
@@ -7031,9 +7047,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotAgentMetadata;
-    })();
+    });
 
-    proto.BotCapabilityMetadata = (function() {
+    $lazy(proto, "BotCapabilityMetadata", function() {
 
         function BotCapabilityMetadata(p) {
             this.capabilities = [];
@@ -7409,7 +7425,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotCapabilityMetadata";
         };
 
-        BotCapabilityMetadata.BotCapabilityType = (function() {
+        $lazy(BotCapabilityMetadata, "BotCapabilityType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN"] = 0;
             values[valuesById[1] = "PROGRESS_INDICATOR"] = 1;
@@ -7478,12 +7494,12 @@ export const proto = $root.proto = (() => {
             values[valuesById[64] = "AI_RICH_RESPONSE_MAPS_V2_ENABLED"] = 64;
             values[valuesById[65] = "AI_SUBSCRIPTION_METERING_ENABLED"] = 65;
             return values;
-        })();
+        });
 
         return BotCapabilityMetadata;
-    })();
+    });
 
-    proto.BotCommandMetadata = (function() {
+    $lazy(proto, "BotCommandMetadata", function() {
 
         function BotCommandMetadata(p) {
             if (p)
@@ -7616,9 +7632,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotCommandMetadata;
-    })();
+    });
 
-    proto.BotDocumentMessageMetadata = (function() {
+    $lazy(proto, "BotDocumentMessageMetadata", function() {
 
         function BotDocumentMessageMetadata(p) {
             if (p)
@@ -7723,17 +7739,17 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotDocumentMessageMetadata";
         };
 
-        BotDocumentMessageMetadata.DocumentPluginType = (function() {
+        $lazy(BotDocumentMessageMetadata, "DocumentPluginType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "TEXT_EXTRACTION"] = 0;
             values[valuesById[1] = "OCR_AND_IMAGES"] = 1;
             return values;
-        })();
+        });
 
         return BotDocumentMessageMetadata;
-    })();
+    });
 
-    proto.BotFeedbackMessage = (function() {
+    $lazy(proto, "BotFeedbackMessage", function() {
 
         function BotFeedbackMessage(p) {
             if (p)
@@ -8047,7 +8063,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotFeedbackMessage";
         };
 
-        BotFeedbackMessage.BotFeedbackKind = (function() {
+        $lazy(BotFeedbackMessage, "BotFeedbackKind", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "BOT_FEEDBACK_POSITIVE"] = 0;
             values[valuesById[1] = "BOT_FEEDBACK_NEGATIVE_GENERIC"] = 1;
@@ -8065,9 +8081,9 @@ export const proto = $root.proto = (() => {
             values[valuesById[13] = "BOT_FEEDBACK_NEGATIVE_HALLUCINATION_INTERNAL_ONLY"] = 13;
             values[valuesById[14] = "BOT_FEEDBACK_NEGATIVE"] = 14;
             return values;
-        })();
+        });
 
-        BotFeedbackMessage.BotFeedbackKindMultipleNegative = (function() {
+        $lazy(BotFeedbackMessage, "BotFeedbackKindMultipleNegative", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[1] = "BOT_FEEDBACK_MULTIPLE_NEGATIVE_GENERIC"] = 1;
             values[valuesById[2] = "BOT_FEEDBACK_MULTIPLE_NEGATIVE_HELPFUL"] = 2;
@@ -8079,22 +8095,22 @@ export const proto = $root.proto = (() => {
             values[valuesById[128] = "BOT_FEEDBACK_MULTIPLE_NEGATIVE_NOT_VISUALLY_APPEALING"] = 128;
             values[valuesById[256] = "BOT_FEEDBACK_MULTIPLE_NEGATIVE_NOT_RELEVANT_TO_TEXT"] = 256;
             return values;
-        })();
+        });
 
-        BotFeedbackMessage.BotFeedbackKindMultiplePositive = (function() {
+        $lazy(BotFeedbackMessage, "BotFeedbackKindMultiplePositive", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[1] = "BOT_FEEDBACK_MULTIPLE_POSITIVE_GENERIC"] = 1;
             return values;
-        })();
+        });
 
-        BotFeedbackMessage.ReportKind = (function() {
+        $lazy(BotFeedbackMessage, "ReportKind", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "NONE"] = 0;
             values[valuesById[1] = "GENERIC"] = 1;
             return values;
-        })();
+        });
 
-        BotFeedbackMessage.SideBySideSurveyMetadata = (function() {
+        $lazy(BotFeedbackMessage, "SideBySideSurveyMetadata", function() {
 
             function SideBySideSurveyMetadata(p) {
                 if (p)
@@ -8350,7 +8366,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.BotFeedbackMessage.SideBySideSurveyMetadata";
             };
 
-            SideBySideSurveyMetadata.SideBySideSurveyAnalyticsData = (function() {
+            $lazy(SideBySideSurveyMetadata, "SideBySideSurveyAnalyticsData", function() {
 
                 function SideBySideSurveyAnalyticsData(p) {
                     if (p)
@@ -8483,9 +8499,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return SideBySideSurveyAnalyticsData;
-            })();
+            });
 
-            SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData = (function() {
+            $lazy(SideBySideSurveyMetadata, "SidebySideSurveyMetaAiAnalyticsData", function() {
 
                 function SidebySideSurveyMetaAiAnalyticsData(p) {
                     if (p)
@@ -8747,7 +8763,7 @@ export const proto = $root.proto = (() => {
                     return typeUrlPrefix + "/proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData";
                 };
 
-                SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyAbandonEventData = (function() {
+                $lazy(SidebySideSurveyMetaAiAnalyticsData, "SideBySideSurveyAbandonEventData", function() {
 
                     function SideBySideSurveyAbandonEventData(p) {
                         if (p)
@@ -8840,9 +8856,9 @@ export const proto = $root.proto = (() => {
                     };
 
                     return SideBySideSurveyAbandonEventData;
-                })();
+                });
 
-                SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCTAClickEventData = (function() {
+                $lazy(SidebySideSurveyMetaAiAnalyticsData, "SideBySideSurveyCTAClickEventData", function() {
 
                     function SideBySideSurveyCTAClickEventData(p) {
                         if (p)
@@ -8955,9 +8971,9 @@ export const proto = $root.proto = (() => {
                     };
 
                     return SideBySideSurveyCTAClickEventData;
-                })();
+                });
 
-                SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCTAImpressionEventData = (function() {
+                $lazy(SidebySideSurveyMetaAiAnalyticsData, "SideBySideSurveyCTAImpressionEventData", function() {
 
                     function SideBySideSurveyCTAImpressionEventData(p) {
                         if (p)
@@ -9050,9 +9066,9 @@ export const proto = $root.proto = (() => {
                     };
 
                     return SideBySideSurveyCTAImpressionEventData;
-                })();
+                });
 
-                SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCardImpressionEventData = (function() {
+                $lazy(SidebySideSurveyMetaAiAnalyticsData, "SideBySideSurveyCardImpressionEventData", function() {
 
                     function SideBySideSurveyCardImpressionEventData(p) {
                         if (p)
@@ -9118,9 +9134,9 @@ export const proto = $root.proto = (() => {
                     };
 
                     return SideBySideSurveyCardImpressionEventData;
-                })();
+                });
 
-                SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyResponseEventData = (function() {
+                $lazy(SidebySideSurveyMetaAiAnalyticsData, "SideBySideSurveyResponseEventData", function() {
 
                     function SideBySideSurveyResponseEventData(p) {
                         if (p)
@@ -9233,18 +9249,18 @@ export const proto = $root.proto = (() => {
                     };
 
                     return SideBySideSurveyResponseEventData;
-                })();
+                });
 
                 return SidebySideSurveyMetaAiAnalyticsData;
-            })();
+            });
 
             return SideBySideSurveyMetadata;
-        })();
+        });
 
         return BotFeedbackMessage;
-    })();
+    });
 
-    proto.BotGroupMetadata = (function() {
+    $lazy(proto, "BotGroupMetadata", function() {
 
         function BotGroupMetadata(p) {
             this.participantsMetadata = [];
@@ -9346,9 +9362,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotGroupMetadata;
-    })();
+    });
 
-    proto.BotGroupParticipantMetadata = (function() {
+    $lazy(proto, "BotGroupParticipantMetadata", function() {
 
         function BotGroupParticipantMetadata(p) {
             if (p)
@@ -9441,9 +9457,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotGroupParticipantMetadata;
-    })();
+    });
 
-    proto.BotImagineMetadata = (function() {
+    $lazy(proto, "BotImagineMetadata", function() {
 
         function BotImagineMetadata(p) {
             if (p)
@@ -9580,7 +9596,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotImagineMetadata";
         };
 
-        BotImagineMetadata.ImagineType = (function() {
+        $lazy(BotImagineMetadata, "ImagineType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN"] = 0;
             values[valuesById[1] = "IMAGINE"] = 1;
@@ -9588,12 +9604,12 @@ export const proto = $root.proto = (() => {
             values[valuesById[3] = "FLASH"] = 3;
             values[valuesById[4] = "EDIT"] = 4;
             return values;
-        })();
+        });
 
         return BotImagineMetadata;
-    })();
+    });
 
-    proto.BotInfrastructureDiagnostics = (function() {
+    $lazy(proto, "BotInfrastructureDiagnostics", function() {
 
         function BotInfrastructureDiagnostics(p) {
             this.toolsUsed = [];
@@ -9747,17 +9763,17 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotInfrastructureDiagnostics";
         };
 
-        BotInfrastructureDiagnostics.BotBackend = (function() {
+        $lazy(BotInfrastructureDiagnostics, "BotBackend", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "AAPI"] = 0;
             values[valuesById[1] = "CLIPPY"] = 1;
             return values;
-        })();
+        });
 
         return BotInfrastructureDiagnostics;
-    })();
+    });
 
-    proto.BotLinkedAccount = (function() {
+    $lazy(proto, "BotLinkedAccount", function() {
 
         function BotLinkedAccount(p) {
             if (p)
@@ -9858,16 +9874,16 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotLinkedAccount";
         };
 
-        BotLinkedAccount.BotLinkedAccountType = (function() {
+        $lazy(BotLinkedAccount, "BotLinkedAccountType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "BOT_LINKED_ACCOUNT_TYPE_1P"] = 0;
             return values;
-        })();
+        });
 
         return BotLinkedAccount;
-    })();
+    });
 
-    proto.BotLinkedAccountsMetadata = (function() {
+    $lazy(proto, "BotLinkedAccountsMetadata", function() {
 
         function BotLinkedAccountsMetadata(p) {
             this.accounts = [];
@@ -10014,9 +10030,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotLinkedAccountsMetadata;
-    })();
+    });
 
-    proto.BotMediaMetadata = (function() {
+    $lazy(proto, "BotMediaMetadata", function() {
 
         function BotMediaMetadata(p) {
             if (p)
@@ -10255,18 +10271,18 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotMediaMetadata";
         };
 
-        BotMediaMetadata.OrientationType = (function() {
+        $lazy(BotMediaMetadata, "OrientationType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[1] = "CENTER"] = 1;
             values[valuesById[2] = "LEFT"] = 2;
             values[valuesById[3] = "RIGHT"] = 3;
             return values;
-        })();
+        });
 
         return BotMediaMetadata;
-    })();
+    });
 
-    proto.BotMemoryFact = (function() {
+    $lazy(proto, "BotMemoryFact", function() {
 
         function BotMemoryFact(p) {
             if (p)
@@ -10379,9 +10395,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotMemoryFact;
-    })();
+    });
 
-    proto.BotMemoryMetadata = (function() {
+    $lazy(proto, "BotMemoryMetadata", function() {
 
         function BotMemoryMetadata(p) {
             this.addedFacts = [];
@@ -10534,9 +10550,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotMemoryMetadata;
-    })();
+    });
 
-    proto.BotMemuMetadata = (function() {
+    $lazy(proto, "BotMemuMetadata", function() {
 
         function BotMemuMetadata(p) {
             this.faceImages = [];
@@ -10638,9 +10654,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotMemuMetadata;
-    })();
+    });
 
-    proto.BotMessageOrigin = (function() {
+    $lazy(proto, "BotMessageOrigin", function() {
 
         function BotMessageOrigin(p) {
             if (p)
@@ -10741,16 +10757,16 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotMessageOrigin";
         };
 
-        BotMessageOrigin.BotMessageOriginType = (function() {
+        $lazy(BotMessageOrigin, "BotMessageOriginType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "BOT_MESSAGE_ORIGIN_TYPE_AI_INITIATED"] = 0;
             return values;
-        })();
+        });
 
         return BotMessageOrigin;
-    })();
+    });
 
-    proto.BotMessageOriginMetadata = (function() {
+    $lazy(proto, "BotMessageOriginMetadata", function() {
 
         function BotMessageOriginMetadata(p) {
             this.origins = [];
@@ -10852,9 +10868,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotMessageOriginMetadata;
-    })();
+    });
 
-    proto.BotMessageSharingInfo = (function() {
+    $lazy(proto, "BotMessageSharingInfo", function() {
 
         function BotMessageSharingInfo(p) {
             if (p)
@@ -11164,9 +11180,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotMessageSharingInfo;
-    })();
+    });
 
-    proto.BotMetadata = (function() {
+    $lazy(proto, "BotMetadata", function() {
 
         function BotMetadata(p) {
             if (p)
@@ -12153,9 +12169,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotMetadata;
-    })();
+    });
 
-    proto.BotMetricsEntryPoint = (function() {
+    $lazy(proto, "BotMetricsEntryPoint", function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "UNDEFINED_ENTRY_POINT"] = 0;
         values[valuesById[1] = "FAVICON"] = 1;
@@ -12206,9 +12222,9 @@ export const proto = $root.proto = (() => {
         values[valuesById[55] = "CHATLIST_SEARCH"] = 55;
         values[valuesById[56] = "NEW_CHAT_LIST"] = 56;
         return values;
-    })();
+    });
 
-    proto.BotMetricsMetadata = (function() {
+    $lazy(proto, "BotMetricsMetadata", function() {
 
         function BotMetricsMetadata(p) {
             if (p)
@@ -12563,9 +12579,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotMetricsMetadata;
-    })();
+    });
 
-    proto.BotMetricsThreadEntryPoint = (function() {
+    $lazy(proto, "BotMetricsThreadEntryPoint", function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[1] = "AI_TAB_THREAD"] = 1;
         values[valuesById[2] = "AI_HOME_THREAD"] = 2;
@@ -12573,9 +12589,9 @@ export const proto = $root.proto = (() => {
         values[valuesById[4] = "AI_DEEPLINK_THREAD"] = 4;
         values[valuesById[5] = "ASK_META_AI_CONTEXT_MENU_THREAD"] = 5;
         return values;
-    })();
+    });
 
-    proto.BotModeSelectionMetadata = (function() {
+    $lazy(proto, "BotModeSelectionMetadata", function() {
 
         function BotModeSelectionMetadata(p) {
             this.mode = [];
@@ -12729,17 +12745,17 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotModeSelectionMetadata";
         };
 
-        BotModeSelectionMetadata.BotUserSelectionMode = (function() {
+        $lazy(BotModeSelectionMetadata, "BotUserSelectionMode", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "DEFAULT_MODE"] = 0;
             values[valuesById[1] = "THINK_HARD_MODE"] = 1;
             return values;
-        })();
+        });
 
         return BotModeSelectionMetadata;
-    })();
+    });
 
-    proto.BotModelMetadata = (function() {
+    $lazy(proto, "BotModelMetadata", function() {
 
         function BotModelMetadata(p) {
             if (p)
@@ -12905,26 +12921,26 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotModelMetadata";
         };
 
-        BotModelMetadata.ModelType = (function() {
+        $lazy(BotModelMetadata, "ModelType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN_TYPE"] = 0;
             values[valuesById[1] = "LLAMA_PROD"] = 1;
             values[valuesById[2] = "LLAMA_PROD_PREMIUM"] = 2;
             return values;
-        })();
+        });
 
-        BotModelMetadata.PremiumModelStatus = (function() {
+        $lazy(BotModelMetadata, "PremiumModelStatus", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN_STATUS"] = 0;
             values[valuesById[1] = "AVAILABLE"] = 1;
             values[valuesById[2] = "QUOTA_EXCEED_LIMIT"] = 2;
             return values;
-        })();
+        });
 
         return BotModelMetadata;
-    })();
+    });
 
-    proto.BotPluginMetadata = (function() {
+    $lazy(proto, "BotPluginMetadata", function() {
 
         function BotPluginMetadata(p) {
             if (p)
@@ -13310,27 +13326,27 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotPluginMetadata";
         };
 
-        BotPluginMetadata.PluginType = (function() {
+        $lazy(BotPluginMetadata, "PluginType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN_PLUGIN"] = 0;
             values[valuesById[1] = "REELS"] = 1;
             values[valuesById[2] = "SEARCH"] = 2;
             return values;
-        })();
+        });
 
-        BotPluginMetadata.SearchProvider = (function() {
+        $lazy(BotPluginMetadata, "SearchProvider", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN"] = 0;
             values[valuesById[1] = "BING"] = 1;
             values[valuesById[2] = "GOOGLE"] = 2;
             values[valuesById[3] = "SUPPORT"] = 3;
             return values;
-        })();
+        });
 
         return BotPluginMetadata;
-    })();
+    });
 
-    proto.BotProgressIndicatorMetadata = (function() {
+    $lazy(proto, "BotProgressIndicatorMetadata", function() {
 
         function BotProgressIndicatorMetadata(p) {
             this.stepsMetadata = [];
@@ -13483,7 +13499,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotProgressIndicatorMetadata";
         };
 
-        BotProgressIndicatorMetadata.BotPlanningStepMetadata = (function() {
+        $lazy(BotProgressIndicatorMetadata, "BotPlanningStepMetadata", function() {
 
             function BotPlanningStepMetadata(p) {
                 this.sourcesMetadata = [];
@@ -13736,7 +13752,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata";
             };
 
-            BotPlanningStepMetadata.BotPlanningSearchSourceMetadata = (function() {
+            $lazy(BotPlanningStepMetadata, "BotPlanningSearchSourceMetadata", function() {
 
                 function BotPlanningSearchSourceMetadata(p) {
                     if (p)
@@ -13910,9 +13926,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return BotPlanningSearchSourceMetadata;
-            })();
+            });
 
-            BotPlanningStepMetadata.BotPlanningSearchSourcesMetadata = (function() {
+            $lazy(BotPlanningStepMetadata, "BotPlanningSearchSourcesMetadata", function() {
 
                 function BotPlanningSearchSourcesMetadata(p) {
                     if (p)
@@ -14065,19 +14081,19 @@ export const proto = $root.proto = (() => {
                     return typeUrlPrefix + "/proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourcesMetadata";
                 };
 
-                BotPlanningSearchSourcesMetadata.BotPlanningSearchSourceProvider = (function() {
+                $lazy(BotPlanningSearchSourcesMetadata, "BotPlanningSearchSourceProvider", function() {
                     const valuesById = {}, values = Object.create(valuesById);
                     values[valuesById[0] = "UNKNOWN"] = 0;
                     values[valuesById[1] = "OTHER"] = 1;
                     values[valuesById[2] = "GOOGLE"] = 2;
                     values[valuesById[3] = "BING"] = 3;
                     return values;
-                })();
+                });
 
                 return BotPlanningSearchSourcesMetadata;
-            })();
+            });
 
-            BotPlanningStepMetadata.BotPlanningStepSectionMetadata = (function() {
+            $lazy(BotPlanningStepMetadata, "BotPlanningStepSectionMetadata", function() {
 
                 function BotPlanningStepSectionMetadata(p) {
                     this.sourcesMetadata = [];
@@ -14221,33 +14237,33 @@ export const proto = $root.proto = (() => {
                 };
 
                 return BotPlanningStepSectionMetadata;
-            })();
+            });
 
-            BotPlanningStepMetadata.BotSearchSourceProvider = (function() {
+            $lazy(BotPlanningStepMetadata, "BotSearchSourceProvider", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN_PROVIDER"] = 0;
                 values[valuesById[1] = "OTHER"] = 1;
                 values[valuesById[2] = "GOOGLE"] = 2;
                 values[valuesById[3] = "BING"] = 3;
                 return values;
-            })();
+            });
 
-            BotPlanningStepMetadata.PlanningStepStatus = (function() {
+            $lazy(BotPlanningStepMetadata, "PlanningStepStatus", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "PLANNED"] = 1;
                 values[valuesById[2] = "EXECUTING"] = 2;
                 values[valuesById[3] = "FINISHED"] = 3;
                 return values;
-            })();
+            });
 
             return BotPlanningStepMetadata;
-        })();
+        });
 
         return BotProgressIndicatorMetadata;
-    })();
+    });
 
-    proto.BotPromotionMessageMetadata = (function() {
+    $lazy(proto, "BotPromotionMessageMetadata", function() {
 
         function BotPromotionMessageMetadata(p) {
             if (p)
@@ -14376,18 +14392,18 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotPromotionMessageMetadata";
         };
 
-        BotPromotionMessageMetadata.BotPromotionType = (function() {
+        $lazy(BotPromotionMessageMetadata, "BotPromotionType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN_TYPE"] = 0;
             values[valuesById[1] = "C50"] = 1;
             values[valuesById[2] = "SURVEY_PLATFORM"] = 2;
             return values;
-        })();
+        });
 
         return BotPromotionMessageMetadata;
-    })();
+    });
 
-    proto.BotPromptSuggestion = (function() {
+    $lazy(proto, "BotPromptSuggestion", function() {
 
         function BotPromptSuggestion(p) {
             if (p)
@@ -14500,9 +14516,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotPromptSuggestion;
-    })();
+    });
 
-    proto.BotPromptSuggestions = (function() {
+    $lazy(proto, "BotPromptSuggestions", function() {
 
         function BotPromptSuggestions(p) {
             this.suggestions = [];
@@ -14604,9 +14620,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotPromptSuggestions;
-    })();
+    });
 
-    proto.BotPttPromptMetadata = (function() {
+    $lazy(proto, "BotPttPromptMetadata", function() {
 
         function BotPttPromptMetadata(p) {
             if (p)
@@ -14699,9 +14715,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotPttPromptMetadata;
-    })();
+    });
 
-    proto.BotQuotaMetadata = (function() {
+    $lazy(proto, "BotQuotaMetadata", function() {
 
         function BotQuotaMetadata(p) {
             this.botFeatureQuotaMetadata = [];
@@ -14802,7 +14818,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotQuotaMetadata";
         };
 
-        BotQuotaMetadata.BotFeatureQuotaMetadata = (function() {
+        $lazy(BotQuotaMetadata, "BotFeatureQuotaMetadata", function() {
 
             function BotFeatureQuotaMetadata(p) {
                 if (p)
@@ -14957,20 +14973,20 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.BotQuotaMetadata.BotFeatureQuotaMetadata";
             };
 
-            BotFeatureQuotaMetadata.BotFeatureType = (function() {
+            $lazy(BotFeatureQuotaMetadata, "BotFeatureType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN_FEATURE"] = 0;
                 values[valuesById[1] = "REASONING_FEATURE"] = 1;
                 return values;
-            })();
+            });
 
             return BotFeatureQuotaMetadata;
-        })();
+        });
 
         return BotQuotaMetadata;
-    })();
+    });
 
-    proto.BotReminderMetadata = (function() {
+    $lazy(proto, "BotReminderMetadata", function() {
 
         function BotReminderMetadata(p) {
             if (p)
@@ -15200,16 +15216,16 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotReminderMetadata";
         };
 
-        BotReminderMetadata.ReminderAction = (function() {
+        $lazy(BotReminderMetadata, "ReminderAction", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[1] = "NOTIFY"] = 1;
             values[valuesById[2] = "CREATE"] = 2;
             values[valuesById[3] = "DELETE"] = 3;
             values[valuesById[4] = "UPDATE"] = 4;
             return values;
-        })();
+        });
 
-        BotReminderMetadata.ReminderFrequency = (function() {
+        $lazy(BotReminderMetadata, "ReminderFrequency", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[1] = "ONCE"] = 1;
             values[valuesById[2] = "DAILY"] = 2;
@@ -15217,12 +15233,12 @@ export const proto = $root.proto = (() => {
             values[valuesById[4] = "BIWEEKLY"] = 4;
             values[valuesById[5] = "MONTHLY"] = 5;
             return values;
-        })();
+        });
 
         return BotReminderMetadata;
-    })();
+    });
 
-    proto.BotRenderingConfigMetadata = (function() {
+    $lazy(proto, "BotRenderingConfigMetadata", function() {
 
         function BotRenderingConfigMetadata(p) {
             if (p)
@@ -15335,9 +15351,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotRenderingConfigMetadata;
-    })();
+    });
 
-    proto.BotRenderingMetadata = (function() {
+    $lazy(proto, "BotRenderingMetadata", function() {
 
         function BotRenderingMetadata(p) {
             this.keywords = [];
@@ -15438,7 +15454,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotRenderingMetadata";
         };
 
-        BotRenderingMetadata.Keyword = (function() {
+        $lazy(BotRenderingMetadata, "Keyword", function() {
 
             function Keyword(p) {
                 this.associatedPrompts = [];
@@ -15560,12 +15576,12 @@ export const proto = $root.proto = (() => {
             };
 
             return Keyword;
-        })();
+        });
 
         return BotRenderingMetadata;
-    })();
+    });
 
-    proto.BotResolvedToolCallMetadata = (function() {
+    $lazy(proto, "BotResolvedToolCallMetadata", function() {
 
         function BotResolvedToolCallMetadata(p) {
             if (p)
@@ -15678,9 +15694,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotResolvedToolCallMetadata;
-    })();
+    });
 
-    proto.BotSessionMetadata = (function() {
+    $lazy(proto, "BotSessionMetadata", function() {
 
         function BotSessionMetadata(p) {
             if (p)
@@ -15830,9 +15846,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotSessionMetadata;
-    })();
+    });
 
-    proto.BotSessionSource = (function() {
+    $lazy(proto, "BotSessionSource", function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "NONE"] = 0;
         values[valuesById[1] = "NULL_STATE"] = 1;
@@ -15843,9 +15859,9 @@ export const proto = $root.proto = (() => {
         values[valuesById[6] = "VOICE"] = 6;
         values[valuesById[7] = "AI_HOME_SESSION"] = 7;
         return values;
-    })();
+    });
 
-    proto.BotSignatureVerificationMetadata = (function() {
+    $lazy(proto, "BotSignatureVerificationMetadata", function() {
 
         function BotSignatureVerificationMetadata(p) {
             this.proofs = [];
@@ -15947,9 +15963,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotSignatureVerificationMetadata;
-    })();
+    });
 
-    proto.BotSignatureVerificationUseCaseProof = (function() {
+    $lazy(proto, "BotSignatureVerificationUseCaseProof", function() {
 
         function BotSignatureVerificationUseCaseProof(p) {
             this.certificateChain = [];
@@ -16137,19 +16153,19 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotSignatureVerificationUseCaseProof";
         };
 
-        BotSignatureVerificationUseCaseProof.BotSignatureUseCase = (function() {
+        $lazy(BotSignatureVerificationUseCaseProof, "BotSignatureUseCase", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNSPECIFIED"] = 0;
             values[valuesById[1] = "WA_BOT_MSG"] = 1;
             values[valuesById[2] = "WA_TEE_BOT_MSG"] = 2;
             values[valuesById[3] = "P2P_PILLS"] = 3;
             return values;
-        })();
+        });
 
         return BotSignatureVerificationUseCaseProof;
-    })();
+    });
 
-    proto.BotSourcesMetadata = (function() {
+    $lazy(proto, "BotSourcesMetadata", function() {
 
         function BotSourcesMetadata(p) {
             this.sources = [];
@@ -16250,7 +16266,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotSourcesMetadata";
         };
 
-        BotSourcesMetadata.BotSourceItem = (function() {
+        $lazy(BotSourcesMetadata, "BotSourceItem", function() {
 
             function BotSourceItem(p) {
                 if (p)
@@ -16487,7 +16503,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.BotSourcesMetadata.BotSourceItem";
             };
 
-            BotSourceItem.SourceProvider = (function() {
+            $lazy(BotSourceItem, "SourceProvider", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "BING"] = 1;
@@ -16495,15 +16511,15 @@ export const proto = $root.proto = (() => {
                 values[valuesById[3] = "SUPPORT"] = 3;
                 values[valuesById[4] = "OTHER"] = 4;
                 return values;
-            })();
+            });
 
             return BotSourceItem;
-        })();
+        });
 
         return BotSourcesMetadata;
-    })();
+    });
 
-    proto.BotSuggestedPromptMetadata = (function() {
+    $lazy(proto, "BotSuggestedPromptMetadata", function() {
 
         function BotSuggestedPromptMetadata(p) {
             this.suggestedPrompts = [];
@@ -16667,9 +16683,9 @@ export const proto = $root.proto = (() => {
         };
 
         return BotSuggestedPromptMetadata;
-    })();
+    });
 
-    proto.BotUnifiedResponseMutation = (function() {
+    $lazy(proto, "BotUnifiedResponseMutation", function() {
 
         function BotUnifiedResponseMutation(p) {
             this.mediaDetailsMetadataList = [];
@@ -16794,7 +16810,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.BotUnifiedResponseMutation";
         };
 
-        BotUnifiedResponseMutation.MediaDetailsMetadata = (function() {
+        $lazy(BotUnifiedResponseMutation, "MediaDetailsMetadata", function() {
 
             function MediaDetailsMetadata(p) {
                 if (p)
@@ -16931,9 +16947,9 @@ export const proto = $root.proto = (() => {
             };
 
             return MediaDetailsMetadata;
-        })();
+        });
 
-        BotUnifiedResponseMutation.SideBySideMetadata = (function() {
+        $lazy(BotUnifiedResponseMutation, "SideBySideMetadata", function() {
 
             function SideBySideMetadata(p) {
                 if (p)
@@ -17046,12 +17062,12 @@ export const proto = $root.proto = (() => {
             };
 
             return SideBySideMetadata;
-        })();
+        });
 
         return BotUnifiedResponseMutation;
-    })();
+    });
 
-    proto.CallLogRecord = (function() {
+    $lazy(proto, "CallLogRecord", function() {
 
         function CallLogRecord(p) {
             this.participants = [];
@@ -17541,7 +17557,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.CallLogRecord";
         };
 
-        CallLogRecord.CallResult = (function() {
+        $lazy(CallLogRecord, "CallResult", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "CONNECTED"] = 0;
             values[valuesById[1] = "REJECTED"] = 1;
@@ -17555,17 +17571,17 @@ export const proto = $root.proto = (() => {
             values[valuesById[9] = "ABANDONED"] = 9;
             values[valuesById[10] = "ONGOING"] = 10;
             return values;
-        })();
+        });
 
-        CallLogRecord.CallType = (function() {
+        $lazy(CallLogRecord, "CallType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "REGULAR"] = 0;
             values[valuesById[1] = "SCHEDULED_CALL"] = 1;
             values[valuesById[2] = "VOICE_CHAT"] = 2;
             return values;
-        })();
+        });
 
-        CallLogRecord.ParticipantInfo = (function() {
+        $lazy(CallLogRecord, "ParticipantInfo", function() {
 
             function ParticipantInfo(p) {
                 if (p)
@@ -17727,21 +17743,21 @@ export const proto = $root.proto = (() => {
             };
 
             return ParticipantInfo;
-        })();
+        });
 
-        CallLogRecord.SilenceReason = (function() {
+        $lazy(CallLogRecord, "SilenceReason", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "NONE"] = 0;
             values[valuesById[1] = "SCHEDULED"] = 1;
             values[valuesById[2] = "PRIVACY"] = 2;
             values[valuesById[3] = "LIGHTWEIGHT"] = 3;
             return values;
-        })();
+        });
 
         return CallLogRecord;
-    })();
+    });
 
-    proto.CertChain = (function() {
+    $lazy(proto, "CertChain", function() {
 
         function CertChain(p) {
             if (p)
@@ -17857,7 +17873,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.CertChain";
         };
 
-        CertChain.NoiseCertificate = (function() {
+        $lazy(CertChain, "NoiseCertificate", function() {
 
             function NoiseCertificate(p) {
                 if (p)
@@ -17975,7 +17991,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.CertChain.NoiseCertificate";
             };
 
-            NoiseCertificate.Details = (function() {
+            $lazy(NoiseCertificate, "Details", function() {
 
                 function Details(p) {
                     if (p)
@@ -18171,15 +18187,15 @@ export const proto = $root.proto = (() => {
                 };
 
                 return Details;
-            })();
+            });
 
             return NoiseCertificate;
-        })();
+        });
 
         return CertChain;
-    })();
+    });
 
-    proto.ChatLockSettings = (function() {
+    $lazy(proto, "ChatLockSettings", function() {
 
         function ChatLockSettings(p) {
             if (p)
@@ -18294,9 +18310,9 @@ export const proto = $root.proto = (() => {
         };
 
         return ChatLockSettings;
-    })();
+    });
 
-    proto.ChatRowOpaqueData = (function() {
+    $lazy(proto, "ChatRowOpaqueData", function() {
 
         function ChatRowOpaqueData(p) {
             if (p)
@@ -18390,7 +18406,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.ChatRowOpaqueData";
         };
 
-        ChatRowOpaqueData.DraftMessage = (function() {
+        $lazy(ChatRowOpaqueData, "DraftMessage", function() {
 
             function DraftMessage(p) {
                 if (p)
@@ -18576,7 +18592,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.ChatRowOpaqueData.DraftMessage";
             };
 
-            DraftMessage.CtwaContextData = (function() {
+            $lazy(DraftMessage, "CtwaContextData", function() {
 
                 function CtwaContextData(p) {
                     if (p)
@@ -18908,18 +18924,18 @@ export const proto = $root.proto = (() => {
                     return typeUrlPrefix + "/proto.ChatRowOpaqueData.DraftMessage.CtwaContextData";
                 };
 
-                CtwaContextData.ContextInfoExternalAdReplyInfoMediaType = (function() {
+                $lazy(CtwaContextData, "ContextInfoExternalAdReplyInfoMediaType", function() {
                     const valuesById = {}, values = Object.create(valuesById);
                     values[valuesById[0] = "NONE"] = 0;
                     values[valuesById[1] = "IMAGE"] = 1;
                     values[valuesById[2] = "VIDEO"] = 2;
                     return values;
-                })();
+                });
 
                 return CtwaContextData;
-            })();
+            });
 
-            DraftMessage.CtwaContextLinkData = (function() {
+            $lazy(DraftMessage, "CtwaContextLinkData", function() {
 
                 function CtwaContextLinkData(p) {
                     if (p)
@@ -19072,15 +19088,15 @@ export const proto = $root.proto = (() => {
                 };
 
                 return CtwaContextLinkData;
-            })();
+            });
 
             return DraftMessage;
-        })();
+        });
 
         return ChatRowOpaqueData;
-    })();
+    });
 
-    proto.Citation = (function() {
+    $lazy(proto, "Citation", function() {
 
         function Citation(p) {
             if (p)
@@ -19209,9 +19225,9 @@ export const proto = $root.proto = (() => {
         };
 
         return Citation;
-    })();
+    });
 
-    proto.ClientPairingProps = (function() {
+    $lazy(proto, "ClientPairingProps", function() {
 
         function ClientPairingProps(p) {
             if (p)
@@ -19387,9 +19403,9 @@ export const proto = $root.proto = (() => {
         };
 
         return ClientPairingProps;
-    })();
+    });
 
-    proto.ClientPayload = (function() {
+    $lazy(proto, "ClientPayload", function() {
 
         function ClientPayload(p) {
             this.shards = [];
@@ -20415,14 +20431,14 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.ClientPayload";
         };
 
-        ClientPayload.AccountType = (function() {
+        $lazy(ClientPayload, "AccountType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "DEFAULT"] = 0;
             values[valuesById[1] = "GUEST"] = 1;
             return values;
-        })();
+        });
 
-        ClientPayload.ConnectReason = (function() {
+        $lazy(ClientPayload, "ConnectReason", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "PUSH"] = 0;
             values[valuesById[1] = "USER_ACTIVATED"] = 1;
@@ -20432,9 +20448,9 @@ export const proto = $root.proto = (() => {
             values[valuesById[5] = "PING_RECONNECT"] = 5;
             values[valuesById[6] = "UNKNOWN"] = 6;
             return values;
-        })();
+        });
 
-        ClientPayload.ConnectType = (function() {
+        $lazy(ClientPayload, "ConnectType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "CELLULAR_UNKNOWN"] = 0;
             values[valuesById[1] = "WIFI_UNKNOWN"] = 1;
@@ -20452,9 +20468,9 @@ export const proto = $root.proto = (() => {
             values[valuesById[111] = "CELLULAR_LTE"] = 111;
             values[valuesById[112] = "CELLULAR_HSPAP"] = 112;
             return values;
-        })();
+        });
 
-        ClientPayload.DNSSource = (function() {
+        $lazy(ClientPayload, "DNSSource", function() {
 
             function DNSSource(p) {
                 if (p)
@@ -20603,7 +20619,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.ClientPayload.DNSSource";
             };
 
-            DNSSource.DNSResolutionMethod = (function() {
+            $lazy(DNSSource, "DNSResolutionMethod", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "SYSTEM"] = 0;
                 values[valuesById[1] = "GOOGLE"] = 1;
@@ -20614,12 +20630,12 @@ export const proto = $root.proto = (() => {
                 values[valuesById[6] = "MNS_SECONDARY"] = 6;
                 values[valuesById[7] = "SOCKS_PROXY"] = 7;
                 return values;
-            })();
+            });
 
             return DNSSource;
-        })();
+        });
 
-        ClientPayload.DevicePairingRegistrationData = (function() {
+        $lazy(ClientPayload, "DevicePairingRegistrationData", function() {
 
             function DevicePairingRegistrationData(p) {
                 if (p)
@@ -20876,17 +20892,17 @@ export const proto = $root.proto = (() => {
             };
 
             return DevicePairingRegistrationData;
-        })();
+        });
 
-        ClientPayload.IOSAppExtension = (function() {
+        $lazy(ClientPayload, "IOSAppExtension", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "SHARE_EXTENSION"] = 0;
             values[valuesById[1] = "SERVICE_EXTENSION"] = 1;
             values[valuesById[2] = "INTENTS_EXTENSION"] = 2;
             return values;
-        })();
+        });
 
-        ClientPayload.InteropData = (function() {
+        $lazy(ClientPayload, "InteropData", function() {
 
             function InteropData(p) {
                 if (p)
@@ -21032,9 +21048,9 @@ export const proto = $root.proto = (() => {
             };
 
             return InteropData;
-        })();
+        });
 
-        ClientPayload.Product = (function() {
+        $lazy(ClientPayload, "Product", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "WHATSAPP"] = 0;
             values[valuesById[1] = "MESSENGER"] = 1;
@@ -21042,16 +21058,16 @@ export const proto = $root.proto = (() => {
             values[valuesById[3] = "INTEROP_MSGR"] = 3;
             values[valuesById[4] = "WHATSAPP_LID"] = 4;
             return values;
-        })();
+        });
 
-        ClientPayload.TrafficAnonymization = (function() {
+        $lazy(ClientPayload, "TrafficAnonymization", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "OFF"] = 0;
             values[valuesById[1] = "STANDARD"] = 1;
             return values;
-        })();
+        });
 
-        ClientPayload.UserAgent = (function() {
+        $lazy(ClientPayload, "UserAgent", function() {
 
             function UserAgent(p) {
                 if (p)
@@ -21689,7 +21705,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.ClientPayload.UserAgent";
             };
 
-            UserAgent.AppVersion = (function() {
+            $lazy(UserAgent, "AppVersion", function() {
 
                 function AppVersion(p) {
                     if (p)
@@ -21862,9 +21878,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return AppVersion;
-            })();
+            });
 
-            UserAgent.DeviceType = (function() {
+            $lazy(UserAgent, "DeviceType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "PHONE"] = 0;
                 values[valuesById[1] = "TABLET"] = 1;
@@ -21872,18 +21888,18 @@ export const proto = $root.proto = (() => {
                 values[valuesById[3] = "WEARABLE"] = 3;
                 values[valuesById[4] = "VR"] = 4;
                 return values;
-            })();
+            });
 
-            UserAgent.DistributionChannel = (function() {
+            $lazy(UserAgent, "DistributionChannel", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "APPSTORE"] = 0;
                 values[valuesById[1] = "WEBSITE"] = 1;
                 values[valuesById[2] = "TESTFLIGHT"] = 2;
                 values[valuesById[3] = "INTERNAL"] = 3;
                 return values;
-            })();
+            });
 
-            UserAgent.Platform = (function() {
+            $lazy(UserAgent, "Platform", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "ANDROID"] = 0;
                 values[valuesById[1] = "IOS"] = 1;
@@ -21924,21 +21940,21 @@ export const proto = $root.proto = (() => {
                 values[valuesById[36] = "BLUE_VR"] = 36;
                 values[valuesById[37] = "AR_WRIST"] = 37;
                 return values;
-            })();
+            });
 
-            UserAgent.ReleaseChannel = (function() {
+            $lazy(UserAgent, "ReleaseChannel", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "RELEASE"] = 0;
                 values[valuesById[1] = "BETA"] = 1;
                 values[valuesById[2] = "ALPHA"] = 2;
                 values[valuesById[3] = "DEBUG"] = 3;
                 return values;
-            })();
+            });
 
             return UserAgent;
-        })();
+        });
 
-        ClientPayload.WebInfo = (function() {
+        $lazy(ClientPayload, "WebInfo", function() {
 
             function WebInfo(p) {
                 if (p)
@@ -22161,7 +22177,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.ClientPayload.WebInfo";
             };
 
-            WebInfo.WebSubPlatform = (function() {
+            $lazy(WebInfo, "WebSubPlatform", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "WEB_BROWSER"] = 0;
                 values[valuesById[1] = "APP_STORE"] = 1;
@@ -22170,9 +22186,9 @@ export const proto = $root.proto = (() => {
                 values[valuesById[4] = "WIN32"] = 4;
                 values[valuesById[5] = "WIN_HYBRID"] = 5;
                 return values;
-            })();
+            });
 
-            WebInfo.WebdPayload = (function() {
+            $lazy(WebInfo, "WebdPayload", function() {
 
                 function WebdPayload(p) {
                     if (p)
@@ -22468,15 +22484,15 @@ export const proto = $root.proto = (() => {
                 };
 
                 return WebdPayload;
-            })();
+            });
 
             return WebInfo;
-        })();
+        });
 
         return ClientPayload;
-    })();
+    });
 
-    proto.CollectionName = (function() {
+    $lazy(proto, "CollectionName", function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "COLLECTION_NAME_UNKNOWN"] = 0;
         values[valuesById[1] = "REGULAR"] = 1;
@@ -22485,9 +22501,9 @@ export const proto = $root.proto = (() => {
         values[valuesById[4] = "CRITICAL_BLOCK"] = 4;
         values[valuesById[5] = "CRITICAL_UNBLOCK_LOW"] = 5;
         return values;
-    })();
+    });
 
-    proto.CommentMetadata = (function() {
+    $lazy(proto, "CommentMetadata", function() {
 
         function CommentMetadata(p) {
             if (p)
@@ -22602,9 +22618,9 @@ export const proto = $root.proto = (() => {
         };
 
         return CommentMetadata;
-    })();
+    });
 
-    proto.CompanionCommitment = (function() {
+    $lazy(proto, "CompanionCommitment", function() {
 
         function CompanionCommitment(p) {
             if (p)
@@ -22700,9 +22716,9 @@ export const proto = $root.proto = (() => {
         };
 
         return CompanionCommitment;
-    })();
+    });
 
-    proto.CompanionEphemeralIdentity = (function() {
+    $lazy(proto, "CompanionEphemeralIdentity", function() {
 
         function CompanionEphemeralIdentity(p) {
             if (p)
@@ -22943,9 +22959,9 @@ export const proto = $root.proto = (() => {
         };
 
         return CompanionEphemeralIdentity;
-    })();
+    });
 
-    proto.Config = (function() {
+    $lazy(proto, "Config", function() {
 
         function Config(p) {
             this.field = {};
@@ -23093,9 +23109,9 @@ export const proto = $root.proto = (() => {
         };
 
         return Config;
-    })();
+    });
 
-    proto.ContextInfo = (function() {
+    $lazy(proto, "ContextInfo", function() {
 
         function ContextInfo(p) {
             this.mentionedJid = [];
@@ -24647,7 +24663,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.ContextInfo";
         };
 
-        ContextInfo.AdReplyInfo = (function() {
+        $lazy(ContextInfo, "AdReplyInfo", function() {
 
             function AdReplyInfo(p) {
                 if (p)
@@ -24819,18 +24835,18 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.ContextInfo.AdReplyInfo";
             };
 
-            AdReplyInfo.MediaType = (function() {
+            $lazy(AdReplyInfo, "MediaType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "NONE"] = 0;
                 values[valuesById[1] = "IMAGE"] = 1;
                 values[valuesById[2] = "VIDEO"] = 2;
                 return values;
-            })();
+            });
 
             return AdReplyInfo;
-        })();
+        });
 
-        ContextInfo.BusinessInteractionPills = (function() {
+        $lazy(ContextInfo, "BusinessInteractionPills", function() {
 
             function BusinessInteractionPills(p) {
                 this.pills = [];
@@ -25047,7 +25063,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.ContextInfo.BusinessInteractionPills";
             };
 
-            BusinessInteractionPills.EntryPoint = (function() {
+            $lazy(BusinessInteractionPills, "EntryPoint", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "ENTRY_POINT_UNKNOWN"] = 0;
                 values[valuesById[1] = "P2P_LINK_SHARE"] = 1;
@@ -25056,9 +25072,9 @@ export const proto = $root.proto = (() => {
                 values[valuesById[4] = "STATUS"] = 4;
                 values[valuesById[5] = "IN_THREAD_CONTEXT_CARD"] = 5;
                 return values;
-            })();
+            });
 
-            BusinessInteractionPills.Pill = (function() {
+            $lazy(BusinessInteractionPills, "Pill", function() {
 
                 function Pill(p) {
                     if (p)
@@ -25228,9 +25244,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return Pill;
-            })();
+            });
 
-            BusinessInteractionPills.PillType = (function() {
+            $lazy(BusinessInteractionPills, "PillType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "VIEW_BUSINESS"] = 1;
@@ -25246,9 +25262,9 @@ export const proto = $root.proto = (() => {
                 values[valuesById[11] = "SHOP"] = 11;
                 values[valuesById[12] = "ORDER"] = 12;
                 return values;
-            })();
+            });
 
-            BusinessInteractionPills.SignedPayload = (function() {
+            $lazy(BusinessInteractionPills, "SignedPayload", function() {
 
                 function SignedPayload(p) {
                     this.pills = [];
@@ -25372,12 +25388,12 @@ export const proto = $root.proto = (() => {
                 };
 
                 return SignedPayload;
-            })();
+            });
 
             return BusinessInteractionPills;
-        })();
+        });
 
-        ContextInfo.BusinessMessageForwardInfo = (function() {
+        $lazy(ContextInfo, "BusinessMessageForwardInfo", function() {
 
             function BusinessMessageForwardInfo(p) {
                 if (p)
@@ -25470,17 +25486,17 @@ export const proto = $root.proto = (() => {
             };
 
             return BusinessMessageForwardInfo;
-        })();
+        });
 
-        ContextInfo.CrossAppSource = (function() {
+        $lazy(ContextInfo, "CrossAppSource", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "CROSS_APP_SOURCE_UNKNOWN"] = 0;
             values[valuesById[1] = "CROSS_APP_SOURCE_INSTAGRAM"] = 1;
             values[valuesById[2] = "CROSS_APP_SOURCE_FACEBOOK"] = 2;
             return values;
-        })();
+        });
 
-        ContextInfo.DataSharingContext = (function() {
+        $lazy(ContextInfo, "DataSharingContext", function() {
 
             function DataSharingContext(p) {
                 this.parameters = [];
@@ -25643,14 +25659,14 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.ContextInfo.DataSharingContext";
             };
 
-            DataSharingContext.DataSharingFlags = (function() {
+            $lazy(DataSharingContext, "DataSharingFlags", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[1] = "SHOW_MM_DISCLOSURE_ON_CLICK"] = 1;
                 values[valuesById[2] = "SHOW_MM_DISCLOSURE_ON_READ"] = 2;
                 return values;
-            })();
+            });
 
-            DataSharingContext.Parameters = (function() {
+            $lazy(DataSharingContext, "Parameters", function() {
 
                 function Parameters(p) {
                     if (p)
@@ -25835,12 +25851,12 @@ export const proto = $root.proto = (() => {
                 };
 
                 return Parameters;
-            })();
+            });
 
             return DataSharingContext;
-        })();
+        });
 
-        ContextInfo.ExternalAdReplyInfo = (function() {
+        $lazy(ContextInfo, "ExternalAdReplyInfo", function() {
 
             function ExternalAdReplyInfo(p) {
                 if (p)
@@ -26585,25 +26601,25 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.ContextInfo.ExternalAdReplyInfo";
             };
 
-            ExternalAdReplyInfo.AdType = (function() {
+            $lazy(ExternalAdReplyInfo, "AdType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "CTWA"] = 0;
                 values[valuesById[1] = "CAWC"] = 1;
                 return values;
-            })();
+            });
 
-            ExternalAdReplyInfo.MediaType = (function() {
+            $lazy(ExternalAdReplyInfo, "MediaType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "NONE"] = 0;
                 values[valuesById[1] = "IMAGE"] = 1;
                 values[valuesById[2] = "VIDEO"] = 2;
                 return values;
-            })();
+            });
 
             return ExternalAdReplyInfo;
-        })();
+        });
 
-        ContextInfo.FeatureEligibilities = (function() {
+        $lazy(ContextInfo, "FeatureEligibilities", function() {
 
             function FeatureEligibilities(p) {
                 if (p)
@@ -26776,9 +26792,9 @@ export const proto = $root.proto = (() => {
             };
 
             return FeatureEligibilities;
-        })();
+        });
 
-        ContextInfo.ForwardOrigin = (function() {
+        $lazy(ContextInfo, "ForwardOrigin", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN"] = 0;
             values[valuesById[1] = "CHAT"] = 1;
@@ -26787,9 +26803,9 @@ export const proto = $root.proto = (() => {
             values[valuesById[4] = "META_AI"] = 4;
             values[valuesById[5] = "UGC"] = 5;
             return values;
-        })();
+        });
 
-        ContextInfo.ForwardedNewsletterMessageInfo = (function() {
+        $lazy(ContextInfo, "ForwardedNewsletterMessageInfo", function() {
 
             function ForwardedNewsletterMessageInfo(p) {
                 if (p)
@@ -26998,18 +27014,18 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.ContextInfo.ForwardedNewsletterMessageInfo";
             };
 
-            ForwardedNewsletterMessageInfo.ContentType = (function() {
+            $lazy(ForwardedNewsletterMessageInfo, "ContentType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[1] = "UPDATE"] = 1;
                 values[valuesById[2] = "UPDATE_CARD"] = 2;
                 values[valuesById[3] = "LINK_CARD"] = 3;
                 return values;
-            })();
+            });
 
             return ForwardedNewsletterMessageInfo;
-        })();
+        });
 
-        ContextInfo.PairedMediaType = (function() {
+        $lazy(ContextInfo, "PairedMediaType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "NOT_PAIRED_MEDIA"] = 0;
             values[valuesById[1] = "SD_VIDEO_PARENT"] = 1;
@@ -27021,9 +27037,9 @@ export const proto = $root.proto = (() => {
             values[valuesById[7] = "HEVC_VIDEO_PARENT"] = 7;
             values[valuesById[8] = "HEVC_VIDEO_CHILD"] = 8;
             return values;
-        })();
+        });
 
-        ContextInfo.PartiallySelectedContent = (function() {
+        $lazy(ContextInfo, "PartiallySelectedContent", function() {
 
             function PartiallySelectedContent(p) {
                 if (p)
@@ -27116,9 +27132,9 @@ export const proto = $root.proto = (() => {
             };
 
             return PartiallySelectedContent;
-        })();
+        });
 
-        ContextInfo.QuestionReplyQuotedMessage = (function() {
+        $lazy(ContextInfo, "QuestionReplyQuotedMessage", function() {
 
             function QuestionReplyQuotedMessage(p) {
                 if (p)
@@ -27255,16 +27271,16 @@ export const proto = $root.proto = (() => {
             };
 
             return QuestionReplyQuotedMessage;
-        })();
+        });
 
-        ContextInfo.QuotedType = (function() {
+        $lazy(ContextInfo, "QuotedType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "EXPLICIT"] = 0;
             values[valuesById[1] = "AUTO"] = 1;
             return values;
-        })();
+        });
 
-        ContextInfo.StatusAttributionType = (function() {
+        $lazy(ContextInfo, "StatusAttributionType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "NONE"] = 0;
             values[valuesById[1] = "RESHARED_FROM_MENTION"] = 1;
@@ -27272,9 +27288,9 @@ export const proto = $root.proto = (() => {
             values[valuesById[3] = "RESHARED_FROM_POST_MANY_TIMES"] = 3;
             values[valuesById[4] = "FORWARDED_FROM_STATUS"] = 4;
             return values;
-        })();
+        });
 
-        ContextInfo.StatusAudienceMetadata = (function() {
+        $lazy(ContextInfo, "StatusAudienceMetadata", function() {
 
             function StatusAudienceMetadata(p) {
                 if (p)
@@ -27419,17 +27435,17 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.ContextInfo.StatusAudienceMetadata";
             };
 
-            StatusAudienceMetadata.AudienceType = (function() {
+            $lazy(StatusAudienceMetadata, "AudienceType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "CLOSE_FRIENDS"] = 1;
                 return values;
-            })();
+            });
 
             return StatusAudienceMetadata;
-        })();
+        });
 
-        ContextInfo.StatusSourceType = (function() {
+        $lazy(ContextInfo, "StatusSourceType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "IMAGE"] = 0;
             values[valuesById[1] = "VIDEO"] = 1;
@@ -27438,9 +27454,9 @@ export const proto = $root.proto = (() => {
             values[valuesById[4] = "TEXT"] = 4;
             values[valuesById[5] = "MUSIC_STANDALONE"] = 5;
             return values;
-        })();
+        });
 
-        ContextInfo.UTMInfo = (function() {
+        $lazy(ContextInfo, "UTMInfo", function() {
 
             function UTMInfo(p) {
                 if (p)
@@ -27553,12 +27569,12 @@ export const proto = $root.proto = (() => {
             };
 
             return UTMInfo;
-        })();
+        });
 
         return ContextInfo;
-    })();
+    });
 
-    proto.Conversation = (function() {
+    $lazy(proto, "Conversation", function() {
 
         function Conversation(p) {
             this.messages = [];
@@ -29083,28 +29099,28 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.Conversation";
         };
 
-        Conversation.EndOfHistoryTransferType = (function() {
+        $lazy(Conversation, "EndOfHistoryTransferType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "COMPLETE_BUT_MORE_MESSAGES_REMAIN_ON_PRIMARY"] = 0;
             values[valuesById[1] = "COMPLETE_AND_NO_MORE_MESSAGE_REMAIN_ON_PRIMARY"] = 1;
             values[valuesById[2] = "COMPLETE_ON_DEMAND_SYNC_BUT_MORE_MSG_REMAIN_ON_PRIMARY"] = 2;
             values[valuesById[3] = "COMPLETE_ON_DEMAND_SYNC_WITH_MORE_MSG_ON_PRIMARY_BUT_NO_ACCESS"] = 3;
             return values;
-        })();
+        });
 
-        Conversation.GroupAppealStatus = (function() {
+        $lazy(Conversation, "GroupAppealStatus", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "NO_APPEAL"] = 0;
             values[valuesById[1] = "APPEAL_IN_REVIEW"] = 1;
             values[valuesById[2] = "APPEAL_APPROVED"] = 2;
             values[valuesById[3] = "APPEAL_REJECTED"] = 3;
             return values;
-        })();
+        });
 
         return Conversation;
-    })();
+    });
 
-    proto.DeviceCapabilities = (function() {
+    $lazy(proto, "DeviceCapabilities", function() {
 
         function DeviceCapabilities(p) {
             if (p)
@@ -29338,7 +29354,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.DeviceCapabilities";
         };
 
-        DeviceCapabilities.AiThread = (function() {
+        $lazy(DeviceCapabilities, "AiThread", function() {
 
             function AiThread(p) {
                 if (p)
@@ -29447,18 +29463,18 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.DeviceCapabilities.AiThread";
             };
 
-            AiThread.SupportLevel = (function() {
+            $lazy(AiThread, "SupportLevel", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "NONE"] = 0;
                 values[valuesById[1] = "INFRA"] = 1;
                 values[valuesById[2] = "FULL"] = 2;
                 return values;
-            })();
+            });
 
             return AiThread;
-        })();
+        });
 
-        DeviceCapabilities.BusinessBroadcast = (function() {
+        $lazy(DeviceCapabilities, "BusinessBroadcast", function() {
 
             function BusinessBroadcast(p) {
                 if (p)
@@ -29631,17 +29647,17 @@ export const proto = $root.proto = (() => {
             };
 
             return BusinessBroadcast;
-        })();
+        });
 
-        DeviceCapabilities.ChatLockSupportLevel = (function() {
+        $lazy(DeviceCapabilities, "ChatLockSupportLevel", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "NONE"] = 0;
             values[valuesById[1] = "MINIMAL"] = 1;
             values[valuesById[2] = "FULL"] = 2;
             return values;
-        })();
+        });
 
-        DeviceCapabilities.LIDMigration = (function() {
+        $lazy(DeviceCapabilities, "LIDMigration", function() {
 
             function LIDMigration(p) {
                 if (p)
@@ -29744,17 +29760,17 @@ export const proto = $root.proto = (() => {
             };
 
             return LIDMigration;
-        })();
+        });
 
-        DeviceCapabilities.MemberNameTagPrimarySupport = (function() {
+        $lazy(DeviceCapabilities, "MemberNameTagPrimarySupport", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "DISABLED"] = 0;
             values[valuesById[1] = "RECEIVER_ENABLED"] = 1;
             values[valuesById[2] = "SENDER_ENABLED"] = 2;
             return values;
-        })();
+        });
 
-        DeviceCapabilities.UserHasAvatar = (function() {
+        $lazy(DeviceCapabilities, "UserHasAvatar", function() {
 
             function UserHasAvatar(p) {
                 if (p)
@@ -29847,12 +29863,12 @@ export const proto = $root.proto = (() => {
             };
 
             return UserHasAvatar;
-        })();
+        });
 
         return DeviceCapabilities;
-    })();
+    });
 
-    proto.DeviceConsistencyCodeMessage = (function() {
+    $lazy(proto, "DeviceConsistencyCodeMessage", function() {
 
         function DeviceConsistencyCodeMessage(p) {
             if (p)
@@ -29968,9 +29984,9 @@ export const proto = $root.proto = (() => {
         };
 
         return DeviceConsistencyCodeMessage;
-    })();
+    });
 
-    proto.DeviceListMetadata = (function() {
+    $lazy(proto, "DeviceListMetadata", function() {
 
         function DeviceListMetadata(p) {
             this.senderKeyIndexes = [];
@@ -30293,9 +30309,9 @@ export const proto = $root.proto = (() => {
         };
 
         return DeviceListMetadata;
-    })();
+    });
 
-    proto.DeviceProps = (function() {
+    $lazy(proto, "DeviceProps", function() {
 
         function DeviceProps(p) {
             if (p)
@@ -30576,7 +30592,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.DeviceProps";
         };
 
-        DeviceProps.AppVersion = (function() {
+        $lazy(DeviceProps, "AppVersion", function() {
 
             function AppVersion(p) {
                 if (p)
@@ -30749,9 +30765,9 @@ export const proto = $root.proto = (() => {
             };
 
             return AppVersion;
-        })();
+        });
 
-        DeviceProps.HistorySyncConfig = (function() {
+        $lazy(DeviceProps, "HistorySyncConfig", function() {
 
             function HistorySyncConfig(p) {
                 this.supportedBotChannelFbids = [];
@@ -31313,9 +31329,9 @@ export const proto = $root.proto = (() => {
             };
 
             return HistorySyncConfig;
-        })();
+        });
 
-        DeviceProps.PlatformType = (function() {
+        $lazy(DeviceProps, "PlatformType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN"] = 0;
             values[valuesById[1] = "CHROME"] = 1;
@@ -31343,12 +31359,12 @@ export const proto = $root.proto = (() => {
             values[valuesById[23] = "CLOUD_API"] = 23;
             values[valuesById[24] = "SMARTGLASSES"] = 24;
             return values;
-        })();
+        });
 
         return DeviceProps;
-    })();
+    });
 
-    proto.DisappearingMode = (function() {
+    $lazy(proto, "DisappearingMode", function() {
 
         function DisappearingMode(p) {
             if (p)
@@ -31550,16 +31566,16 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.DisappearingMode";
         };
 
-        DisappearingMode.Initiator = (function() {
+        $lazy(DisappearingMode, "Initiator", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "CHANGED_IN_CHAT"] = 0;
             values[valuesById[1] = "INITIATED_BY_ME"] = 1;
             values[valuesById[2] = "INITIATED_BY_OTHER"] = 2;
             values[valuesById[3] = "BIZ_UPGRADE_FB_HOSTING"] = 3;
             return values;
-        })();
+        });
 
-        DisappearingMode.Trigger = (function() {
+        $lazy(DisappearingMode, "Trigger", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN"] = 0;
             values[valuesById[1] = "CHAT_SETTING"] = 1;
@@ -31568,12 +31584,12 @@ export const proto = $root.proto = (() => {
             values[valuesById[4] = "BIZ_SUPPORTS_FB_HOSTING"] = 4;
             values[valuesById[5] = "UNKNOWN_GROUPS"] = 5;
             return values;
-        })();
+        });
 
         return DisappearingMode;
-    })();
+    });
 
-    proto.EmbeddedContent = (function() {
+    $lazy(proto, "EmbeddedContent", function() {
 
         function EmbeddedContent(p) {
             if (p)
@@ -31685,9 +31701,9 @@ export const proto = $root.proto = (() => {
         };
 
         return EmbeddedContent;
-    })();
+    });
 
-    proto.EmbeddedMessage = (function() {
+    $lazy(proto, "EmbeddedMessage", function() {
 
         function EmbeddedMessage(p) {
             if (p)
@@ -31802,9 +31818,9 @@ export const proto = $root.proto = (() => {
         };
 
         return EmbeddedMessage;
-    })();
+    });
 
-    proto.EmbeddedMusic = (function() {
+    $lazy(proto, "EmbeddedMusic", function() {
 
         function EmbeddedMusic(p) {
             if (p)
@@ -32199,9 +32215,9 @@ export const proto = $root.proto = (() => {
         };
 
         return EmbeddedMusic;
-    })();
+    });
 
-    proto.EncryptedPairingRequest = (function() {
+    $lazy(proto, "EncryptedPairingRequest", function() {
 
         function EncryptedPairingRequest(p) {
             if (p)
@@ -32320,9 +32336,9 @@ export const proto = $root.proto = (() => {
         };
 
         return EncryptedPairingRequest;
-    })();
+    });
 
-    proto.EphemeralSetting = (function() {
+    $lazy(proto, "EphemeralSetting", function() {
 
         function EphemeralSetting(p) {
             if (p)
@@ -32445,9 +32461,9 @@ export const proto = $root.proto = (() => {
         };
 
         return EphemeralSetting;
-    })();
+    });
 
-    proto.EventAdditionalMetadata = (function() {
+    $lazy(proto, "EventAdditionalMetadata", function() {
 
         function EventAdditionalMetadata(p) {
             if (p)
@@ -32540,9 +32556,9 @@ export const proto = $root.proto = (() => {
         };
 
         return EventAdditionalMetadata;
-    })();
+    });
 
-    proto.EventResponse = (function() {
+    $lazy(proto, "EventResponse", function() {
 
         function EventResponse(p) {
             if (p)
@@ -32709,9 +32725,9 @@ export const proto = $root.proto = (() => {
         };
 
         return EventResponse;
-    })();
+    });
 
-    proto.ExitCode = (function() {
+    $lazy(proto, "ExitCode", function() {
 
         function ExitCode(p) {
             if (p)
@@ -32834,9 +32850,9 @@ export const proto = $root.proto = (() => {
         };
 
         return ExitCode;
-    })();
+    });
 
-    proto.ExternalBlobReference = (function() {
+    $lazy(proto, "ExternalBlobReference", function() {
 
         function ExternalBlobReference(p) {
             if (p)
@@ -33048,9 +33064,9 @@ export const proto = $root.proto = (() => {
         };
 
         return ExternalBlobReference;
-    })();
+    });
 
-    proto.Field = (function() {
+    $lazy(proto, "Field", function() {
 
         function Field(p) {
             this.subfield = {};
@@ -33258,9 +33274,9 @@ export const proto = $root.proto = (() => {
         };
 
         return Field;
-    })();
+    });
 
-    proto.ForwardedAIBotMessageInfo = (function() {
+    $lazy(proto, "ForwardedAIBotMessageInfo", function() {
 
         function ForwardedAIBotMessageInfo(p) {
             if (p)
@@ -33393,9 +33409,9 @@ export const proto = $root.proto = (() => {
         };
 
         return ForwardedAIBotMessageInfo;
-    })();
+    });
 
-    proto.GlobalSettings = (function() {
+    $lazy(proto, "GlobalSettings", function() {
 
         function GlobalSettings(p) {
             if (p)
@@ -33923,9 +33939,9 @@ export const proto = $root.proto = (() => {
         };
 
         return GlobalSettings;
-    })();
+    });
 
-    proto.GroupHistoryBundleInfo = (function() {
+    $lazy(proto, "GroupHistoryBundleInfo", function() {
 
         function GroupHistoryBundleInfo(p) {
             if (p)
@@ -34068,7 +34084,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.GroupHistoryBundleInfo";
         };
 
-        GroupHistoryBundleInfo.ProcessState = (function() {
+        $lazy(GroupHistoryBundleInfo, "ProcessState", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "NOT_INJECTED"] = 0;
             values[valuesById[1] = "INJECTED"] = 1;
@@ -34077,12 +34093,12 @@ export const proto = $root.proto = (() => {
             values[valuesById[4] = "INJECTION_FAILED_NO_RETRY"] = 4;
             values[valuesById[5] = "DEDUPED"] = 5;
             return values;
-        })();
+        });
 
         return GroupHistoryBundleInfo;
-    })();
+    });
 
-    proto.GroupHistoryIndividualMessageInfo = (function() {
+    $lazy(proto, "GroupHistoryIndividualMessageInfo", function() {
 
         function GroupHistoryIndividualMessageInfo(p) {
             if (p)
@@ -34197,9 +34213,9 @@ export const proto = $root.proto = (() => {
         };
 
         return GroupHistoryIndividualMessageInfo;
-    })();
+    });
 
-    proto.GroupMention = (function() {
+    $lazy(proto, "GroupMention", function() {
 
         function GroupMention(p) {
             if (p)
@@ -34312,9 +34328,9 @@ export const proto = $root.proto = (() => {
         };
 
         return GroupMention;
-    })();
+    });
 
-    proto.GroupParticipant = (function() {
+    $lazy(proto, "GroupParticipant", function() {
 
         function GroupParticipant(p) {
             if (p)
@@ -34461,18 +34477,18 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.GroupParticipant";
         };
 
-        GroupParticipant.Rank = (function() {
+        $lazy(GroupParticipant, "Rank", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "REGULAR"] = 0;
             values[valuesById[1] = "ADMIN"] = 1;
             values[valuesById[2] = "SUPERADMIN"] = 2;
             return values;
-        })();
+        });
 
         return GroupParticipant;
-    })();
+    });
 
-    proto.GroupRootKeyShare = (function() {
+    $lazy(proto, "GroupRootKeyShare", function() {
 
         function GroupRootKeyShare(p) {
             this.keys = [];
@@ -34574,9 +34590,9 @@ export const proto = $root.proto = (() => {
         };
 
         return GroupRootKeyShare;
-    })();
+    });
 
-    proto.GroupRootKeyShareEntry = (function() {
+    $lazy(proto, "GroupRootKeyShareEntry", function() {
 
         function GroupRootKeyShareEntry(p) {
             if (p)
@@ -34752,9 +34768,9 @@ export const proto = $root.proto = (() => {
         };
 
         return GroupRootKeyShareEntry;
-    })();
+    });
 
-    proto.HandshakeMessage = (function() {
+    $lazy(proto, "HandshakeMessage", function() {
 
         function HandshakeMessage(p) {
             if (p)
@@ -34892,7 +34908,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.HandshakeMessage";
         };
 
-        HandshakeMessage.ClientFinish = (function() {
+        $lazy(HandshakeMessage, "ClientFinish", function() {
 
             function ClientFinish(p) {
                 if (p)
@@ -35077,9 +35093,9 @@ export const proto = $root.proto = (() => {
             };
 
             return ClientFinish;
-        })();
+        });
 
-        HandshakeMessage.ClientHello = (function() {
+        $lazy(HandshakeMessage, "ClientHello", function() {
 
             function ClientHello(p) {
                 if (p)
@@ -35411,9 +35427,9 @@ export const proto = $root.proto = (() => {
             };
 
             return ClientHello;
-        })();
+        });
 
-        HandshakeMessage.HandshakePqMode = (function() {
+        $lazy(HandshakeMessage, "HandshakePqMode", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "HANDSHAKE_PQ_MODE_UNKNOWN"] = 0;
             values[valuesById[1] = "XXKEM"] = 1;
@@ -35425,9 +35441,9 @@ export const proto = $root.proto = (() => {
             values[valuesById[7] = "XXKEM_2"] = 7;
             values[valuesById[8] = "IKKEM_2"] = 8;
             return values;
-        })();
+        });
 
-        HandshakeMessage.ServerHello = (function() {
+        $lazy(HandshakeMessage, "ServerHello", function() {
 
             function ServerHello(p) {
                 if (p)
@@ -35638,12 +35654,12 @@ export const proto = $root.proto = (() => {
             };
 
             return ServerHello;
-        })();
+        });
 
         return HandshakeMessage;
-    })();
+    });
 
-    proto.HatchMetadataSync = (function() {
+    $lazy(proto, "HatchMetadataSync", function() {
 
         function HatchMetadataSync(p) {
             if (p)
@@ -35789,9 +35805,9 @@ export const proto = $root.proto = (() => {
         };
 
         return HatchMetadataSync;
-    })();
+    });
 
-    proto.HistorySync = (function() {
+    $lazy(proto, "HistorySync", function() {
 
         function HistorySync(p) {
             this.conversations = [];
@@ -36399,14 +36415,14 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.HistorySync";
         };
 
-        HistorySync.BotAIWaitListState = (function() {
+        $lazy(HistorySync, "BotAIWaitListState", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "IN_WAITLIST"] = 0;
             values[valuesById[1] = "AI_AVAILABLE"] = 1;
             return values;
-        })();
+        });
 
-        HistorySync.HistorySyncType = (function() {
+        $lazy(HistorySync, "HistorySyncType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "INITIAL_BOOTSTRAP"] = 0;
             values[valuesById[1] = "INITIAL_STATUS_V3"] = 1;
@@ -36416,12 +36432,12 @@ export const proto = $root.proto = (() => {
             values[valuesById[5] = "NON_BLOCKING_DATA"] = 5;
             values[valuesById[6] = "ON_DEMAND"] = 6;
             return values;
-        })();
+        });
 
         return HistorySync;
-    })();
+    });
 
-    proto.HistorySyncMsg = (function() {
+    $lazy(proto, "HistorySyncMsg", function() {
 
         function HistorySyncMsg(p) {
             if (p)
@@ -36546,9 +36562,9 @@ export const proto = $root.proto = (() => {
         };
 
         return HistorySyncMsg;
-    })();
+    });
 
-    proto.HydratedTemplateButton = (function() {
+    $lazy(proto, "HydratedTemplateButton", function() {
 
         function HydratedTemplateButton(p) {
             if (p)
@@ -36696,7 +36712,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.HydratedTemplateButton";
         };
 
-        HydratedTemplateButton.HydratedCallButton = (function() {
+        $lazy(HydratedTemplateButton, "HydratedCallButton", function() {
 
             function HydratedCallButton(p) {
                 if (p)
@@ -36809,9 +36825,9 @@ export const proto = $root.proto = (() => {
             };
 
             return HydratedCallButton;
-        })();
+        });
 
-        HydratedTemplateButton.HydratedQuickReplyButton = (function() {
+        $lazy(HydratedTemplateButton, "HydratedQuickReplyButton", function() {
 
             function HydratedQuickReplyButton(p) {
                 if (p)
@@ -36924,9 +36940,9 @@ export const proto = $root.proto = (() => {
             };
 
             return HydratedQuickReplyButton;
-        })();
+        });
 
-        HydratedTemplateButton.HydratedURLButton = (function() {
+        $lazy(HydratedTemplateButton, "HydratedURLButton", function() {
 
             function HydratedURLButton(p) {
                 if (p)
@@ -37095,21 +37111,21 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.HydratedTemplateButton.HydratedURLButton";
             };
 
-            HydratedURLButton.WebviewPresentationType = (function() {
+            $lazy(HydratedURLButton, "WebviewPresentationType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[1] = "FULL"] = 1;
                 values[valuesById[2] = "TALL"] = 2;
                 values[valuesById[3] = "COMPACT"] = 3;
                 return values;
-            })();
+            });
 
             return HydratedURLButton;
-        })();
+        });
 
         return HydratedTemplateButton;
-    })();
+    });
 
-    proto.IdentityKeyPairStructure = (function() {
+    $lazy(proto, "IdentityKeyPairStructure", function() {
 
         function IdentityKeyPairStructure(p) {
             if (p)
@@ -37228,9 +37244,9 @@ export const proto = $root.proto = (() => {
         };
 
         return IdentityKeyPairStructure;
-    })();
+    });
 
-    proto.InThreadSurveyMetadata = (function() {
+    $lazy(proto, "InThreadSurveyMetadata", function() {
 
         function InThreadSurveyMetadata(p) {
             this.questions = [];
@@ -37682,7 +37698,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.InThreadSurveyMetadata";
         };
 
-        InThreadSurveyMetadata.InThreadSurveyOption = (function() {
+        $lazy(InThreadSurveyMetadata, "InThreadSurveyOption", function() {
 
             function InThreadSurveyOption(p) {
                 if (p)
@@ -37815,9 +37831,9 @@ export const proto = $root.proto = (() => {
             };
 
             return InThreadSurveyOption;
-        })();
+        });
 
-        InThreadSurveyMetadata.InThreadSurveyPrivacyStatementPart = (function() {
+        $lazy(InThreadSurveyMetadata, "InThreadSurveyPrivacyStatementPart", function() {
 
             function InThreadSurveyPrivacyStatementPart(p) {
                 if (p)
@@ -37930,9 +37946,9 @@ export const proto = $root.proto = (() => {
             };
 
             return InThreadSurveyPrivacyStatementPart;
-        })();
+        });
 
-        InThreadSurveyMetadata.InThreadSurveyQuestion = (function() {
+        $lazy(InThreadSurveyMetadata, "InThreadSurveyQuestion", function() {
 
             function InThreadSurveyQuestion(p) {
                 this.questionOptions = [];
@@ -38076,12 +38092,12 @@ export const proto = $root.proto = (() => {
             };
 
             return InThreadSurveyQuestion;
-        })();
+        });
 
         return InThreadSurveyMetadata;
-    })();
+    });
 
-    proto.InlineContact = (function() {
+    $lazy(proto, "InlineContact", function() {
 
         function InlineContact(p) {
             if (p)
@@ -38254,9 +38270,9 @@ export const proto = $root.proto = (() => {
         };
 
         return InlineContact;
-    })();
+    });
 
-    proto.InteractiveAnnotation = (function() {
+    $lazy(proto, "InteractiveAnnotation", function() {
 
         function InteractiveAnnotation(p) {
             this.polygonVertices = [];
@@ -38509,18 +38525,18 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.InteractiveAnnotation";
         };
 
-        InteractiveAnnotation.StatusLinkType = (function() {
+        $lazy(InteractiveAnnotation, "StatusLinkType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[1] = "RASTERIZED_LINK_PREVIEW"] = 1;
             values[valuesById[2] = "RASTERIZED_LINK_TRUNCATED"] = 2;
             values[valuesById[3] = "RASTERIZED_LINK_FULL_URL"] = 3;
             return values;
-        })();
+        });
 
         return InteractiveAnnotation;
-    })();
+    });
 
-    proto.InteractiveMessageAdditionalMetadata = (function() {
+    $lazy(proto, "InteractiveMessageAdditionalMetadata", function() {
 
         function InteractiveMessageAdditionalMetadata(p) {
             if (p)
@@ -38613,9 +38629,9 @@ export const proto = $root.proto = (() => {
         };
 
         return InteractiveMessageAdditionalMetadata;
-    })();
+    });
 
-    proto.KeepInChat = (function() {
+    $lazy(proto, "KeepInChat", function() {
 
         function KeepInChat(p) {
             if (p)
@@ -38857,17 +38873,17 @@ export const proto = $root.proto = (() => {
         };
 
         return KeepInChat;
-    })();
+    });
 
-    proto.KeepType = (function() {
+    $lazy(proto, "KeepType", function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "UNKNOWN"] = 0;
         values[valuesById[1] = "KEEP_FOR_ALL"] = 1;
         values[valuesById[2] = "UNDO_KEEP_FOR_ALL"] = 2;
         return values;
-    })();
+    });
 
-    proto.KeyExchangeMessage = (function() {
+    $lazy(proto, "KeyExchangeMessage", function() {
 
         function KeyExchangeMessage(p) {
             if (p)
@@ -39052,9 +39068,9 @@ export const proto = $root.proto = (() => {
         };
 
         return KeyExchangeMessage;
-    })();
+    });
 
-    proto.KeyId = (function() {
+    $lazy(proto, "KeyId", function() {
 
         function KeyId(p) {
             if (p)
@@ -39150,9 +39166,9 @@ export const proto = $root.proto = (() => {
         };
 
         return KeyId;
-    })();
+    });
 
-    proto.LIDMigrationMapping = (function() {
+    $lazy(proto, "LIDMigrationMapping", function() {
 
         function LIDMigrationMapping(p) {
             if (p)
@@ -39313,9 +39329,9 @@ export const proto = $root.proto = (() => {
         };
 
         return LIDMigrationMapping;
-    })();
+    });
 
-    proto.LIDMigrationMappingSyncMessage = (function() {
+    $lazy(proto, "LIDMigrationMappingSyncMessage", function() {
 
         function LIDMigrationMappingSyncMessage(p) {
             if (p)
@@ -39411,9 +39427,9 @@ export const proto = $root.proto = (() => {
         };
 
         return LIDMigrationMappingSyncMessage;
-    })();
+    });
 
-    proto.LIDMigrationMappingSyncPayload = (function() {
+    $lazy(proto, "LIDMigrationMappingSyncPayload", function() {
 
         function LIDMigrationMappingSyncPayload(p) {
             this.pnToLidMappings = [];
@@ -39547,9 +39563,9 @@ export const proto = $root.proto = (() => {
         };
 
         return LIDMigrationMappingSyncPayload;
-    })();
+    });
 
-    proto.LegacyMessage = (function() {
+    $lazy(proto, "LegacyMessage", function() {
 
         function LegacyMessage(p) {
             if (p)
@@ -39666,9 +39682,9 @@ export const proto = $root.proto = (() => {
         };
 
         return LegacyMessage;
-    })();
+    });
 
-    proto.LimitSharing = (function() {
+    $lazy(proto, "LimitSharing", function() {
 
         function LimitSharing(p) {
             if (p)
@@ -39851,19 +39867,19 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.LimitSharing";
         };
 
-        LimitSharing.TriggerType = (function() {
+        $lazy(LimitSharing, "TriggerType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN"] = 0;
             values[valuesById[1] = "CHAT_SETTING"] = 1;
             values[valuesById[2] = "BIZ_SUPPORTS_FB_HOSTING"] = 2;
             values[valuesById[3] = "UNKNOWN_GROUP"] = 3;
             return values;
-        })();
+        });
 
         return LimitSharing;
-    })();
+    });
 
-    proto.LocalizedName = (function() {
+    $lazy(proto, "LocalizedName", function() {
 
         function LocalizedName(p) {
             if (p)
@@ -39996,9 +40012,9 @@ export const proto = $root.proto = (() => {
         };
 
         return LocalizedName;
-    })();
+    });
 
-    proto.Location = (function() {
+    $lazy(proto, "Location", function() {
 
         function Location(p) {
             if (p)
@@ -40131,9 +40147,9 @@ export const proto = $root.proto = (() => {
         };
 
         return Location;
-    })();
+    });
 
-    proto.MediaData = (function() {
+    $lazy(proto, "MediaData", function() {
 
         function MediaData(p) {
             if (p)
@@ -40226,9 +40242,9 @@ export const proto = $root.proto = (() => {
         };
 
         return MediaData;
-    })();
+    });
 
-    proto.MediaDomainInfo = (function() {
+    $lazy(proto, "MediaDomainInfo", function() {
 
         function MediaDomainInfo(p) {
             if (p)
@@ -40361,17 +40377,17 @@ export const proto = $root.proto = (() => {
         };
 
         return MediaDomainInfo;
-    })();
+    });
 
-    proto.MediaKeyDomain = (function() {
+    $lazy(proto, "MediaKeyDomain", function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "MEDIA_KEY_DOMAIN_UNKNOWN"] = 0;
         values[valuesById[1] = "MEDIA_KEY_DOMAIN_E2EE"] = 1;
         values[valuesById[2] = "MEDIA_KEY_DOMAIN_NON_E2EE"] = 2;
         return values;
-    })();
+    });
 
-    proto.MediaNotifyMessage = (function() {
+    $lazy(proto, "MediaNotifyMessage", function() {
 
         function MediaNotifyMessage(p) {
             if (p)
@@ -40517,9 +40533,9 @@ export const proto = $root.proto = (() => {
         };
 
         return MediaNotifyMessage;
-    })();
+    });
 
-    proto.MediaRetryNotification = (function() {
+    $lazy(proto, "MediaRetryNotification", function() {
 
         function MediaRetryNotification(p) {
             if (p)
@@ -40695,27 +40711,27 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.MediaRetryNotification";
         };
 
-        MediaRetryNotification.ResultType = (function() {
+        $lazy(MediaRetryNotification, "ResultType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "GENERAL_ERROR"] = 0;
             values[valuesById[1] = "SUCCESS"] = 1;
             values[valuesById[2] = "NOT_FOUND"] = 2;
             values[valuesById[3] = "DECRYPTION_ERROR"] = 3;
             return values;
-        })();
+        });
 
         return MediaRetryNotification;
-    })();
+    });
 
-    proto.MediaVisibility = (function() {
+    $lazy(proto, "MediaVisibility", function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "DEFAULT"] = 0;
         values[valuesById[1] = "OFF"] = 1;
         values[valuesById[2] = "ON"] = 2;
         return values;
-    })();
+    });
 
-    proto.MemberLabel = (function() {
+    $lazy(proto, "MemberLabel", function() {
 
         function MemberLabel(p) {
             if (p)
@@ -40838,9 +40854,9 @@ export const proto = $root.proto = (() => {
         };
 
         return MemberLabel;
-    })();
+    });
 
-    proto.Message = (function() {
+    $lazy(proto, "Message", function() {
 
         function Message(p) {
             if (p)
@@ -43264,7 +43280,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.Message";
         };
 
-        Message.AlbumMessage = (function() {
+        $lazy(Message, "AlbumMessage", function() {
 
             function AlbumMessage(p) {
                 if (p)
@@ -43399,9 +43415,9 @@ export const proto = $root.proto = (() => {
             };
 
             return AlbumMessage;
-        })();
+        });
 
-        Message.AppStateFatalExceptionNotification = (function() {
+        $lazy(Message, "AppStateFatalExceptionNotification", function() {
 
             function AppStateFatalExceptionNotification(p) {
                 this.collectionNames = [];
@@ -43533,9 +43549,9 @@ export const proto = $root.proto = (() => {
             };
 
             return AppStateFatalExceptionNotification;
-        })();
+        });
 
-        Message.AppStateSyncKey = (function() {
+        $lazy(Message, "AppStateSyncKey", function() {
 
             function AppStateSyncKey(p) {
                 if (p)
@@ -43652,9 +43668,9 @@ export const proto = $root.proto = (() => {
             };
 
             return AppStateSyncKey;
-        })();
+        });
 
-        Message.AppStateSyncKeyData = (function() {
+        $lazy(Message, "AppStateSyncKeyData", function() {
 
             function AppStateSyncKeyData(p) {
                 if (p)
@@ -43802,9 +43818,9 @@ export const proto = $root.proto = (() => {
             };
 
             return AppStateSyncKeyData;
-        })();
+        });
 
-        Message.AppStateSyncKeyFingerprint = (function() {
+        $lazy(Message, "AppStateSyncKeyFingerprint", function() {
 
             function AppStateSyncKeyFingerprint(p) {
                 this.deviceIndexes = [];
@@ -43953,9 +43969,9 @@ export const proto = $root.proto = (() => {
             };
 
             return AppStateSyncKeyFingerprint;
-        })();
+        });
 
-        Message.AppStateSyncKeyId = (function() {
+        $lazy(Message, "AppStateSyncKeyId", function() {
 
             function AppStateSyncKeyId(p) {
                 if (p)
@@ -44051,9 +44067,9 @@ export const proto = $root.proto = (() => {
             };
 
             return AppStateSyncKeyId;
-        })();
+        });
 
-        Message.AppStateSyncKeyRequest = (function() {
+        $lazy(Message, "AppStateSyncKeyRequest", function() {
 
             function AppStateSyncKeyRequest(p) {
                 this.keyIds = [];
@@ -44155,9 +44171,9 @@ export const proto = $root.proto = (() => {
             };
 
             return AppStateSyncKeyRequest;
-        })();
+        });
 
-        Message.AppStateSyncKeyShare = (function() {
+        $lazy(Message, "AppStateSyncKeyShare", function() {
 
             function AppStateSyncKeyShare(p) {
                 this.keys = [];
@@ -44259,9 +44275,9 @@ export const proto = $root.proto = (() => {
             };
 
             return AppStateSyncKeyShare;
-        })();
+        });
 
-        Message.AudioMessage = (function() {
+        $lazy(Message, "AudioMessage", function() {
 
             function AudioMessage(p) {
                 if (p)
@@ -44691,9 +44707,9 @@ export const proto = $root.proto = (() => {
             };
 
             return AudioMessage;
-        })();
+        });
 
-        Message.BCallMessage = (function() {
+        $lazy(Message, "BCallMessage", function() {
 
             function BCallMessage(p) {
                 if (p)
@@ -44865,18 +44881,18 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.BCallMessage";
             };
 
-            BCallMessage.MediaType = (function() {
+            $lazy(BCallMessage, "MediaType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "AUDIO"] = 1;
                 values[valuesById[2] = "VIDEO"] = 2;
                 return values;
-            })();
+            });
 
             return BCallMessage;
-        })();
+        });
 
-        Message.ButtonsMessage = (function() {
+        $lazy(Message, "ButtonsMessage", function() {
 
             function ButtonsMessage(p) {
                 this.buttons = [];
@@ -45182,7 +45198,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.ButtonsMessage";
             };
 
-            ButtonsMessage.Button = (function() {
+            $lazy(ButtonsMessage, "Button", function() {
 
                 function Button(p) {
                     if (p)
@@ -45355,7 +45371,7 @@ export const proto = $root.proto = (() => {
                     return typeUrlPrefix + "/proto.Message.ButtonsMessage.Button";
                 };
 
-                Button.ButtonText = (function() {
+                $lazy(Button, "ButtonText", function() {
 
                     function ButtonText(p) {
                         if (p)
@@ -45448,9 +45464,9 @@ export const proto = $root.proto = (() => {
                     };
 
                     return ButtonText;
-                })();
+                });
 
-                Button.NativeFlowInfo = (function() {
+                $lazy(Button, "NativeFlowInfo", function() {
 
                     function NativeFlowInfo(p) {
                         if (p)
@@ -45563,20 +45579,20 @@ export const proto = $root.proto = (() => {
                     };
 
                     return NativeFlowInfo;
-                })();
+                });
 
-                Button.Type = (function() {
+                $lazy(Button, "Type", function() {
                     const valuesById = {}, values = Object.create(valuesById);
                     values[valuesById[0] = "UNKNOWN"] = 0;
                     values[valuesById[1] = "RESPONSE"] = 1;
                     values[valuesById[2] = "NATIVE_FLOW"] = 2;
                     return values;
-                })();
+                });
 
                 return Button;
-            })();
+            });
 
-            ButtonsMessage.HeaderType = (function() {
+            $lazy(ButtonsMessage, "HeaderType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "EMPTY"] = 1;
@@ -45586,12 +45602,12 @@ export const proto = $root.proto = (() => {
                 values[valuesById[5] = "VIDEO"] = 5;
                 values[valuesById[6] = "LOCATION"] = 6;
                 return values;
-            })();
+            });
 
             return ButtonsMessage;
-        })();
+        });
 
-        Message.ButtonsResponseMessage = (function() {
+        $lazy(Message, "ButtonsResponseMessage", function() {
 
             function ButtonsResponseMessage(p) {
                 if (p)
@@ -45758,17 +45774,17 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.ButtonsResponseMessage";
             };
 
-            ButtonsResponseMessage.Type = (function() {
+            $lazy(ButtonsResponseMessage, "Type", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "DISPLAY_TEXT"] = 1;
                 return values;
-            })();
+            });
 
             return ButtonsResponseMessage;
-        })();
+        });
 
-        Message.Call = (function() {
+        $lazy(Message, "Call", function() {
 
             function Call(p) {
                 if (p)
@@ -46074,9 +46090,9 @@ export const proto = $root.proto = (() => {
             };
 
             return Call;
-        })();
+        });
 
-        Message.CallLogMessage = (function() {
+        $lazy(Message, "CallLogMessage", function() {
 
             function CallLogMessage(p) {
                 this.participants = [];
@@ -46323,7 +46339,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.CallLogMessage";
             };
 
-            CallLogMessage.CallOutcome = (function() {
+            $lazy(CallLogMessage, "CallOutcome", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "CONNECTED"] = 0;
                 values[valuesById[1] = "MISSED"] = 1;
@@ -46334,9 +46350,9 @@ export const proto = $root.proto = (() => {
                 values[valuesById[6] = "SILENCED_BY_DND"] = 6;
                 values[valuesById[7] = "SILENCED_UNKNOWN_CALLER"] = 7;
                 return values;
-            })();
+            });
 
-            CallLogMessage.CallParticipant = (function() {
+            $lazy(CallLogMessage, "CallParticipant", function() {
 
                 function CallParticipant(p) {
                     if (p)
@@ -46486,20 +46502,20 @@ export const proto = $root.proto = (() => {
                 };
 
                 return CallParticipant;
-            })();
+            });
 
-            CallLogMessage.CallType = (function() {
+            $lazy(CallLogMessage, "CallType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "REGULAR"] = 0;
                 values[valuesById[1] = "SCHEDULED_CALL"] = 1;
                 values[valuesById[2] = "VOICE_CHAT"] = 2;
                 return values;
-            })();
+            });
 
             return CallLogMessage;
-        })();
+        });
 
-        Message.CancelPaymentRequestMessage = (function() {
+        $lazy(Message, "CancelPaymentRequestMessage", function() {
 
             function CancelPaymentRequestMessage(p) {
                 if (p)
@@ -46594,9 +46610,9 @@ export const proto = $root.proto = (() => {
             };
 
             return CancelPaymentRequestMessage;
-        })();
+        });
 
-        Message.Chat = (function() {
+        $lazy(Message, "Chat", function() {
 
             function Chat(p) {
                 if (p)
@@ -46709,9 +46725,9 @@ export const proto = $root.proto = (() => {
             };
 
             return Chat;
-        })();
+        });
 
-        Message.ChatCustomImageWallpaper = (function() {
+        $lazy(Message, "ChatCustomImageWallpaper", function() {
 
             function ChatCustomImageWallpaper(p) {
                 if (p)
@@ -46893,9 +46909,9 @@ export const proto = $root.proto = (() => {
             };
 
             return ChatCustomImageWallpaper;
-        })();
+        });
 
-        Message.ChatDefaultWallpaper = (function() {
+        $lazy(Message, "ChatDefaultWallpaper", function() {
 
             function ChatDefaultWallpaper(p) {
                 if (p)
@@ -46988,9 +47004,9 @@ export const proto = $root.proto = (() => {
             };
 
             return ChatDefaultWallpaper;
-        })();
+        });
 
-        Message.ChatSolidColorWallpaper = (function() {
+        $lazy(Message, "ChatSolidColorWallpaper", function() {
 
             function ChatSolidColorWallpaper(p) {
                 if (p)
@@ -47123,9 +47139,9 @@ export const proto = $root.proto = (() => {
             };
 
             return ChatSolidColorWallpaper;
-        })();
+        });
 
-        Message.ChatStockImageWallpaper = (function() {
+        $lazy(Message, "ChatStockImageWallpaper", function() {
 
             function ChatStockImageWallpaper(p) {
                 if (p)
@@ -47238,9 +47254,9 @@ export const proto = $root.proto = (() => {
             };
 
             return ChatStockImageWallpaper;
-        })();
+        });
 
-        Message.ChatThemeSetting = (function() {
+        $lazy(Message, "ChatThemeSetting", function() {
 
             function ChatThemeSetting(p) {
                 if (p)
@@ -47456,9 +47472,9 @@ export const proto = $root.proto = (() => {
             };
 
             return ChatThemeSetting;
-        })();
+        });
 
-        Message.CloudAPIThreadControlNotification = (function() {
+        $lazy(Message, "CloudAPIThreadControlNotification", function() {
 
             function CloudAPIThreadControlNotification(p) {
                 if (p)
@@ -47683,16 +47699,16 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.CloudAPIThreadControlNotification";
             };
 
-            CloudAPIThreadControlNotification.CloudAPIThreadControl = (function() {
+            $lazy(CloudAPIThreadControlNotification, "CloudAPIThreadControl", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "CONTROL_PASSED"] = 1;
                 values[valuesById[2] = "CONTROL_TAKEN"] = 2;
                 values[valuesById[3] = "INFO"] = 3;
                 return values;
-            })();
+            });
 
-            CloudAPIThreadControlNotification.CloudAPIThreadControlNotificationContent = (function() {
+            $lazy(CloudAPIThreadControlNotification, "CloudAPIThreadControlNotificationContent", function() {
 
                 function CloudAPIThreadControlNotificationContent(p) {
                     if (p)
@@ -47805,12 +47821,12 @@ export const proto = $root.proto = (() => {
                 };
 
                 return CloudAPIThreadControlNotificationContent;
-            })();
+            });
 
             return CloudAPIThreadControlNotification;
-        })();
+        });
 
-        Message.CommentMessage = (function() {
+        $lazy(Message, "CommentMessage", function() {
 
             function CommentMessage(p) {
                 if (p)
@@ -47927,9 +47943,9 @@ export const proto = $root.proto = (() => {
             };
 
             return CommentMessage;
-        })();
+        });
 
-        Message.ConditionalRevealMessage = (function() {
+        $lazy(Message, "ConditionalRevealMessage", function() {
 
             function ConditionalRevealMessage(p) {
                 if (p)
@@ -48100,17 +48116,17 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.ConditionalRevealMessage";
             };
 
-            ConditionalRevealMessage.ConditionalRevealMessageType = (function() {
+            $lazy(ConditionalRevealMessage, "ConditionalRevealMessageType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "SCHEDULED_MESSAGE"] = 1;
                 return values;
-            })();
+            });
 
             return ConditionalRevealMessage;
-        })();
+        });
 
-        Message.ContactMessage = (function() {
+        $lazy(Message, "ContactMessage", function() {
 
             function ContactMessage(p) {
                 if (p)
@@ -48265,9 +48281,9 @@ export const proto = $root.proto = (() => {
             };
 
             return ContactMessage;
-        })();
+        });
 
-        Message.ContactsArrayMessage = (function() {
+        $lazy(Message, "ContactsArrayMessage", function() {
 
             function ContactsArrayMessage(p) {
                 this.contacts = [];
@@ -48413,9 +48429,9 @@ export const proto = $root.proto = (() => {
             };
 
             return ContactsArrayMessage;
-        })();
+        });
 
-        Message.DeclinePaymentRequestMessage = (function() {
+        $lazy(Message, "DeclinePaymentRequestMessage", function() {
 
             function DeclinePaymentRequestMessage(p) {
                 if (p)
@@ -48510,9 +48526,9 @@ export const proto = $root.proto = (() => {
             };
 
             return DeclinePaymentRequestMessage;
-        })();
+        });
 
-        Message.DeviceSentMessage = (function() {
+        $lazy(Message, "DeviceSentMessage", function() {
 
             function DeviceSentMessage(p) {
                 if (p)
@@ -48647,9 +48663,9 @@ export const proto = $root.proto = (() => {
             };
 
             return DeviceSentMessage;
-        })();
+        });
 
-        Message.DocumentMessage = (function() {
+        $lazy(Message, "DocumentMessage", function() {
 
             function DocumentMessage(p) {
                 if (p)
@@ -49182,9 +49198,9 @@ export const proto = $root.proto = (() => {
             };
 
             return DocumentMessage;
-        })();
+        });
 
-        Message.EncCommentMessage = (function() {
+        $lazy(Message, "EncCommentMessage", function() {
 
             function EncCommentMessage(p) {
                 if (p)
@@ -49325,9 +49341,9 @@ export const proto = $root.proto = (() => {
             };
 
             return EncCommentMessage;
-        })();
+        });
 
-        Message.EncEventResponseMessage = (function() {
+        $lazy(Message, "EncEventResponseMessage", function() {
 
             function EncEventResponseMessage(p) {
                 if (p)
@@ -49468,9 +49484,9 @@ export const proto = $root.proto = (() => {
             };
 
             return EncEventResponseMessage;
-        })();
+        });
 
-        Message.EncReactionMessage = (function() {
+        $lazy(Message, "EncReactionMessage", function() {
 
             function EncReactionMessage(p) {
                 if (p)
@@ -49611,9 +49627,9 @@ export const proto = $root.proto = (() => {
             };
 
             return EncReactionMessage;
-        })();
+        });
 
-        Message.EventInviteMessage = (function() {
+        $lazy(Message, "EventInviteMessage", function() {
 
             function EventInviteMessage(p) {
                 if (p)
@@ -49891,9 +49907,9 @@ export const proto = $root.proto = (() => {
             };
 
             return EventInviteMessage;
-        })();
+        });
 
-        Message.EventMessage = (function() {
+        $lazy(Message, "EventMessage", function() {
 
             function EventMessage(p) {
                 if (p)
@@ -50240,9 +50256,9 @@ export const proto = $root.proto = (() => {
             };
 
             return EventMessage;
-        })();
+        });
 
-        Message.EventResponseMessage = (function() {
+        $lazy(Message, "EventResponseMessage", function() {
 
             function EventResponseMessage(p) {
                 if (p)
@@ -50405,19 +50421,19 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.EventResponseMessage";
             };
 
-            EventResponseMessage.EventResponseType = (function() {
+            $lazy(EventResponseMessage, "EventResponseType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "GOING"] = 1;
                 values[valuesById[2] = "NOT_GOING"] = 2;
                 values[valuesById[3] = "MAYBE"] = 3;
                 return values;
-            })();
+            });
 
             return EventResponseMessage;
-        })();
+        });
 
-        Message.ExtendedTextMessage = (function() {
+        $lazy(Message, "ExtendedTextMessage", function() {
 
             function ExtendedTextMessage(p) {
                 this.endCardTiles = [];
@@ -51285,7 +51301,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.ExtendedTextMessage";
             };
 
-            ExtendedTextMessage.FontType = (function() {
+            $lazy(ExtendedTextMessage, "FontType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "SYSTEM"] = 0;
                 values[valuesById[1] = "SYSTEM_TEXT"] = 1;
@@ -51296,18 +51312,18 @@ export const proto = $root.proto = (() => {
                 values[valuesById[9] = "EXO2_EXTRABOLD"] = 9;
                 values[valuesById[10] = "COURIERPRIME_BOLD"] = 10;
                 return values;
-            })();
+            });
 
-            ExtendedTextMessage.InviteLinkGroupType = (function() {
+            $lazy(ExtendedTextMessage, "InviteLinkGroupType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "DEFAULT"] = 0;
                 values[valuesById[1] = "PARENT"] = 1;
                 values[valuesById[2] = "SUB"] = 2;
                 values[valuesById[3] = "DEFAULT_SUB"] = 3;
                 return values;
-            })();
+            });
 
-            ExtendedTextMessage.PreviewType = (function() {
+            $lazy(ExtendedTextMessage, "PreviewType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "NONE"] = 0;
                 values[valuesById[1] = "VIDEO"] = 1;
@@ -51316,12 +51332,12 @@ export const proto = $root.proto = (() => {
                 values[valuesById[6] = "PAYMENT_LINKS"] = 6;
                 values[valuesById[7] = "PROFILE"] = 7;
                 return values;
-            })();
+            });
 
             return ExtendedTextMessage;
-        })();
+        });
 
-        Message.FullHistorySyncOnDemandConfig = (function() {
+        $lazy(Message, "FullHistorySyncOnDemandConfig", function() {
 
             function FullHistorySyncOnDemandConfig(p) {
                 if (p)
@@ -51444,9 +51460,9 @@ export const proto = $root.proto = (() => {
             };
 
             return FullHistorySyncOnDemandConfig;
-        })();
+        });
 
-        Message.FullHistorySyncOnDemandRequestMetadata = (function() {
+        $lazy(Message, "FullHistorySyncOnDemandRequestMetadata", function() {
 
             function FullHistorySyncOnDemandRequestMetadata(p) {
                 if (p)
@@ -51582,9 +51598,9 @@ export const proto = $root.proto = (() => {
             };
 
             return FullHistorySyncOnDemandRequestMetadata;
-        })();
+        });
 
-        Message.FutureProofMessage = (function() {
+        $lazy(Message, "FutureProofMessage", function() {
 
             function FutureProofMessage(p) {
                 if (p)
@@ -51679,9 +51695,9 @@ export const proto = $root.proto = (() => {
             };
 
             return FutureProofMessage;
-        })();
+        });
 
-        Message.GroupInviteMessage = (function() {
+        $lazy(Message, "GroupInviteMessage", function() {
 
             function GroupInviteMessage(p) {
                 if (p)
@@ -51941,17 +51957,17 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.GroupInviteMessage";
             };
 
-            GroupInviteMessage.GroupType = (function() {
+            $lazy(GroupInviteMessage, "GroupType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "DEFAULT"] = 0;
                 values[valuesById[1] = "PARENT"] = 1;
                 return values;
-            })();
+            });
 
             return GroupInviteMessage;
-        })();
+        });
 
-        Message.HighlyStructuredMessage = (function() {
+        $lazy(Message, "HighlyStructuredMessage", function() {
 
             function HighlyStructuredMessage(p) {
                 this.params = [];
@@ -52223,7 +52239,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.HighlyStructuredMessage";
             };
 
-            HighlyStructuredMessage.HSMLocalizableParameter = (function() {
+            $lazy(HighlyStructuredMessage, "HSMLocalizableParameter", function() {
 
                 function HSMLocalizableParameter(p) {
                     if (p)
@@ -52354,7 +52370,7 @@ export const proto = $root.proto = (() => {
                     return typeUrlPrefix + "/proto.Message.HighlyStructuredMessage.HSMLocalizableParameter";
                 };
 
-                HSMLocalizableParameter.HSMCurrency = (function() {
+                $lazy(HSMLocalizableParameter, "HSMCurrency", function() {
 
                     function HSMCurrency(p) {
                         if (p)
@@ -52477,9 +52493,9 @@ export const proto = $root.proto = (() => {
                     };
 
                     return HSMCurrency;
-                })();
+                });
 
-                HSMLocalizableParameter.HSMDateTime = (function() {
+                $lazy(HSMLocalizableParameter, "HSMDateTime", function() {
 
                     function HSMDateTime(p) {
                         if (p)
@@ -52590,7 +52606,7 @@ export const proto = $root.proto = (() => {
                         return typeUrlPrefix + "/proto.Message.HighlyStructuredMessage.HSMLocalizableParameter.HSMDateTime";
                     };
 
-                    HSMDateTime.HSMDateTimeComponent = (function() {
+                    $lazy(HSMDateTime, "HSMDateTimeComponent", function() {
 
                         function HSMDateTimeComponent(p) {
                             if (p)
@@ -52848,14 +52864,14 @@ export const proto = $root.proto = (() => {
                             return typeUrlPrefix + "/proto.Message.HighlyStructuredMessage.HSMLocalizableParameter.HSMDateTime.HSMDateTimeComponent";
                         };
 
-                        HSMDateTimeComponent.CalendarType = (function() {
+                        $lazy(HSMDateTimeComponent, "CalendarType", function() {
                             const valuesById = {}, values = Object.create(valuesById);
                             values[valuesById[1] = "GREGORIAN"] = 1;
                             values[valuesById[2] = "SOLAR_HIJRI"] = 2;
                             return values;
-                        })();
+                        });
 
-                        HSMDateTimeComponent.DayOfWeekType = (function() {
+                        $lazy(HSMDateTimeComponent, "DayOfWeekType", function() {
                             const valuesById = {}, values = Object.create(valuesById);
                             values[valuesById[1] = "MONDAY"] = 1;
                             values[valuesById[2] = "TUESDAY"] = 2;
@@ -52865,12 +52881,12 @@ export const proto = $root.proto = (() => {
                             values[valuesById[6] = "SATURDAY"] = 6;
                             values[valuesById[7] = "SUNDAY"] = 7;
                             return values;
-                        })();
+                        });
 
                         return HSMDateTimeComponent;
-                    })();
+                    });
 
-                    HSMDateTime.HSMDateTimeUnixEpoch = (function() {
+                    $lazy(HSMDateTime, "HSMDateTimeUnixEpoch", function() {
 
                         function HSMDateTimeUnixEpoch(p) {
                             if (p)
@@ -52973,18 +52989,18 @@ export const proto = $root.proto = (() => {
                         };
 
                         return HSMDateTimeUnixEpoch;
-                    })();
+                    });
 
                     return HSMDateTime;
-                })();
+                });
 
                 return HSMLocalizableParameter;
-            })();
+            });
 
             return HighlyStructuredMessage;
-        })();
+        });
 
-        Message.HistorySyncMessageAccessStatus = (function() {
+        $lazy(Message, "HistorySyncMessageAccessStatus", function() {
 
             function HistorySyncMessageAccessStatus(p) {
                 if (p)
@@ -53077,9 +53093,9 @@ export const proto = $root.proto = (() => {
             };
 
             return HistorySyncMessageAccessStatus;
-        })();
+        });
 
-        Message.HistorySyncNotification = (function() {
+        $lazy(Message, "HistorySyncNotification", function() {
 
             function HistorySyncNotification(p) {
                 if (p)
@@ -53529,9 +53545,9 @@ export const proto = $root.proto = (() => {
             };
 
             return HistorySyncNotification;
-        })();
+        });
 
-        Message.HistorySyncType = (function() {
+        $lazy(Message, "HistorySyncType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "INITIAL_BOOTSTRAP"] = 0;
             values[valuesById[1] = "INITIAL_STATUS_V3"] = 1;
@@ -53543,9 +53559,9 @@ export const proto = $root.proto = (() => {
             values[valuesById[7] = "NO_HISTORY"] = 7;
             values[valuesById[8] = "MESSAGE_ACCESS_STATUS"] = 8;
             return values;
-        })();
+        });
 
-        Message.ImageMessage = (function() {
+        $lazy(Message, "ImageMessage", function() {
 
             function ImageMessage(p) {
                 this.interactiveAnnotations = [];
@@ -54324,19 +54340,19 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.ImageMessage";
             };
 
-            ImageMessage.ImageSourceType = (function() {
+            $lazy(ImageMessage, "ImageSourceType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "USER_IMAGE"] = 0;
                 values[valuesById[1] = "AI_GENERATED"] = 1;
                 values[valuesById[2] = "AI_MODIFIED"] = 2;
                 values[valuesById[3] = "RASTERIZED_TEXT_STATUS"] = 3;
                 return values;
-            })();
+            });
 
             return ImageMessage;
-        })();
+        });
 
-        Message.InitialSecurityNotificationSettingSync = (function() {
+        $lazy(Message, "InitialSecurityNotificationSettingSync", function() {
 
             function InitialSecurityNotificationSettingSync(p) {
                 if (p)
@@ -54429,9 +54445,9 @@ export const proto = $root.proto = (() => {
             };
 
             return InitialSecurityNotificationSettingSync;
-        })();
+        });
 
-        Message.InsightDeliveryState = (function() {
+        $lazy(Message, "InsightDeliveryState", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "SENT"] = 0;
             values[valuesById[1] = "DELIVERED"] = 1;
@@ -54439,9 +54455,9 @@ export const proto = $root.proto = (() => {
             values[valuesById[3] = "REPLIED"] = 3;
             values[valuesById[4] = "QUICK_REPLIED"] = 4;
             return values;
-        })();
+        });
 
-        Message.InteractiveMessage = (function() {
+        $lazy(Message, "InteractiveMessage", function() {
 
             function InteractiveMessage(p) {
                 if (p)
@@ -54718,7 +54734,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.InteractiveMessage";
             };
 
-            InteractiveMessage.BloksWidget = (function() {
+            $lazy(InteractiveMessage, "BloksWidget", function() {
 
                 function BloksWidget(p) {
                     if (p)
@@ -54871,9 +54887,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return BloksWidget;
-            })();
+            });
 
-            InteractiveMessage.Body = (function() {
+            $lazy(InteractiveMessage, "Body", function() {
 
                 function Body(p) {
                     if (p)
@@ -54966,9 +54982,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return Body;
-            })();
+            });
 
-            InteractiveMessage.CarouselMessage = (function() {
+            $lazy(InteractiveMessage, "CarouselMessage", function() {
 
                 function CarouselMessage(p) {
                     this.cards = [];
@@ -55128,18 +55144,18 @@ export const proto = $root.proto = (() => {
                     return typeUrlPrefix + "/proto.Message.InteractiveMessage.CarouselMessage";
                 };
 
-                CarouselMessage.CarouselCardType = (function() {
+                $lazy(CarouselMessage, "CarouselCardType", function() {
                     const valuesById = {}, values = Object.create(valuesById);
                     values[valuesById[0] = "UNKNOWN"] = 0;
                     values[valuesById[1] = "HSCROLL_CARDS"] = 1;
                     values[valuesById[2] = "ALBUM_IMAGE"] = 2;
                     return values;
-                })();
+                });
 
                 return CarouselMessage;
-            })();
+            });
 
-            InteractiveMessage.CollectionMessage = (function() {
+            $lazy(InteractiveMessage, "CollectionMessage", function() {
 
                 function CollectionMessage(p) {
                     if (p)
@@ -55272,9 +55288,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return CollectionMessage;
-            })();
+            });
 
-            InteractiveMessage.Footer = (function() {
+            $lazy(InteractiveMessage, "Footer", function() {
 
                 function Footer(p) {
                     if (p)
@@ -55409,9 +55425,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return Footer;
-            })();
+            });
 
-            InteractiveMessage.Header = (function() {
+            $lazy(InteractiveMessage, "Header", function() {
 
                 function Header(p) {
                     if (p)
@@ -55674,9 +55690,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return Header;
-            })();
+            });
 
-            InteractiveMessage.NativeFlowMessage = (function() {
+            $lazy(InteractiveMessage, "NativeFlowMessage", function() {
 
                 function NativeFlowMessage(p) {
                     this.buttons = [];
@@ -55819,7 +55835,7 @@ export const proto = $root.proto = (() => {
                     return typeUrlPrefix + "/proto.Message.InteractiveMessage.NativeFlowMessage";
                 };
 
-                NativeFlowMessage.NativeFlowButton = (function() {
+                $lazy(NativeFlowMessage, "NativeFlowButton", function() {
 
                     function NativeFlowButton(p) {
                         if (p)
@@ -55932,12 +55948,12 @@ export const proto = $root.proto = (() => {
                     };
 
                     return NativeFlowButton;
-                })();
+                });
 
                 return NativeFlowMessage;
-            })();
+            });
 
-            InteractiveMessage.ShopMessage = (function() {
+            $lazy(InteractiveMessage, "ShopMessage", function() {
 
                 function ShopMessage(p) {
                     if (p)
@@ -56090,22 +56106,22 @@ export const proto = $root.proto = (() => {
                     return typeUrlPrefix + "/proto.Message.InteractiveMessage.ShopMessage";
                 };
 
-                ShopMessage.Surface = (function() {
+                $lazy(ShopMessage, "Surface", function() {
                     const valuesById = {}, values = Object.create(valuesById);
                     values[valuesById[0] = "UNKNOWN_SURFACE"] = 0;
                     values[valuesById[1] = "FB"] = 1;
                     values[valuesById[2] = "IG"] = 2;
                     values[valuesById[3] = "WA"] = 3;
                     return values;
-                })();
+                });
 
                 return ShopMessage;
-            })();
+            });
 
             return InteractiveMessage;
-        })();
+        });
 
-        Message.InteractiveResponseMessage = (function() {
+        $lazy(Message, "InteractiveResponseMessage", function() {
 
             function InteractiveResponseMessage(p) {
                 if (p)
@@ -56243,7 +56259,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.InteractiveResponseMessage";
             };
 
-            InteractiveResponseMessage.Body = (function() {
+            $lazy(InteractiveResponseMessage, "Body", function() {
 
                 function Body(p) {
                     if (p)
@@ -56368,17 +56384,17 @@ export const proto = $root.proto = (() => {
                     return typeUrlPrefix + "/proto.Message.InteractiveResponseMessage.Body";
                 };
 
-                Body.Format = (function() {
+                $lazy(Body, "Format", function() {
                     const valuesById = {}, values = Object.create(valuesById);
                     values[valuesById[0] = "DEFAULT"] = 0;
                     values[valuesById[1] = "EXTENSIONS_1"] = 1;
                     return values;
-                })();
+                });
 
                 return Body;
-            })();
+            });
 
-            InteractiveResponseMessage.NativeFlowResponseMessage = (function() {
+            $lazy(InteractiveResponseMessage, "NativeFlowResponseMessage", function() {
 
                 function NativeFlowResponseMessage(p) {
                     if (p)
@@ -56511,12 +56527,12 @@ export const proto = $root.proto = (() => {
                 };
 
                 return NativeFlowResponseMessage;
-            })();
+            });
 
             return InteractiveResponseMessage;
-        })();
+        });
 
-        Message.InvoiceMessage = (function() {
+        $lazy(Message, "InvoiceMessage", function() {
 
             function InvoiceMessage(p) {
                 if (p)
@@ -56823,17 +56839,17 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.InvoiceMessage";
             };
 
-            InvoiceMessage.AttachmentType = (function() {
+            $lazy(InvoiceMessage, "AttachmentType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "IMAGE"] = 0;
                 values[valuesById[1] = "PDF"] = 1;
                 return values;
-            })();
+            });
 
             return InvoiceMessage;
-        })();
+        });
 
-        Message.KeepInChatMessage = (function() {
+        $lazy(Message, "KeepInChatMessage", function() {
 
             function KeepInChatMessage(p) {
                 if (p)
@@ -56995,9 +57011,9 @@ export const proto = $root.proto = (() => {
             };
 
             return KeepInChatMessage;
-        })();
+        });
 
-        Message.LinkPreviewMetadata = (function() {
+        $lazy(Message, "LinkPreviewMetadata", function() {
 
             function LinkPreviewMetadata(p) {
                 if (p)
@@ -57284,7 +57300,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.LinkPreviewMetadata";
             };
 
-            LinkPreviewMetadata.SocialMediaPostType = (function() {
+            $lazy(LinkPreviewMetadata, "SocialMediaPostType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "NONE"] = 0;
                 values[valuesById[1] = "REEL"] = 1;
@@ -57293,12 +57309,12 @@ export const proto = $root.proto = (() => {
                 values[valuesById[4] = "SINGLE_IMAGE"] = 4;
                 values[valuesById[5] = "CAROUSEL"] = 5;
                 return values;
-            })();
+            });
 
             return LinkPreviewMetadata;
-        })();
+        });
 
-        Message.ListMessage = (function() {
+        $lazy(Message, "ListMessage", function() {
 
             function ListMessage(p) {
                 this.sections = [];
@@ -57562,15 +57578,15 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.ListMessage";
             };
 
-            ListMessage.ListType = (function() {
+            $lazy(ListMessage, "ListType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "SINGLE_SELECT"] = 1;
                 values[valuesById[2] = "PRODUCT_LIST"] = 2;
                 return values;
-            })();
+            });
 
-            ListMessage.Product = (function() {
+            $lazy(ListMessage, "Product", function() {
 
                 function Product(p) {
                     if (p)
@@ -57663,9 +57679,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return Product;
-            })();
+            });
 
-            ListMessage.ProductListHeaderImage = (function() {
+            $lazy(ListMessage, "ProductListHeaderImage", function() {
 
                 function ProductListHeaderImage(p) {
                     if (p)
@@ -57781,9 +57797,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return ProductListHeaderImage;
-            })();
+            });
 
-            ListMessage.ProductListInfo = (function() {
+            $lazy(ListMessage, "ProductListInfo", function() {
 
                 function ProductListInfo(p) {
                     this.productSections = [];
@@ -57929,9 +57945,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return ProductListInfo;
-            })();
+            });
 
-            ListMessage.ProductSection = (function() {
+            $lazy(ListMessage, "ProductSection", function() {
 
                 function ProductSection(p) {
                     this.products = [];
@@ -58055,9 +58071,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return ProductSection;
-            })();
+            });
 
-            ListMessage.Row = (function() {
+            $lazy(ListMessage, "Row", function() {
 
                 function Row(p) {
                     if (p)
@@ -58190,9 +58206,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return Row;
-            })();
+            });
 
-            ListMessage.Section = (function() {
+            $lazy(ListMessage, "Section", function() {
 
                 function Section(p) {
                     this.rows = [];
@@ -58316,12 +58332,12 @@ export const proto = $root.proto = (() => {
                 };
 
                 return Section;
-            })();
+            });
 
             return ListMessage;
-        })();
+        });
 
-        Message.ListResponseMessage = (function() {
+        $lazy(Message, "ListResponseMessage", function() {
 
             function ListResponseMessage(p) {
                 if (p)
@@ -58510,14 +58526,14 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.ListResponseMessage";
             };
 
-            ListResponseMessage.ListType = (function() {
+            $lazy(ListResponseMessage, "ListType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "SINGLE_SELECT"] = 1;
                 return values;
-            })();
+            });
 
-            ListResponseMessage.SingleSelectReply = (function() {
+            $lazy(ListResponseMessage, "SingleSelectReply", function() {
 
                 function SingleSelectReply(p) {
                     if (p)
@@ -58610,12 +58626,12 @@ export const proto = $root.proto = (() => {
                 };
 
                 return SingleSelectReply;
-            })();
+            });
 
             return ListResponseMessage;
-        })();
+        });
 
-        Message.LiveLocationMessage = (function() {
+        $lazy(Message, "LiveLocationMessage", function() {
 
             function LiveLocationMessage(p) {
                 if (p)
@@ -58903,9 +58919,9 @@ export const proto = $root.proto = (() => {
             };
 
             return LiveLocationMessage;
-        })();
+        });
 
-        Message.LocationMessage = (function() {
+        $lazy(Message, "LocationMessage", function() {
 
             function LocationMessage(p) {
                 if (p)
@@ -59223,9 +59239,9 @@ export const proto = $root.proto = (() => {
             };
 
             return LocationMessage;
-        })();
+        });
 
-        Message.MMSThumbnailMetadata = (function() {
+        $lazy(Message, "MMSThumbnailMetadata", function() {
 
             function MMSThumbnailMetadata(p) {
                 if (p)
@@ -59457,9 +59473,9 @@ export const proto = $root.proto = (() => {
             };
 
             return MMSThumbnailMetadata;
-        })();
+        });
 
-        Message.MessageHistoryBundle = (function() {
+        $lazy(Message, "MessageHistoryBundle", function() {
 
             function MessageHistoryBundle(p) {
                 if (p)
@@ -59715,9 +59731,9 @@ export const proto = $root.proto = (() => {
             };
 
             return MessageHistoryBundle;
-        })();
+        });
 
-        Message.MessageHistoryMetadata = (function() {
+        $lazy(Message, "MessageHistoryMetadata", function() {
 
             function MessageHistoryMetadata(p) {
                 this.historyReceivers = [];
@@ -59936,9 +59952,9 @@ export const proto = $root.proto = (() => {
             };
 
             return MessageHistoryMetadata;
-        })();
+        });
 
-        Message.MessageHistoryNotice = (function() {
+        $lazy(Message, "MessageHistoryNotice", function() {
 
             function MessageHistoryNotice(p) {
                 if (p)
@@ -60055,9 +60071,9 @@ export const proto = $root.proto = (() => {
             };
 
             return MessageHistoryNotice;
-        })();
+        });
 
-        Message.NewsletterAdminInviteMessage = (function() {
+        $lazy(Message, "NewsletterAdminInviteMessage", function() {
 
             function NewsletterAdminInviteMessage(p) {
                 if (p)
@@ -60265,9 +60281,9 @@ export const proto = $root.proto = (() => {
             };
 
             return NewsletterAdminInviteMessage;
-        })();
+        });
 
-        Message.NewsletterFollowerInviteMessage = (function() {
+        $lazy(Message, "NewsletterFollowerInviteMessage", function() {
 
             function NewsletterFollowerInviteMessage(p) {
                 if (p)
@@ -60445,9 +60461,9 @@ export const proto = $root.proto = (() => {
             };
 
             return NewsletterFollowerInviteMessage;
-        })();
+        });
 
-        Message.OrderMessage = (function() {
+        $lazy(Message, "OrderMessage", function() {
 
             function OrderMessage(p) {
                 if (p)
@@ -60862,24 +60878,24 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.OrderMessage";
             };
 
-            OrderMessage.OrderStatus = (function() {
+            $lazy(OrderMessage, "OrderStatus", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[1] = "INQUIRY"] = 1;
                 values[valuesById[2] = "ACCEPTED"] = 2;
                 values[valuesById[3] = "DECLINED"] = 3;
                 return values;
-            })();
+            });
 
-            OrderMessage.OrderSurface = (function() {
+            $lazy(OrderMessage, "OrderSurface", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[1] = "CATALOG"] = 1;
                 return values;
-            })();
+            });
 
             return OrderMessage;
-        })();
+        });
 
-        Message.PaymentExtendedMetadata = (function() {
+        $lazy(Message, "PaymentExtendedMetadata", function() {
 
             function PaymentExtendedMetadata(p) {
                 if (p)
@@ -60992,9 +61008,9 @@ export const proto = $root.proto = (() => {
             };
 
             return PaymentExtendedMetadata;
-        })();
+        });
 
-        Message.PaymentInviteMessage = (function() {
+        $lazy(Message, "PaymentInviteMessage", function() {
 
             function PaymentInviteMessage(p) {
                 if (p)
@@ -61210,26 +61226,26 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.PaymentInviteMessage";
             };
 
-            PaymentInviteMessage.InviteType = (function() {
+            $lazy(PaymentInviteMessage, "InviteType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "DEFAULT"] = 0;
                 values[valuesById[1] = "MAPPER"] = 1;
                 return values;
-            })();
+            });
 
-            PaymentInviteMessage.ServiceType = (function() {
+            $lazy(PaymentInviteMessage, "ServiceType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "FBPAY"] = 1;
                 values[valuesById[2] = "NOVI"] = 2;
                 values[valuesById[3] = "UPI"] = 3;
                 return values;
-            })();
+            });
 
             return PaymentInviteMessage;
-        })();
+        });
 
-        Message.PaymentLinkMetadata = (function() {
+        $lazy(Message, "PaymentLinkMetadata", function() {
 
             function PaymentLinkMetadata(p) {
                 if (p)
@@ -61367,7 +61383,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.PaymentLinkMetadata";
             };
 
-            PaymentLinkMetadata.PaymentLinkButton = (function() {
+            $lazy(PaymentLinkMetadata, "PaymentLinkButton", function() {
 
                 function PaymentLinkButton(p) {
                     if (p)
@@ -61460,9 +61476,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return PaymentLinkButton;
-            })();
+            });
 
-            PaymentLinkMetadata.PaymentLinkHeader = (function() {
+            $lazy(PaymentLinkMetadata, "PaymentLinkHeader", function() {
 
                 function PaymentLinkHeader(p) {
                     if (p)
@@ -61567,17 +61583,17 @@ export const proto = $root.proto = (() => {
                     return typeUrlPrefix + "/proto.Message.PaymentLinkMetadata.PaymentLinkHeader";
                 };
 
-                PaymentLinkHeader.PaymentLinkHeaderType = (function() {
+                $lazy(PaymentLinkHeader, "PaymentLinkHeaderType", function() {
                     const valuesById = {}, values = Object.create(valuesById);
                     values[valuesById[0] = "LINK_PREVIEW"] = 0;
                     values[valuesById[1] = "ORDER"] = 1;
                     return values;
-                })();
+                });
 
                 return PaymentLinkHeader;
-            })();
+            });
 
-            PaymentLinkMetadata.PaymentLinkProvider = (function() {
+            $lazy(PaymentLinkMetadata, "PaymentLinkProvider", function() {
 
                 function PaymentLinkProvider(p) {
                     if (p)
@@ -61670,12 +61686,12 @@ export const proto = $root.proto = (() => {
                 };
 
                 return PaymentLinkProvider;
-            })();
+            });
 
             return PaymentLinkMetadata;
-        })();
+        });
 
-        Message.PaymentReminderMessage = (function() {
+        $lazy(Message, "PaymentReminderMessage", function() {
 
             function PaymentReminderMessage(p) {
                 if (p)
@@ -61983,7 +61999,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.PaymentReminderMessage";
             };
 
-            PaymentReminderMessage.ReminderFrequency = (function() {
+            $lazy(PaymentReminderMessage, "ReminderFrequency", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "REMINDER_FREQUENCY_UNKNOWN"] = 0;
                 values[valuesById[1] = "WEEKLY"] = 1;
@@ -61991,9 +62007,9 @@ export const proto = $root.proto = (() => {
                 values[valuesById[3] = "MONTHLY"] = 3;
                 values[valuesById[4] = "QUARTERLY"] = 4;
                 return values;
-            })();
+            });
 
-            PaymentReminderMessage.ReminderStatus = (function() {
+            $lazy(PaymentReminderMessage, "ReminderStatus", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "REMINDER_STATUS_UNKNOWN"] = 0;
                 values[valuesById[1] = "ACTIVE"] = 1;
@@ -62002,12 +62018,12 @@ export const proto = $root.proto = (() => {
                 values[valuesById[4] = "EXPIRED"] = 4;
                 values[valuesById[5] = "PAID"] = 5;
                 return values;
-            })();
+            });
 
             return PaymentReminderMessage;
-        })();
+        });
 
-        Message.PeerDataOperationRequestMessage = (function() {
+        $lazy(Message, "PeerDataOperationRequestMessage", function() {
 
             function PeerDataOperationRequestMessage(p) {
                 this.requestStickerReupload = [];
@@ -62425,7 +62441,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.PeerDataOperationRequestMessage";
             };
 
-            PeerDataOperationRequestMessage.BizBroadcastInsightsContactListRequest = (function() {
+            $lazy(PeerDataOperationRequestMessage, "BizBroadcastInsightsContactListRequest", function() {
 
                 function BizBroadcastInsightsContactListRequest(p) {
                     if (p)
@@ -62518,9 +62534,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return BizBroadcastInsightsContactListRequest;
-            })();
+            });
 
-            PeerDataOperationRequestMessage.BizBroadcastInsightsRefreshRequest = (function() {
+            $lazy(PeerDataOperationRequestMessage, "BizBroadcastInsightsRefreshRequest", function() {
 
                 function BizBroadcastInsightsRefreshRequest(p) {
                     if (p)
@@ -62613,9 +62629,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return BizBroadcastInsightsRefreshRequest;
-            })();
+            });
 
-            PeerDataOperationRequestMessage.CompanionCanonicalUserNonceFetchRequest = (function() {
+            $lazy(PeerDataOperationRequestMessage, "CompanionCanonicalUserNonceFetchRequest", function() {
 
                 function CompanionCanonicalUserNonceFetchRequest(p) {
                     if (p)
@@ -62708,9 +62724,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return CompanionCanonicalUserNonceFetchRequest;
-            })();
+            });
 
-            PeerDataOperationRequestMessage.FullHistorySyncOnDemandRequest = (function() {
+            $lazy(PeerDataOperationRequestMessage, "FullHistorySyncOnDemandRequest", function() {
 
                 function FullHistorySyncOnDemandRequest(p) {
                     if (p)
@@ -62849,9 +62865,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return FullHistorySyncOnDemandRequest;
-            })();
+            });
 
-            PeerDataOperationRequestMessage.GalaxyFlowAction = (function() {
+            $lazy(PeerDataOperationRequestMessage, "GalaxyFlowAction", function() {
 
                 function GalaxyFlowAction(p) {
                     if (p)
@@ -63036,17 +63052,17 @@ export const proto = $root.proto = (() => {
                     return typeUrlPrefix + "/proto.Message.PeerDataOperationRequestMessage.GalaxyFlowAction";
                 };
 
-                GalaxyFlowAction.GalaxyFlowActionType = (function() {
+                $lazy(GalaxyFlowAction, "GalaxyFlowActionType", function() {
                     const valuesById = {}, values = Object.create(valuesById);
                     values[valuesById[1] = "NOTIFY_LAUNCH"] = 1;
                     values[valuesById[2] = "DOWNLOAD_RESPONSES"] = 2;
                     return values;
-                })();
+                });
 
                 return GalaxyFlowAction;
-            })();
+            });
 
-            PeerDataOperationRequestMessage.HistorySyncChunkRetryRequest = (function() {
+            $lazy(PeerDataOperationRequestMessage, "HistorySyncChunkRetryRequest", function() {
 
                 function HistorySyncChunkRetryRequest(p) {
                     if (p)
@@ -63240,9 +63256,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return HistorySyncChunkRetryRequest;
-            })();
+            });
 
-            PeerDataOperationRequestMessage.HistorySyncOnDemandRequest = (function() {
+            $lazy(PeerDataOperationRequestMessage, "HistorySyncOnDemandRequest", function() {
 
                 function HistorySyncOnDemandRequest(p) {
                     if (p)
@@ -63465,9 +63481,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return HistorySyncOnDemandRequest;
-            })();
+            });
 
-            PeerDataOperationRequestMessage.PlaceholderMessageResendRequest = (function() {
+            $lazy(PeerDataOperationRequestMessage, "PlaceholderMessageResendRequest", function() {
 
                 function PlaceholderMessageResendRequest(p) {
                     if (p)
@@ -63562,9 +63578,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return PlaceholderMessageResendRequest;
-            })();
+            });
 
-            PeerDataOperationRequestMessage.RequestStickerReupload = (function() {
+            $lazy(PeerDataOperationRequestMessage, "RequestStickerReupload", function() {
 
                 function RequestStickerReupload(p) {
                     if (p)
@@ -63657,9 +63673,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return RequestStickerReupload;
-            })();
+            });
 
-            PeerDataOperationRequestMessage.RequestUrlPreview = (function() {
+            $lazy(PeerDataOperationRequestMessage, "RequestUrlPreview", function() {
 
                 function RequestUrlPreview(p) {
                     if (p)
@@ -63772,9 +63788,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return RequestUrlPreview;
-            })();
+            });
 
-            PeerDataOperationRequestMessage.SyncDCollectionFatalRecoveryRequest = (function() {
+            $lazy(PeerDataOperationRequestMessage, "SyncDCollectionFatalRecoveryRequest", function() {
 
                 function SyncDCollectionFatalRecoveryRequest(p) {
                     if (p)
@@ -63897,12 +63913,12 @@ export const proto = $root.proto = (() => {
                 };
 
                 return SyncDCollectionFatalRecoveryRequest;
-            })();
+            });
 
             return PeerDataOperationRequestMessage;
-        })();
+        });
 
-        Message.PeerDataOperationRequestResponseMessage = (function() {
+        $lazy(Message, "PeerDataOperationRequestResponseMessage", function() {
 
             function PeerDataOperationRequestResponseMessage(p) {
                 this.peerDataOperationResult = [];
@@ -64106,7 +64122,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.PeerDataOperationRequestResponseMessage";
             };
 
-            PeerDataOperationRequestResponseMessage.PeerDataOperationResult = (function() {
+            $lazy(PeerDataOperationRequestResponseMessage, "PeerDataOperationResult", function() {
 
                 function PeerDataOperationResult(p) {
                     if (p)
@@ -64461,7 +64477,7 @@ export const proto = $root.proto = (() => {
                     return typeUrlPrefix + "/proto.Message.PeerDataOperationRequestResponseMessage.PeerDataOperationResult";
                 };
 
-                PeerDataOperationResult.BizBroadcastInsightsContactListResponse = (function() {
+                $lazy(PeerDataOperationResult, "BizBroadcastInsightsContactListResponse", function() {
 
                     function BizBroadcastInsightsContactListResponse(p) {
                         this.contacts = [];
@@ -64615,9 +64631,9 @@ export const proto = $root.proto = (() => {
                     };
 
                     return BizBroadcastInsightsContactListResponse;
-                })();
+                });
 
-                PeerDataOperationResult.BizBroadcastInsightsContactState = (function() {
+                $lazy(PeerDataOperationResult, "BizBroadcastInsightsContactState", function() {
 
                     function BizBroadcastInsightsContactState(p) {
                         if (p)
@@ -64755,9 +64771,9 @@ export const proto = $root.proto = (() => {
                     };
 
                     return BizBroadcastInsightsContactState;
-                })();
+                });
 
-                PeerDataOperationResult.CompanionCanonicalUserNonceFetchResponse = (function() {
+                $lazy(PeerDataOperationResult, "CompanionCanonicalUserNonceFetchResponse", function() {
 
                     function CompanionCanonicalUserNonceFetchResponse(p) {
                         if (p)
@@ -64890,9 +64906,9 @@ export const proto = $root.proto = (() => {
                     };
 
                     return CompanionCanonicalUserNonceFetchResponse;
-                })();
+                });
 
-                PeerDataOperationResult.CompanionMetaNonceFetchResponse = (function() {
+                $lazy(PeerDataOperationResult, "CompanionMetaNonceFetchResponse", function() {
 
                     function CompanionMetaNonceFetchResponse(p) {
                         if (p)
@@ -64985,9 +65001,9 @@ export const proto = $root.proto = (() => {
                     };
 
                     return CompanionMetaNonceFetchResponse;
-                })();
+                });
 
-                PeerDataOperationResult.FlowResponsesCsvBundle = (function() {
+                $lazy(PeerDataOperationResult, "FlowResponsesCsvBundle", function() {
 
                     function FlowResponsesCsvBundle(p) {
                         if (p)
@@ -65289,9 +65305,9 @@ export const proto = $root.proto = (() => {
                     };
 
                     return FlowResponsesCsvBundle;
-                })();
+                });
 
-                PeerDataOperationResult.FullHistorySyncOnDemandRequestResponse = (function() {
+                $lazy(PeerDataOperationResult, "FullHistorySyncOnDemandRequestResponse", function() {
 
                     function FullHistorySyncOnDemandRequestResponse(p) {
                         if (p)
@@ -65443,9 +65459,9 @@ export const proto = $root.proto = (() => {
                     };
 
                     return FullHistorySyncOnDemandRequestResponse;
-                })();
+                });
 
-                PeerDataOperationResult.FullHistorySyncOnDemandResponseCode = (function() {
+                $lazy(PeerDataOperationResult, "FullHistorySyncOnDemandResponseCode", function() {
                     const valuesById = {}, values = Object.create(valuesById);
                     values[valuesById[0] = "REQUEST_SUCCESS"] = 0;
                     values[valuesById[1] = "REQUEST_TIME_EXPIRED"] = 1;
@@ -65456,9 +65472,9 @@ export const proto = $root.proto = (() => {
                     values[valuesById[6] = "ERROR_HOSTED_DEVICE_LOGIN_TIME_NOT_SET"] = 6;
                     values[valuesById[7] = "ERROR_MULTI_PROVIDER_NOT_CONFIGURED"] = 7;
                     return values;
-                })();
+                });
 
-                PeerDataOperationResult.HistorySyncChunkRetryResponse = (function() {
+                $lazy(PeerDataOperationResult, "HistorySyncChunkRetryResponse", function() {
 
                     function HistorySyncChunkRetryResponse(p) {
                         if (p)
@@ -65701,9 +65717,9 @@ export const proto = $root.proto = (() => {
                     };
 
                     return HistorySyncChunkRetryResponse;
-                })();
+                });
 
-                PeerDataOperationResult.HistorySyncChunkRetryResponseCode = (function() {
+                $lazy(PeerDataOperationResult, "HistorySyncChunkRetryResponseCode", function() {
                     const valuesById = {}, values = Object.create(valuesById);
                     values[valuesById[1] = "GENERATION_ERROR"] = 1;
                     values[valuesById[2] = "CHUNK_CONSUMED"] = 2;
@@ -65712,9 +65728,9 @@ export const proto = $root.proto = (() => {
                     values[valuesById[5] = "CHUNK_EXHAUSTED"] = 5;
                     values[valuesById[6] = "DUPLICATED_REQUEST"] = 6;
                     return values;
-                })();
+                });
 
-                PeerDataOperationResult.LinkPreviewResponse = (function() {
+                $lazy(PeerDataOperationResult, "LinkPreviewResponse", function() {
 
                     function LinkPreviewResponse(p) {
                         if (p)
@@ -65953,7 +65969,7 @@ export const proto = $root.proto = (() => {
                         return typeUrlPrefix + "/proto.Message.PeerDataOperationRequestResponseMessage.PeerDataOperationResult.LinkPreviewResponse";
                     };
 
-                    LinkPreviewResponse.LinkPreviewHighQualityThumbnail = (function() {
+                    $lazy(LinkPreviewResponse, "LinkPreviewHighQualityThumbnail", function() {
 
                         function LinkPreviewHighQualityThumbnail(p) {
                             if (p)
@@ -66179,9 +66195,9 @@ export const proto = $root.proto = (() => {
                         };
 
                         return LinkPreviewHighQualityThumbnail;
-                    })();
+                    });
 
-                    LinkPreviewResponse.PaymentLinkPreviewMetadata = (function() {
+                    $lazy(LinkPreviewResponse, "PaymentLinkPreviewMetadata", function() {
 
                         function PaymentLinkPreviewMetadata(p) {
                             if (p)
@@ -66354,12 +66370,12 @@ export const proto = $root.proto = (() => {
                         };
 
                         return PaymentLinkPreviewMetadata;
-                    })();
+                    });
 
                     return LinkPreviewResponse;
-                })();
+                });
 
-                PeerDataOperationResult.PlaceholderMessageResendResponse = (function() {
+                $lazy(PeerDataOperationResult, "PlaceholderMessageResendResponse", function() {
 
                     function PlaceholderMessageResendResponse(p) {
                         if (p)
@@ -66455,9 +66471,9 @@ export const proto = $root.proto = (() => {
                     };
 
                     return PlaceholderMessageResendResponse;
-                })();
+                });
 
-                PeerDataOperationResult.SyncDSnapshotFatalRecoveryResponse = (function() {
+                $lazy(PeerDataOperationResult, "SyncDSnapshotFatalRecoveryResponse", function() {
 
                     function SyncDSnapshotFatalRecoveryResponse(p) {
                         if (p)
@@ -66573,9 +66589,9 @@ export const proto = $root.proto = (() => {
                     };
 
                     return SyncDSnapshotFatalRecoveryResponse;
-                })();
+                });
 
-                PeerDataOperationResult.WaffleNonceFetchResponse = (function() {
+                $lazy(PeerDataOperationResult, "WaffleNonceFetchResponse", function() {
 
                     function WaffleNonceFetchResponse(p) {
                         if (p)
@@ -66688,15 +66704,15 @@ export const proto = $root.proto = (() => {
                     };
 
                     return WaffleNonceFetchResponse;
-                })();
+                });
 
                 return PeerDataOperationResult;
-            })();
+            });
 
             return PeerDataOperationRequestResponseMessage;
-        })();
+        });
 
-        Message.PeerDataOperationRequestType = (function() {
+        $lazy(Message, "PeerDataOperationRequestType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UPLOAD_STICKER"] = 0;
             values[valuesById[1] = "SEND_RECENT_STICKER_BOOTSTRAP"] = 1;
@@ -66713,9 +66729,9 @@ export const proto = $root.proto = (() => {
             values[valuesById[12] = "BUSINESS_BROADCAST_INSIGHTS_DELIVERED_TO"] = 12;
             values[valuesById[13] = "BUSINESS_BROADCAST_INSIGHTS_REFRESH"] = 13;
             return values;
-        })();
+        });
 
-        Message.PinInChatMessage = (function() {
+        $lazy(Message, "PinInChatMessage", function() {
 
             function PinInChatMessage(p) {
                 if (p)
@@ -66876,18 +66892,18 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.PinInChatMessage";
             };
 
-            PinInChatMessage.Type = (function() {
+            $lazy(PinInChatMessage, "Type", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN_TYPE"] = 0;
                 values[valuesById[1] = "PIN_FOR_ALL"] = 1;
                 values[valuesById[2] = "UNPIN_FOR_ALL"] = 2;
                 return values;
-            })();
+            });
 
             return PinInChatMessage;
-        })();
+        });
 
-        Message.PlaceholderMessage = (function() {
+        $lazy(Message, "PlaceholderMessage", function() {
 
             function PlaceholderMessage(p) {
                 if (p)
@@ -66988,16 +67004,16 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.PlaceholderMessage";
             };
 
-            PlaceholderMessage.PlaceholderType = (function() {
+            $lazy(PlaceholderMessage, "PlaceholderType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "MASK_LINKED_DEVICES"] = 0;
                 return values;
-            })();
+            });
 
             return PlaceholderMessage;
-        })();
+        });
 
-        Message.PollAddOptionMessage = (function() {
+        $lazy(Message, "PollAddOptionMessage", function() {
 
             function PollAddOptionMessage(p) {
                 if (p)
@@ -67136,17 +67152,17 @@ export const proto = $root.proto = (() => {
             };
 
             return PollAddOptionMessage;
-        })();
+        });
 
-        Message.PollContentType = (function() {
+        $lazy(Message, "PollContentType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN"] = 0;
             values[valuesById[1] = "TEXT"] = 1;
             values[valuesById[2] = "IMAGE"] = 2;
             return values;
-        })();
+        });
 
-        Message.PollCreationMessage = (function() {
+        $lazy(Message, "PollCreationMessage", function() {
 
             function PollCreationMessage(p) {
                 this.options = [];
@@ -67496,7 +67512,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.PollCreationMessage";
             };
 
-            PollCreationMessage.Option = (function() {
+            $lazy(PollCreationMessage, "Option", function() {
 
                 function Option(p) {
                     if (p)
@@ -67609,12 +67625,12 @@ export const proto = $root.proto = (() => {
                 };
 
                 return Option;
-            })();
+            });
 
             return PollCreationMessage;
-        })();
+        });
 
-        Message.PollEncValue = (function() {
+        $lazy(Message, "PollEncValue", function() {
 
             function PollEncValue(p) {
                 if (p)
@@ -67733,9 +67749,9 @@ export const proto = $root.proto = (() => {
             };
 
             return PollEncValue;
-        })();
+        });
 
-        Message.PollResultSnapshotMessage = (function() {
+        $lazy(Message, "PollResultSnapshotMessage", function() {
 
             function PollResultSnapshotMessage(p) {
                 this.pollVotes = [];
@@ -67913,7 +67929,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.PollResultSnapshotMessage";
             };
 
-            PollResultSnapshotMessage.PollVote = (function() {
+            $lazy(PollResultSnapshotMessage, "PollVote", function() {
 
                 function PollVote(p) {
                     if (p)
@@ -68036,19 +68052,19 @@ export const proto = $root.proto = (() => {
                 };
 
                 return PollVote;
-            })();
+            });
 
             return PollResultSnapshotMessage;
-        })();
+        });
 
-        Message.PollType = (function() {
+        $lazy(Message, "PollType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "POLL"] = 0;
             values[valuesById[1] = "QUIZ"] = 1;
             return values;
-        })();
+        });
 
-        Message.PollUpdateMessage = (function() {
+        $lazy(Message, "PollUpdateMessage", function() {
 
             function PollUpdateMessage(p) {
                 if (p)
@@ -68217,9 +68233,9 @@ export const proto = $root.proto = (() => {
             };
 
             return PollUpdateMessage;
-        })();
+        });
 
-        Message.PollUpdateMessageMetadata = (function() {
+        $lazy(Message, "PollUpdateMessageMetadata", function() {
 
             function PollUpdateMessageMetadata(p) {
                 if (p)
@@ -68335,9 +68351,9 @@ export const proto = $root.proto = (() => {
             };
 
             return PollUpdateMessageMetadata;
-        })();
+        });
 
-        Message.PollVoteMessage = (function() {
+        $lazy(Message, "PollVoteMessage", function() {
 
             function PollVoteMessage(p) {
                 this.selectedOptions = [];
@@ -68440,9 +68456,9 @@ export const proto = $root.proto = (() => {
             };
 
             return PollVoteMessage;
-        })();
+        });
 
-        Message.ProductMessage = (function() {
+        $lazy(Message, "ProductMessage", function() {
 
             function ProductMessage(p) {
                 if (p)
@@ -68640,7 +68656,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.ProductMessage";
             };
 
-            ProductMessage.CatalogSnapshot = (function() {
+            $lazy(ProductMessage, "CatalogSnapshot", function() {
 
                 function CatalogSnapshot(p) {
                     if (p)
@@ -68775,9 +68791,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return CatalogSnapshot;
-            })();
+            });
 
-            ProductMessage.ProductSnapshot = (function() {
+            $lazy(ProductMessage, "ProductSnapshot", function() {
 
                 function ProductSnapshot(p) {
                     if (p)
@@ -69112,12 +69128,12 @@ export const proto = $root.proto = (() => {
                 };
 
                 return ProductSnapshot;
-            })();
+            });
 
             return ProductMessage;
-        })();
+        });
 
-        Message.ProtocolMessage = (function() {
+        $lazy(Message, "ProtocolMessage", function() {
 
             function ProtocolMessage(p) {
                 if (p)
@@ -69939,7 +69955,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.ProtocolMessage";
             };
 
-            ProtocolMessage.Type = (function() {
+            $lazy(ProtocolMessage, "Type", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "REVOKE"] = 0;
                 values[valuesById[3] = "EPHEMERAL_SETTING"] = 3;
@@ -69972,12 +69988,12 @@ export const proto = $root.proto = (() => {
                 values[valuesById[34] = "CHAT_THEME_SETTING"] = 34;
                 values[valuesById[35] = "AI_METADATA_OPERATION"] = 35;
                 return values;
-            })();
+            });
 
             return ProtocolMessage;
-        })();
+        });
 
-        Message.QuestionResponseMessage = (function() {
+        $lazy(Message, "QuestionResponseMessage", function() {
 
             function QuestionResponseMessage(p) {
                 if (p)
@@ -70092,9 +70108,9 @@ export const proto = $root.proto = (() => {
             };
 
             return QuestionResponseMessage;
-        })();
+        });
 
-        Message.ReactionMessage = (function() {
+        $lazy(Message, "ReactionMessage", function() {
 
             function ReactionMessage(p) {
                 if (p)
@@ -70259,9 +70275,9 @@ export const proto = $root.proto = (() => {
             };
 
             return ReactionMessage;
-        })();
+        });
 
-        Message.RequestPaymentMessage = (function() {
+        $lazy(Message, "RequestPaymentMessage", function() {
 
             function RequestPaymentMessage(p) {
                 if (p)
@@ -70500,9 +70516,9 @@ export const proto = $root.proto = (() => {
             };
 
             return RequestPaymentMessage;
-        })();
+        });
 
-        Message.RequestPhoneNumberMessage = (function() {
+        $lazy(Message, "RequestPhoneNumberMessage", function() {
 
             function RequestPhoneNumberMessage(p) {
                 if (p)
@@ -70597,9 +70613,9 @@ export const proto = $root.proto = (() => {
             };
 
             return RequestPhoneNumberMessage;
-        })();
+        });
 
-        Message.RequestWelcomeMessageMetadata = (function() {
+        $lazy(Message, "RequestWelcomeMessageMetadata", function() {
 
             function RequestWelcomeMessageMetadata(p) {
                 if (p)
@@ -70759,24 +70775,24 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.RequestWelcomeMessageMetadata";
             };
 
-            RequestWelcomeMessageMetadata.LocalChatState = (function() {
+            $lazy(RequestWelcomeMessageMetadata, "LocalChatState", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "EMPTY"] = 0;
                 values[valuesById[1] = "NON_EMPTY"] = 1;
                 return values;
-            })();
+            });
 
-            RequestWelcomeMessageMetadata.WelcomeTrigger = (function() {
+            $lazy(RequestWelcomeMessageMetadata, "WelcomeTrigger", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "CHAT_OPEN"] = 0;
                 values[valuesById[1] = "COMPANION_PAIRING"] = 1;
                 return values;
-            })();
+            });
 
             return RequestWelcomeMessageMetadata;
-        })();
+        });
 
-        Message.RootSecretDistributeMessage = (function() {
+        $lazy(Message, "RootSecretDistributeMessage", function() {
 
             function RootSecretDistributeMessage(p) {
                 if (p)
@@ -70869,9 +70885,9 @@ export const proto = $root.proto = (() => {
             };
 
             return RootSecretDistributeMessage;
-        })();
+        });
 
-        Message.ScheduledCallCreationMessage = (function() {
+        $lazy(Message, "ScheduledCallCreationMessage", function() {
 
             function ScheduledCallCreationMessage(p) {
                 if (p)
@@ -71030,18 +71046,18 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.ScheduledCallCreationMessage";
             };
 
-            ScheduledCallCreationMessage.CallType = (function() {
+            $lazy(ScheduledCallCreationMessage, "CallType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "VOICE"] = 1;
                 values[valuesById[2] = "VIDEO"] = 2;
                 return values;
-            })();
+            });
 
             return ScheduledCallCreationMessage;
-        })();
+        });
 
-        Message.ScheduledCallEditMessage = (function() {
+        $lazy(Message, "ScheduledCallEditMessage", function() {
 
             function ScheduledCallEditMessage(p) {
                 if (p)
@@ -71168,17 +71184,17 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.ScheduledCallEditMessage";
             };
 
-            ScheduledCallEditMessage.EditType = (function() {
+            $lazy(ScheduledCallEditMessage, "EditType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "CANCEL"] = 1;
                 return values;
-            })();
+            });
 
             return ScheduledCallEditMessage;
-        })();
+        });
 
-        Message.SecretEncryptedMessage = (function() {
+        $lazy(Message, "SecretEncryptedMessage", function() {
 
             function SecretEncryptedMessage(p) {
                 if (p)
@@ -71387,7 +71403,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.SecretEncryptedMessage";
             };
 
-            SecretEncryptedMessage.SecretEncType = (function() {
+            $lazy(SecretEncryptedMessage, "SecretEncType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "EVENT_EDIT"] = 1;
@@ -71396,12 +71412,12 @@ export const proto = $root.proto = (() => {
                 values[valuesById[4] = "POLL_EDIT"] = 4;
                 values[valuesById[5] = "POLL_ADD_OPTION"] = 5;
                 return values;
-            })();
+            });
 
             return SecretEncryptedMessage;
-        })();
+        });
 
-        Message.SendPaymentMessage = (function() {
+        $lazy(Message, "SendPaymentMessage", function() {
 
             function SendPaymentMessage(p) {
                 if (p)
@@ -71560,9 +71576,9 @@ export const proto = $root.proto = (() => {
             };
 
             return SendPaymentMessage;
-        })();
+        });
 
-        Message.SenderKeyDistributionMessage = (function() {
+        $lazy(Message, "SenderKeyDistributionMessage", function() {
 
             function SenderKeyDistributionMessage(p) {
                 if (p)
@@ -71678,9 +71694,9 @@ export const proto = $root.proto = (() => {
             };
 
             return SenderKeyDistributionMessage;
-        })();
+        });
 
-        Message.SplitPaymentMessage = (function() {
+        $lazy(Message, "SplitPaymentMessage", function() {
 
             function SplitPaymentMessage(p) {
                 this.participants = [];
@@ -71918,9 +71934,9 @@ export const proto = $root.proto = (() => {
             };
 
             return SplitPaymentMessage;
-        })();
+        });
 
-        Message.SplitPaymentParticipant = (function() {
+        $lazy(Message, "SplitPaymentParticipant", function() {
 
             function SplitPaymentParticipant(p) {
                 if (p)
@@ -72067,17 +72083,17 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.SplitPaymentParticipant";
             };
 
-            SplitPaymentParticipant.SplitPaymentStatus = (function() {
+            $lazy(SplitPaymentParticipant, "SplitPaymentStatus", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "PENDING"] = 0;
                 values[valuesById[1] = "PAID"] = 1;
                 return values;
-            })();
+            });
 
             return SplitPaymentParticipant;
-        })();
+        });
 
-        Message.StatusNotificationMessage = (function() {
+        $lazy(Message, "StatusNotificationMessage", function() {
 
             function StatusNotificationMessage(p) {
                 if (p)
@@ -72234,19 +72250,19 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.StatusNotificationMessage";
             };
 
-            StatusNotificationMessage.StatusNotificationType = (function() {
+            $lazy(StatusNotificationMessage, "StatusNotificationType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "STATUS_ADD_YOURS"] = 1;
                 values[valuesById[2] = "STATUS_RESHARE"] = 2;
                 values[valuesById[3] = "STATUS_QUESTION_ANSWER_RESHARE"] = 3;
                 return values;
-            })();
+            });
 
             return StatusNotificationMessage;
-        })();
+        });
 
-        Message.StatusQuestionAnswerMessage = (function() {
+        $lazy(Message, "StatusQuestionAnswerMessage", function() {
 
             function StatusQuestionAnswerMessage(p) {
                 if (p)
@@ -72361,9 +72377,9 @@ export const proto = $root.proto = (() => {
             };
 
             return StatusQuestionAnswerMessage;
-        })();
+        });
 
-        Message.StatusQuotedMessage = (function() {
+        $lazy(Message, "StatusQuotedMessage", function() {
 
             function StatusQuotedMessage(p) {
                 if (p)
@@ -72529,16 +72545,16 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.StatusQuotedMessage";
             };
 
-            StatusQuotedMessage.StatusQuotedMessageType = (function() {
+            $lazy(StatusQuotedMessage, "StatusQuotedMessageType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[1] = "QUESTION_ANSWER"] = 1;
                 return values;
-            })();
+            });
 
             return StatusQuotedMessage;
-        })();
+        });
 
-        Message.StatusStickerInteractionMessage = (function() {
+        $lazy(Message, "StatusStickerInteractionMessage", function() {
 
             function StatusStickerInteractionMessage(p) {
                 if (p)
@@ -72685,17 +72701,17 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.StatusStickerInteractionMessage";
             };
 
-            StatusStickerInteractionMessage.StatusStickerType = (function() {
+            $lazy(StatusStickerInteractionMessage, "StatusStickerType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "REACTION"] = 1;
                 return values;
-            })();
+            });
 
             return StatusStickerInteractionMessage;
-        })();
+        });
 
-        Message.StickerMessage = (function() {
+        $lazy(Message, "StickerMessage", function() {
 
             function StickerMessage(p) {
                 if (p)
@@ -73255,9 +73271,9 @@ export const proto = $root.proto = (() => {
             };
 
             return StickerMessage;
-        })();
+        });
 
-        Message.StickerPackMessage = (function() {
+        $lazy(Message, "StickerPackMessage", function() {
 
             function StickerPackMessage(p) {
                 this.stickers = [];
@@ -73844,7 +73860,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.StickerPackMessage";
             };
 
-            StickerPackMessage.Sticker = (function() {
+            $lazy(StickerPackMessage, "Sticker", function() {
 
                 function Sticker(p) {
                     this.emojis = [];
@@ -74066,20 +74082,20 @@ export const proto = $root.proto = (() => {
                 };
 
                 return Sticker;
-            })();
+            });
 
-            StickerPackMessage.StickerPackOrigin = (function() {
+            $lazy(StickerPackMessage, "StickerPackOrigin", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "FIRST_PARTY"] = 0;
                 values[valuesById[1] = "THIRD_PARTY"] = 1;
                 values[valuesById[2] = "USER_CREATED"] = 2;
                 return values;
-            })();
+            });
 
             return StickerPackMessage;
-        })();
+        });
 
-        Message.StickerSyncRMRMessage = (function() {
+        $lazy(Message, "StickerSyncRMRMessage", function() {
 
             function StickerSyncRMRMessage(p) {
                 this.filehash = [];
@@ -74231,9 +74247,9 @@ export const proto = $root.proto = (() => {
             };
 
             return StickerSyncRMRMessage;
-        })();
+        });
 
-        Message.TemplateButtonReplyMessage = (function() {
+        $lazy(Message, "TemplateButtonReplyMessage", function() {
 
             function TemplateButtonReplyMessage(p) {
                 if (p)
@@ -74408,9 +74424,9 @@ export const proto = $root.proto = (() => {
             };
 
             return TemplateButtonReplyMessage;
-        })();
+        });
 
-        Message.TemplateMessage = (function() {
+        $lazy(Message, "TemplateMessage", function() {
 
             function TemplateMessage(p) {
                 if (p)
@@ -74602,7 +74618,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.TemplateMessage";
             };
 
-            TemplateMessage.FourRowTemplate = (function() {
+            $lazy(TemplateMessage, "FourRowTemplate", function() {
 
                 function FourRowTemplate(p) {
                     this.buttons = [];
@@ -74840,9 +74856,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return FourRowTemplate;
-            })();
+            });
 
-            TemplateMessage.HydratedFourRowTemplate = (function() {
+            $lazy(TemplateMessage, "HydratedFourRowTemplate", function() {
 
                 function HydratedFourRowTemplate(p) {
                     this.hydratedButtons = [];
@@ -75114,12 +75130,12 @@ export const proto = $root.proto = (() => {
                 };
 
                 return HydratedFourRowTemplate;
-            })();
+            });
 
             return TemplateMessage;
-        })();
+        });
 
-        Message.URLMetadata = (function() {
+        $lazy(Message, "URLMetadata", function() {
 
             function URLMetadata(p) {
                 if (p)
@@ -75212,9 +75228,9 @@ export const proto = $root.proto = (() => {
             };
 
             return URLMetadata;
-        })();
+        });
 
-        Message.VideoEndCard = (function() {
+        $lazy(Message, "VideoEndCard", function() {
 
             function VideoEndCard(p) {
                 if (p)
@@ -75343,9 +75359,9 @@ export const proto = $root.proto = (() => {
             };
 
             return VideoEndCard;
-        })();
+        });
 
-        Message.VideoMessage = (function() {
+        $lazy(Message, "VideoMessage", function() {
 
             function VideoMessage(p) {
                 this.interactiveAnnotations = [];
@@ -76133,29 +76149,29 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.Message.VideoMessage";
             };
 
-            VideoMessage.Attribution = (function() {
+            $lazy(VideoMessage, "Attribution", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "NONE"] = 0;
                 values[valuesById[1] = "GIPHY"] = 1;
                 values[valuesById[2] = "TENOR"] = 2;
                 values[valuesById[3] = "KLIPY"] = 3;
                 return values;
-            })();
+            });
 
-            VideoMessage.VideoSourceType = (function() {
+            $lazy(VideoMessage, "VideoSourceType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "USER_VIDEO"] = 0;
                 values[valuesById[1] = "AI_GENERATED"] = 1;
                 return values;
-            })();
+            });
 
             return VideoMessage;
-        })();
+        });
 
         return Message;
-    })();
+    });
 
-    proto.MessageAddOn = (function() {
+    $lazy(proto, "MessageAddOn", function() {
 
         function MessageAddOn(p) {
             if (p)
@@ -76469,7 +76485,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.MessageAddOn";
         };
 
-        MessageAddOn.MessageAddOnType = (function() {
+        $lazy(MessageAddOn, "MessageAddOnType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNDEFINED"] = 0;
             values[valuesById[1] = "REACTION"] = 1;
@@ -76477,12 +76493,12 @@ export const proto = $root.proto = (() => {
             values[valuesById[3] = "POLL_UPDATE"] = 3;
             values[valuesById[4] = "PIN_IN_CHAT"] = 4;
             return values;
-        })();
+        });
 
         return MessageAddOn;
-    })();
+    });
 
-    proto.MessageAddOnContextInfo = (function() {
+    $lazy(proto, "MessageAddOnContextInfo", function() {
 
         function MessageAddOnContextInfo(p) {
             if (p)
@@ -76608,9 +76624,9 @@ export const proto = $root.proto = (() => {
         };
 
         return MessageAddOnContextInfo;
-    })();
+    });
 
-    proto.MessageAssociation = (function() {
+    $lazy(proto, "MessageAssociation", function() {
 
         function MessageAssociation(p) {
             if (p)
@@ -76833,7 +76849,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.MessageAssociation";
         };
 
-        MessageAssociation.AssociationType = (function() {
+        $lazy(MessageAssociation, "AssociationType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN"] = 0;
             values[valuesById[1] = "MEDIA_ALBUM"] = 1;
@@ -76857,12 +76873,12 @@ export const proto = $root.proto = (() => {
             values[valuesById[19] = "HEVC_VIDEO_DUAL_UPLOAD"] = 19;
             values[valuesById[20] = "POLL_ADD_OPTION"] = 20;
             return values;
-        })();
+        });
 
         return MessageAssociation;
-    })();
+    });
 
-    proto.MessageContextInfo = (function() {
+    $lazy(proto, "MessageContextInfo", function() {
 
         function MessageContextInfo(p) {
             this.threadId = [];
@@ -77333,17 +77349,17 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.MessageContextInfo";
         };
 
-        MessageContextInfo.MessageAddonExpiryType = (function() {
+        $lazy(MessageContextInfo, "MessageAddonExpiryType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[1] = "STATIC"] = 1;
             values[valuesById[2] = "DEPENDENT_ON_PARENT"] = 2;
             return values;
-        })();
+        });
 
         return MessageContextInfo;
-    })();
+    });
 
-    proto.MessageKey = (function() {
+    $lazy(proto, "MessageKey", function() {
 
         function MessageKey(p) {
             if (p)
@@ -77496,9 +77512,9 @@ export const proto = $root.proto = (() => {
         };
 
         return MessageKey;
-    })();
+    });
 
-    proto.MessageSecretMessage = (function() {
+    $lazy(proto, "MessageSecretMessage", function() {
 
         function MessageSecretMessage(p) {
             if (p)
@@ -77637,9 +77653,9 @@ export const proto = $root.proto = (() => {
         };
 
         return MessageSecretMessage;
-    })();
+    });
 
-    proto.Money = (function() {
+    $lazy(proto, "Money", function() {
 
         function Money(p) {
             if (p)
@@ -77782,9 +77798,9 @@ export const proto = $root.proto = (() => {
         };
 
         return Money;
-    })();
+    });
 
-    proto.MsgOpaqueData = (function() {
+    $lazy(proto, "MsgOpaqueData", function() {
 
         function MsgOpaqueData(p) {
             this.pollOptions = [];
@@ -79090,7 +79106,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.MsgOpaqueData";
         };
 
-        MsgOpaqueData.EventLocation = (function() {
+        $lazy(MsgOpaqueData, "EventLocation", function() {
 
             function EventLocation(p) {
                 if (p)
@@ -79286,17 +79302,17 @@ export const proto = $root.proto = (() => {
             };
 
             return EventLocation;
-        })();
+        });
 
-        MsgOpaqueData.PollContentType = (function() {
+        $lazy(MsgOpaqueData, "PollContentType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN"] = 0;
             values[valuesById[1] = "TEXT"] = 1;
             values[valuesById[2] = "IMAGE"] = 2;
             return values;
-        })();
+        });
 
-        MsgOpaqueData.PollOption = (function() {
+        $lazy(MsgOpaqueData, "PollOption", function() {
 
             function PollOption(p) {
                 if (p)
@@ -79409,16 +79425,16 @@ export const proto = $root.proto = (() => {
             };
 
             return PollOption;
-        })();
+        });
 
-        MsgOpaqueData.PollType = (function() {
+        $lazy(MsgOpaqueData, "PollType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "POLL"] = 0;
             values[valuesById[1] = "QUIZ"] = 1;
             return values;
-        })();
+        });
 
-        MsgOpaqueData.PollVoteSnapshot = (function() {
+        $lazy(MsgOpaqueData, "PollVoteSnapshot", function() {
 
             function PollVoteSnapshot(p) {
                 if (p)
@@ -79533,9 +79549,9 @@ export const proto = $root.proto = (() => {
             };
 
             return PollVoteSnapshot;
-        })();
+        });
 
-        MsgOpaqueData.PollVotesSnapshot = (function() {
+        $lazy(MsgOpaqueData, "PollVotesSnapshot", function() {
 
             function PollVotesSnapshot(p) {
                 this.pollVotes = [];
@@ -79637,12 +79653,12 @@ export const proto = $root.proto = (() => {
             };
 
             return PollVotesSnapshot;
-        })();
+        });
 
         return MsgOpaqueData;
-    })();
+    });
 
-    proto.MsgRowOpaqueData = (function() {
+    $lazy(proto, "MsgRowOpaqueData", function() {
 
         function MsgRowOpaqueData(p) {
             if (p)
@@ -79759,9 +79775,9 @@ export const proto = $root.proto = (() => {
         };
 
         return MsgRowOpaqueData;
-    })();
+    });
 
-    proto.MutationProps = (function() {
+    $lazy(proto, "MutationProps", function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[2] = "STAR_ACTION"] = 2;
         values[valuesById[3] = "CONTACT_ACTION"] = 3;
@@ -79850,9 +79866,9 @@ export const proto = $root.proto = (() => {
         values[valuesById[10002] = "BUSINESS_BROADCAST_ACTION"] = 10002;
         values[valuesById[10003] = "AI_THREAD_DELETE_ACTION"] = 10003;
         return values;
-    })();
+    });
 
-    proto.NoiseCertificate = (function() {
+    $lazy(proto, "NoiseCertificate", function() {
 
         function NoiseCertificate(p) {
             if (p)
@@ -79970,7 +79986,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.NoiseCertificate";
         };
 
-        NoiseCertificate.Details = (function() {
+        $lazy(NoiseCertificate, "Details", function() {
 
             function Details(p) {
                 if (p)
@@ -80156,12 +80172,12 @@ export const proto = $root.proto = (() => {
             };
 
             return Details;
-        })();
+        });
 
         return NoiseCertificate;
-    })();
+    });
 
-    proto.NotificationMessageInfo = (function() {
+    $lazy(proto, "NotificationMessageInfo", function() {
 
         function NotificationMessageInfo(p) {
             if (p)
@@ -80328,9 +80344,9 @@ export const proto = $root.proto = (() => {
         };
 
         return NotificationMessageInfo;
-    })();
+    });
 
-    proto.NotificationSettings = (function() {
+    $lazy(proto, "NotificationSettings", function() {
 
         function NotificationSettings(p) {
             if (p)
@@ -80523,9 +80539,9 @@ export const proto = $root.proto = (() => {
         };
 
         return NotificationSettings;
-    })();
+    });
 
-    proto.PairingRequest = (function() {
+    $lazy(proto, "PairingRequest", function() {
 
         function PairingRequest(p) {
             if (p)
@@ -80667,9 +80683,9 @@ export const proto = $root.proto = (() => {
         };
 
         return PairingRequest;
-    })();
+    });
 
-    proto.PastParticipant = (function() {
+    $lazy(proto, "PastParticipant", function() {
 
         function PastParticipant(p) {
             if (p)
@@ -80824,17 +80840,17 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.PastParticipant";
         };
 
-        PastParticipant.LeaveReason = (function() {
+        $lazy(PastParticipant, "LeaveReason", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "LEFT"] = 0;
             values[valuesById[1] = "REMOVED"] = 1;
             return values;
-        })();
+        });
 
         return PastParticipant;
-    })();
+    });
 
-    proto.PastParticipants = (function() {
+    $lazy(proto, "PastParticipants", function() {
 
         function PastParticipants(p) {
             this.pastParticipants = [];
@@ -80958,9 +80974,9 @@ export const proto = $root.proto = (() => {
         };
 
         return PastParticipants;
-    })();
+    });
 
-    proto.PatchDebugData = (function() {
+    $lazy(proto, "PatchDebugData", function() {
 
         function PatchDebugData(p) {
             if (p)
@@ -81323,7 +81339,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.PatchDebugData";
         };
 
-        PatchDebugData.Platform = (function() {
+        $lazy(PatchDebugData, "Platform", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "ANDROID"] = 0;
             values[valuesById[1] = "SMBA"] = 1;
@@ -81338,12 +81354,12 @@ export const proto = $root.proto = (() => {
             values[valuesById[10] = "WEARM"] = 10;
             values[valuesById[11] = "CAPI"] = 11;
             return values;
-        })();
+        });
 
         return PatchDebugData;
-    })();
+    });
 
-    proto.PaymentBackground = (function() {
+    $lazy(proto, "PaymentBackground", function() {
 
         function PaymentBackground(p) {
             if (p)
@@ -81640,7 +81656,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.PaymentBackground";
         };
 
-        PaymentBackground.MediaData = (function() {
+        $lazy(PaymentBackground, "MediaData", function() {
 
             function MediaData(p) {
                 if (p)
@@ -81832,19 +81848,19 @@ export const proto = $root.proto = (() => {
             };
 
             return MediaData;
-        })();
+        });
 
-        PaymentBackground.Type = (function() {
+        $lazy(PaymentBackground, "Type", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN"] = 0;
             values[valuesById[1] = "DEFAULT"] = 1;
             return values;
-        })();
+        });
 
         return PaymentBackground;
-    })();
+    });
 
-    proto.PaymentInfo = (function() {
+    $lazy(proto, "PaymentInfo", function() {
 
         function PaymentInfo(p) {
             if (p)
@@ -82411,14 +82427,14 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.PaymentInfo";
         };
 
-        PaymentInfo.Currency = (function() {
+        $lazy(PaymentInfo, "Currency", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN_CURRENCY"] = 0;
             values[valuesById[1] = "INR"] = 1;
             return values;
-        })();
+        });
 
-        PaymentInfo.Status = (function() {
+        $lazy(PaymentInfo, "Status", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN_STATUS"] = 0;
             values[valuesById[1] = "PROCESSING"] = 1;
@@ -82433,9 +82449,9 @@ export const proto = $root.proto = (() => {
             values[valuesById[10] = "WAITING_FOR_PAYER"] = 10;
             values[valuesById[11] = "WAITING"] = 11;
             return values;
-        })();
+        });
 
-        PaymentInfo.TxnStatus = (function() {
+        $lazy(PaymentInfo, "TxnStatus", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN"] = 0;
             values[valuesById[1] = "PENDING_SETUP"] = 1;
@@ -82470,12 +82486,12 @@ export const proto = $root.proto = (() => {
             values[valuesById[30] = "REVERSAL_PENDING"] = 30;
             values[valuesById[31] = "REFUND_PENDING"] = 31;
             return values;
-        })();
+        });
 
         return PaymentInfo;
-    })();
+    });
 
-    proto.PhoneNumberToLIDMapping = (function() {
+    $lazy(proto, "PhoneNumberToLIDMapping", function() {
 
         function PhoneNumberToLIDMapping(p) {
             if (p)
@@ -82588,9 +82604,9 @@ export const proto = $root.proto = (() => {
         };
 
         return PhoneNumberToLIDMapping;
-    })();
+    });
 
-    proto.PhotoChange = (function() {
+    $lazy(proto, "PhotoChange", function() {
 
         function PhotoChange(p) {
             if (p)
@@ -82729,9 +82745,9 @@ export const proto = $root.proto = (() => {
         };
 
         return PhotoChange;
-    })();
+    });
 
-    proto.PinInChat = (function() {
+    $lazy(proto, "PinInChat", function() {
 
         function PinInChat(p) {
             if (p)
@@ -82944,18 +82960,18 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.PinInChat";
         };
 
-        PinInChat.Type = (function() {
+        $lazy(PinInChat, "Type", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN_TYPE"] = 0;
             values[valuesById[1] = "PIN_FOR_ALL"] = 1;
             values[valuesById[2] = "UNPIN_FOR_ALL"] = 2;
             return values;
-        })();
+        });
 
         return PinInChat;
-    })();
+    });
 
-    proto.Point = (function() {
+    $lazy(proto, "Point", function() {
 
         function Point(p) {
             if (p)
@@ -83108,9 +83124,9 @@ export const proto = $root.proto = (() => {
         };
 
         return Point;
-    })();
+    });
 
-    proto.PollAdditionalMetadata = (function() {
+    $lazy(proto, "PollAdditionalMetadata", function() {
 
         function PollAdditionalMetadata(p) {
             this.pollNameHashHistory = [];
@@ -83233,7 +83249,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.PollAdditionalMetadata";
         };
 
-        PollAdditionalMetadata.PollNameHashHistoryEntry = (function() {
+        $lazy(PollAdditionalMetadata, "PollNameHashHistoryEntry", function() {
 
             function PollNameHashHistoryEntry(p) {
                 if (p)
@@ -83349,12 +83365,12 @@ export const proto = $root.proto = (() => {
             };
 
             return PollNameHashHistoryEntry;
-        })();
+        });
 
         return PollAdditionalMetadata;
-    })();
+    });
 
-    proto.PollEncValue = (function() {
+    $lazy(proto, "PollEncValue", function() {
 
         function PollEncValue(p) {
             if (p)
@@ -83473,9 +83489,9 @@ export const proto = $root.proto = (() => {
         };
 
         return PollEncValue;
-    })();
+    });
 
-    proto.PollUpdate = (function() {
+    $lazy(proto, "PollUpdate", function() {
 
         function PollUpdate(p) {
             if (p)
@@ -83694,9 +83710,9 @@ export const proto = $root.proto = (() => {
         };
 
         return PollUpdate;
-    })();
+    });
 
-    proto.PreKeyRecordStructure = (function() {
+    $lazy(proto, "PreKeyRecordStructure", function() {
 
         function PreKeyRecordStructure(p) {
             if (p)
@@ -83835,9 +83851,9 @@ export const proto = $root.proto = (() => {
         };
 
         return PreKeyRecordStructure;
-    })();
+    });
 
-    proto.PreKeySignalMessage = (function() {
+    $lazy(proto, "PreKeySignalMessage", function() {
 
         function PreKeySignalMessage(p) {
             if (p)
@@ -84039,9 +84055,9 @@ export const proto = $root.proto = (() => {
         };
 
         return PreKeySignalMessage;
-    })();
+    });
 
-    proto.PremiumMessageInfo = (function() {
+    $lazy(proto, "PremiumMessageInfo", function() {
 
         function PremiumMessageInfo(p) {
             if (p)
@@ -84134,9 +84150,9 @@ export const proto = $root.proto = (() => {
         };
 
         return PremiumMessageInfo;
-    })();
+    });
 
-    proto.PrimaryEphemeralIdentity = (function() {
+    $lazy(proto, "PrimaryEphemeralIdentity", function() {
 
         function PrimaryEphemeralIdentity(p) {
             if (p)
@@ -84255,17 +84271,17 @@ export const proto = $root.proto = (() => {
         };
 
         return PrimaryEphemeralIdentity;
-    })();
+    });
 
-    proto.PrivacySystemMessage = (function() {
+    $lazy(proto, "PrivacySystemMessage", function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[1] = "E2EE_MSG"] = 1;
         values[valuesById[2] = "NE2EE_SELF"] = 2;
         values[valuesById[3] = "NE2EE_OTHER"] = 3;
         return values;
-    })();
+    });
 
-    proto.ProcessedVideo = (function() {
+    $lazy(proto, "ProcessedVideo", function() {
 
         function ProcessedVideo(p) {
             this.capabilities = [];
@@ -84540,19 +84556,19 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.ProcessedVideo";
         };
 
-        ProcessedVideo.VideoQuality = (function() {
+        $lazy(ProcessedVideo, "VideoQuality", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNDEFINED"] = 0;
             values[valuesById[1] = "LOW"] = 1;
             values[valuesById[2] = "MID"] = 2;
             values[valuesById[3] = "HIGH"] = 3;
             return values;
-        })();
+        });
 
         return ProcessedVideo;
-    })();
+    });
 
-    proto.ProloguePayload = (function() {
+    $lazy(proto, "ProloguePayload", function() {
 
         function ProloguePayload(p) {
             if (p)
@@ -84670,9 +84686,9 @@ export const proto = $root.proto = (() => {
         };
 
         return ProloguePayload;
-    })();
+    });
 
-    proto.Pushname = (function() {
+    $lazy(proto, "Pushname", function() {
 
         function Pushname(p) {
             if (p)
@@ -84785,9 +84801,9 @@ export const proto = $root.proto = (() => {
         };
 
         return Pushname;
-    })();
+    });
 
-    proto.QuarantinedMessage = (function() {
+    $lazy(proto, "QuarantinedMessage", function() {
 
         function QuarantinedMessage(p) {
             if (p)
@@ -84903,9 +84919,9 @@ export const proto = $root.proto = (() => {
         };
 
         return QuarantinedMessage;
-    })();
+    });
 
-    proto.Reaction = (function() {
+    $lazy(proto, "Reaction", function() {
 
         function Reaction(p) {
             if (p)
@@ -85090,9 +85106,9 @@ export const proto = $root.proto = (() => {
         };
 
         return Reaction;
-    })();
+    });
 
-    proto.RecentEmojiWeight = (function() {
+    $lazy(proto, "RecentEmojiWeight", function() {
 
         function RecentEmojiWeight(p) {
             if (p)
@@ -85205,9 +85221,9 @@ export const proto = $root.proto = (() => {
         };
 
         return RecentEmojiWeight;
-    })();
+    });
 
-    proto.RecordStructure = (function() {
+    $lazy(proto, "RecordStructure", function() {
 
         function RecordStructure(p) {
             this.previousSessions = [];
@@ -85333,9 +85349,9 @@ export const proto = $root.proto = (() => {
         };
 
         return RecordStructure;
-    })();
+    });
 
-    proto.Reportable = (function() {
+    $lazy(proto, "Reportable", function() {
 
         function Reportable(p) {
             if (p)
@@ -85488,9 +85504,9 @@ export const proto = $root.proto = (() => {
         };
 
         return Reportable;
-    })();
+    });
 
-    proto.ReportingTokenInfo = (function() {
+    $lazy(proto, "ReportingTokenInfo", function() {
 
         function ReportingTokenInfo(p) {
             if (p)
@@ -85586,9 +85602,9 @@ export const proto = $root.proto = (() => {
         };
 
         return ReportingTokenInfo;
-    })();
+    });
 
-    proto.ScheduledMessageMetadata = (function() {
+    $lazy(proto, "ScheduledMessageMetadata", function() {
 
         function ScheduledMessageMetadata(p) {
             if (p)
@@ -85734,9 +85750,9 @@ export const proto = $root.proto = (() => {
         };
 
         return ScheduledMessageMetadata;
-    })();
+    });
 
-    proto.SenderKeyDistributionMessage = (function() {
+    $lazy(proto, "SenderKeyDistributionMessage", function() {
 
         function SenderKeyDistributionMessage(p) {
             if (p)
@@ -85895,9 +85911,9 @@ export const proto = $root.proto = (() => {
         };
 
         return SenderKeyDistributionMessage;
-    })();
+    });
 
-    proto.SenderKeyMessage = (function() {
+    $lazy(proto, "SenderKeyMessage", function() {
 
         function SenderKeyMessage(p) {
             if (p)
@@ -86033,9 +86049,9 @@ export const proto = $root.proto = (() => {
         };
 
         return SenderKeyMessage;
-    })();
+    });
 
-    proto.SenderKeyRecordStructure = (function() {
+    $lazy(proto, "SenderKeyRecordStructure", function() {
 
         function SenderKeyRecordStructure(p) {
             this.senderKeyStates = [];
@@ -86137,9 +86153,9 @@ export const proto = $root.proto = (() => {
         };
 
         return SenderKeyRecordStructure;
-    })();
+    });
 
-    proto.SenderKeyStateStructure = (function() {
+    $lazy(proto, "SenderKeyStateStructure", function() {
 
         function SenderKeyStateStructure(p) {
             this.senderMessageKeys = [];
@@ -86306,7 +86322,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.SenderKeyStateStructure";
         };
 
-        SenderKeyStateStructure.SenderChainKey = (function() {
+        $lazy(SenderKeyStateStructure, "SenderChainKey", function() {
 
             function SenderChainKey(p) {
                 if (p)
@@ -86422,9 +86438,9 @@ export const proto = $root.proto = (() => {
             };
 
             return SenderChainKey;
-        })();
+        });
 
-        SenderKeyStateStructure.SenderMessageKey = (function() {
+        $lazy(SenderKeyStateStructure, "SenderMessageKey", function() {
 
             function SenderMessageKey(p) {
                 if (p)
@@ -86540,9 +86556,9 @@ export const proto = $root.proto = (() => {
             };
 
             return SenderMessageKey;
-        })();
+        });
 
-        SenderKeyStateStructure.SenderSigningKey = (function() {
+        $lazy(SenderKeyStateStructure, "SenderSigningKey", function() {
 
             function SenderSigningKey(p) {
                 if (p)
@@ -86661,12 +86677,12 @@ export const proto = $root.proto = (() => {
             };
 
             return SenderSigningKey;
-        })();
+        });
 
         return SenderKeyStateStructure;
-    })();
+    });
 
-    proto.ServerErrorReceipt = (function() {
+    $lazy(proto, "ServerErrorReceipt", function() {
 
         function ServerErrorReceipt(p) {
             if (p)
@@ -86759,9 +86775,9 @@ export const proto = $root.proto = (() => {
         };
 
         return ServerErrorReceipt;
-    })();
+    });
 
-    proto.SessionStructure = (function() {
+    $lazy(proto, "SessionStructure", function() {
 
         function SessionStructure(p) {
             this.receiverChains = [];
@@ -87122,7 +87138,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.SessionStructure";
         };
 
-        SessionStructure.Chain = (function() {
+        $lazy(SessionStructure, "Chain", function() {
 
             function Chain(p) {
                 this.messageKeys = [];
@@ -87293,7 +87309,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SessionStructure.Chain";
             };
 
-            Chain.ChainKey = (function() {
+            $lazy(Chain, "ChainKey", function() {
 
                 function ChainKey(p) {
                     if (p)
@@ -87409,9 +87425,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return ChainKey;
-            })();
+            });
 
-            Chain.MessageKey = (function() {
+            $lazy(Chain, "MessageKey", function() {
 
                 function MessageKey(p) {
                     if (p)
@@ -87573,12 +87589,12 @@ export const proto = $root.proto = (() => {
                 };
 
                 return MessageKey;
-            })();
+            });
 
             return Chain;
-        })();
+        });
 
-        SessionStructure.PendingKeyExchange = (function() {
+        $lazy(SessionStructure, "PendingKeyExchange", function() {
 
             function PendingKeyExchange(p) {
                 if (p)
@@ -87809,9 +87825,9 @@ export const proto = $root.proto = (() => {
             };
 
             return PendingKeyExchange;
-        })();
+        });
 
-        SessionStructure.PendingPreKey = (function() {
+        $lazy(SessionStructure, "PendingPreKey", function() {
 
             function PendingPreKey(p) {
                 if (p)
@@ -87947,12 +87963,12 @@ export const proto = $root.proto = (() => {
             };
 
             return PendingPreKey;
-        })();
+        });
 
         return SessionStructure;
-    })();
+    });
 
-    proto.SessionTransparencyMetadata = (function() {
+    $lazy(proto, "SessionTransparencyMetadata", function() {
 
         function SessionTransparencyMetadata(p) {
             if (p)
@@ -88098,16 +88114,16 @@ export const proto = $root.proto = (() => {
         };
 
         return SessionTransparencyMetadata;
-    })();
+    });
 
-    proto.SessionTransparencyType = (function() {
+    $lazy(proto, "SessionTransparencyType", function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "UNKNOWN_TYPE"] = 0;
         values[valuesById[1] = "NY_AI_SAFETY_DISCLAIMER"] = 1;
         return values;
-    })();
+    });
 
-    proto.SignalMessage = (function() {
+    $lazy(proto, "SignalMessage", function() {
 
         function SignalMessage(p) {
             if (p)
@@ -88266,9 +88282,9 @@ export const proto = $root.proto = (() => {
         };
 
         return SignalMessage;
-    })();
+    });
 
-    proto.SignedPreKeyRecordStructure = (function() {
+    $lazy(proto, "SignedPreKeyRecordStructure", function() {
 
         function SignedPreKeyRecordStructure(p) {
             if (p)
@@ -88460,9 +88476,9 @@ export const proto = $root.proto = (() => {
         };
 
         return SignedPreKeyRecordStructure;
-    })();
+    });
 
-    proto.StatusAttribution = (function() {
+    $lazy(proto, "StatusAttribution", function() {
 
         function StatusAttribution(p) {
             if (p)
@@ -88734,7 +88750,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.StatusAttribution";
         };
 
-        StatusAttribution.AiCreatedAttribution = (function() {
+        $lazy(StatusAttribution, "AiCreatedAttribution", function() {
 
             function AiCreatedAttribution(p) {
                 if (p)
@@ -88839,17 +88855,17 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.StatusAttribution.AiCreatedAttribution";
             };
 
-            AiCreatedAttribution.Source = (function() {
+            $lazy(AiCreatedAttribution, "Source", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "STATUS_MIMICRY"] = 1;
                 return values;
-            })();
+            });
 
             return AiCreatedAttribution;
-        })();
+        });
 
-        StatusAttribution.ExternalShare = (function() {
+        $lazy(StatusAttribution, "ExternalShare", function() {
 
             function ExternalShare(p) {
                 if (p)
@@ -89058,7 +89074,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.StatusAttribution.ExternalShare";
             };
 
-            ExternalShare.Source = (function() {
+            $lazy(ExternalShare, "Source", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "INSTAGRAM"] = 1;
@@ -89074,12 +89090,12 @@ export const proto = $root.proto = (() => {
                 values[valuesById[11] = "SOUNDCLOUD"] = 11;
                 values[valuesById[12] = "SHAZAM"] = 12;
                 return values;
-            })();
+            });
 
             return ExternalShare;
-        })();
+        });
 
-        StatusAttribution.GroupStatus = (function() {
+        $lazy(StatusAttribution, "GroupStatus", function() {
 
             function GroupStatus(p) {
                 if (p)
@@ -89172,9 +89188,9 @@ export const proto = $root.proto = (() => {
             };
 
             return GroupStatus;
-        })();
+        });
 
-        StatusAttribution.Music = (function() {
+        $lazy(StatusAttribution, "Music", function() {
 
             function Music(p) {
                 if (p)
@@ -89367,9 +89383,9 @@ export const proto = $root.proto = (() => {
             };
 
             return Music;
-        })();
+        });
 
-        StatusAttribution.RLAttribution = (function() {
+        $lazy(StatusAttribution, "RLAttribution", function() {
 
             function RLAttribution(p) {
                 if (p)
@@ -89482,19 +89498,19 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.StatusAttribution.RLAttribution";
             };
 
-            RLAttribution.Source = (function() {
+            $lazy(RLAttribution, "Source", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "RAY_BAN_META_GLASSES"] = 1;
                 values[valuesById[2] = "OAKLEY_META_GLASSES"] = 2;
                 values[valuesById[3] = "HYPERNOVA_GLASSES"] = 3;
                 return values;
-            })();
+            });
 
             return RLAttribution;
-        })();
+        });
 
-        StatusAttribution.StatusReshare = (function() {
+        $lazy(StatusAttribution, "StatusReshare", function() {
 
             function StatusReshare(p) {
                 if (p)
@@ -89633,7 +89649,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.StatusAttribution.StatusReshare";
             };
 
-            StatusReshare.Metadata = (function() {
+            $lazy(StatusReshare, "Metadata", function() {
 
                 function Metadata(p) {
                     if (p)
@@ -89786,9 +89802,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return Metadata;
-            })();
+            });
 
-            StatusReshare.Source = (function() {
+            $lazy(StatusReshare, "Source", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "INTERNAL_RESHARE"] = 1;
@@ -89796,12 +89812,12 @@ export const proto = $root.proto = (() => {
                 values[valuesById[3] = "CHANNEL_RESHARE"] = 3;
                 values[valuesById[4] = "FORWARD"] = 4;
                 return values;
-            })();
+            });
 
             return StatusReshare;
-        })();
+        });
 
-        StatusAttribution.Type = (function() {
+        $lazy(StatusAttribution, "Type", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN"] = 0;
             values[valuesById[1] = "RESHARE"] = 1;
@@ -89816,12 +89832,12 @@ export const proto = $root.proto = (() => {
             values[valuesById[10] = "STATUS_CLOSE_SHARING"] = 10;
             values[valuesById[11] = "PAID_PARTNERSHIP"] = 11;
             return values;
-        })();
+        });
 
         return StatusAttribution;
-    })();
+    });
 
-    proto.StatusMentionMessage = (function() {
+    $lazy(proto, "StatusMentionMessage", function() {
 
         function StatusMentionMessage(p) {
             if (p)
@@ -89916,9 +89932,9 @@ export const proto = $root.proto = (() => {
         };
 
         return StatusMentionMessage;
-    })();
+    });
 
-    proto.StatusPSA = (function() {
+    $lazy(proto, "StatusPSA", function() {
 
         function StatusPSA(p) {
             if (p)
@@ -90051,9 +90067,9 @@ export const proto = $root.proto = (() => {
         };
 
         return StatusPSA;
-    })();
+    });
 
-    proto.StickerMetadata = (function() {
+    $lazy(proto, "StickerMetadata", function() {
 
         function StickerMetadata(p) {
             if (p)
@@ -90435,9 +90451,9 @@ export const proto = $root.proto = (() => {
         };
 
         return StickerMetadata;
-    })();
+    });
 
-    proto.SyncActionData = (function() {
+    $lazy(proto, "SyncActionData", function() {
 
         function SyncActionData(p) {
             if (p)
@@ -90598,9 +90614,9 @@ export const proto = $root.proto = (() => {
         };
 
         return SyncActionData;
-    })();
+    });
 
-    proto.SyncActionValue = (function() {
+    $lazy(proto, "SyncActionValue", function() {
 
         function SyncActionValue(p) {
             if (p)
@@ -92440,7 +92456,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.SyncActionValue";
         };
 
-        SyncActionValue.AgentAction = (function() {
+        $lazy(SyncActionValue, "AgentAction", function() {
 
             function AgentAction(p) {
                 if (p)
@@ -92573,9 +92589,9 @@ export const proto = $root.proto = (() => {
             };
 
             return AgentAction;
-        })();
+        });
 
-        SyncActionValue.AiThreadRenameAction = (function() {
+        $lazy(SyncActionValue, "AiThreadRenameAction", function() {
 
             function AiThreadRenameAction(p) {
                 if (p)
@@ -92668,9 +92684,9 @@ export const proto = $root.proto = (() => {
             };
 
             return AiThreadRenameAction;
-        })();
+        });
 
-        SyncActionValue.AndroidUnsupportedActions = (function() {
+        $lazy(SyncActionValue, "AndroidUnsupportedActions", function() {
 
             function AndroidUnsupportedActions(p) {
                 if (p)
@@ -92763,9 +92779,9 @@ export const proto = $root.proto = (() => {
             };
 
             return AndroidUnsupportedActions;
-        })();
+        });
 
-        SyncActionValue.ArchiveChatAction = (function() {
+        $lazy(SyncActionValue, "ArchiveChatAction", function() {
 
             function ArchiveChatAction(p) {
                 if (p)
@@ -92880,9 +92896,9 @@ export const proto = $root.proto = (() => {
             };
 
             return ArchiveChatAction;
-        })();
+        });
 
-        SyncActionValue.AutoOrganizeBusinessChatSetting = (function() {
+        $lazy(SyncActionValue, "AutoOrganizeBusinessChatSetting", function() {
 
             function AutoOrganizeBusinessChatSetting(p) {
                 if (p)
@@ -92975,9 +92991,9 @@ export const proto = $root.proto = (() => {
             };
 
             return AutoOrganizeBusinessChatSetting;
-        })();
+        });
 
-        SyncActionValue.AvatarUpdatedAction = (function() {
+        $lazy(SyncActionValue, "AvatarUpdatedAction", function() {
 
             function AvatarUpdatedAction(p) {
                 this.recentAvatarStickers = [];
@@ -93117,18 +93133,18 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SyncActionValue.AvatarUpdatedAction";
             };
 
-            AvatarUpdatedAction.AvatarEventType = (function() {
+            $lazy(AvatarUpdatedAction, "AvatarEventType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UPDATED"] = 0;
                 values[valuesById[1] = "CREATED"] = 1;
                 values[valuesById[2] = "DELETED"] = 2;
                 return values;
-            })();
+            });
 
             return AvatarUpdatedAction;
-        })();
+        });
 
-        SyncActionValue.BizAISettingsNudgeAction = (function() {
+        $lazy(SyncActionValue, "BizAISettingsNudgeAction", function() {
 
             function BizAISettingsNudgeAction(p) {
                 if (p)
@@ -93309,7 +93325,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SyncActionValue.BizAISettingsNudgeAction";
             };
 
-            BizAISettingsNudgeAction.BizAISettingsCategory = (function() {
+            $lazy(BizAISettingsNudgeAction, "BizAISettingsCategory", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNKNOWN"] = 0;
                 values[valuesById[1] = "INSTRUCTIONS"] = 1;
@@ -93318,12 +93334,12 @@ export const proto = $root.proto = (() => {
                 values[valuesById[4] = "KNOWLEDGE"] = 4;
                 values[valuesById[5] = "LEAD_GEN"] = 5;
                 return values;
-            })();
+            });
 
             return BizAISettingsNudgeAction;
-        })();
+        });
 
-        SyncActionValue.BotWelcomeRequestAction = (function() {
+        $lazy(SyncActionValue, "BotWelcomeRequestAction", function() {
 
             function BotWelcomeRequestAction(p) {
                 if (p)
@@ -93416,9 +93432,9 @@ export const proto = $root.proto = (() => {
             };
 
             return BotWelcomeRequestAction;
-        })();
+        });
 
-        SyncActionValue.BroadcastListParticipant = (function() {
+        $lazy(SyncActionValue, "BroadcastListParticipant", function() {
 
             function BroadcastListParticipant(p) {
                 if (p)
@@ -93527,9 +93543,9 @@ export const proto = $root.proto = (() => {
             };
 
             return BroadcastListParticipant;
-        })();
+        });
 
-        SyncActionValue.BusinessBroadcastAssociationAction = (function() {
+        $lazy(SyncActionValue, "BusinessBroadcastAssociationAction", function() {
 
             function BusinessBroadcastAssociationAction(p) {
                 if (p)
@@ -93622,9 +93638,9 @@ export const proto = $root.proto = (() => {
             };
 
             return BusinessBroadcastAssociationAction;
-        })();
+        });
 
-        SyncActionValue.BusinessBroadcastCampaignAction = (function() {
+        $lazy(SyncActionValue, "BusinessBroadcastCampaignAction", function() {
 
             function BusinessBroadcastCampaignAction(p) {
                 if (p)
@@ -93922,9 +93938,9 @@ export const proto = $root.proto = (() => {
             };
 
             return BusinessBroadcastCampaignAction;
-        })();
+        });
 
-        SyncActionValue.BusinessBroadcastCampaignStatus = (function() {
+        $lazy(SyncActionValue, "BusinessBroadcastCampaignStatus", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[1] = "DRAFT"] = 1;
             values[valuesById[2] = "SCHEDULED"] = 2;
@@ -93932,9 +93948,9 @@ export const proto = $root.proto = (() => {
             values[valuesById[4] = "FAILED"] = 4;
             values[valuesById[5] = "SENT"] = 5;
             return values;
-        })();
+        });
 
-        SyncActionValue.BusinessBroadcastInsightsAction = (function() {
+        $lazy(SyncActionValue, "BusinessBroadcastInsightsAction", function() {
 
             function BusinessBroadcastInsightsAction(p) {
                 if (p)
@@ -94107,9 +94123,9 @@ export const proto = $root.proto = (() => {
             };
 
             return BusinessBroadcastInsightsAction;
-        })();
+        });
 
-        SyncActionValue.BusinessBroadcastListAction = (function() {
+        $lazy(SyncActionValue, "BusinessBroadcastListAction", function() {
 
             function BusinessBroadcastListAction(p) {
                 this.participants = [];
@@ -94300,9 +94316,9 @@ export const proto = $root.proto = (() => {
             };
 
             return BusinessBroadcastListAction;
-        })();
+        });
 
-        SyncActionValue.CallLogAction = (function() {
+        $lazy(SyncActionValue, "CallLogAction", function() {
 
             function CallLogAction(p) {
                 if (p)
@@ -94397,9 +94413,9 @@ export const proto = $root.proto = (() => {
             };
 
             return CallLogAction;
-        })();
+        });
 
-        SyncActionValue.ChatAssignmentAction = (function() {
+        $lazy(SyncActionValue, "ChatAssignmentAction", function() {
 
             function ChatAssignmentAction(p) {
                 if (p)
@@ -94492,9 +94508,9 @@ export const proto = $root.proto = (() => {
             };
 
             return ChatAssignmentAction;
-        })();
+        });
 
-        SyncActionValue.ChatAssignmentOpenedStatusAction = (function() {
+        $lazy(SyncActionValue, "ChatAssignmentOpenedStatusAction", function() {
 
             function ChatAssignmentOpenedStatusAction(p) {
                 if (p)
@@ -94587,9 +94603,9 @@ export const proto = $root.proto = (() => {
             };
 
             return ChatAssignmentOpenedStatusAction;
-        })();
+        });
 
-        SyncActionValue.ClearChatAction = (function() {
+        $lazy(SyncActionValue, "ClearChatAction", function() {
 
             function ClearChatAction(p) {
                 if (p)
@@ -94684,9 +94700,9 @@ export const proto = $root.proto = (() => {
             };
 
             return ClearChatAction;
-        })();
+        });
 
-        SyncActionValue.CoexV2VersionAction = (function() {
+        $lazy(SyncActionValue, "CoexV2VersionAction", function() {
 
             function CoexV2VersionAction(p) {
                 if (p)
@@ -94789,9 +94805,9 @@ export const proto = $root.proto = (() => {
             };
 
             return CoexV2VersionAction;
-        })();
+        });
 
-        SyncActionValue.ContactAction = (function() {
+        $lazy(SyncActionValue, "ContactAction", function() {
 
             function ContactAction(p) {
                 if (p)
@@ -94984,9 +95000,9 @@ export const proto = $root.proto = (() => {
             };
 
             return ContactAction;
-        })();
+        });
 
-        SyncActionValue.CtwaPerCustomerDataSharingAction = (function() {
+        $lazy(SyncActionValue, "CtwaPerCustomerDataSharingAction", function() {
 
             function CtwaPerCustomerDataSharingAction(p) {
                 if (p)
@@ -95079,9 +95095,9 @@ export const proto = $root.proto = (() => {
             };
 
             return CtwaPerCustomerDataSharingAction;
-        })();
+        });
 
-        SyncActionValue.CustomPaymentMethod = (function() {
+        $lazy(SyncActionValue, "CustomPaymentMethod", function() {
 
             function CustomPaymentMethod(p) {
                 this.metadata = [];
@@ -95227,9 +95243,9 @@ export const proto = $root.proto = (() => {
             };
 
             return CustomPaymentMethod;
-        })();
+        });
 
-        SyncActionValue.CustomPaymentMethodMetadata = (function() {
+        $lazy(SyncActionValue, "CustomPaymentMethodMetadata", function() {
 
             function CustomPaymentMethodMetadata(p) {
                 if (p)
@@ -95330,9 +95346,9 @@ export const proto = $root.proto = (() => {
             };
 
             return CustomPaymentMethodMetadata;
-        })();
+        });
 
-        SyncActionValue.CustomPaymentMethodsAction = (function() {
+        $lazy(SyncActionValue, "CustomPaymentMethodsAction", function() {
 
             function CustomPaymentMethodsAction(p) {
                 this.customPaymentMethods = [];
@@ -95434,9 +95450,9 @@ export const proto = $root.proto = (() => {
             };
 
             return CustomPaymentMethodsAction;
-        })();
+        });
 
-        SyncActionValue.CustomerDataAction = (function() {
+        $lazy(SyncActionValue, "CustomerDataAction", function() {
 
             function CustomerDataAction(p) {
                 if (p)
@@ -95769,9 +95785,9 @@ export const proto = $root.proto = (() => {
             };
 
             return CustomerDataAction;
-        })();
+        });
 
-        SyncActionValue.DeleteChatAction = (function() {
+        $lazy(SyncActionValue, "DeleteChatAction", function() {
 
             function DeleteChatAction(p) {
                 if (p)
@@ -95866,9 +95882,9 @@ export const proto = $root.proto = (() => {
             };
 
             return DeleteChatAction;
-        })();
+        });
 
-        SyncActionValue.DeleteIndividualCallLogAction = (function() {
+        $lazy(SyncActionValue, "DeleteIndividualCallLogAction", function() {
 
             function DeleteIndividualCallLogAction(p) {
                 if (p)
@@ -95981,9 +95997,9 @@ export const proto = $root.proto = (() => {
             };
 
             return DeleteIndividualCallLogAction;
-        })();
+        });
 
-        SyncActionValue.DeleteMessageForMeAction = (function() {
+        $lazy(SyncActionValue, "DeleteMessageForMeAction", function() {
 
             function DeleteMessageForMeAction(p) {
                 if (p)
@@ -96106,9 +96122,9 @@ export const proto = $root.proto = (() => {
             };
 
             return DeleteMessageForMeAction;
-        })();
+        });
 
-        SyncActionValue.DetectedOutcomesStatusAction = (function() {
+        $lazy(SyncActionValue, "DetectedOutcomesStatusAction", function() {
 
             function DetectedOutcomesStatusAction(p) {
                 if (p)
@@ -96201,9 +96217,9 @@ export const proto = $root.proto = (() => {
             };
 
             return DetectedOutcomesStatusAction;
-        })();
+        });
 
-        SyncActionValue.ExternalWebBetaAction = (function() {
+        $lazy(SyncActionValue, "ExternalWebBetaAction", function() {
 
             function ExternalWebBetaAction(p) {
                 if (p)
@@ -96296,9 +96312,9 @@ export const proto = $root.proto = (() => {
             };
 
             return ExternalWebBetaAction;
-        })();
+        });
 
-        SyncActionValue.FavoritesAction = (function() {
+        $lazy(SyncActionValue, "FavoritesAction", function() {
 
             function FavoritesAction(p) {
                 this.favorites = [];
@@ -96399,7 +96415,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SyncActionValue.FavoritesAction";
             };
 
-            FavoritesAction.Favorite = (function() {
+            $lazy(FavoritesAction, "Favorite", function() {
 
                 function Favorite(p) {
                     if (p)
@@ -96492,12 +96508,12 @@ export const proto = $root.proto = (() => {
                 };
 
                 return Favorite;
-            })();
+            });
 
             return FavoritesAction;
-        })();
+        });
 
-        SyncActionValue.InteractiveMessageAction = (function() {
+        $lazy(SyncActionValue, "InteractiveMessageAction", function() {
 
             function InteractiveMessageAction(p) {
                 if (p)
@@ -96614,16 +96630,16 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SyncActionValue.InteractiveMessageAction";
             };
 
-            InteractiveMessageAction.InteractiveMessageActionMode = (function() {
+            $lazy(InteractiveMessageAction, "InteractiveMessageActionMode", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[1] = "DISABLE_CTA"] = 1;
                 return values;
-            })();
+            });
 
             return InteractiveMessageAction;
-        })();
+        });
 
-        SyncActionValue.KeyExpiration = (function() {
+        $lazy(SyncActionValue, "KeyExpiration", function() {
 
             function KeyExpiration(p) {
                 if (p)
@@ -96716,9 +96732,9 @@ export const proto = $root.proto = (() => {
             };
 
             return KeyExpiration;
-        })();
+        });
 
-        SyncActionValue.LabelAssociationAction = (function() {
+        $lazy(SyncActionValue, "LabelAssociationAction", function() {
 
             function LabelAssociationAction(p) {
                 if (p)
@@ -96831,9 +96847,9 @@ export const proto = $root.proto = (() => {
             };
 
             return LabelAssociationAction;
-        })();
+        });
 
-        SyncActionValue.LabelEditAction = (function() {
+        $lazy(SyncActionValue, "LabelEditAction", function() {
 
             function LabelEditAction(p) {
                 if (p)
@@ -97164,7 +97180,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SyncActionValue.LabelEditAction";
             };
 
-            LabelEditAction.ListType = (function() {
+            $lazy(LabelEditAction, "ListType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "NONE"] = 0;
                 values[valuesById[1] = "UNREAD"] = 1;
@@ -97183,12 +97199,12 @@ export const proto = $root.proto = (() => {
                 values[valuesById[14] = "INVITES"] = 14;
                 values[valuesById[15] = "THIRD_PARTY"] = 15;
                 return values;
-            })();
+            });
 
             return LabelEditAction;
-        })();
+        });
 
-        SyncActionValue.LabelReorderingAction = (function() {
+        $lazy(SyncActionValue, "LabelReorderingAction", function() {
 
             function LabelReorderingAction(p) {
                 this.sortedLabelIds = [];
@@ -97295,9 +97311,9 @@ export const proto = $root.proto = (() => {
             };
 
             return LabelReorderingAction;
-        })();
+        });
 
-        SyncActionValue.LidContactAction = (function() {
+        $lazy(SyncActionValue, "LidContactAction", function() {
 
             function LidContactAction(p) {
                 if (p)
@@ -97430,9 +97446,9 @@ export const proto = $root.proto = (() => {
             };
 
             return LidContactAction;
-        })();
+        });
 
-        SyncActionValue.LocaleSetting = (function() {
+        $lazy(SyncActionValue, "LocaleSetting", function() {
 
             function LocaleSetting(p) {
                 if (p)
@@ -97525,9 +97541,9 @@ export const proto = $root.proto = (() => {
             };
 
             return LocaleSetting;
-        })();
+        });
 
-        SyncActionValue.LockChatAction = (function() {
+        $lazy(SyncActionValue, "LockChatAction", function() {
 
             function LockChatAction(p) {
                 if (p)
@@ -97620,9 +97636,9 @@ export const proto = $root.proto = (() => {
             };
 
             return LockChatAction;
-        })();
+        });
 
-        SyncActionValue.MaibaAIFeaturesControlAction = (function() {
+        $lazy(SyncActionValue, "MaibaAIFeaturesControlAction", function() {
 
             function MaibaAIFeaturesControlAction(p) {
                 if (p)
@@ -97768,26 +97784,26 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SyncActionValue.MaibaAIFeaturesControlAction";
             };
 
-            MaibaAIFeaturesControlAction.MaibaAIFeatureStatus = (function() {
+            $lazy(MaibaAIFeaturesControlAction, "MaibaAIFeatureStatus", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "ENABLED"] = 0;
                 values[valuesById[1] = "ENABLED_HAS_LEARNING"] = 1;
                 values[valuesById[2] = "DISABLED"] = 2;
                 return values;
-            })();
+            });
 
-            MaibaAIFeaturesControlAction.MaibaAIReplyMode = (function() {
+            $lazy(MaibaAIFeaturesControlAction, "MaibaAIReplyMode", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "MUTED"] = 0;
                 values[valuesById[1] = "AI_AGENT"] = 1;
                 values[valuesById[2] = "SUGGESTIONS"] = 2;
                 return values;
-            })();
+            });
 
             return MaibaAIFeaturesControlAction;
-        })();
+        });
 
-        SyncActionValue.MarkChatAsReadAction = (function() {
+        $lazy(SyncActionValue, "MarkChatAsReadAction", function() {
 
             function MarkChatAsReadAction(p) {
                 if (p)
@@ -97902,9 +97918,9 @@ export const proto = $root.proto = (() => {
             };
 
             return MarkChatAsReadAction;
-        })();
+        });
 
-        SyncActionValue.MarketingMessageAction = (function() {
+        $lazy(SyncActionValue, "MarketingMessageAction", function() {
 
             function MarketingMessageAction(p) {
                 if (p)
@@ -98145,16 +98161,16 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SyncActionValue.MarketingMessageAction";
             };
 
-            MarketingMessageAction.MarketingMessagePrototypeType = (function() {
+            $lazy(MarketingMessageAction, "MarketingMessagePrototypeType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "PERSONALIZED"] = 0;
                 return values;
-            })();
+            });
 
             return MarketingMessageAction;
-        })();
+        });
 
-        SyncActionValue.MarketingMessageBroadcastAction = (function() {
+        $lazy(SyncActionValue, "MarketingMessageBroadcastAction", function() {
 
             function MarketingMessageBroadcastAction(p) {
                 if (p)
@@ -98247,9 +98263,9 @@ export const proto = $root.proto = (() => {
             };
 
             return MarketingMessageBroadcastAction;
-        })();
+        });
 
-        SyncActionValue.MerchantPaymentPartnerAction = (function() {
+        $lazy(SyncActionValue, "MerchantPaymentPartnerAction", function() {
 
             function MerchantPaymentPartnerAction(p) {
                 if (p)
@@ -98404,17 +98420,17 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SyncActionValue.MerchantPaymentPartnerAction";
             };
 
-            MerchantPaymentPartnerAction.Status = (function() {
+            $lazy(MerchantPaymentPartnerAction, "Status", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "ACTIVE"] = 0;
                 values[valuesById[1] = "INACTIVE"] = 1;
                 return values;
-            })();
+            });
 
             return MerchantPaymentPartnerAction;
-        })();
+        });
 
-        SyncActionValue.MusicUserIdAction = (function() {
+        $lazy(SyncActionValue, "MusicUserIdAction", function() {
 
             function MusicUserIdAction(p) {
                 this.musicUserIdMap = {};
@@ -98561,9 +98577,9 @@ export const proto = $root.proto = (() => {
             };
 
             return MusicUserIdAction;
-        })();
+        });
 
-        SyncActionValue.MuteAction = (function() {
+        $lazy(SyncActionValue, "MuteAction", function() {
 
             function MuteAction(p) {
                 if (p)
@@ -98736,9 +98752,9 @@ export const proto = $root.proto = (() => {
             };
 
             return MuteAction;
-        })();
+        });
 
-        SyncActionValue.NctSaltSyncAction = (function() {
+        $lazy(SyncActionValue, "NctSaltSyncAction", function() {
 
             function NctSaltSyncAction(p) {
                 if (p)
@@ -98834,9 +98850,9 @@ export const proto = $root.proto = (() => {
             };
 
             return NctSaltSyncAction;
-        })();
+        });
 
-        SyncActionValue.NewsletterSavedInterestsAction = (function() {
+        $lazy(SyncActionValue, "NewsletterSavedInterestsAction", function() {
 
             function NewsletterSavedInterestsAction(p) {
                 if (p)
@@ -98929,9 +98945,9 @@ export const proto = $root.proto = (() => {
             };
 
             return NewsletterSavedInterestsAction;
-        })();
+        });
 
-        SyncActionValue.NoteEditAction = (function() {
+        $lazy(SyncActionValue, "NoteEditAction", function() {
 
             function NoteEditAction(p) {
                 if (p)
@@ -99126,17 +99142,17 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SyncActionValue.NoteEditAction";
             };
 
-            NoteEditAction.NoteType = (function() {
+            $lazy(NoteEditAction, "NoteType", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[1] = "UNSTRUCTURED"] = 1;
                 values[valuesById[2] = "STRUCTURED"] = 2;
                 return values;
-            })();
+            });
 
             return NoteEditAction;
-        })();
+        });
 
-        SyncActionValue.NotificationActivitySettingAction = (function() {
+        $lazy(SyncActionValue, "NotificationActivitySettingAction", function() {
 
             function NotificationActivitySettingAction(p) {
                 if (p)
@@ -99249,19 +99265,19 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SyncActionValue.NotificationActivitySettingAction";
             };
 
-            NotificationActivitySettingAction.NotificationActivitySetting = (function() {
+            $lazy(NotificationActivitySettingAction, "NotificationActivitySetting", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "DEFAULT_ALL_MESSAGES"] = 0;
                 values[valuesById[1] = "ALL_MESSAGES"] = 1;
                 values[valuesById[2] = "HIGHLIGHTS"] = 2;
                 values[valuesById[3] = "DEFAULT_HIGHLIGHTS"] = 3;
                 return values;
-            })();
+            });
 
             return NotificationActivitySettingAction;
-        })();
+        });
 
-        SyncActionValue.NuxAction = (function() {
+        $lazy(SyncActionValue, "NuxAction", function() {
 
             function NuxAction(p) {
                 if (p)
@@ -99354,9 +99370,9 @@ export const proto = $root.proto = (() => {
             };
 
             return NuxAction;
-        })();
+        });
 
-        SyncActionValue.OutContactAction = (function() {
+        $lazy(SyncActionValue, "OutContactAction", function() {
 
             function OutContactAction(p) {
                 if (p)
@@ -99469,9 +99485,9 @@ export const proto = $root.proto = (() => {
             };
 
             return OutContactAction;
-        })();
+        });
 
-        SyncActionValue.PaymentInfoAction = (function() {
+        $lazy(SyncActionValue, "PaymentInfoAction", function() {
 
             function PaymentInfoAction(p) {
                 if (p)
@@ -99564,9 +99580,9 @@ export const proto = $root.proto = (() => {
             };
 
             return PaymentInfoAction;
-        })();
+        });
 
-        SyncActionValue.PaymentTosAction = (function() {
+        $lazy(SyncActionValue, "PaymentTosAction", function() {
 
             function PaymentTosAction(p) {
                 if (p)
@@ -99675,16 +99691,16 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SyncActionValue.PaymentTosAction";
             };
 
-            PaymentTosAction.PaymentNotice = (function() {
+            $lazy(PaymentTosAction, "PaymentNotice", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "BR_PAY_PRIVACY_POLICY"] = 0;
                 return values;
-            })();
+            });
 
             return PaymentTosAction;
-        })();
+        });
 
-        SyncActionValue.PinAction = (function() {
+        $lazy(SyncActionValue, "PinAction", function() {
 
             function PinAction(p) {
                 if (p)
@@ -99777,9 +99793,9 @@ export const proto = $root.proto = (() => {
             };
 
             return PinAction;
-        })();
+        });
 
-        SyncActionValue.PnForLidChatAction = (function() {
+        $lazy(SyncActionValue, "PnForLidChatAction", function() {
 
             function PnForLidChatAction(p) {
                 if (p)
@@ -99872,9 +99888,9 @@ export const proto = $root.proto = (() => {
             };
 
             return PnForLidChatAction;
-        })();
+        });
 
-        SyncActionValue.PrimaryFeature = (function() {
+        $lazy(SyncActionValue, "PrimaryFeature", function() {
 
             function PrimaryFeature(p) {
                 this.flags = [];
@@ -99974,9 +99990,9 @@ export const proto = $root.proto = (() => {
             };
 
             return PrimaryFeature;
-        })();
+        });
 
-        SyncActionValue.PrimaryVersionAction = (function() {
+        $lazy(SyncActionValue, "PrimaryVersionAction", function() {
 
             function PrimaryVersionAction(p) {
                 if (p)
@@ -100069,9 +100085,9 @@ export const proto = $root.proto = (() => {
             };
 
             return PrimaryVersionAction;
-        })();
+        });
 
-        SyncActionValue.PrivacySettingChannelsPersonalisedRecommendationAction = (function() {
+        $lazy(SyncActionValue, "PrivacySettingChannelsPersonalisedRecommendationAction", function() {
 
             function PrivacySettingChannelsPersonalisedRecommendationAction(p) {
                 if (p)
@@ -100164,9 +100180,9 @@ export const proto = $root.proto = (() => {
             };
 
             return PrivacySettingChannelsPersonalisedRecommendationAction;
-        })();
+        });
 
-        SyncActionValue.PrivacySettingDisableLinkPreviewsAction = (function() {
+        $lazy(SyncActionValue, "PrivacySettingDisableLinkPreviewsAction", function() {
 
             function PrivacySettingDisableLinkPreviewsAction(p) {
                 if (p)
@@ -100259,9 +100275,9 @@ export const proto = $root.proto = (() => {
             };
 
             return PrivacySettingDisableLinkPreviewsAction;
-        })();
+        });
 
-        SyncActionValue.PrivacySettingRelayAllCalls = (function() {
+        $lazy(SyncActionValue, "PrivacySettingRelayAllCalls", function() {
 
             function PrivacySettingRelayAllCalls(p) {
                 if (p)
@@ -100354,9 +100370,9 @@ export const proto = $root.proto = (() => {
             };
 
             return PrivacySettingRelayAllCalls;
-        })();
+        });
 
-        SyncActionValue.PrivateProcessingSettingAction = (function() {
+        $lazy(SyncActionValue, "PrivateProcessingSettingAction", function() {
 
             function PrivateProcessingSettingAction(p) {
                 if (p)
@@ -100465,18 +100481,18 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SyncActionValue.PrivateProcessingSettingAction";
             };
 
-            PrivateProcessingSettingAction.PrivateProcessingStatus = (function() {
+            $lazy(PrivateProcessingSettingAction, "PrivateProcessingStatus", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNDEFINED"] = 0;
                 values[valuesById[1] = "ENABLED"] = 1;
                 values[valuesById[2] = "DISABLED"] = 2;
                 return values;
-            })();
+            });
 
             return PrivateProcessingSettingAction;
-        })();
+        });
 
-        SyncActionValue.PushNameSetting = (function() {
+        $lazy(SyncActionValue, "PushNameSetting", function() {
 
             function PushNameSetting(p) {
                 if (p)
@@ -100569,9 +100585,9 @@ export const proto = $root.proto = (() => {
             };
 
             return PushNameSetting;
-        })();
+        });
 
-        SyncActionValue.QuickReplyAction = (function() {
+        $lazy(SyncActionValue, "QuickReplyAction", function() {
 
             function QuickReplyAction(p) {
                 this.keywords = [];
@@ -100780,9 +100796,9 @@ export const proto = $root.proto = (() => {
             };
 
             return QuickReplyAction;
-        })();
+        });
 
-        SyncActionValue.RecentEmojiWeightsAction = (function() {
+        $lazy(SyncActionValue, "RecentEmojiWeightsAction", function() {
 
             function RecentEmojiWeightsAction(p) {
                 this.weights = [];
@@ -100884,9 +100900,9 @@ export const proto = $root.proto = (() => {
             };
 
             return RecentEmojiWeightsAction;
-        })();
+        });
 
-        SyncActionValue.RemoveRecentStickerAction = (function() {
+        $lazy(SyncActionValue, "RemoveRecentStickerAction", function() {
 
             function RemoveRecentStickerAction(p) {
                 if (p)
@@ -100989,9 +101005,9 @@ export const proto = $root.proto = (() => {
             };
 
             return RemoveRecentStickerAction;
-        })();
+        });
 
-        SyncActionValue.SettingsSyncAction = (function() {
+        $lazy(SyncActionValue, "SettingsSyncAction", function() {
 
             function SettingsSyncAction(p) {
                 if (p)
@@ -101782,24 +101798,24 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SyncActionValue.SettingsSyncAction";
             };
 
-            SettingsSyncAction.DisplayMode = (function() {
+            $lazy(SettingsSyncAction, "DisplayMode", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "DISPLAY_MODE_UNKNOWN"] = 0;
                 values[valuesById[1] = "ALWAYS"] = 1;
                 values[valuesById[2] = "NEVER"] = 2;
                 values[valuesById[3] = "ONLY_WHEN_APP_IS_OPEN"] = 3;
                 return values;
-            })();
+            });
 
-            SettingsSyncAction.MediaQualitySetting = (function() {
+            $lazy(SettingsSyncAction, "MediaQualitySetting", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "MEDIA_QUALITY_UNKNOWN"] = 0;
                 values[valuesById[1] = "STANDARD"] = 1;
                 values[valuesById[2] = "HD"] = 2;
                 return values;
-            })();
+            });
 
-            SettingsSyncAction.SettingKey = (function() {
+            $lazy(SettingsSyncAction, "SettingKey", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "SETTING_KEY_UNKNOWN"] = 0;
                 values[valuesById[1] = "START_AT_LOGIN"] = 1;
@@ -101836,9 +101852,9 @@ export const proto = $root.proto = (() => {
                 values[valuesById[32] = "CHAT_THEME_ID"] = 32;
                 values[valuesById[33] = "COLOR_SCHEME_ID"] = 33;
                 return values;
-            })();
+            });
 
-            SettingsSyncAction.SettingPlatform = (function() {
+            $lazy(SettingsSyncAction, "SettingPlatform", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "PLATFORM_UNKNOWN"] = 0;
                 values[valuesById[1] = "WEB"] = 1;
@@ -101846,12 +101862,12 @@ export const proto = $root.proto = (() => {
                 values[valuesById[3] = "WINDOWS"] = 3;
                 values[valuesById[4] = "MAC"] = 4;
                 return values;
-            })();
+            });
 
             return SettingsSyncAction;
-        })();
+        });
 
-        SyncActionValue.StarAction = (function() {
+        $lazy(SyncActionValue, "StarAction", function() {
 
             function StarAction(p) {
                 if (p)
@@ -101944,9 +101960,9 @@ export const proto = $root.proto = (() => {
             };
 
             return StarAction;
-        })();
+        });
 
-        SyncActionValue.StatusPostOptInNotificationPreferencesAction = (function() {
+        $lazy(SyncActionValue, "StatusPostOptInNotificationPreferencesAction", function() {
 
             function StatusPostOptInNotificationPreferencesAction(p) {
                 if (p)
@@ -102039,9 +102055,9 @@ export const proto = $root.proto = (() => {
             };
 
             return StatusPostOptInNotificationPreferencesAction;
-        })();
+        });
 
-        SyncActionValue.StatusPrivacyAction = (function() {
+        $lazy(SyncActionValue, "StatusPrivacyAction", function() {
 
             function StatusPrivacyAction(p) {
                 this.userJid = [];
@@ -102316,7 +102332,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SyncActionValue.StatusPrivacyAction";
             };
 
-            StatusPrivacyAction.CustomList = (function() {
+            $lazy(StatusPrivacyAction, "CustomList", function() {
 
                 function CustomList(p) {
                     this.userJid = [];
@@ -102498,9 +102514,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return CustomList;
-            })();
+            });
 
-            StatusPrivacyAction.StatusDistributionMode = (function() {
+            $lazy(StatusPrivacyAction, "StatusDistributionMode", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "ALLOW_LIST"] = 0;
                 values[valuesById[1] = "DENY_LIST"] = 1;
@@ -102508,12 +102524,12 @@ export const proto = $root.proto = (() => {
                 values[valuesById[3] = "CLOSE_FRIENDS"] = 3;
                 values[valuesById[4] = "CUSTOM_LIST"] = 4;
                 return values;
-            })();
+            });
 
             return StatusPrivacyAction;
-        })();
+        });
 
-        SyncActionValue.StickerAction = (function() {
+        $lazy(SyncActionValue, "StickerAction", function() {
 
             function StickerAction(p) {
                 if (p)
@@ -102862,9 +102878,9 @@ export const proto = $root.proto = (() => {
             };
 
             return StickerAction;
-        })();
+        });
 
-        SyncActionValue.SubscriptionAction = (function() {
+        $lazy(SyncActionValue, "SubscriptionAction", function() {
 
             function SubscriptionAction(p) {
                 if (p)
@@ -103007,9 +103023,9 @@ export const proto = $root.proto = (() => {
             };
 
             return SubscriptionAction;
-        })();
+        });
 
-        SyncActionValue.SubscriptionsSyncV2Action = (function() {
+        $lazy(SyncActionValue, "SubscriptionsSyncV2Action", function() {
 
             function SubscriptionsSyncV2Action(p) {
                 this.subscriptions = [];
@@ -103139,7 +103155,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SyncActionValue.SubscriptionsSyncV2Action";
             };
 
-            SubscriptionsSyncV2Action.PaidFeature = (function() {
+            $lazy(SubscriptionsSyncV2Action, "PaidFeature", function() {
 
                 function PaidFeature(p) {
                     if (p)
@@ -103302,9 +103318,9 @@ export const proto = $root.proto = (() => {
                 };
 
                 return PaidFeature;
-            })();
+            });
 
-            SubscriptionsSyncV2Action.SubscriptionInfo = (function() {
+            $lazy(SubscriptionsSyncV2Action, "SubscriptionInfo", function() {
 
                 function SubscriptionInfo(p) {
                     if (p)
@@ -103567,12 +103583,12 @@ export const proto = $root.proto = (() => {
                 };
 
                 return SubscriptionInfo;
-            })();
+            });
 
             return SubscriptionsSyncV2Action;
-        })();
+        });
 
-        SyncActionValue.SyncActionMessage = (function() {
+        $lazy(SyncActionValue, "SyncActionMessage", function() {
 
             function SyncActionMessage(p) {
                 if (p)
@@ -103697,9 +103713,9 @@ export const proto = $root.proto = (() => {
             };
 
             return SyncActionMessage;
-        })();
+        });
 
-        SyncActionValue.SyncActionMessageRange = (function() {
+        $lazy(SyncActionValue, "SyncActionMessageRange", function() {
 
             function SyncActionMessageRange(p) {
                 this.messages = [];
@@ -103863,9 +103879,9 @@ export const proto = $root.proto = (() => {
             };
 
             return SyncActionMessageRange;
-        })();
+        });
 
-        SyncActionValue.ThreadPinAction = (function() {
+        $lazy(SyncActionValue, "ThreadPinAction", function() {
 
             function ThreadPinAction(p) {
                 if (p)
@@ -103958,9 +103974,9 @@ export const proto = $root.proto = (() => {
             };
 
             return ThreadPinAction;
-        })();
+        });
 
-        SyncActionValue.TimeFormatAction = (function() {
+        $lazy(SyncActionValue, "TimeFormatAction", function() {
 
             function TimeFormatAction(p) {
                 if (p)
@@ -104053,9 +104069,9 @@ export const proto = $root.proto = (() => {
             };
 
             return TimeFormatAction;
-        })();
+        });
 
-        SyncActionValue.UGCBot = (function() {
+        $lazy(SyncActionValue, "UGCBot", function() {
 
             function UGCBot(p) {
                 if (p)
@@ -104151,9 +104167,9 @@ export const proto = $root.proto = (() => {
             };
 
             return UGCBot;
-        })();
+        });
 
-        SyncActionValue.UnarchiveChatsSetting = (function() {
+        $lazy(SyncActionValue, "UnarchiveChatsSetting", function() {
 
             function UnarchiveChatsSetting(p) {
                 if (p)
@@ -104246,9 +104262,9 @@ export const proto = $root.proto = (() => {
             };
 
             return UnarchiveChatsSetting;
-        })();
+        });
 
-        SyncActionValue.UserStatusMuteAction = (function() {
+        $lazy(SyncActionValue, "UserStatusMuteAction", function() {
 
             function UserStatusMuteAction(p) {
                 if (p)
@@ -104341,9 +104357,9 @@ export const proto = $root.proto = (() => {
             };
 
             return UserStatusMuteAction;
-        })();
+        });
 
-        SyncActionValue.UsernameChatStartModeAction = (function() {
+        $lazy(SyncActionValue, "UsernameChatStartModeAction", function() {
 
             function UsernameChatStartModeAction(p) {
                 if (p)
@@ -104448,17 +104464,17 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SyncActionValue.UsernameChatStartModeAction";
             };
 
-            UsernameChatStartModeAction.ChatStartMode = (function() {
+            $lazy(UsernameChatStartModeAction, "ChatStartMode", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[1] = "LID"] = 1;
                 values[valuesById[2] = "PN"] = 2;
                 return values;
-            })();
+            });
 
             return UsernameChatStartModeAction;
-        })();
+        });
 
-        SyncActionValue.WASARootSecretAction = (function() {
+        $lazy(SyncActionValue, "WASARootSecretAction", function() {
 
             function WASARootSecretAction(p) {
                 this.secrets = [];
@@ -104559,7 +104575,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SyncActionValue.WASARootSecretAction";
             };
 
-            WASARootSecretAction.RootSecretEntry = (function() {
+            $lazy(WASARootSecretAction, "RootSecretEntry", function() {
 
                 function RootSecretEntry(p) {
                     if (p)
@@ -104705,12 +104721,12 @@ export const proto = $root.proto = (() => {
                 };
 
                 return RootSecretEntry;
-            })();
+            });
 
             return WASARootSecretAction;
-        })();
+        });
 
-        SyncActionValue.WaffleAccountLinkStateAction = (function() {
+        $lazy(SyncActionValue, "WaffleAccountLinkStateAction", function() {
 
             function WaffleAccountLinkStateAction(p) {
                 if (p)
@@ -104819,18 +104835,18 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.SyncActionValue.WaffleAccountLinkStateAction";
             };
 
-            WaffleAccountLinkStateAction.AccountLinkState = (function() {
+            $lazy(WaffleAccountLinkStateAction, "AccountLinkState", function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "ACTIVE"] = 0;
                 values[valuesById[1] = "PAUSED"] = 1;
                 values[valuesById[2] = "UNLINKED"] = 2;
                 return values;
-            })();
+            });
 
             return WaffleAccountLinkStateAction;
-        })();
+        });
 
-        SyncActionValue.WamoUserIdentifierAction = (function() {
+        $lazy(SyncActionValue, "WamoUserIdentifierAction", function() {
 
             function WamoUserIdentifierAction(p) {
                 if (p)
@@ -104923,12 +104939,12 @@ export const proto = $root.proto = (() => {
             };
 
             return WamoUserIdentifierAction;
-        })();
+        });
 
         return SyncActionValue;
-    })();
+    });
 
-    proto.SyncdIndex = (function() {
+    $lazy(proto, "SyncdIndex", function() {
 
         function SyncdIndex(p) {
             if (p)
@@ -105024,9 +105040,9 @@ export const proto = $root.proto = (() => {
         };
 
         return SyncdIndex;
-    })();
+    });
 
-    proto.SyncdMutation = (function() {
+    $lazy(proto, "SyncdMutation", function() {
 
         function SyncdMutation(p) {
             if (p)
@@ -105153,17 +105169,17 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.SyncdMutation";
         };
 
-        SyncdMutation.SyncdOperation = (function() {
+        $lazy(SyncdMutation, "SyncdOperation", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "SET"] = 0;
             values[valuesById[1] = "REMOVE"] = 1;
             return values;
-        })();
+        });
 
         return SyncdMutation;
-    })();
+    });
 
-    proto.SyncdMutations = (function() {
+    $lazy(proto, "SyncdMutations", function() {
 
         function SyncdMutations(p) {
             this.mutations = [];
@@ -105265,9 +105281,9 @@ export const proto = $root.proto = (() => {
         };
 
         return SyncdMutations;
-    })();
+    });
 
-    proto.SyncdPatch = (function() {
+    $lazy(proto, "SyncdPatch", function() {
 
         function SyncdPatch(p) {
             this.mutations = [];
@@ -105548,9 +105564,9 @@ export const proto = $root.proto = (() => {
         };
 
         return SyncdPatch;
-    })();
+    });
 
-    proto.SyncdRecord = (function() {
+    $lazy(proto, "SyncdRecord", function() {
 
         function SyncdRecord(p) {
             if (p)
@@ -105689,9 +105705,9 @@ export const proto = $root.proto = (() => {
         };
 
         return SyncdRecord;
-    })();
+    });
 
-    proto.SyncdSnapshot = (function() {
+    $lazy(proto, "SyncdSnapshot", function() {
 
         function SyncdSnapshot(p) {
             this.records = [];
@@ -105862,9 +105878,9 @@ export const proto = $root.proto = (() => {
         };
 
         return SyncdSnapshot;
-    })();
+    });
 
-    proto.SyncdValue = (function() {
+    $lazy(proto, "SyncdValue", function() {
 
         function SyncdValue(p) {
             if (p)
@@ -105960,9 +105976,9 @@ export const proto = $root.proto = (() => {
         };
 
         return SyncdValue;
-    })();
+    });
 
-    proto.SyncdVersion = (function() {
+    $lazy(proto, "SyncdVersion", function() {
 
         function SyncdVersion(p) {
             if (p)
@@ -106065,9 +106081,9 @@ export const proto = $root.proto = (() => {
         };
 
         return SyncdVersion;
-    })();
+    });
 
-    proto.TapLinkAction = (function() {
+    $lazy(proto, "TapLinkAction", function() {
 
         function TapLinkAction(p) {
             if (p)
@@ -106180,9 +106196,9 @@ export const proto = $root.proto = (() => {
         };
 
         return TapLinkAction;
-    })();
+    });
 
-    proto.TemplateButton = (function() {
+    $lazy(proto, "TemplateButton", function() {
 
         function TemplateButton(p) {
             if (p)
@@ -106330,7 +106346,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.TemplateButton";
         };
 
-        TemplateButton.CallButton = (function() {
+        $lazy(TemplateButton, "CallButton", function() {
 
             function CallButton(p) {
                 if (p)
@@ -106447,9 +106463,9 @@ export const proto = $root.proto = (() => {
             };
 
             return CallButton;
-        })();
+        });
 
-        TemplateButton.QuickReplyButton = (function() {
+        $lazy(TemplateButton, "QuickReplyButton", function() {
 
             function QuickReplyButton(p) {
                 if (p)
@@ -106564,9 +106580,9 @@ export const proto = $root.proto = (() => {
             };
 
             return QuickReplyButton;
-        })();
+        });
 
-        TemplateButton.URLButton = (function() {
+        $lazy(TemplateButton, "URLButton", function() {
 
             function URLButton(p) {
                 if (p)
@@ -106683,12 +106699,12 @@ export const proto = $root.proto = (() => {
             };
 
             return URLButton;
-        })();
+        });
 
         return TemplateButton;
-    })();
+    });
 
-    proto.ThreadID = (function() {
+    $lazy(proto, "ThreadID", function() {
 
         function ThreadID(p) {
             if (p)
@@ -106819,18 +106835,18 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.ThreadID";
         };
 
-        ThreadID.ThreadType = (function() {
+        $lazy(ThreadID, "ThreadType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN"] = 0;
             values[valuesById[1] = "VIEW_REPLIES"] = 1;
             values[valuesById[2] = "AI_THREAD"] = 2;
             return values;
-        })();
+        });
 
         return ThreadID;
-    })();
+    });
 
-    proto.UrlTrackingMap = (function() {
+    $lazy(proto, "UrlTrackingMap", function() {
 
         function UrlTrackingMap(p) {
             this.urlTrackingMapElements = [];
@@ -106931,7 +106947,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.UrlTrackingMap";
         };
 
-        UrlTrackingMap.UrlTrackingMapElement = (function() {
+        $lazy(UrlTrackingMap, "UrlTrackingMapElement", function() {
 
             function UrlTrackingMapElement(p) {
                 if (p)
@@ -107084,12 +107100,12 @@ export const proto = $root.proto = (() => {
             };
 
             return UrlTrackingMapElement;
-        })();
+        });
 
         return UrlTrackingMap;
-    })();
+    });
 
-    proto.UserPassword = (function() {
+    $lazy(proto, "UserPassword", function() {
 
         function UserPassword(p) {
             this.transformerArg = [];
@@ -107285,22 +107301,22 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.UserPassword";
         };
 
-        UserPassword.Encoding = (function() {
+        $lazy(UserPassword, "Encoding", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UTF8"] = 0;
             values[valuesById[1] = "UTF8_BROKEN"] = 1;
             return values;
-        })();
+        });
 
-        UserPassword.Transformer = (function() {
+        $lazy(UserPassword, "Transformer", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "NONE"] = 0;
             values[valuesById[1] = "PBKDF2_HMAC_SHA512"] = 1;
             values[valuesById[2] = "PBKDF2_HMAC_SHA384"] = 2;
             return values;
-        })();
+        });
 
-        UserPassword.TransformerArg = (function() {
+        $lazy(UserPassword, "TransformerArg", function() {
 
             function TransformerArg(p) {
                 if (p)
@@ -107414,7 +107430,7 @@ export const proto = $root.proto = (() => {
                 return typeUrlPrefix + "/proto.UserPassword.TransformerArg";
             };
 
-            TransformerArg.Value = (function() {
+            $lazy(TransformerArg, "Value", function() {
 
                 function Value(p) {
                     if (p)
@@ -107525,15 +107541,15 @@ export const proto = $root.proto = (() => {
                 };
 
                 return Value;
-            })();
+            });
 
             return TransformerArg;
-        })();
+        });
 
         return UserPassword;
-    })();
+    });
 
-    proto.UserReceipt = (function() {
+    $lazy(proto, "UserReceipt", function() {
 
         function UserReceipt(p) {
             this.pendingDeviceJid = [];
@@ -107768,9 +107784,9 @@ export const proto = $root.proto = (() => {
         };
 
         return UserReceipt;
-    })();
+    });
 
-    proto.VerifiedNameCertificate = (function() {
+    $lazy(proto, "VerifiedNameCertificate", function() {
 
         function VerifiedNameCertificate(p) {
             if (p)
@@ -107911,7 +107927,7 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.VerifiedNameCertificate";
         };
 
-        VerifiedNameCertificate.Details = (function() {
+        $lazy(VerifiedNameCertificate, "Details", function() {
 
             function Details(p) {
                 this.localizedNames = [];
@@ -108115,12 +108131,12 @@ export const proto = $root.proto = (() => {
             };
 
             return Details;
-        })();
+        });
 
         return VerifiedNameCertificate;
-    })();
+    });
 
-    proto.WallpaperSettings = (function() {
+    $lazy(proto, "WallpaperSettings", function() {
 
         function WallpaperSettings(p) {
             if (p)
@@ -108253,9 +108269,9 @@ export const proto = $root.proto = (() => {
         };
 
         return WallpaperSettings;
-    })();
+    });
 
-    proto.WebFeatures = (function() {
+    $lazy(proto, "WebFeatures", function() {
 
         function WebFeatures(p) {
             if (p)
@@ -110172,26 +110188,26 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.WebFeatures";
         };
 
-        WebFeatures.Flag = (function() {
+        $lazy(WebFeatures, "Flag", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "NOT_STARTED"] = 0;
             values[valuesById[1] = "FORCE_UPGRADE"] = 1;
             values[valuesById[2] = "DEVELOPMENT"] = 2;
             values[valuesById[3] = "PRODUCTION"] = 3;
             return values;
-        })();
+        });
 
         return WebFeatures;
-    })();
+    });
 
-    proto.WebLinkRenderConfig = (function() {
+    $lazy(proto, "WebLinkRenderConfig", function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "WEBVIEW"] = 0;
         values[valuesById[1] = "SYSTEM"] = 1;
         return values;
-    })();
+    });
 
-    proto.WebMessageInfo = (function() {
+    $lazy(proto, "WebMessageInfo", function() {
 
         function WebMessageInfo(p) {
             this.messageStubParameters = [];
@@ -112864,16 +112880,16 @@ export const proto = $root.proto = (() => {
             return typeUrlPrefix + "/proto.WebMessageInfo";
         };
 
-        WebMessageInfo.BizPrivacyStatus = (function() {
+        $lazy(WebMessageInfo, "BizPrivacyStatus", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "E2EE"] = 0;
             values[valuesById[2] = "FB"] = 2;
             values[valuesById[1] = "BSP"] = 1;
             values[valuesById[3] = "BSP_AND_FB"] = 3;
             return values;
-        })();
+        });
 
-        WebMessageInfo.Status = (function() {
+        $lazy(WebMessageInfo, "Status", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "ERROR"] = 0;
             values[valuesById[1] = "PENDING"] = 1;
@@ -112882,9 +112898,9 @@ export const proto = $root.proto = (() => {
             values[valuesById[4] = "READ"] = 4;
             values[valuesById[5] = "PLAYED"] = 5;
             return values;
-        })();
+        });
 
-        WebMessageInfo.StubType = (function() {
+        $lazy(WebMessageInfo, "StubType", function() {
             const valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "UNKNOWN"] = 0;
             values[valuesById[1] = "REVOKE"] = 1;
@@ -113113,12 +113129,12 @@ export const proto = $root.proto = (() => {
             values[valuesById[224] = "CONTACT_INFO"] = 224;
             values[valuesById[225] = "SCHEDULED_MESSAGE_CREATED"] = 225;
             return values;
-        })();
+        });
 
         return WebMessageInfo;
-    })();
+    });
 
-    proto.WebNotificationsInfo = (function() {
+    $lazy(proto, "WebNotificationsInfo", function() {
 
         function WebNotificationsInfo(p) {
             this.notifyMessages = [];
@@ -113292,7 +113308,7 @@ export const proto = $root.proto = (() => {
         };
 
         return WebNotificationsInfo;
-    })();
+    });
 
     return proto;
 })();

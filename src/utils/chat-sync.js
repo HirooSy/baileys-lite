@@ -8,6 +8,7 @@ import { aesDecrypt, aesEncrypt, hmacSign, toNumber, trimUndefined, LT_HASH_ANTI
 import { downloadContentFromMessage } from './media.js'
 import { updateMessageWithReaction, updateMessageWithReceipt } from './message-compose.js'
 import { isRealMessage, shouldIncrementChatUnread } from './message-processing.js'
+import { requestTrim } from '../foundation/memory.js'
 
 const mutationKeys = keydata => {
 	const keys = expandAppStateKeys(keydata)
@@ -897,6 +898,7 @@ export const makeEventBuffer = logger => {
 	let flushPendingTimeout = null
 	let bufferCount = 0
 	const MAX_HISTORY_CACHE_SIZE = 10000
+	const HEAVY_FLUSH_MESSAGES = 200
 	const BUFFER_TIMEOUT_MS = 30000
 
 	ev.on('event', map => {
@@ -947,7 +949,9 @@ export const makeEventBuffer = logger => {
 			}
 		}
 		const consolidatedData = consolidateEvents(data)
+		const heavy = !!consolidatedData['messaging-history.set'] || (consolidatedData['messages.upsert']?.messages.length ?? 0) > HEAVY_FLUSH_MESSAGES
 		if (Object.keys(consolidatedData).length) ev.emit('event', consolidatedData)
+		if (heavy) requestTrim(3000)
 		data = newData
 		logger.trace({ conditionalChatUpdatesLeft }, 'released buffered events')
 		return true

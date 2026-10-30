@@ -7,7 +7,7 @@ import { SenderKeyName, SenderKeyRecord, GroupCipher, GroupSessionBuilder, Sende
 
 export class LIDMappingStore {
 	constructor(keys, logger, pnToLIDFunc) {
-		this.mappingCache = new Cache({ ttl: 3 * 24 * 60 * 60 * 1000, max: 10000, updateAgeOnGet: true })
+		this.mappingCache = new Cache({ ttl: 3 * 24 * 60 * 60 * 1000, max: 4000, updateAgeOnGet: true })
 		this.inflightLIDLookups = new Map()
 		this.inflightPNLookups = new Map()
 		this.keys = keys
@@ -260,7 +260,9 @@ export class LIDMappingStore {
 	}
 
 	close() {
-		this.mappingCache.clear()
+		this.mappingCache.close()
+		this.inflightLIDLookups.clear()
+		this.inflightPNLookups.clear()
 	}
 }
 
@@ -281,7 +283,7 @@ export function makeLibSignalRepository(auth, logger, pnToLIDFunc) {
 	const lidMapping = new LIDMappingStore(auth.keys, logger, pnToLIDFunc)
 	const storage = signalStorage(auth, lidMapping)
 	const parsedKeys = auth.keys
-	const migratedSessionCache = new Cache({ ttl: 3 * 24 * 60 * 60 * 1000, updateAgeOnGet: true })
+	const migratedSessionCache = new Cache({ ttl: 3 * 24 * 60 * 60 * 1000, max: 4000, updateAgeOnGet: true })
 
 	const ensureSenderKeyAndCreateSkdm = async (group, meId) => {
 		const senderName = jidToSignalSenderKeyName(group, meId)
@@ -423,7 +425,7 @@ export function makeLibSignalRepository(auth, logger, pnToLIDFunc) {
 		},
 
 		close() {
-			migratedSessionCache.clear()
+			migratedSessionCache.close()
 			lidMapping.close()
 		},
 

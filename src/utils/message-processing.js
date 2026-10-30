@@ -28,8 +28,10 @@ import { aesDecryptGCM, hmacSign, getKeyAuthor, toNumber, generateMessageIDV2 } 
 import { getContentType, normalizeMessageContent } from './message-compose.js'
 import { downloadContentFromMessage, getStream, getUrlFromDirectPath } from './media.js'
 import { buildMergedTcTokenIndexWrite, resolveTcTokenJid } from './auth-state-core.js'
+import { requestTrim } from '../foundation/memory.js'
 
 const inflatePromise = promisify(inflate)
+const MAX_PROCESSED_HISTORY_MESSAGES = 64
 
 const REAL_MSG_STUB_TYPES = new Set([
 	WAMessageStubType.CALL_MISSED_GROUP_VIDEO,
@@ -207,7 +209,7 @@ const processMessage = async (message, { shouldProcessHistoryMsg, placeholderRes
 				if (process) {
 					if (histNotification.syncType !== proto.HistorySync.HistorySyncType.ON_DEMAND) {
 						ev.emit('creds.update', {
-							processedHistoryMessages: [...(creds.processedHistoryMessages || []), { key: message.key, messageTimestamp: message.messageTimestamp }]
+							processedHistoryMessages: [...(creds.processedHistoryMessages || []), { key: message.key, messageTimestamp: message.messageTimestamp }].slice(-MAX_PROCESSED_HISTORY_MESSAGES)
 						})
 					}
 					const data = await downloadAndProcessHistorySyncNotification(histNotification, options, logger)
@@ -222,6 +224,7 @@ const processMessage = async (message, { shouldProcessHistoryMsg, placeholderRes
 						chunkOrder: histNotification.chunkOrder,
 						peerDataRequestSessionId: histNotification.peerDataRequestSessionId
 					})
+					requestTrim(4000)
 				}
 				break
 			}
@@ -480,7 +483,8 @@ const processMessage = async (message, { shouldProcessHistoryMsg, placeholderRes
 
 export default processMessage
 
-const RECENT_MESSAGES_SIZE = 1024
+const RECENT_MESSAGES_SIZE = 512
+const RECENT_MESSAGES_BYTES = 4 * 1024 * 1024
 const MESSAGE_KEY_SEPARATOR = '\u0000'
 const RECREATE_SESSION_TIMEOUT = 60 * 60 * 1000
 const PHONE_REQUEST_DELAY = 3000
@@ -511,6 +515,7 @@ export class MessageRetryManager {
 		this.logger = logger
 		this.recentMessagesMap = new Cache({
 			max: RECENT_MESSAGES_SIZE,
+			maxBytes: RECENT_MESSAGES_BYTES,
 			ttl: 5 * 60 * 1000,
 			dispose: (_value, key) => {
 				const separatorIndex = key.lastIndexOf(MESSAGE_KEY_SEPARATOR)
@@ -519,9 +524,9 @@ export class MessageRetryManager {
 		})
 		this.messageKeyIndex = new Map()
 
-		this.sessionRecreateHistory = new Cache({ max: 4096, ttl: RECREATE_SESSION_TIMEOUT * 2 })
-		this.retryCounters = new Cache({ max: 4096, ttl: 15 * 60 * 1000, updateAgeOnGet: true })
-		this.baseKeys = new Cache({ max: 1024, ttl: 15 * 60 * 1000 })
+		this.sessionRecreateHistory = new Cache({ max: 2048, ttl: RECREATE_SESSION_TIMEOUT * 2 })
+		this.retryCounters = new Cache({ max: 2048, ttl: 15 * 60 * 1000, updateAgeOnGet: true })
+		this.baseKeys = new Cache({ max: 512, ttl: 15 * 60 * 1000 })
 		this.pendingPhoneRequests = {}
 		this.maxMsgRetryCount = maxMsgRetryCount
 		this.statistics = { totalRetries: 0, successfulRetries: 0, failedRetries: 0, mediaRetries: 0, sessionRecreations: 0, phoneRequests: 0 }
@@ -646,6 +651,15 @@ export class MessageRetryManager {
 		this.statistics = { totalRetries: 0, successfulRetries: 0, failedRetries: 0, mediaRetries: 0, sessionRecreations: 0, phoneRequests: 0 }
 	}
 
+	close() {
+		this.clear()
+		this.recentMessagesMap.close()
+		this.sessionRecreateHistory.close()
+		this.retryCounters.close()
+		this.baseKeys.close()
+		this.invalidatedMessages.close()
+	}
+
 	saveBaseKey(addr, msgId, baseKey) {
 		this.baseKeys.set(`${addr}:${msgId}`, baseKey)
 	}
@@ -719,7 +733,9 @@ export const downloadHistory = async (msg, options) => {
 	const chunks = []
 	inflater.on('data', chunk => chunks.push(chunk))
 	await pipeline(stream, inflater)
-	return proto.HistorySync.decode(Buffer.concat(chunks))
+	const inflated = Buffer.concat(chunks)
+	chunks.length = 0
+	return proto.HistorySync.decode(inflated)
 }
 
 export const processHistoryMessage = (item, logger) => {

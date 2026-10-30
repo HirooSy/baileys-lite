@@ -85,7 +85,13 @@ export const getImageProcessingLibrary = async () => {
 		import('@napi-rs/image').catch(() => {}),
 		import('jimp').catch(() => {})
 	])
-	if (sharp) imageProcessingLibrary = { sharp }
+	if (sharp) {
+		try {
+			sharp.default.cache(false)
+			sharp.default.concurrency(1)
+		} catch {}
+		imageProcessingLibrary = { sharp }
+	}
 	else if (image) imageProcessingLibrary = { image }
 	else if (jimp) imageProcessingLibrary = { jimp }
 	else {
@@ -167,15 +173,13 @@ export const extractVideoThumb = async (path, time, size) => {
 		],
 		{ stdio: ['ignore', 'pipe', 'pipe'] }
 	)
-	let buffer = Buffer.alloc(0)
+	const stdoutChunks = []
 	const stderrChunks = []
-	ffmpeg.stdout.on('data', chunk => {
-		buffer = Buffer.concat([buffer, chunk])
-	})
+	ffmpeg.stdout.on('data', chunk => stdoutChunks.push(chunk))
 	ffmpeg.stderr.on('data', chunk => stderrChunks.push(chunk))
 	const [code] = await once(ffmpeg, 'close')
 	if (code !== 0) throw new Boom(`FFmpeg failed (code ${code}):\n` + Buffer.concat(stderrChunks).toString('utf8'))
-	return buffer
+	return Buffer.concat(stdoutChunks)
 }
 
 const thumbWithLibrary = async (lib, bufferOrFilePath, width) => {
@@ -574,9 +578,10 @@ export const uploadWithNodeHttp = async ({ url, filePath, headers, timeoutMs, ag
 					resolve(uploadWithNodeHttp({ url: newUrl, filePath, headers, timeoutMs, agent }, redirectCount + 1))
 					return
 				}
-				let body = ''
-				res.on('data', chunk => (body += chunk))
+				const bodyChunks = []
+				res.on('data', chunk => bodyChunks.push(chunk))
 				res.on('end', () => {
+					const body = Buffer.concat(bodyChunks).toString('utf8')
 					try {
 						resolve(JSON.parse(body))
 					} catch {

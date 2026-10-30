@@ -66,7 +66,7 @@ export const makeMessagesSocket = (config) => {
     const userDevicesCache = config.userDevicesCache ||
         new Cache({
             ttl: DEFAULT_CACHE_TTLS.USER_DEVICES * 1000,
-            max: 1000
+            max: 500
         });
 
     const devicesMutex = makeMutex();
@@ -1105,7 +1105,7 @@ export const makeMessagesSocket = (config) => {
         }
         mediaConn = undefined;
         if (messageRetryManager) {
-            messageRetryManager.clear();
+            messageRetryManager.close();
         }
     });
     const fullSock = {
