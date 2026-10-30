@@ -1,0 +1,81 @@
+"use strict";
+function InteractiveMessageAdditionalMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+InteractiveMessageAdditionalMetadata.prototype.isGalaxyFlowCompleted = null;
+let $oneOfFields;
+Object.defineProperty(InteractiveMessageAdditionalMetadata.prototype, "_isGalaxyFlowCompleted", {
+get: $util.oneOfGetter($oneOfFields = ["isGalaxyFlowCompleted"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+InteractiveMessageAdditionalMetadata.create = function create(properties) {
+return new InteractiveMessageAdditionalMetadata(properties);
+};
+InteractiveMessageAdditionalMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.isGalaxyFlowCompleted != null && Object.hasOwnProperty.call(m, "isGalaxyFlowCompleted"))
+w.uint32(8).bool(m.isGalaxyFlowCompleted);
+return w;
+};
+InteractiveMessageAdditionalMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.InteractiveMessageAdditionalMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.isGalaxyFlowCompleted = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+InteractiveMessageAdditionalMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.InteractiveMessageAdditionalMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.InteractiveMessageAdditionalMetadata();
+if (d.isGalaxyFlowCompleted != null) {
+m.isGalaxyFlowCompleted = Boolean(d.isGalaxyFlowCompleted);
+}
+return m;
+};
+InteractiveMessageAdditionalMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.isGalaxyFlowCompleted != null && m.hasOwnProperty("isGalaxyFlowCompleted")) {
+d.isGalaxyFlowCompleted = m.isGalaxyFlowCompleted;
+if (o.oneofs)
+d._isGalaxyFlowCompleted = "isGalaxyFlowCompleted";
+}
+return d;
+};
+InteractiveMessageAdditionalMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+InteractiveMessageAdditionalMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.InteractiveMessageAdditionalMetadata";
+};
+return InteractiveMessageAdditionalMetadata;

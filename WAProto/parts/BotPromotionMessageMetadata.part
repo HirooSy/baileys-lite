@@ -1,0 +1,124 @@
+"use strict";
+function BotPromotionMessageMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotPromotionMessageMetadata.prototype.promotionType = null;
+BotPromotionMessageMetadata.prototype.buttonTitle = null;
+let $oneOfFields;
+Object.defineProperty(BotPromotionMessageMetadata.prototype, "_promotionType", {
+get: $util.oneOfGetter($oneOfFields = ["promotionType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPromotionMessageMetadata.prototype, "_buttonTitle", {
+get: $util.oneOfGetter($oneOfFields = ["buttonTitle"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotPromotionMessageMetadata.create = function create(properties) {
+return new BotPromotionMessageMetadata(properties);
+};
+BotPromotionMessageMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.promotionType != null && Object.hasOwnProperty.call(m, "promotionType"))
+w.uint32(8).int32(m.promotionType);
+if (m.buttonTitle != null && Object.hasOwnProperty.call(m, "buttonTitle"))
+w.uint32(18).string(m.buttonTitle);
+return w;
+};
+BotPromotionMessageMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotPromotionMessageMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.promotionType = r.int32();
+break;
+}
+case 2: {
+m.buttonTitle = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotPromotionMessageMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotPromotionMessageMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotPromotionMessageMetadata();
+switch (d.promotionType) {
+default:
+if (typeof d.promotionType === "number") {
+m.promotionType = d.promotionType;
+break;
+}
+break;
+case "UNKNOWN_TYPE":
+case 0:
+m.promotionType = 0;
+break;
+case "C50":
+case 1:
+m.promotionType = 1;
+break;
+case "SURVEY_PLATFORM":
+case 2:
+m.promotionType = 2;
+break;
+}
+if (d.buttonTitle != null) {
+m.buttonTitle = String(d.buttonTitle);
+}
+return m;
+};
+BotPromotionMessageMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.promotionType != null && m.hasOwnProperty("promotionType")) {
+d.promotionType = o.enums === String ? $root.proto.BotPromotionMessageMetadata.BotPromotionType[m.promotionType] === undefined ? m.promotionType : $root.proto.BotPromotionMessageMetadata.BotPromotionType[m.promotionType] : m.promotionType;
+if (o.oneofs)
+d._promotionType = "promotionType";
+}
+if (m.buttonTitle != null && m.hasOwnProperty("buttonTitle")) {
+d.buttonTitle = m.buttonTitle;
+if (o.oneofs)
+d._buttonTitle = "buttonTitle";
+}
+return d;
+};
+BotPromotionMessageMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotPromotionMessageMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotPromotionMessageMetadata";
+};
+$lazy(BotPromotionMessageMetadata, "BotPromotionType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN_TYPE"] = 0;
+values[valuesById[1] = "C50"] = 1;
+values[valuesById[2] = "SURVEY_PLATFORM"] = 2;
+return values;
+});
+return BotPromotionMessageMetadata;

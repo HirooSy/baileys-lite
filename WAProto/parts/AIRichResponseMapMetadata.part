@@ -1,0 +1,346 @@
+"use strict";
+function AIRichResponseMapMetadata(p) {
+this.annotations = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIRichResponseMapMetadata.prototype.centerLatitude = null;
+AIRichResponseMapMetadata.prototype.centerLongitude = null;
+AIRichResponseMapMetadata.prototype.latitudeDelta = null;
+AIRichResponseMapMetadata.prototype.longitudeDelta = null;
+AIRichResponseMapMetadata.prototype.annotations = $util.emptyArray;
+AIRichResponseMapMetadata.prototype.showInfoList = null;
+let $oneOfFields;
+Object.defineProperty(AIRichResponseMapMetadata.prototype, "_centerLatitude", {
+get: $util.oneOfGetter($oneOfFields = ["centerLatitude"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseMapMetadata.prototype, "_centerLongitude", {
+get: $util.oneOfGetter($oneOfFields = ["centerLongitude"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseMapMetadata.prototype, "_latitudeDelta", {
+get: $util.oneOfGetter($oneOfFields = ["latitudeDelta"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseMapMetadata.prototype, "_longitudeDelta", {
+get: $util.oneOfGetter($oneOfFields = ["longitudeDelta"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseMapMetadata.prototype, "_showInfoList", {
+get: $util.oneOfGetter($oneOfFields = ["showInfoList"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIRichResponseMapMetadata.create = function create(properties) {
+return new AIRichResponseMapMetadata(properties);
+};
+AIRichResponseMapMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.centerLatitude != null && Object.hasOwnProperty.call(m, "centerLatitude"))
+w.uint32(9).double(m.centerLatitude);
+if (m.centerLongitude != null && Object.hasOwnProperty.call(m, "centerLongitude"))
+w.uint32(17).double(m.centerLongitude);
+if (m.latitudeDelta != null && Object.hasOwnProperty.call(m, "latitudeDelta"))
+w.uint32(25).double(m.latitudeDelta);
+if (m.longitudeDelta != null && Object.hasOwnProperty.call(m, "longitudeDelta"))
+w.uint32(33).double(m.longitudeDelta);
+if (m.annotations != null && m.annotations.length) {
+for (var i = 0; i < m.annotations.length; ++i)
+$root.proto.AIRichResponseMapMetadata.AIRichResponseMapAnnotation.encode(m.annotations[i], w.uint32(42).fork()).ldelim();
+}
+if (m.showInfoList != null && Object.hasOwnProperty.call(m, "showInfoList"))
+w.uint32(48).bool(m.showInfoList);
+return w;
+};
+AIRichResponseMapMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIRichResponseMapMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.centerLatitude = r.double();
+break;
+}
+case 2: {
+m.centerLongitude = r.double();
+break;
+}
+case 3: {
+m.latitudeDelta = r.double();
+break;
+}
+case 4: {
+m.longitudeDelta = r.double();
+break;
+}
+case 5: {
+if (!(m.annotations && m.annotations.length))
+m.annotations = [];
+m.annotations.push($root.proto.AIRichResponseMapMetadata.AIRichResponseMapAnnotation.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 6: {
+m.showInfoList = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIRichResponseMapMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIRichResponseMapMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIRichResponseMapMetadata();
+if (d.centerLatitude != null) {
+m.centerLatitude = Number(d.centerLatitude);
+}
+if (d.centerLongitude != null) {
+m.centerLongitude = Number(d.centerLongitude);
+}
+if (d.latitudeDelta != null) {
+m.latitudeDelta = Number(d.latitudeDelta);
+}
+if (d.longitudeDelta != null) {
+m.longitudeDelta = Number(d.longitudeDelta);
+}
+if (d.annotations) {
+if (!Array.isArray(d.annotations))
+throw TypeError(".proto.AIRichResponseMapMetadata.annotations: array expected");
+m.annotations = [];
+for (var i = 0; i < d.annotations.length; ++i) {
+if (typeof d.annotations[i] !== "object")
+throw TypeError(".proto.AIRichResponseMapMetadata.annotations: object expected");
+m.annotations[i] = $root.proto.AIRichResponseMapMetadata.AIRichResponseMapAnnotation.fromObject(d.annotations[i], n + 1);
+}
+}
+if (d.showInfoList != null) {
+m.showInfoList = Boolean(d.showInfoList);
+}
+return m;
+};
+AIRichResponseMapMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.annotations = [];
+}
+if (m.centerLatitude != null && m.hasOwnProperty("centerLatitude")) {
+d.centerLatitude = o.json && !isFinite(m.centerLatitude) ? String(m.centerLatitude) : m.centerLatitude;
+if (o.oneofs)
+d._centerLatitude = "centerLatitude";
+}
+if (m.centerLongitude != null && m.hasOwnProperty("centerLongitude")) {
+d.centerLongitude = o.json && !isFinite(m.centerLongitude) ? String(m.centerLongitude) : m.centerLongitude;
+if (o.oneofs)
+d._centerLongitude = "centerLongitude";
+}
+if (m.latitudeDelta != null && m.hasOwnProperty("latitudeDelta")) {
+d.latitudeDelta = o.json && !isFinite(m.latitudeDelta) ? String(m.latitudeDelta) : m.latitudeDelta;
+if (o.oneofs)
+d._latitudeDelta = "latitudeDelta";
+}
+if (m.longitudeDelta != null && m.hasOwnProperty("longitudeDelta")) {
+d.longitudeDelta = o.json && !isFinite(m.longitudeDelta) ? String(m.longitudeDelta) : m.longitudeDelta;
+if (o.oneofs)
+d._longitudeDelta = "longitudeDelta";
+}
+if (m.annotations && m.annotations.length) {
+d.annotations = [];
+for (var j = 0; j < m.annotations.length; ++j) {
+d.annotations[j] = $root.proto.AIRichResponseMapMetadata.AIRichResponseMapAnnotation.toObject(m.annotations[j], o);
+}
+}
+if (m.showInfoList != null && m.hasOwnProperty("showInfoList")) {
+d.showInfoList = m.showInfoList;
+if (o.oneofs)
+d._showInfoList = "showInfoList";
+}
+return d;
+};
+AIRichResponseMapMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIRichResponseMapMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIRichResponseMapMetadata";
+};
+$lazy(AIRichResponseMapMetadata, "AIRichResponseMapAnnotation", function() {
+function AIRichResponseMapAnnotation(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIRichResponseMapAnnotation.prototype.annotationNumber = null;
+AIRichResponseMapAnnotation.prototype.latitude = null;
+AIRichResponseMapAnnotation.prototype.longitude = null;
+AIRichResponseMapAnnotation.prototype.title = null;
+AIRichResponseMapAnnotation.prototype.body = null;
+let $oneOfFields;
+Object.defineProperty(AIRichResponseMapAnnotation.prototype, "_annotationNumber", {
+get: $util.oneOfGetter($oneOfFields = ["annotationNumber"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseMapAnnotation.prototype, "_latitude", {
+get: $util.oneOfGetter($oneOfFields = ["latitude"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseMapAnnotation.prototype, "_longitude", {
+get: $util.oneOfGetter($oneOfFields = ["longitude"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseMapAnnotation.prototype, "_title", {
+get: $util.oneOfGetter($oneOfFields = ["title"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseMapAnnotation.prototype, "_body", {
+get: $util.oneOfGetter($oneOfFields = ["body"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIRichResponseMapAnnotation.create = function create(properties) {
+return new AIRichResponseMapAnnotation(properties);
+};
+AIRichResponseMapAnnotation.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.annotationNumber != null && Object.hasOwnProperty.call(m, "annotationNumber"))
+w.uint32(8).uint32(m.annotationNumber);
+if (m.latitude != null && Object.hasOwnProperty.call(m, "latitude"))
+w.uint32(17).double(m.latitude);
+if (m.longitude != null && Object.hasOwnProperty.call(m, "longitude"))
+w.uint32(25).double(m.longitude);
+if (m.title != null && Object.hasOwnProperty.call(m, "title"))
+w.uint32(34).string(m.title);
+if (m.body != null && Object.hasOwnProperty.call(m, "body"))
+w.uint32(42).string(m.body);
+return w;
+};
+AIRichResponseMapAnnotation.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIRichResponseMapMetadata.AIRichResponseMapAnnotation();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.annotationNumber = r.uint32();
+break;
+}
+case 2: {
+m.latitude = r.double();
+break;
+}
+case 3: {
+m.longitude = r.double();
+break;
+}
+case 4: {
+m.title = r.string();
+break;
+}
+case 5: {
+m.body = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIRichResponseMapAnnotation.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIRichResponseMapMetadata.AIRichResponseMapAnnotation)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIRichResponseMapMetadata.AIRichResponseMapAnnotation();
+if (d.annotationNumber != null) {
+m.annotationNumber = d.annotationNumber >>> 0;
+}
+if (d.latitude != null) {
+m.latitude = Number(d.latitude);
+}
+if (d.longitude != null) {
+m.longitude = Number(d.longitude);
+}
+if (d.title != null) {
+m.title = String(d.title);
+}
+if (d.body != null) {
+m.body = String(d.body);
+}
+return m;
+};
+AIRichResponseMapAnnotation.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.annotationNumber != null && m.hasOwnProperty("annotationNumber")) {
+d.annotationNumber = m.annotationNumber;
+if (o.oneofs)
+d._annotationNumber = "annotationNumber";
+}
+if (m.latitude != null && m.hasOwnProperty("latitude")) {
+d.latitude = o.json && !isFinite(m.latitude) ? String(m.latitude) : m.latitude;
+if (o.oneofs)
+d._latitude = "latitude";
+}
+if (m.longitude != null && m.hasOwnProperty("longitude")) {
+d.longitude = o.json && !isFinite(m.longitude) ? String(m.longitude) : m.longitude;
+if (o.oneofs)
+d._longitude = "longitude";
+}
+if (m.title != null && m.hasOwnProperty("title")) {
+d.title = m.title;
+if (o.oneofs)
+d._title = "title";
+}
+if (m.body != null && m.hasOwnProperty("body")) {
+d.body = m.body;
+if (o.oneofs)
+d._body = "body";
+}
+return d;
+};
+AIRichResponseMapAnnotation.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIRichResponseMapAnnotation.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIRichResponseMapMetadata.AIRichResponseMapAnnotation";
+};
+return AIRichResponseMapAnnotation;
+});
+return AIRichResponseMapMetadata;

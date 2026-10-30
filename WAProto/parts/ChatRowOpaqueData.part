@@ -1,0 +1,712 @@
+"use strict";
+function ChatRowOpaqueData(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ChatRowOpaqueData.prototype.draftMessage = null;
+let $oneOfFields;
+Object.defineProperty(ChatRowOpaqueData.prototype, "_draftMessage", {
+get: $util.oneOfGetter($oneOfFields = ["draftMessage"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ChatRowOpaqueData.create = function create(properties) {
+return new ChatRowOpaqueData(properties);
+};
+ChatRowOpaqueData.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.draftMessage != null && Object.hasOwnProperty.call(m, "draftMessage"))
+$root.proto.ChatRowOpaqueData.DraftMessage.encode(m.draftMessage, w.uint32(10).fork()).ldelim();
+return w;
+};
+ChatRowOpaqueData.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ChatRowOpaqueData();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.draftMessage = $root.proto.ChatRowOpaqueData.DraftMessage.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ChatRowOpaqueData.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ChatRowOpaqueData)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ChatRowOpaqueData();
+if (d.draftMessage != null) {
+if (typeof d.draftMessage !== "object")
+throw TypeError(".proto.ChatRowOpaqueData.draftMessage: object expected");
+m.draftMessage = $root.proto.ChatRowOpaqueData.DraftMessage.fromObject(d.draftMessage, n + 1);
+}
+return m;
+};
+ChatRowOpaqueData.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.draftMessage != null && m.hasOwnProperty("draftMessage")) {
+d.draftMessage = $root.proto.ChatRowOpaqueData.DraftMessage.toObject(m.draftMessage, o);
+if (o.oneofs)
+d._draftMessage = "draftMessage";
+}
+return d;
+};
+ChatRowOpaqueData.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ChatRowOpaqueData.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ChatRowOpaqueData";
+};
+$lazy(ChatRowOpaqueData, "DraftMessage", function() {
+function DraftMessage(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+DraftMessage.prototype.text = null;
+DraftMessage.prototype.omittedUrl = null;
+DraftMessage.prototype.ctwaContextLinkData = null;
+DraftMessage.prototype.ctwaContext = null;
+DraftMessage.prototype.timestamp = null;
+let $oneOfFields;
+Object.defineProperty(DraftMessage.prototype, "_text", {
+get: $util.oneOfGetter($oneOfFields = ["text"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DraftMessage.prototype, "_omittedUrl", {
+get: $util.oneOfGetter($oneOfFields = ["omittedUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DraftMessage.prototype, "_ctwaContextLinkData", {
+get: $util.oneOfGetter($oneOfFields = ["ctwaContextLinkData"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DraftMessage.prototype, "_ctwaContext", {
+get: $util.oneOfGetter($oneOfFields = ["ctwaContext"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DraftMessage.prototype, "_timestamp", {
+get: $util.oneOfGetter($oneOfFields = ["timestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+DraftMessage.create = function create(properties) {
+return new DraftMessage(properties);
+};
+DraftMessage.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.text != null && Object.hasOwnProperty.call(m, "text"))
+w.uint32(10).string(m.text);
+if (m.omittedUrl != null && Object.hasOwnProperty.call(m, "omittedUrl"))
+w.uint32(18).string(m.omittedUrl);
+if (m.ctwaContextLinkData != null && Object.hasOwnProperty.call(m, "ctwaContextLinkData"))
+$root.proto.ChatRowOpaqueData.DraftMessage.CtwaContextLinkData.encode(m.ctwaContextLinkData, w.uint32(26).fork()).ldelim();
+if (m.ctwaContext != null && Object.hasOwnProperty.call(m, "ctwaContext"))
+$root.proto.ChatRowOpaqueData.DraftMessage.CtwaContextData.encode(m.ctwaContext, w.uint32(34).fork()).ldelim();
+if (m.timestamp != null && Object.hasOwnProperty.call(m, "timestamp"))
+w.uint32(40).int64(m.timestamp);
+return w;
+};
+DraftMessage.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ChatRowOpaqueData.DraftMessage();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.text = r.string();
+break;
+}
+case 2: {
+m.omittedUrl = r.string();
+break;
+}
+case 3: {
+m.ctwaContextLinkData = $root.proto.ChatRowOpaqueData.DraftMessage.CtwaContextLinkData.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 4: {
+m.ctwaContext = $root.proto.ChatRowOpaqueData.DraftMessage.CtwaContextData.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 5: {
+m.timestamp = r.int64();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+DraftMessage.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ChatRowOpaqueData.DraftMessage)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ChatRowOpaqueData.DraftMessage();
+if (d.text != null) {
+m.text = String(d.text);
+}
+if (d.omittedUrl != null) {
+m.omittedUrl = String(d.omittedUrl);
+}
+if (d.ctwaContextLinkData != null) {
+if (typeof d.ctwaContextLinkData !== "object")
+throw TypeError(".proto.ChatRowOpaqueData.DraftMessage.ctwaContextLinkData: object expected");
+m.ctwaContextLinkData = $root.proto.ChatRowOpaqueData.DraftMessage.CtwaContextLinkData.fromObject(d.ctwaContextLinkData, n + 1);
+}
+if (d.ctwaContext != null) {
+if (typeof d.ctwaContext !== "object")
+throw TypeError(".proto.ChatRowOpaqueData.DraftMessage.ctwaContext: object expected");
+m.ctwaContext = $root.proto.ChatRowOpaqueData.DraftMessage.CtwaContextData.fromObject(d.ctwaContext, n + 1);
+}
+if (d.timestamp != null) {
+if ($util.Long)
+(m.timestamp = $util.Long.fromValue(d.timestamp)).unsigned = false;
+else if (typeof d.timestamp === "string")
+m.timestamp = parseInt(d.timestamp, 10);
+else if (typeof d.timestamp === "number")
+m.timestamp = d.timestamp;
+else if (typeof d.timestamp === "object")
+m.timestamp = new $util.LongBits(d.timestamp.low >>> 0, d.timestamp.high >>> 0).toNumber();
+}
+return m;
+};
+DraftMessage.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.text != null && m.hasOwnProperty("text")) {
+d.text = m.text;
+if (o.oneofs)
+d._text = "text";
+}
+if (m.omittedUrl != null && m.hasOwnProperty("omittedUrl")) {
+d.omittedUrl = m.omittedUrl;
+if (o.oneofs)
+d._omittedUrl = "omittedUrl";
+}
+if (m.ctwaContextLinkData != null && m.hasOwnProperty("ctwaContextLinkData")) {
+d.ctwaContextLinkData = $root.proto.ChatRowOpaqueData.DraftMessage.CtwaContextLinkData.toObject(m.ctwaContextLinkData, o);
+if (o.oneofs)
+d._ctwaContextLinkData = "ctwaContextLinkData";
+}
+if (m.ctwaContext != null && m.hasOwnProperty("ctwaContext")) {
+d.ctwaContext = $root.proto.ChatRowOpaqueData.DraftMessage.CtwaContextData.toObject(m.ctwaContext, o);
+if (o.oneofs)
+d._ctwaContext = "ctwaContext";
+}
+if (m.timestamp != null && m.hasOwnProperty("timestamp")) {
+if (typeof m.timestamp === "number")
+d.timestamp = o.longs === String ? String(m.timestamp) : m.timestamp;
+else
+d.timestamp = o.longs === String ? longToString(m.timestamp) : o.longs === Number ? longToNumber(m.timestamp) : m.timestamp;
+if (o.oneofs)
+d._timestamp = "timestamp";
+}
+return d;
+};
+DraftMessage.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+DraftMessage.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ChatRowOpaqueData.DraftMessage";
+};
+$lazy(DraftMessage, "CtwaContextData", function() {
+function CtwaContextData(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+CtwaContextData.prototype.conversionSource = null;
+CtwaContextData.prototype.conversionData = null;
+CtwaContextData.prototype.sourceUrl = null;
+CtwaContextData.prototype.sourceId = null;
+CtwaContextData.prototype.sourceType = null;
+CtwaContextData.prototype.title = null;
+CtwaContextData.prototype.description = null;
+CtwaContextData.prototype.thumbnail = null;
+CtwaContextData.prototype.thumbnailUrl = null;
+CtwaContextData.prototype.mediaType = null;
+CtwaContextData.prototype.mediaUrl = null;
+CtwaContextData.prototype.isSuspiciousLink = null;
+let $oneOfFields;
+Object.defineProperty(CtwaContextData.prototype, "_conversionSource", {
+get: $util.oneOfGetter($oneOfFields = ["conversionSource"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CtwaContextData.prototype, "_conversionData", {
+get: $util.oneOfGetter($oneOfFields = ["conversionData"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CtwaContextData.prototype, "_sourceUrl", {
+get: $util.oneOfGetter($oneOfFields = ["sourceUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CtwaContextData.prototype, "_sourceId", {
+get: $util.oneOfGetter($oneOfFields = ["sourceId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CtwaContextData.prototype, "_sourceType", {
+get: $util.oneOfGetter($oneOfFields = ["sourceType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CtwaContextData.prototype, "_title", {
+get: $util.oneOfGetter($oneOfFields = ["title"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CtwaContextData.prototype, "_description", {
+get: $util.oneOfGetter($oneOfFields = ["description"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CtwaContextData.prototype, "_thumbnail", {
+get: $util.oneOfGetter($oneOfFields = ["thumbnail"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CtwaContextData.prototype, "_thumbnailUrl", {
+get: $util.oneOfGetter($oneOfFields = ["thumbnailUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CtwaContextData.prototype, "_mediaType", {
+get: $util.oneOfGetter($oneOfFields = ["mediaType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CtwaContextData.prototype, "_mediaUrl", {
+get: $util.oneOfGetter($oneOfFields = ["mediaUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CtwaContextData.prototype, "_isSuspiciousLink", {
+get: $util.oneOfGetter($oneOfFields = ["isSuspiciousLink"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+CtwaContextData.create = function create(properties) {
+return new CtwaContextData(properties);
+};
+CtwaContextData.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.conversionSource != null && Object.hasOwnProperty.call(m, "conversionSource"))
+w.uint32(10).string(m.conversionSource);
+if (m.conversionData != null && Object.hasOwnProperty.call(m, "conversionData"))
+w.uint32(18).bytes(m.conversionData);
+if (m.sourceUrl != null && Object.hasOwnProperty.call(m, "sourceUrl"))
+w.uint32(26).string(m.sourceUrl);
+if (m.sourceId != null && Object.hasOwnProperty.call(m, "sourceId"))
+w.uint32(34).string(m.sourceId);
+if (m.sourceType != null && Object.hasOwnProperty.call(m, "sourceType"))
+w.uint32(42).string(m.sourceType);
+if (m.title != null && Object.hasOwnProperty.call(m, "title"))
+w.uint32(50).string(m.title);
+if (m.description != null && Object.hasOwnProperty.call(m, "description"))
+w.uint32(58).string(m.description);
+if (m.thumbnail != null && Object.hasOwnProperty.call(m, "thumbnail"))
+w.uint32(66).string(m.thumbnail);
+if (m.thumbnailUrl != null && Object.hasOwnProperty.call(m, "thumbnailUrl"))
+w.uint32(74).string(m.thumbnailUrl);
+if (m.mediaType != null && Object.hasOwnProperty.call(m, "mediaType"))
+w.uint32(80).int32(m.mediaType);
+if (m.mediaUrl != null && Object.hasOwnProperty.call(m, "mediaUrl"))
+w.uint32(90).string(m.mediaUrl);
+if (m.isSuspiciousLink != null && Object.hasOwnProperty.call(m, "isSuspiciousLink"))
+w.uint32(96).bool(m.isSuspiciousLink);
+return w;
+};
+CtwaContextData.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ChatRowOpaqueData.DraftMessage.CtwaContextData();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.conversionSource = r.string();
+break;
+}
+case 2: {
+m.conversionData = r.bytes();
+break;
+}
+case 3: {
+m.sourceUrl = r.string();
+break;
+}
+case 4: {
+m.sourceId = r.string();
+break;
+}
+case 5: {
+m.sourceType = r.string();
+break;
+}
+case 6: {
+m.title = r.string();
+break;
+}
+case 7: {
+m.description = r.string();
+break;
+}
+case 8: {
+m.thumbnail = r.string();
+break;
+}
+case 9: {
+m.thumbnailUrl = r.string();
+break;
+}
+case 10: {
+m.mediaType = r.int32();
+break;
+}
+case 11: {
+m.mediaUrl = r.string();
+break;
+}
+case 12: {
+m.isSuspiciousLink = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+CtwaContextData.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ChatRowOpaqueData.DraftMessage.CtwaContextData)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ChatRowOpaqueData.DraftMessage.CtwaContextData();
+if (d.conversionSource != null) {
+m.conversionSource = String(d.conversionSource);
+}
+if (d.conversionData != null) {
+if (typeof d.conversionData === "string")
+$util.base64.decode(d.conversionData, m.conversionData = $util.newBuffer($util.base64.length(d.conversionData)), 0);
+else if (d.conversionData.length >= 0)
+m.conversionData = d.conversionData;
+}
+if (d.sourceUrl != null) {
+m.sourceUrl = String(d.sourceUrl);
+}
+if (d.sourceId != null) {
+m.sourceId = String(d.sourceId);
+}
+if (d.sourceType != null) {
+m.sourceType = String(d.sourceType);
+}
+if (d.title != null) {
+m.title = String(d.title);
+}
+if (d.description != null) {
+m.description = String(d.description);
+}
+if (d.thumbnail != null) {
+m.thumbnail = String(d.thumbnail);
+}
+if (d.thumbnailUrl != null) {
+m.thumbnailUrl = String(d.thumbnailUrl);
+}
+switch (d.mediaType) {
+default:
+if (typeof d.mediaType === "number") {
+m.mediaType = d.mediaType;
+break;
+}
+break;
+case "NONE":
+case 0:
+m.mediaType = 0;
+break;
+case "IMAGE":
+case 1:
+m.mediaType = 1;
+break;
+case "VIDEO":
+case 2:
+m.mediaType = 2;
+break;
+}
+if (d.mediaUrl != null) {
+m.mediaUrl = String(d.mediaUrl);
+}
+if (d.isSuspiciousLink != null) {
+m.isSuspiciousLink = Boolean(d.isSuspiciousLink);
+}
+return m;
+};
+CtwaContextData.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.conversionSource != null && m.hasOwnProperty("conversionSource")) {
+d.conversionSource = m.conversionSource;
+if (o.oneofs)
+d._conversionSource = "conversionSource";
+}
+if (m.conversionData != null && m.hasOwnProperty("conversionData")) {
+d.conversionData = o.bytes === String ? $util.base64.encode(m.conversionData, 0, m.conversionData.length) : o.bytes === Array ? Array.prototype.slice.call(m.conversionData) : m.conversionData;
+if (o.oneofs)
+d._conversionData = "conversionData";
+}
+if (m.sourceUrl != null && m.hasOwnProperty("sourceUrl")) {
+d.sourceUrl = m.sourceUrl;
+if (o.oneofs)
+d._sourceUrl = "sourceUrl";
+}
+if (m.sourceId != null && m.hasOwnProperty("sourceId")) {
+d.sourceId = m.sourceId;
+if (o.oneofs)
+d._sourceId = "sourceId";
+}
+if (m.sourceType != null && m.hasOwnProperty("sourceType")) {
+d.sourceType = m.sourceType;
+if (o.oneofs)
+d._sourceType = "sourceType";
+}
+if (m.title != null && m.hasOwnProperty("title")) {
+d.title = m.title;
+if (o.oneofs)
+d._title = "title";
+}
+if (m.description != null && m.hasOwnProperty("description")) {
+d.description = m.description;
+if (o.oneofs)
+d._description = "description";
+}
+if (m.thumbnail != null && m.hasOwnProperty("thumbnail")) {
+d.thumbnail = m.thumbnail;
+if (o.oneofs)
+d._thumbnail = "thumbnail";
+}
+if (m.thumbnailUrl != null && m.hasOwnProperty("thumbnailUrl")) {
+d.thumbnailUrl = m.thumbnailUrl;
+if (o.oneofs)
+d._thumbnailUrl = "thumbnailUrl";
+}
+if (m.mediaType != null && m.hasOwnProperty("mediaType")) {
+d.mediaType = o.enums === String ? $root.proto.ChatRowOpaqueData.DraftMessage.CtwaContextData.ContextInfoExternalAdReplyInfoMediaType[m.mediaType] === undefined ? m.mediaType : $root.proto.ChatRowOpaqueData.DraftMessage.CtwaContextData.ContextInfoExternalAdReplyInfoMediaType[m.mediaType] : m.mediaType;
+if (o.oneofs)
+d._mediaType = "mediaType";
+}
+if (m.mediaUrl != null && m.hasOwnProperty("mediaUrl")) {
+d.mediaUrl = m.mediaUrl;
+if (o.oneofs)
+d._mediaUrl = "mediaUrl";
+}
+if (m.isSuspiciousLink != null && m.hasOwnProperty("isSuspiciousLink")) {
+d.isSuspiciousLink = m.isSuspiciousLink;
+if (o.oneofs)
+d._isSuspiciousLink = "isSuspiciousLink";
+}
+return d;
+};
+CtwaContextData.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+CtwaContextData.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ChatRowOpaqueData.DraftMessage.CtwaContextData";
+};
+$lazy(CtwaContextData, "ContextInfoExternalAdReplyInfoMediaType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "NONE"] = 0;
+values[valuesById[1] = "IMAGE"] = 1;
+values[valuesById[2] = "VIDEO"] = 2;
+return values;
+});
+return CtwaContextData;
+});
+$lazy(DraftMessage, "CtwaContextLinkData", function() {
+function CtwaContextLinkData(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+CtwaContextLinkData.prototype.context = null;
+CtwaContextLinkData.prototype.sourceUrl = null;
+CtwaContextLinkData.prototype.icebreaker = null;
+CtwaContextLinkData.prototype.phone = null;
+let $oneOfFields;
+Object.defineProperty(CtwaContextLinkData.prototype, "_context", {
+get: $util.oneOfGetter($oneOfFields = ["context"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CtwaContextLinkData.prototype, "_sourceUrl", {
+get: $util.oneOfGetter($oneOfFields = ["sourceUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CtwaContextLinkData.prototype, "_icebreaker", {
+get: $util.oneOfGetter($oneOfFields = ["icebreaker"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CtwaContextLinkData.prototype, "_phone", {
+get: $util.oneOfGetter($oneOfFields = ["phone"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+CtwaContextLinkData.create = function create(properties) {
+return new CtwaContextLinkData(properties);
+};
+CtwaContextLinkData.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.context != null && Object.hasOwnProperty.call(m, "context"))
+w.uint32(10).string(m.context);
+if (m.sourceUrl != null && Object.hasOwnProperty.call(m, "sourceUrl"))
+w.uint32(18).string(m.sourceUrl);
+if (m.icebreaker != null && Object.hasOwnProperty.call(m, "icebreaker"))
+w.uint32(26).string(m.icebreaker);
+if (m.phone != null && Object.hasOwnProperty.call(m, "phone"))
+w.uint32(34).string(m.phone);
+return w;
+};
+CtwaContextLinkData.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ChatRowOpaqueData.DraftMessage.CtwaContextLinkData();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.context = r.string();
+break;
+}
+case 2: {
+m.sourceUrl = r.string();
+break;
+}
+case 3: {
+m.icebreaker = r.string();
+break;
+}
+case 4: {
+m.phone = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+CtwaContextLinkData.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ChatRowOpaqueData.DraftMessage.CtwaContextLinkData)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ChatRowOpaqueData.DraftMessage.CtwaContextLinkData();
+if (d.context != null) {
+m.context = String(d.context);
+}
+if (d.sourceUrl != null) {
+m.sourceUrl = String(d.sourceUrl);
+}
+if (d.icebreaker != null) {
+m.icebreaker = String(d.icebreaker);
+}
+if (d.phone != null) {
+m.phone = String(d.phone);
+}
+return m;
+};
+CtwaContextLinkData.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.context != null && m.hasOwnProperty("context")) {
+d.context = m.context;
+if (o.oneofs)
+d._context = "context";
+}
+if (m.sourceUrl != null && m.hasOwnProperty("sourceUrl")) {
+d.sourceUrl = m.sourceUrl;
+if (o.oneofs)
+d._sourceUrl = "sourceUrl";
+}
+if (m.icebreaker != null && m.hasOwnProperty("icebreaker")) {
+d.icebreaker = m.icebreaker;
+if (o.oneofs)
+d._icebreaker = "icebreaker";
+}
+if (m.phone != null && m.hasOwnProperty("phone")) {
+d.phone = m.phone;
+if (o.oneofs)
+d._phone = "phone";
+}
+return d;
+};
+CtwaContextLinkData.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+CtwaContextLinkData.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ChatRowOpaqueData.DraftMessage.CtwaContextLinkData";
+};
+return CtwaContextLinkData;
+});
+return DraftMessage;
+});
+return ChatRowOpaqueData;

@@ -1,0 +1,176 @@
+"use strict";
+function NotificationSettings(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+NotificationSettings.prototype.messageVibrate = null;
+NotificationSettings.prototype.messagePopup = null;
+NotificationSettings.prototype.messageLight = null;
+NotificationSettings.prototype.lowPriorityNotifications = null;
+NotificationSettings.prototype.reactionsMuted = null;
+NotificationSettings.prototype.callVibrate = null;
+let $oneOfFields;
+Object.defineProperty(NotificationSettings.prototype, "_messageVibrate", {
+get: $util.oneOfGetter($oneOfFields = ["messageVibrate"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(NotificationSettings.prototype, "_messagePopup", {
+get: $util.oneOfGetter($oneOfFields = ["messagePopup"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(NotificationSettings.prototype, "_messageLight", {
+get: $util.oneOfGetter($oneOfFields = ["messageLight"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(NotificationSettings.prototype, "_lowPriorityNotifications", {
+get: $util.oneOfGetter($oneOfFields = ["lowPriorityNotifications"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(NotificationSettings.prototype, "_reactionsMuted", {
+get: $util.oneOfGetter($oneOfFields = ["reactionsMuted"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(NotificationSettings.prototype, "_callVibrate", {
+get: $util.oneOfGetter($oneOfFields = ["callVibrate"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+NotificationSettings.create = function create(properties) {
+return new NotificationSettings(properties);
+};
+NotificationSettings.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.messageVibrate != null && Object.hasOwnProperty.call(m, "messageVibrate"))
+w.uint32(10).string(m.messageVibrate);
+if (m.messagePopup != null && Object.hasOwnProperty.call(m, "messagePopup"))
+w.uint32(18).string(m.messagePopup);
+if (m.messageLight != null && Object.hasOwnProperty.call(m, "messageLight"))
+w.uint32(26).string(m.messageLight);
+if (m.lowPriorityNotifications != null && Object.hasOwnProperty.call(m, "lowPriorityNotifications"))
+w.uint32(32).bool(m.lowPriorityNotifications);
+if (m.reactionsMuted != null && Object.hasOwnProperty.call(m, "reactionsMuted"))
+w.uint32(40).bool(m.reactionsMuted);
+if (m.callVibrate != null && Object.hasOwnProperty.call(m, "callVibrate"))
+w.uint32(50).string(m.callVibrate);
+return w;
+};
+NotificationSettings.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.NotificationSettings();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.messageVibrate = r.string();
+break;
+}
+case 2: {
+m.messagePopup = r.string();
+break;
+}
+case 3: {
+m.messageLight = r.string();
+break;
+}
+case 4: {
+m.lowPriorityNotifications = r.bool();
+break;
+}
+case 5: {
+m.reactionsMuted = r.bool();
+break;
+}
+case 6: {
+m.callVibrate = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+NotificationSettings.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.NotificationSettings)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.NotificationSettings();
+if (d.messageVibrate != null) {
+m.messageVibrate = String(d.messageVibrate);
+}
+if (d.messagePopup != null) {
+m.messagePopup = String(d.messagePopup);
+}
+if (d.messageLight != null) {
+m.messageLight = String(d.messageLight);
+}
+if (d.lowPriorityNotifications != null) {
+m.lowPriorityNotifications = Boolean(d.lowPriorityNotifications);
+}
+if (d.reactionsMuted != null) {
+m.reactionsMuted = Boolean(d.reactionsMuted);
+}
+if (d.callVibrate != null) {
+m.callVibrate = String(d.callVibrate);
+}
+return m;
+};
+NotificationSettings.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.messageVibrate != null && m.hasOwnProperty("messageVibrate")) {
+d.messageVibrate = m.messageVibrate;
+if (o.oneofs)
+d._messageVibrate = "messageVibrate";
+}
+if (m.messagePopup != null && m.hasOwnProperty("messagePopup")) {
+d.messagePopup = m.messagePopup;
+if (o.oneofs)
+d._messagePopup = "messagePopup";
+}
+if (m.messageLight != null && m.hasOwnProperty("messageLight")) {
+d.messageLight = m.messageLight;
+if (o.oneofs)
+d._messageLight = "messageLight";
+}
+if (m.lowPriorityNotifications != null && m.hasOwnProperty("lowPriorityNotifications")) {
+d.lowPriorityNotifications = m.lowPriorityNotifications;
+if (o.oneofs)
+d._lowPriorityNotifications = "lowPriorityNotifications";
+}
+if (m.reactionsMuted != null && m.hasOwnProperty("reactionsMuted")) {
+d.reactionsMuted = m.reactionsMuted;
+if (o.oneofs)
+d._reactionsMuted = "reactionsMuted";
+}
+if (m.callVibrate != null && m.hasOwnProperty("callVibrate")) {
+d.callVibrate = m.callVibrate;
+if (o.oneofs)
+d._callVibrate = "callVibrate";
+}
+return d;
+};
+NotificationSettings.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+NotificationSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.NotificationSettings";
+};
+return NotificationSettings;

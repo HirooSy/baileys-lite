@@ -1,0 +1,150 @@
+"use strict";
+function ADVSignedDeviceIdentity(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ADVSignedDeviceIdentity.prototype.details = null;
+ADVSignedDeviceIdentity.prototype.accountSignatureKey = null;
+ADVSignedDeviceIdentity.prototype.accountSignature = null;
+ADVSignedDeviceIdentity.prototype.deviceSignature = null;
+let $oneOfFields;
+Object.defineProperty(ADVSignedDeviceIdentity.prototype, "_details", {
+get: $util.oneOfGetter($oneOfFields = ["details"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ADVSignedDeviceIdentity.prototype, "_accountSignatureKey", {
+get: $util.oneOfGetter($oneOfFields = ["accountSignatureKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ADVSignedDeviceIdentity.prototype, "_accountSignature", {
+get: $util.oneOfGetter($oneOfFields = ["accountSignature"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ADVSignedDeviceIdentity.prototype, "_deviceSignature", {
+get: $util.oneOfGetter($oneOfFields = ["deviceSignature"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ADVSignedDeviceIdentity.create = function create(properties) {
+return new ADVSignedDeviceIdentity(properties);
+};
+ADVSignedDeviceIdentity.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.details != null && Object.hasOwnProperty.call(m, "details"))
+w.uint32(10).bytes(m.details);
+if (m.accountSignatureKey != null && Object.hasOwnProperty.call(m, "accountSignatureKey"))
+w.uint32(18).bytes(m.accountSignatureKey);
+if (m.accountSignature != null && Object.hasOwnProperty.call(m, "accountSignature"))
+w.uint32(26).bytes(m.accountSignature);
+if (m.deviceSignature != null && Object.hasOwnProperty.call(m, "deviceSignature"))
+w.uint32(34).bytes(m.deviceSignature);
+return w;
+};
+ADVSignedDeviceIdentity.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ADVSignedDeviceIdentity();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.details = r.bytes();
+break;
+}
+case 2: {
+m.accountSignatureKey = r.bytes();
+break;
+}
+case 3: {
+m.accountSignature = r.bytes();
+break;
+}
+case 4: {
+m.deviceSignature = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ADVSignedDeviceIdentity.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ADVSignedDeviceIdentity)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ADVSignedDeviceIdentity();
+if (d.details != null) {
+if (typeof d.details === "string")
+$util.base64.decode(d.details, m.details = $util.newBuffer($util.base64.length(d.details)), 0);
+else if (d.details.length >= 0)
+m.details = d.details;
+}
+if (d.accountSignatureKey != null) {
+if (typeof d.accountSignatureKey === "string")
+$util.base64.decode(d.accountSignatureKey, m.accountSignatureKey = $util.newBuffer($util.base64.length(d.accountSignatureKey)), 0);
+else if (d.accountSignatureKey.length >= 0)
+m.accountSignatureKey = d.accountSignatureKey;
+}
+if (d.accountSignature != null) {
+if (typeof d.accountSignature === "string")
+$util.base64.decode(d.accountSignature, m.accountSignature = $util.newBuffer($util.base64.length(d.accountSignature)), 0);
+else if (d.accountSignature.length >= 0)
+m.accountSignature = d.accountSignature;
+}
+if (d.deviceSignature != null) {
+if (typeof d.deviceSignature === "string")
+$util.base64.decode(d.deviceSignature, m.deviceSignature = $util.newBuffer($util.base64.length(d.deviceSignature)), 0);
+else if (d.deviceSignature.length >= 0)
+m.deviceSignature = d.deviceSignature;
+}
+return m;
+};
+ADVSignedDeviceIdentity.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.details != null && m.hasOwnProperty("details")) {
+d.details = o.bytes === String ? $util.base64.encode(m.details, 0, m.details.length) : o.bytes === Array ? Array.prototype.slice.call(m.details) : m.details;
+if (o.oneofs)
+d._details = "details";
+}
+if (m.accountSignatureKey != null && m.hasOwnProperty("accountSignatureKey")) {
+d.accountSignatureKey = o.bytes === String ? $util.base64.encode(m.accountSignatureKey, 0, m.accountSignatureKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.accountSignatureKey) : m.accountSignatureKey;
+if (o.oneofs)
+d._accountSignatureKey = "accountSignatureKey";
+}
+if (m.accountSignature != null && m.hasOwnProperty("accountSignature")) {
+d.accountSignature = o.bytes === String ? $util.base64.encode(m.accountSignature, 0, m.accountSignature.length) : o.bytes === Array ? Array.prototype.slice.call(m.accountSignature) : m.accountSignature;
+if (o.oneofs)
+d._accountSignature = "accountSignature";
+}
+if (m.deviceSignature != null && m.hasOwnProperty("deviceSignature")) {
+d.deviceSignature = o.bytes === String ? $util.base64.encode(m.deviceSignature, 0, m.deviceSignature.length) : o.bytes === Array ? Array.prototype.slice.call(m.deviceSignature) : m.deviceSignature;
+if (o.oneofs)
+d._deviceSignature = "deviceSignature";
+}
+return d;
+};
+ADVSignedDeviceIdentity.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ADVSignedDeviceIdentity.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ADVSignedDeviceIdentity";
+};
+return ADVSignedDeviceIdentity;

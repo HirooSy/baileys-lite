@@ -1,0 +1,934 @@
+"use strict";
+function BotMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotMetadata.prototype.personaId = null;
+BotMetadata.prototype.pluginMetadata = null;
+BotMetadata.prototype.suggestedPromptMetadata = null;
+BotMetadata.prototype.invokerJid = null;
+BotMetadata.prototype.sessionMetadata = null;
+BotMetadata.prototype.memuMetadata = null;
+BotMetadata.prototype.timezone = null;
+BotMetadata.prototype.reminderMetadata = null;
+BotMetadata.prototype.modelMetadata = null;
+BotMetadata.prototype.messageDisclaimerText = null;
+BotMetadata.prototype.progressIndicatorMetadata = null;
+BotMetadata.prototype.capabilityMetadata = null;
+BotMetadata.prototype.imagineMetadata = null;
+BotMetadata.prototype.memoryMetadata = null;
+BotMetadata.prototype.renderingMetadata = null;
+BotMetadata.prototype.botMetricsMetadata = null;
+BotMetadata.prototype.botLinkedAccountsMetadata = null;
+BotMetadata.prototype.richResponseSourcesMetadata = null;
+BotMetadata.prototype.aiConversationContext = null;
+BotMetadata.prototype.botPromotionMessageMetadata = null;
+BotMetadata.prototype.botModeSelectionMetadata = null;
+BotMetadata.prototype.botQuotaMetadata = null;
+BotMetadata.prototype.botAgeCollectionMetadata = null;
+BotMetadata.prototype.conversationStarterPromptId = null;
+BotMetadata.prototype.botResponseId = null;
+BotMetadata.prototype.verificationMetadata = null;
+BotMetadata.prototype.unifiedResponseMutation = null;
+BotMetadata.prototype.botMessageOriginMetadata = null;
+BotMetadata.prototype.inThreadSurveyMetadata = null;
+BotMetadata.prototype.botThreadInfo = null;
+BotMetadata.prototype.regenerateMetadata = null;
+BotMetadata.prototype.sessionTransparencyMetadata = null;
+BotMetadata.prototype.botDocumentMessageMetadata = null;
+BotMetadata.prototype.botGroupMetadata = null;
+BotMetadata.prototype.botRenderingConfigMetadata = null;
+BotMetadata.prototype.botInfrastructureDiagnostics = null;
+BotMetadata.prototype.aiMediaCollectionMetadata = null;
+BotMetadata.prototype.commandMetadata = null;
+BotMetadata.prototype.resolvedToolCallMetadata = null;
+BotMetadata.prototype.subscriptionUpsellMetadata = null;
+BotMetadata.prototype.pttPromptMetadata = null;
+BotMetadata.prototype.internalMetadata = null;
+let $oneOfFields;
+Object.defineProperty(BotMetadata.prototype, "_personaId", {
+get: $util.oneOfGetter($oneOfFields = ["personaId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_pluginMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["pluginMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_suggestedPromptMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["suggestedPromptMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_invokerJid", {
+get: $util.oneOfGetter($oneOfFields = ["invokerJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_sessionMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["sessionMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_memuMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["memuMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_timezone", {
+get: $util.oneOfGetter($oneOfFields = ["timezone"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_reminderMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["reminderMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_modelMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["modelMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_messageDisclaimerText", {
+get: $util.oneOfGetter($oneOfFields = ["messageDisclaimerText"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_progressIndicatorMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["progressIndicatorMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_capabilityMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["capabilityMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_imagineMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["imagineMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_memoryMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["memoryMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_renderingMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["renderingMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_botMetricsMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["botMetricsMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_botLinkedAccountsMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["botLinkedAccountsMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_richResponseSourcesMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["richResponseSourcesMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_aiConversationContext", {
+get: $util.oneOfGetter($oneOfFields = ["aiConversationContext"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_botPromotionMessageMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["botPromotionMessageMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_botModeSelectionMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["botModeSelectionMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_botQuotaMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["botQuotaMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_botAgeCollectionMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["botAgeCollectionMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_conversationStarterPromptId", {
+get: $util.oneOfGetter($oneOfFields = ["conversationStarterPromptId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_botResponseId", {
+get: $util.oneOfGetter($oneOfFields = ["botResponseId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_verificationMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["verificationMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_unifiedResponseMutation", {
+get: $util.oneOfGetter($oneOfFields = ["unifiedResponseMutation"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_botMessageOriginMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["botMessageOriginMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_inThreadSurveyMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["inThreadSurveyMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_botThreadInfo", {
+get: $util.oneOfGetter($oneOfFields = ["botThreadInfo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_regenerateMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["regenerateMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_sessionTransparencyMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["sessionTransparencyMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_botDocumentMessageMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["botDocumentMessageMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_botGroupMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["botGroupMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_botRenderingConfigMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["botRenderingConfigMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_botInfrastructureDiagnostics", {
+get: $util.oneOfGetter($oneOfFields = ["botInfrastructureDiagnostics"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_aiMediaCollectionMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["aiMediaCollectionMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_commandMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["commandMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_resolvedToolCallMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["resolvedToolCallMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_subscriptionUpsellMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["subscriptionUpsellMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_pttPromptMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["pttPromptMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetadata.prototype, "_internalMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["internalMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotMetadata.create = function create(properties) {
+return new BotMetadata(properties);
+};
+BotMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.personaId != null && Object.hasOwnProperty.call(m, "personaId"))
+w.uint32(18).string(m.personaId);
+if (m.pluginMetadata != null && Object.hasOwnProperty.call(m, "pluginMetadata"))
+$root.proto.BotPluginMetadata.encode(m.pluginMetadata, w.uint32(26).fork()).ldelim();
+if (m.suggestedPromptMetadata != null && Object.hasOwnProperty.call(m, "suggestedPromptMetadata"))
+$root.proto.BotSuggestedPromptMetadata.encode(m.suggestedPromptMetadata, w.uint32(34).fork()).ldelim();
+if (m.invokerJid != null && Object.hasOwnProperty.call(m, "invokerJid"))
+w.uint32(42).string(m.invokerJid);
+if (m.sessionMetadata != null && Object.hasOwnProperty.call(m, "sessionMetadata"))
+$root.proto.BotSessionMetadata.encode(m.sessionMetadata, w.uint32(50).fork()).ldelim();
+if (m.memuMetadata != null && Object.hasOwnProperty.call(m, "memuMetadata"))
+$root.proto.BotMemuMetadata.encode(m.memuMetadata, w.uint32(58).fork()).ldelim();
+if (m.timezone != null && Object.hasOwnProperty.call(m, "timezone"))
+w.uint32(66).string(m.timezone);
+if (m.reminderMetadata != null && Object.hasOwnProperty.call(m, "reminderMetadata"))
+$root.proto.BotReminderMetadata.encode(m.reminderMetadata, w.uint32(74).fork()).ldelim();
+if (m.modelMetadata != null && Object.hasOwnProperty.call(m, "modelMetadata"))
+$root.proto.BotModelMetadata.encode(m.modelMetadata, w.uint32(82).fork()).ldelim();
+if (m.messageDisclaimerText != null && Object.hasOwnProperty.call(m, "messageDisclaimerText"))
+w.uint32(90).string(m.messageDisclaimerText);
+if (m.progressIndicatorMetadata != null && Object.hasOwnProperty.call(m, "progressIndicatorMetadata"))
+$root.proto.BotProgressIndicatorMetadata.encode(m.progressIndicatorMetadata, w.uint32(98).fork()).ldelim();
+if (m.capabilityMetadata != null && Object.hasOwnProperty.call(m, "capabilityMetadata"))
+$root.proto.BotCapabilityMetadata.encode(m.capabilityMetadata, w.uint32(106).fork()).ldelim();
+if (m.imagineMetadata != null && Object.hasOwnProperty.call(m, "imagineMetadata"))
+$root.proto.BotImagineMetadata.encode(m.imagineMetadata, w.uint32(114).fork()).ldelim();
+if (m.memoryMetadata != null && Object.hasOwnProperty.call(m, "memoryMetadata"))
+$root.proto.BotMemoryMetadata.encode(m.memoryMetadata, w.uint32(122).fork()).ldelim();
+if (m.renderingMetadata != null && Object.hasOwnProperty.call(m, "renderingMetadata"))
+$root.proto.BotRenderingMetadata.encode(m.renderingMetadata, w.uint32(130).fork()).ldelim();
+if (m.botMetricsMetadata != null && Object.hasOwnProperty.call(m, "botMetricsMetadata"))
+$root.proto.BotMetricsMetadata.encode(m.botMetricsMetadata, w.uint32(138).fork()).ldelim();
+if (m.botLinkedAccountsMetadata != null && Object.hasOwnProperty.call(m, "botLinkedAccountsMetadata"))
+$root.proto.BotLinkedAccountsMetadata.encode(m.botLinkedAccountsMetadata, w.uint32(146).fork()).ldelim();
+if (m.richResponseSourcesMetadata != null && Object.hasOwnProperty.call(m, "richResponseSourcesMetadata"))
+$root.proto.BotSourcesMetadata.encode(m.richResponseSourcesMetadata, w.uint32(154).fork()).ldelim();
+if (m.aiConversationContext != null && Object.hasOwnProperty.call(m, "aiConversationContext"))
+w.uint32(162).bytes(m.aiConversationContext);
+if (m.botPromotionMessageMetadata != null && Object.hasOwnProperty.call(m, "botPromotionMessageMetadata"))
+$root.proto.BotPromotionMessageMetadata.encode(m.botPromotionMessageMetadata, w.uint32(170).fork()).ldelim();
+if (m.botModeSelectionMetadata != null && Object.hasOwnProperty.call(m, "botModeSelectionMetadata"))
+$root.proto.BotModeSelectionMetadata.encode(m.botModeSelectionMetadata, w.uint32(178).fork()).ldelim();
+if (m.botQuotaMetadata != null && Object.hasOwnProperty.call(m, "botQuotaMetadata"))
+$root.proto.BotQuotaMetadata.encode(m.botQuotaMetadata, w.uint32(186).fork()).ldelim();
+if (m.botAgeCollectionMetadata != null && Object.hasOwnProperty.call(m, "botAgeCollectionMetadata"))
+$root.proto.BotAgeCollectionMetadata.encode(m.botAgeCollectionMetadata, w.uint32(194).fork()).ldelim();
+if (m.conversationStarterPromptId != null && Object.hasOwnProperty.call(m, "conversationStarterPromptId"))
+w.uint32(202).string(m.conversationStarterPromptId);
+if (m.botResponseId != null && Object.hasOwnProperty.call(m, "botResponseId"))
+w.uint32(210).string(m.botResponseId);
+if (m.verificationMetadata != null && Object.hasOwnProperty.call(m, "verificationMetadata"))
+$root.proto.BotSignatureVerificationMetadata.encode(m.verificationMetadata, w.uint32(218).fork()).ldelim();
+if (m.unifiedResponseMutation != null && Object.hasOwnProperty.call(m, "unifiedResponseMutation"))
+$root.proto.BotUnifiedResponseMutation.encode(m.unifiedResponseMutation, w.uint32(226).fork()).ldelim();
+if (m.botMessageOriginMetadata != null && Object.hasOwnProperty.call(m, "botMessageOriginMetadata"))
+$root.proto.BotMessageOriginMetadata.encode(m.botMessageOriginMetadata, w.uint32(234).fork()).ldelim();
+if (m.inThreadSurveyMetadata != null && Object.hasOwnProperty.call(m, "inThreadSurveyMetadata"))
+$root.proto.InThreadSurveyMetadata.encode(m.inThreadSurveyMetadata, w.uint32(242).fork()).ldelim();
+if (m.botThreadInfo != null && Object.hasOwnProperty.call(m, "botThreadInfo"))
+$root.proto.AIThreadInfo.encode(m.botThreadInfo, w.uint32(250).fork()).ldelim();
+if (m.regenerateMetadata != null && Object.hasOwnProperty.call(m, "regenerateMetadata"))
+$root.proto.AIRegenerateMetadata.encode(m.regenerateMetadata, w.uint32(258).fork()).ldelim();
+if (m.sessionTransparencyMetadata != null && Object.hasOwnProperty.call(m, "sessionTransparencyMetadata"))
+$root.proto.SessionTransparencyMetadata.encode(m.sessionTransparencyMetadata, w.uint32(266).fork()).ldelim();
+if (m.botDocumentMessageMetadata != null && Object.hasOwnProperty.call(m, "botDocumentMessageMetadata"))
+$root.proto.BotDocumentMessageMetadata.encode(m.botDocumentMessageMetadata, w.uint32(274).fork()).ldelim();
+if (m.botGroupMetadata != null && Object.hasOwnProperty.call(m, "botGroupMetadata"))
+$root.proto.BotGroupMetadata.encode(m.botGroupMetadata, w.uint32(282).fork()).ldelim();
+if (m.botRenderingConfigMetadata != null && Object.hasOwnProperty.call(m, "botRenderingConfigMetadata"))
+$root.proto.BotRenderingConfigMetadata.encode(m.botRenderingConfigMetadata, w.uint32(290).fork()).ldelim();
+if (m.botInfrastructureDiagnostics != null && Object.hasOwnProperty.call(m, "botInfrastructureDiagnostics"))
+$root.proto.BotInfrastructureDiagnostics.encode(m.botInfrastructureDiagnostics, w.uint32(298).fork()).ldelim();
+if (m.aiMediaCollectionMetadata != null && Object.hasOwnProperty.call(m, "aiMediaCollectionMetadata"))
+$root.proto.AIMediaCollectionMetadata.encode(m.aiMediaCollectionMetadata, w.uint32(306).fork()).ldelim();
+if (m.commandMetadata != null && Object.hasOwnProperty.call(m, "commandMetadata"))
+$root.proto.BotCommandMetadata.encode(m.commandMetadata, w.uint32(314).fork()).ldelim();
+if (m.resolvedToolCallMetadata != null && Object.hasOwnProperty.call(m, "resolvedToolCallMetadata"))
+$root.proto.BotResolvedToolCallMetadata.encode(m.resolvedToolCallMetadata, w.uint32(322).fork()).ldelim();
+if (m.subscriptionUpsellMetadata != null && Object.hasOwnProperty.call(m, "subscriptionUpsellMetadata"))
+$root.proto.AISubscriptionUpsellMetadata.encode(m.subscriptionUpsellMetadata, w.uint32(330).fork()).ldelim();
+if (m.pttPromptMetadata != null && Object.hasOwnProperty.call(m, "pttPromptMetadata"))
+$root.proto.BotPttPromptMetadata.encode(m.pttPromptMetadata, w.uint32(338).fork()).ldelim();
+if (m.internalMetadata != null && Object.hasOwnProperty.call(m, "internalMetadata"))
+w.uint32(7994).bytes(m.internalMetadata);
+return w;
+};
+BotMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 2: {
+m.personaId = r.string();
+break;
+}
+case 3: {
+m.pluginMetadata = $root.proto.BotPluginMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 4: {
+m.suggestedPromptMetadata = $root.proto.BotSuggestedPromptMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 5: {
+m.invokerJid = r.string();
+break;
+}
+case 6: {
+m.sessionMetadata = $root.proto.BotSessionMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 7: {
+m.memuMetadata = $root.proto.BotMemuMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 8: {
+m.timezone = r.string();
+break;
+}
+case 9: {
+m.reminderMetadata = $root.proto.BotReminderMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 10: {
+m.modelMetadata = $root.proto.BotModelMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 11: {
+m.messageDisclaimerText = r.string();
+break;
+}
+case 12: {
+m.progressIndicatorMetadata = $root.proto.BotProgressIndicatorMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 13: {
+m.capabilityMetadata = $root.proto.BotCapabilityMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 14: {
+m.imagineMetadata = $root.proto.BotImagineMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 15: {
+m.memoryMetadata = $root.proto.BotMemoryMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 16: {
+m.renderingMetadata = $root.proto.BotRenderingMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 17: {
+m.botMetricsMetadata = $root.proto.BotMetricsMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 18: {
+m.botLinkedAccountsMetadata = $root.proto.BotLinkedAccountsMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 19: {
+m.richResponseSourcesMetadata = $root.proto.BotSourcesMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 20: {
+m.aiConversationContext = r.bytes();
+break;
+}
+case 21: {
+m.botPromotionMessageMetadata = $root.proto.BotPromotionMessageMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 22: {
+m.botModeSelectionMetadata = $root.proto.BotModeSelectionMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 23: {
+m.botQuotaMetadata = $root.proto.BotQuotaMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 24: {
+m.botAgeCollectionMetadata = $root.proto.BotAgeCollectionMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 25: {
+m.conversationStarterPromptId = r.string();
+break;
+}
+case 26: {
+m.botResponseId = r.string();
+break;
+}
+case 27: {
+m.verificationMetadata = $root.proto.BotSignatureVerificationMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 28: {
+m.unifiedResponseMutation = $root.proto.BotUnifiedResponseMutation.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 29: {
+m.botMessageOriginMetadata = $root.proto.BotMessageOriginMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 30: {
+m.inThreadSurveyMetadata = $root.proto.InThreadSurveyMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 31: {
+m.botThreadInfo = $root.proto.AIThreadInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 32: {
+m.regenerateMetadata = $root.proto.AIRegenerateMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 33: {
+m.sessionTransparencyMetadata = $root.proto.SessionTransparencyMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 34: {
+m.botDocumentMessageMetadata = $root.proto.BotDocumentMessageMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 35: {
+m.botGroupMetadata = $root.proto.BotGroupMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 36: {
+m.botRenderingConfigMetadata = $root.proto.BotRenderingConfigMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 37: {
+m.botInfrastructureDiagnostics = $root.proto.BotInfrastructureDiagnostics.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 38: {
+m.aiMediaCollectionMetadata = $root.proto.AIMediaCollectionMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 39: {
+m.commandMetadata = $root.proto.BotCommandMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 40: {
+m.resolvedToolCallMetadata = $root.proto.BotResolvedToolCallMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 41: {
+m.subscriptionUpsellMetadata = $root.proto.AISubscriptionUpsellMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 42: {
+m.pttPromptMetadata = $root.proto.BotPttPromptMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 999: {
+m.internalMetadata = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotMetadata();
+if (d.personaId != null) {
+m.personaId = String(d.personaId);
+}
+if (d.pluginMetadata != null) {
+if (typeof d.pluginMetadata !== "object")
+throw TypeError(".proto.BotMetadata.pluginMetadata: object expected");
+m.pluginMetadata = $root.proto.BotPluginMetadata.fromObject(d.pluginMetadata, n + 1);
+}
+if (d.suggestedPromptMetadata != null) {
+if (typeof d.suggestedPromptMetadata !== "object")
+throw TypeError(".proto.BotMetadata.suggestedPromptMetadata: object expected");
+m.suggestedPromptMetadata = $root.proto.BotSuggestedPromptMetadata.fromObject(d.suggestedPromptMetadata, n + 1);
+}
+if (d.invokerJid != null) {
+m.invokerJid = String(d.invokerJid);
+}
+if (d.sessionMetadata != null) {
+if (typeof d.sessionMetadata !== "object")
+throw TypeError(".proto.BotMetadata.sessionMetadata: object expected");
+m.sessionMetadata = $root.proto.BotSessionMetadata.fromObject(d.sessionMetadata, n + 1);
+}
+if (d.memuMetadata != null) {
+if (typeof d.memuMetadata !== "object")
+throw TypeError(".proto.BotMetadata.memuMetadata: object expected");
+m.memuMetadata = $root.proto.BotMemuMetadata.fromObject(d.memuMetadata, n + 1);
+}
+if (d.timezone != null) {
+m.timezone = String(d.timezone);
+}
+if (d.reminderMetadata != null) {
+if (typeof d.reminderMetadata !== "object")
+throw TypeError(".proto.BotMetadata.reminderMetadata: object expected");
+m.reminderMetadata = $root.proto.BotReminderMetadata.fromObject(d.reminderMetadata, n + 1);
+}
+if (d.modelMetadata != null) {
+if (typeof d.modelMetadata !== "object")
+throw TypeError(".proto.BotMetadata.modelMetadata: object expected");
+m.modelMetadata = $root.proto.BotModelMetadata.fromObject(d.modelMetadata, n + 1);
+}
+if (d.messageDisclaimerText != null) {
+m.messageDisclaimerText = String(d.messageDisclaimerText);
+}
+if (d.progressIndicatorMetadata != null) {
+if (typeof d.progressIndicatorMetadata !== "object")
+throw TypeError(".proto.BotMetadata.progressIndicatorMetadata: object expected");
+m.progressIndicatorMetadata = $root.proto.BotProgressIndicatorMetadata.fromObject(d.progressIndicatorMetadata, n + 1);
+}
+if (d.capabilityMetadata != null) {
+if (typeof d.capabilityMetadata !== "object")
+throw TypeError(".proto.BotMetadata.capabilityMetadata: object expected");
+m.capabilityMetadata = $root.proto.BotCapabilityMetadata.fromObject(d.capabilityMetadata, n + 1);
+}
+if (d.imagineMetadata != null) {
+if (typeof d.imagineMetadata !== "object")
+throw TypeError(".proto.BotMetadata.imagineMetadata: object expected");
+m.imagineMetadata = $root.proto.BotImagineMetadata.fromObject(d.imagineMetadata, n + 1);
+}
+if (d.memoryMetadata != null) {
+if (typeof d.memoryMetadata !== "object")
+throw TypeError(".proto.BotMetadata.memoryMetadata: object expected");
+m.memoryMetadata = $root.proto.BotMemoryMetadata.fromObject(d.memoryMetadata, n + 1);
+}
+if (d.renderingMetadata != null) {
+if (typeof d.renderingMetadata !== "object")
+throw TypeError(".proto.BotMetadata.renderingMetadata: object expected");
+m.renderingMetadata = $root.proto.BotRenderingMetadata.fromObject(d.renderingMetadata, n + 1);
+}
+if (d.botMetricsMetadata != null) {
+if (typeof d.botMetricsMetadata !== "object")
+throw TypeError(".proto.BotMetadata.botMetricsMetadata: object expected");
+m.botMetricsMetadata = $root.proto.BotMetricsMetadata.fromObject(d.botMetricsMetadata, n + 1);
+}
+if (d.botLinkedAccountsMetadata != null) {
+if (typeof d.botLinkedAccountsMetadata !== "object")
+throw TypeError(".proto.BotMetadata.botLinkedAccountsMetadata: object expected");
+m.botLinkedAccountsMetadata = $root.proto.BotLinkedAccountsMetadata.fromObject(d.botLinkedAccountsMetadata, n + 1);
+}
+if (d.richResponseSourcesMetadata != null) {
+if (typeof d.richResponseSourcesMetadata !== "object")
+throw TypeError(".proto.BotMetadata.richResponseSourcesMetadata: object expected");
+m.richResponseSourcesMetadata = $root.proto.BotSourcesMetadata.fromObject(d.richResponseSourcesMetadata, n + 1);
+}
+if (d.aiConversationContext != null) {
+if (typeof d.aiConversationContext === "string")
+$util.base64.decode(d.aiConversationContext, m.aiConversationContext = $util.newBuffer($util.base64.length(d.aiConversationContext)), 0);
+else if (d.aiConversationContext.length >= 0)
+m.aiConversationContext = d.aiConversationContext;
+}
+if (d.botPromotionMessageMetadata != null) {
+if (typeof d.botPromotionMessageMetadata !== "object")
+throw TypeError(".proto.BotMetadata.botPromotionMessageMetadata: object expected");
+m.botPromotionMessageMetadata = $root.proto.BotPromotionMessageMetadata.fromObject(d.botPromotionMessageMetadata, n + 1);
+}
+if (d.botModeSelectionMetadata != null) {
+if (typeof d.botModeSelectionMetadata !== "object")
+throw TypeError(".proto.BotMetadata.botModeSelectionMetadata: object expected");
+m.botModeSelectionMetadata = $root.proto.BotModeSelectionMetadata.fromObject(d.botModeSelectionMetadata, n + 1);
+}
+if (d.botQuotaMetadata != null) {
+if (typeof d.botQuotaMetadata !== "object")
+throw TypeError(".proto.BotMetadata.botQuotaMetadata: object expected");
+m.botQuotaMetadata = $root.proto.BotQuotaMetadata.fromObject(d.botQuotaMetadata, n + 1);
+}
+if (d.botAgeCollectionMetadata != null) {
+if (typeof d.botAgeCollectionMetadata !== "object")
+throw TypeError(".proto.BotMetadata.botAgeCollectionMetadata: object expected");
+m.botAgeCollectionMetadata = $root.proto.BotAgeCollectionMetadata.fromObject(d.botAgeCollectionMetadata, n + 1);
+}
+if (d.conversationStarterPromptId != null) {
+m.conversationStarterPromptId = String(d.conversationStarterPromptId);
+}
+if (d.botResponseId != null) {
+m.botResponseId = String(d.botResponseId);
+}
+if (d.verificationMetadata != null) {
+if (typeof d.verificationMetadata !== "object")
+throw TypeError(".proto.BotMetadata.verificationMetadata: object expected");
+m.verificationMetadata = $root.proto.BotSignatureVerificationMetadata.fromObject(d.verificationMetadata, n + 1);
+}
+if (d.unifiedResponseMutation != null) {
+if (typeof d.unifiedResponseMutation !== "object")
+throw TypeError(".proto.BotMetadata.unifiedResponseMutation: object expected");
+m.unifiedResponseMutation = $root.proto.BotUnifiedResponseMutation.fromObject(d.unifiedResponseMutation, n + 1);
+}
+if (d.botMessageOriginMetadata != null) {
+if (typeof d.botMessageOriginMetadata !== "object")
+throw TypeError(".proto.BotMetadata.botMessageOriginMetadata: object expected");
+m.botMessageOriginMetadata = $root.proto.BotMessageOriginMetadata.fromObject(d.botMessageOriginMetadata, n + 1);
+}
+if (d.inThreadSurveyMetadata != null) {
+if (typeof d.inThreadSurveyMetadata !== "object")
+throw TypeError(".proto.BotMetadata.inThreadSurveyMetadata: object expected");
+m.inThreadSurveyMetadata = $root.proto.InThreadSurveyMetadata.fromObject(d.inThreadSurveyMetadata, n + 1);
+}
+if (d.botThreadInfo != null) {
+if (typeof d.botThreadInfo !== "object")
+throw TypeError(".proto.BotMetadata.botThreadInfo: object expected");
+m.botThreadInfo = $root.proto.AIThreadInfo.fromObject(d.botThreadInfo, n + 1);
+}
+if (d.regenerateMetadata != null) {
+if (typeof d.regenerateMetadata !== "object")
+throw TypeError(".proto.BotMetadata.regenerateMetadata: object expected");
+m.regenerateMetadata = $root.proto.AIRegenerateMetadata.fromObject(d.regenerateMetadata, n + 1);
+}
+if (d.sessionTransparencyMetadata != null) {
+if (typeof d.sessionTransparencyMetadata !== "object")
+throw TypeError(".proto.BotMetadata.sessionTransparencyMetadata: object expected");
+m.sessionTransparencyMetadata = $root.proto.SessionTransparencyMetadata.fromObject(d.sessionTransparencyMetadata, n + 1);
+}
+if (d.botDocumentMessageMetadata != null) {
+if (typeof d.botDocumentMessageMetadata !== "object")
+throw TypeError(".proto.BotMetadata.botDocumentMessageMetadata: object expected");
+m.botDocumentMessageMetadata = $root.proto.BotDocumentMessageMetadata.fromObject(d.botDocumentMessageMetadata, n + 1);
+}
+if (d.botGroupMetadata != null) {
+if (typeof d.botGroupMetadata !== "object")
+throw TypeError(".proto.BotMetadata.botGroupMetadata: object expected");
+m.botGroupMetadata = $root.proto.BotGroupMetadata.fromObject(d.botGroupMetadata, n + 1);
+}
+if (d.botRenderingConfigMetadata != null) {
+if (typeof d.botRenderingConfigMetadata !== "object")
+throw TypeError(".proto.BotMetadata.botRenderingConfigMetadata: object expected");
+m.botRenderingConfigMetadata = $root.proto.BotRenderingConfigMetadata.fromObject(d.botRenderingConfigMetadata, n + 1);
+}
+if (d.botInfrastructureDiagnostics != null) {
+if (typeof d.botInfrastructureDiagnostics !== "object")
+throw TypeError(".proto.BotMetadata.botInfrastructureDiagnostics: object expected");
+m.botInfrastructureDiagnostics = $root.proto.BotInfrastructureDiagnostics.fromObject(d.botInfrastructureDiagnostics, n + 1);
+}
+if (d.aiMediaCollectionMetadata != null) {
+if (typeof d.aiMediaCollectionMetadata !== "object")
+throw TypeError(".proto.BotMetadata.aiMediaCollectionMetadata: object expected");
+m.aiMediaCollectionMetadata = $root.proto.AIMediaCollectionMetadata.fromObject(d.aiMediaCollectionMetadata, n + 1);
+}
+if (d.commandMetadata != null) {
+if (typeof d.commandMetadata !== "object")
+throw TypeError(".proto.BotMetadata.commandMetadata: object expected");
+m.commandMetadata = $root.proto.BotCommandMetadata.fromObject(d.commandMetadata, n + 1);
+}
+if (d.resolvedToolCallMetadata != null) {
+if (typeof d.resolvedToolCallMetadata !== "object")
+throw TypeError(".proto.BotMetadata.resolvedToolCallMetadata: object expected");
+m.resolvedToolCallMetadata = $root.proto.BotResolvedToolCallMetadata.fromObject(d.resolvedToolCallMetadata, n + 1);
+}
+if (d.subscriptionUpsellMetadata != null) {
+if (typeof d.subscriptionUpsellMetadata !== "object")
+throw TypeError(".proto.BotMetadata.subscriptionUpsellMetadata: object expected");
+m.subscriptionUpsellMetadata = $root.proto.AISubscriptionUpsellMetadata.fromObject(d.subscriptionUpsellMetadata, n + 1);
+}
+if (d.pttPromptMetadata != null) {
+if (typeof d.pttPromptMetadata !== "object")
+throw TypeError(".proto.BotMetadata.pttPromptMetadata: object expected");
+m.pttPromptMetadata = $root.proto.BotPttPromptMetadata.fromObject(d.pttPromptMetadata, n + 1);
+}
+if (d.internalMetadata != null) {
+if (typeof d.internalMetadata === "string")
+$util.base64.decode(d.internalMetadata, m.internalMetadata = $util.newBuffer($util.base64.length(d.internalMetadata)), 0);
+else if (d.internalMetadata.length >= 0)
+m.internalMetadata = d.internalMetadata;
+}
+return m;
+};
+BotMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.personaId != null && m.hasOwnProperty("personaId")) {
+d.personaId = m.personaId;
+if (o.oneofs)
+d._personaId = "personaId";
+}
+if (m.pluginMetadata != null && m.hasOwnProperty("pluginMetadata")) {
+d.pluginMetadata = $root.proto.BotPluginMetadata.toObject(m.pluginMetadata, o);
+if (o.oneofs)
+d._pluginMetadata = "pluginMetadata";
+}
+if (m.suggestedPromptMetadata != null && m.hasOwnProperty("suggestedPromptMetadata")) {
+d.suggestedPromptMetadata = $root.proto.BotSuggestedPromptMetadata.toObject(m.suggestedPromptMetadata, o);
+if (o.oneofs)
+d._suggestedPromptMetadata = "suggestedPromptMetadata";
+}
+if (m.invokerJid != null && m.hasOwnProperty("invokerJid")) {
+d.invokerJid = m.invokerJid;
+if (o.oneofs)
+d._invokerJid = "invokerJid";
+}
+if (m.sessionMetadata != null && m.hasOwnProperty("sessionMetadata")) {
+d.sessionMetadata = $root.proto.BotSessionMetadata.toObject(m.sessionMetadata, o);
+if (o.oneofs)
+d._sessionMetadata = "sessionMetadata";
+}
+if (m.memuMetadata != null && m.hasOwnProperty("memuMetadata")) {
+d.memuMetadata = $root.proto.BotMemuMetadata.toObject(m.memuMetadata, o);
+if (o.oneofs)
+d._memuMetadata = "memuMetadata";
+}
+if (m.timezone != null && m.hasOwnProperty("timezone")) {
+d.timezone = m.timezone;
+if (o.oneofs)
+d._timezone = "timezone";
+}
+if (m.reminderMetadata != null && m.hasOwnProperty("reminderMetadata")) {
+d.reminderMetadata = $root.proto.BotReminderMetadata.toObject(m.reminderMetadata, o);
+if (o.oneofs)
+d._reminderMetadata = "reminderMetadata";
+}
+if (m.modelMetadata != null && m.hasOwnProperty("modelMetadata")) {
+d.modelMetadata = $root.proto.BotModelMetadata.toObject(m.modelMetadata, o);
+if (o.oneofs)
+d._modelMetadata = "modelMetadata";
+}
+if (m.messageDisclaimerText != null && m.hasOwnProperty("messageDisclaimerText")) {
+d.messageDisclaimerText = m.messageDisclaimerText;
+if (o.oneofs)
+d._messageDisclaimerText = "messageDisclaimerText";
+}
+if (m.progressIndicatorMetadata != null && m.hasOwnProperty("progressIndicatorMetadata")) {
+d.progressIndicatorMetadata = $root.proto.BotProgressIndicatorMetadata.toObject(m.progressIndicatorMetadata, o);
+if (o.oneofs)
+d._progressIndicatorMetadata = "progressIndicatorMetadata";
+}
+if (m.capabilityMetadata != null && m.hasOwnProperty("capabilityMetadata")) {
+d.capabilityMetadata = $root.proto.BotCapabilityMetadata.toObject(m.capabilityMetadata, o);
+if (o.oneofs)
+d._capabilityMetadata = "capabilityMetadata";
+}
+if (m.imagineMetadata != null && m.hasOwnProperty("imagineMetadata")) {
+d.imagineMetadata = $root.proto.BotImagineMetadata.toObject(m.imagineMetadata, o);
+if (o.oneofs)
+d._imagineMetadata = "imagineMetadata";
+}
+if (m.memoryMetadata != null && m.hasOwnProperty("memoryMetadata")) {
+d.memoryMetadata = $root.proto.BotMemoryMetadata.toObject(m.memoryMetadata, o);
+if (o.oneofs)
+d._memoryMetadata = "memoryMetadata";
+}
+if (m.renderingMetadata != null && m.hasOwnProperty("renderingMetadata")) {
+d.renderingMetadata = $root.proto.BotRenderingMetadata.toObject(m.renderingMetadata, o);
+if (o.oneofs)
+d._renderingMetadata = "renderingMetadata";
+}
+if (m.botMetricsMetadata != null && m.hasOwnProperty("botMetricsMetadata")) {
+d.botMetricsMetadata = $root.proto.BotMetricsMetadata.toObject(m.botMetricsMetadata, o);
+if (o.oneofs)
+d._botMetricsMetadata = "botMetricsMetadata";
+}
+if (m.botLinkedAccountsMetadata != null && m.hasOwnProperty("botLinkedAccountsMetadata")) {
+d.botLinkedAccountsMetadata = $root.proto.BotLinkedAccountsMetadata.toObject(m.botLinkedAccountsMetadata, o);
+if (o.oneofs)
+d._botLinkedAccountsMetadata = "botLinkedAccountsMetadata";
+}
+if (m.richResponseSourcesMetadata != null && m.hasOwnProperty("richResponseSourcesMetadata")) {
+d.richResponseSourcesMetadata = $root.proto.BotSourcesMetadata.toObject(m.richResponseSourcesMetadata, o);
+if (o.oneofs)
+d._richResponseSourcesMetadata = "richResponseSourcesMetadata";
+}
+if (m.aiConversationContext != null && m.hasOwnProperty("aiConversationContext")) {
+d.aiConversationContext = o.bytes === String ? $util.base64.encode(m.aiConversationContext, 0, m.aiConversationContext.length) : o.bytes === Array ? Array.prototype.slice.call(m.aiConversationContext) : m.aiConversationContext;
+if (o.oneofs)
+d._aiConversationContext = "aiConversationContext";
+}
+if (m.botPromotionMessageMetadata != null && m.hasOwnProperty("botPromotionMessageMetadata")) {
+d.botPromotionMessageMetadata = $root.proto.BotPromotionMessageMetadata.toObject(m.botPromotionMessageMetadata, o);
+if (o.oneofs)
+d._botPromotionMessageMetadata = "botPromotionMessageMetadata";
+}
+if (m.botModeSelectionMetadata != null && m.hasOwnProperty("botModeSelectionMetadata")) {
+d.botModeSelectionMetadata = $root.proto.BotModeSelectionMetadata.toObject(m.botModeSelectionMetadata, o);
+if (o.oneofs)
+d._botModeSelectionMetadata = "botModeSelectionMetadata";
+}
+if (m.botQuotaMetadata != null && m.hasOwnProperty("botQuotaMetadata")) {
+d.botQuotaMetadata = $root.proto.BotQuotaMetadata.toObject(m.botQuotaMetadata, o);
+if (o.oneofs)
+d._botQuotaMetadata = "botQuotaMetadata";
+}
+if (m.botAgeCollectionMetadata != null && m.hasOwnProperty("botAgeCollectionMetadata")) {
+d.botAgeCollectionMetadata = $root.proto.BotAgeCollectionMetadata.toObject(m.botAgeCollectionMetadata, o);
+if (o.oneofs)
+d._botAgeCollectionMetadata = "botAgeCollectionMetadata";
+}
+if (m.conversationStarterPromptId != null && m.hasOwnProperty("conversationStarterPromptId")) {
+d.conversationStarterPromptId = m.conversationStarterPromptId;
+if (o.oneofs)
+d._conversationStarterPromptId = "conversationStarterPromptId";
+}
+if (m.botResponseId != null && m.hasOwnProperty("botResponseId")) {
+d.botResponseId = m.botResponseId;
+if (o.oneofs)
+d._botResponseId = "botResponseId";
+}
+if (m.verificationMetadata != null && m.hasOwnProperty("verificationMetadata")) {
+d.verificationMetadata = $root.proto.BotSignatureVerificationMetadata.toObject(m.verificationMetadata, o);
+if (o.oneofs)
+d._verificationMetadata = "verificationMetadata";
+}
+if (m.unifiedResponseMutation != null && m.hasOwnProperty("unifiedResponseMutation")) {
+d.unifiedResponseMutation = $root.proto.BotUnifiedResponseMutation.toObject(m.unifiedResponseMutation, o);
+if (o.oneofs)
+d._unifiedResponseMutation = "unifiedResponseMutation";
+}
+if (m.botMessageOriginMetadata != null && m.hasOwnProperty("botMessageOriginMetadata")) {
+d.botMessageOriginMetadata = $root.proto.BotMessageOriginMetadata.toObject(m.botMessageOriginMetadata, o);
+if (o.oneofs)
+d._botMessageOriginMetadata = "botMessageOriginMetadata";
+}
+if (m.inThreadSurveyMetadata != null && m.hasOwnProperty("inThreadSurveyMetadata")) {
+d.inThreadSurveyMetadata = $root.proto.InThreadSurveyMetadata.toObject(m.inThreadSurveyMetadata, o);
+if (o.oneofs)
+d._inThreadSurveyMetadata = "inThreadSurveyMetadata";
+}
+if (m.botThreadInfo != null && m.hasOwnProperty("botThreadInfo")) {
+d.botThreadInfo = $root.proto.AIThreadInfo.toObject(m.botThreadInfo, o);
+if (o.oneofs)
+d._botThreadInfo = "botThreadInfo";
+}
+if (m.regenerateMetadata != null && m.hasOwnProperty("regenerateMetadata")) {
+d.regenerateMetadata = $root.proto.AIRegenerateMetadata.toObject(m.regenerateMetadata, o);
+if (o.oneofs)
+d._regenerateMetadata = "regenerateMetadata";
+}
+if (m.sessionTransparencyMetadata != null && m.hasOwnProperty("sessionTransparencyMetadata")) {
+d.sessionTransparencyMetadata = $root.proto.SessionTransparencyMetadata.toObject(m.sessionTransparencyMetadata, o);
+if (o.oneofs)
+d._sessionTransparencyMetadata = "sessionTransparencyMetadata";
+}
+if (m.botDocumentMessageMetadata != null && m.hasOwnProperty("botDocumentMessageMetadata")) {
+d.botDocumentMessageMetadata = $root.proto.BotDocumentMessageMetadata.toObject(m.botDocumentMessageMetadata, o);
+if (o.oneofs)
+d._botDocumentMessageMetadata = "botDocumentMessageMetadata";
+}
+if (m.botGroupMetadata != null && m.hasOwnProperty("botGroupMetadata")) {
+d.botGroupMetadata = $root.proto.BotGroupMetadata.toObject(m.botGroupMetadata, o);
+if (o.oneofs)
+d._botGroupMetadata = "botGroupMetadata";
+}
+if (m.botRenderingConfigMetadata != null && m.hasOwnProperty("botRenderingConfigMetadata")) {
+d.botRenderingConfigMetadata = $root.proto.BotRenderingConfigMetadata.toObject(m.botRenderingConfigMetadata, o);
+if (o.oneofs)
+d._botRenderingConfigMetadata = "botRenderingConfigMetadata";
+}
+if (m.botInfrastructureDiagnostics != null && m.hasOwnProperty("botInfrastructureDiagnostics")) {
+d.botInfrastructureDiagnostics = $root.proto.BotInfrastructureDiagnostics.toObject(m.botInfrastructureDiagnostics, o);
+if (o.oneofs)
+d._botInfrastructureDiagnostics = "botInfrastructureDiagnostics";
+}
+if (m.aiMediaCollectionMetadata != null && m.hasOwnProperty("aiMediaCollectionMetadata")) {
+d.aiMediaCollectionMetadata = $root.proto.AIMediaCollectionMetadata.toObject(m.aiMediaCollectionMetadata, o);
+if (o.oneofs)
+d._aiMediaCollectionMetadata = "aiMediaCollectionMetadata";
+}
+if (m.commandMetadata != null && m.hasOwnProperty("commandMetadata")) {
+d.commandMetadata = $root.proto.BotCommandMetadata.toObject(m.commandMetadata, o);
+if (o.oneofs)
+d._commandMetadata = "commandMetadata";
+}
+if (m.resolvedToolCallMetadata != null && m.hasOwnProperty("resolvedToolCallMetadata")) {
+d.resolvedToolCallMetadata = $root.proto.BotResolvedToolCallMetadata.toObject(m.resolvedToolCallMetadata, o);
+if (o.oneofs)
+d._resolvedToolCallMetadata = "resolvedToolCallMetadata";
+}
+if (m.subscriptionUpsellMetadata != null && m.hasOwnProperty("subscriptionUpsellMetadata")) {
+d.subscriptionUpsellMetadata = $root.proto.AISubscriptionUpsellMetadata.toObject(m.subscriptionUpsellMetadata, o);
+if (o.oneofs)
+d._subscriptionUpsellMetadata = "subscriptionUpsellMetadata";
+}
+if (m.pttPromptMetadata != null && m.hasOwnProperty("pttPromptMetadata")) {
+d.pttPromptMetadata = $root.proto.BotPttPromptMetadata.toObject(m.pttPromptMetadata, o);
+if (o.oneofs)
+d._pttPromptMetadata = "pttPromptMetadata";
+}
+if (m.internalMetadata != null && m.hasOwnProperty("internalMetadata")) {
+d.internalMetadata = o.bytes === String ? $util.base64.encode(m.internalMetadata, 0, m.internalMetadata.length) : o.bytes === Array ? Array.prototype.slice.call(m.internalMetadata) : m.internalMetadata;
+if (o.oneofs)
+d._internalMetadata = "internalMetadata";
+}
+return d;
+};
+BotMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotMetadata";
+};
+return BotMetadata;

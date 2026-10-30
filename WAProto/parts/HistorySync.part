@@ -1,0 +1,605 @@
+"use strict";
+function HistorySync(p) {
+this.conversations = [];
+this.statusV3Messages = [];
+this.pushnames = [];
+this.recentStickers = [];
+this.pastParticipants = [];
+this.callLogRecords = [];
+this.phoneNumberToLidMappings = [];
+this.accounts = [];
+this.inlineContacts = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+HistorySync.prototype.syncType = 0;
+HistorySync.prototype.conversations = $util.emptyArray;
+HistorySync.prototype.statusV3Messages = $util.emptyArray;
+HistorySync.prototype.chunkOrder = null;
+HistorySync.prototype.progress = null;
+HistorySync.prototype.pushnames = $util.emptyArray;
+HistorySync.prototype.globalSettings = null;
+HistorySync.prototype.threadIdUserSecret = null;
+HistorySync.prototype.threadDsTimeframeOffset = null;
+HistorySync.prototype.recentStickers = $util.emptyArray;
+HistorySync.prototype.pastParticipants = $util.emptyArray;
+HistorySync.prototype.callLogRecords = $util.emptyArray;
+HistorySync.prototype.aiWaitListState = null;
+HistorySync.prototype.phoneNumberToLidMappings = $util.emptyArray;
+HistorySync.prototype.companionMetaNonce = null;
+HistorySync.prototype.shareableChatIdentifierEncryptionKey = null;
+HistorySync.prototype.accounts = $util.emptyArray;
+HistorySync.prototype.nctSalt = null;
+HistorySync.prototype.inlineContacts = $util.emptyArray;
+HistorySync.prototype.inlineContactsProvided = null;
+let $oneOfFields;
+Object.defineProperty(HistorySync.prototype, "_chunkOrder", {
+get: $util.oneOfGetter($oneOfFields = ["chunkOrder"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(HistorySync.prototype, "_progress", {
+get: $util.oneOfGetter($oneOfFields = ["progress"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(HistorySync.prototype, "_globalSettings", {
+get: $util.oneOfGetter($oneOfFields = ["globalSettings"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(HistorySync.prototype, "_threadIdUserSecret", {
+get: $util.oneOfGetter($oneOfFields = ["threadIdUserSecret"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(HistorySync.prototype, "_threadDsTimeframeOffset", {
+get: $util.oneOfGetter($oneOfFields = ["threadDsTimeframeOffset"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(HistorySync.prototype, "_aiWaitListState", {
+get: $util.oneOfGetter($oneOfFields = ["aiWaitListState"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(HistorySync.prototype, "_companionMetaNonce", {
+get: $util.oneOfGetter($oneOfFields = ["companionMetaNonce"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(HistorySync.prototype, "_shareableChatIdentifierEncryptionKey", {
+get: $util.oneOfGetter($oneOfFields = ["shareableChatIdentifierEncryptionKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(HistorySync.prototype, "_nctSalt", {
+get: $util.oneOfGetter($oneOfFields = ["nctSalt"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(HistorySync.prototype, "_inlineContactsProvided", {
+get: $util.oneOfGetter($oneOfFields = ["inlineContactsProvided"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+HistorySync.create = function create(properties) {
+return new HistorySync(properties);
+};
+HistorySync.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.syncType != null && Object.hasOwnProperty.call(m, "syncType"))
+w.uint32(8).int32(m.syncType);
+if (m.conversations != null && m.conversations.length) {
+for (var i = 0; i < m.conversations.length; ++i)
+$root.proto.Conversation.encode(m.conversations[i], w.uint32(18).fork()).ldelim();
+}
+if (m.statusV3Messages != null && m.statusV3Messages.length) {
+for (var i = 0; i < m.statusV3Messages.length; ++i)
+$root.proto.WebMessageInfo.encode(m.statusV3Messages[i], w.uint32(26).fork()).ldelim();
+}
+if (m.chunkOrder != null && Object.hasOwnProperty.call(m, "chunkOrder"))
+w.uint32(40).uint32(m.chunkOrder);
+if (m.progress != null && Object.hasOwnProperty.call(m, "progress"))
+w.uint32(48).uint32(m.progress);
+if (m.pushnames != null && m.pushnames.length) {
+for (var i = 0; i < m.pushnames.length; ++i)
+$root.proto.Pushname.encode(m.pushnames[i], w.uint32(58).fork()).ldelim();
+}
+if (m.globalSettings != null && Object.hasOwnProperty.call(m, "globalSettings"))
+$root.proto.GlobalSettings.encode(m.globalSettings, w.uint32(66).fork()).ldelim();
+if (m.threadIdUserSecret != null && Object.hasOwnProperty.call(m, "threadIdUserSecret"))
+w.uint32(74).bytes(m.threadIdUserSecret);
+if (m.threadDsTimeframeOffset != null && Object.hasOwnProperty.call(m, "threadDsTimeframeOffset"))
+w.uint32(80).uint32(m.threadDsTimeframeOffset);
+if (m.recentStickers != null && m.recentStickers.length) {
+for (var i = 0; i < m.recentStickers.length; ++i)
+$root.proto.StickerMetadata.encode(m.recentStickers[i], w.uint32(90).fork()).ldelim();
+}
+if (m.pastParticipants != null && m.pastParticipants.length) {
+for (var i = 0; i < m.pastParticipants.length; ++i)
+$root.proto.PastParticipants.encode(m.pastParticipants[i], w.uint32(98).fork()).ldelim();
+}
+if (m.callLogRecords != null && m.callLogRecords.length) {
+for (var i = 0; i < m.callLogRecords.length; ++i)
+$root.proto.CallLogRecord.encode(m.callLogRecords[i], w.uint32(106).fork()).ldelim();
+}
+if (m.aiWaitListState != null && Object.hasOwnProperty.call(m, "aiWaitListState"))
+w.uint32(112).int32(m.aiWaitListState);
+if (m.phoneNumberToLidMappings != null && m.phoneNumberToLidMappings.length) {
+for (var i = 0; i < m.phoneNumberToLidMappings.length; ++i)
+$root.proto.PhoneNumberToLIDMapping.encode(m.phoneNumberToLidMappings[i], w.uint32(122).fork()).ldelim();
+}
+if (m.companionMetaNonce != null && Object.hasOwnProperty.call(m, "companionMetaNonce"))
+w.uint32(130).string(m.companionMetaNonce);
+if (m.shareableChatIdentifierEncryptionKey != null && Object.hasOwnProperty.call(m, "shareableChatIdentifierEncryptionKey"))
+w.uint32(138).bytes(m.shareableChatIdentifierEncryptionKey);
+if (m.accounts != null && m.accounts.length) {
+for (var i = 0; i < m.accounts.length; ++i)
+$root.proto.Account.encode(m.accounts[i], w.uint32(146).fork()).ldelim();
+}
+if (m.nctSalt != null && Object.hasOwnProperty.call(m, "nctSalt"))
+w.uint32(154).bytes(m.nctSalt);
+if (m.inlineContacts != null && m.inlineContacts.length) {
+for (var i = 0; i < m.inlineContacts.length; ++i)
+$root.proto.InlineContact.encode(m.inlineContacts[i], w.uint32(162).fork()).ldelim();
+}
+if (m.inlineContactsProvided != null && Object.hasOwnProperty.call(m, "inlineContactsProvided"))
+w.uint32(168).bool(m.inlineContactsProvided);
+return w;
+};
+HistorySync.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.HistorySync();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.syncType = r.int32();
+break;
+}
+case 2: {
+if (!(m.conversations && m.conversations.length))
+m.conversations = [];
+m.conversations.push($root.proto.Conversation.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 3: {
+if (!(m.statusV3Messages && m.statusV3Messages.length))
+m.statusV3Messages = [];
+m.statusV3Messages.push($root.proto.WebMessageInfo.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 5: {
+m.chunkOrder = r.uint32();
+break;
+}
+case 6: {
+m.progress = r.uint32();
+break;
+}
+case 7: {
+if (!(m.pushnames && m.pushnames.length))
+m.pushnames = [];
+m.pushnames.push($root.proto.Pushname.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 8: {
+m.globalSettings = $root.proto.GlobalSettings.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 9: {
+m.threadIdUserSecret = r.bytes();
+break;
+}
+case 10: {
+m.threadDsTimeframeOffset = r.uint32();
+break;
+}
+case 11: {
+if (!(m.recentStickers && m.recentStickers.length))
+m.recentStickers = [];
+m.recentStickers.push($root.proto.StickerMetadata.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 12: {
+if (!(m.pastParticipants && m.pastParticipants.length))
+m.pastParticipants = [];
+m.pastParticipants.push($root.proto.PastParticipants.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 13: {
+if (!(m.callLogRecords && m.callLogRecords.length))
+m.callLogRecords = [];
+m.callLogRecords.push($root.proto.CallLogRecord.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 14: {
+m.aiWaitListState = r.int32();
+break;
+}
+case 15: {
+if (!(m.phoneNumberToLidMappings && m.phoneNumberToLidMappings.length))
+m.phoneNumberToLidMappings = [];
+m.phoneNumberToLidMappings.push($root.proto.PhoneNumberToLIDMapping.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 16: {
+m.companionMetaNonce = r.string();
+break;
+}
+case 17: {
+m.shareableChatIdentifierEncryptionKey = r.bytes();
+break;
+}
+case 18: {
+if (!(m.accounts && m.accounts.length))
+m.accounts = [];
+m.accounts.push($root.proto.Account.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 19: {
+m.nctSalt = r.bytes();
+break;
+}
+case 20: {
+if (!(m.inlineContacts && m.inlineContacts.length))
+m.inlineContacts = [];
+m.inlineContacts.push($root.proto.InlineContact.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 21: {
+m.inlineContactsProvided = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+HistorySync.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.HistorySync)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.HistorySync();
+switch (d.syncType) {
+default:
+if (typeof d.syncType === "number") {
+m.syncType = d.syncType;
+break;
+}
+break;
+case "INITIAL_BOOTSTRAP":
+case 0:
+m.syncType = 0;
+break;
+case "INITIAL_STATUS_V3":
+case 1:
+m.syncType = 1;
+break;
+case "FULL":
+case 2:
+m.syncType = 2;
+break;
+case "RECENT":
+case 3:
+m.syncType = 3;
+break;
+case "PUSH_NAME":
+case 4:
+m.syncType = 4;
+break;
+case "NON_BLOCKING_DATA":
+case 5:
+m.syncType = 5;
+break;
+case "ON_DEMAND":
+case 6:
+m.syncType = 6;
+break;
+}
+if (d.conversations) {
+if (!Array.isArray(d.conversations))
+throw TypeError(".proto.HistorySync.conversations: array expected");
+m.conversations = [];
+for (var i = 0; i < d.conversations.length; ++i) {
+if (typeof d.conversations[i] !== "object")
+throw TypeError(".proto.HistorySync.conversations: object expected");
+m.conversations[i] = $root.proto.Conversation.fromObject(d.conversations[i], n + 1);
+}
+}
+if (d.statusV3Messages) {
+if (!Array.isArray(d.statusV3Messages))
+throw TypeError(".proto.HistorySync.statusV3Messages: array expected");
+m.statusV3Messages = [];
+for (var i = 0; i < d.statusV3Messages.length; ++i) {
+if (typeof d.statusV3Messages[i] !== "object")
+throw TypeError(".proto.HistorySync.statusV3Messages: object expected");
+m.statusV3Messages[i] = $root.proto.WebMessageInfo.fromObject(d.statusV3Messages[i], n + 1);
+}
+}
+if (d.chunkOrder != null) {
+m.chunkOrder = d.chunkOrder >>> 0;
+}
+if (d.progress != null) {
+m.progress = d.progress >>> 0;
+}
+if (d.pushnames) {
+if (!Array.isArray(d.pushnames))
+throw TypeError(".proto.HistorySync.pushnames: array expected");
+m.pushnames = [];
+for (var i = 0; i < d.pushnames.length; ++i) {
+if (typeof d.pushnames[i] !== "object")
+throw TypeError(".proto.HistorySync.pushnames: object expected");
+m.pushnames[i] = $root.proto.Pushname.fromObject(d.pushnames[i], n + 1);
+}
+}
+if (d.globalSettings != null) {
+if (typeof d.globalSettings !== "object")
+throw TypeError(".proto.HistorySync.globalSettings: object expected");
+m.globalSettings = $root.proto.GlobalSettings.fromObject(d.globalSettings, n + 1);
+}
+if (d.threadIdUserSecret != null) {
+if (typeof d.threadIdUserSecret === "string")
+$util.base64.decode(d.threadIdUserSecret, m.threadIdUserSecret = $util.newBuffer($util.base64.length(d.threadIdUserSecret)), 0);
+else if (d.threadIdUserSecret.length >= 0)
+m.threadIdUserSecret = d.threadIdUserSecret;
+}
+if (d.threadDsTimeframeOffset != null) {
+m.threadDsTimeframeOffset = d.threadDsTimeframeOffset >>> 0;
+}
+if (d.recentStickers) {
+if (!Array.isArray(d.recentStickers))
+throw TypeError(".proto.HistorySync.recentStickers: array expected");
+m.recentStickers = [];
+for (var i = 0; i < d.recentStickers.length; ++i) {
+if (typeof d.recentStickers[i] !== "object")
+throw TypeError(".proto.HistorySync.recentStickers: object expected");
+m.recentStickers[i] = $root.proto.StickerMetadata.fromObject(d.recentStickers[i], n + 1);
+}
+}
+if (d.pastParticipants) {
+if (!Array.isArray(d.pastParticipants))
+throw TypeError(".proto.HistorySync.pastParticipants: array expected");
+m.pastParticipants = [];
+for (var i = 0; i < d.pastParticipants.length; ++i) {
+if (typeof d.pastParticipants[i] !== "object")
+throw TypeError(".proto.HistorySync.pastParticipants: object expected");
+m.pastParticipants[i] = $root.proto.PastParticipants.fromObject(d.pastParticipants[i], n + 1);
+}
+}
+if (d.callLogRecords) {
+if (!Array.isArray(d.callLogRecords))
+throw TypeError(".proto.HistorySync.callLogRecords: array expected");
+m.callLogRecords = [];
+for (var i = 0; i < d.callLogRecords.length; ++i) {
+if (typeof d.callLogRecords[i] !== "object")
+throw TypeError(".proto.HistorySync.callLogRecords: object expected");
+m.callLogRecords[i] = $root.proto.CallLogRecord.fromObject(d.callLogRecords[i], n + 1);
+}
+}
+switch (d.aiWaitListState) {
+default:
+if (typeof d.aiWaitListState === "number") {
+m.aiWaitListState = d.aiWaitListState;
+break;
+}
+break;
+case "IN_WAITLIST":
+case 0:
+m.aiWaitListState = 0;
+break;
+case "AI_AVAILABLE":
+case 1:
+m.aiWaitListState = 1;
+break;
+}
+if (d.phoneNumberToLidMappings) {
+if (!Array.isArray(d.phoneNumberToLidMappings))
+throw TypeError(".proto.HistorySync.phoneNumberToLidMappings: array expected");
+m.phoneNumberToLidMappings = [];
+for (var i = 0; i < d.phoneNumberToLidMappings.length; ++i) {
+if (typeof d.phoneNumberToLidMappings[i] !== "object")
+throw TypeError(".proto.HistorySync.phoneNumberToLidMappings: object expected");
+m.phoneNumberToLidMappings[i] = $root.proto.PhoneNumberToLIDMapping.fromObject(d.phoneNumberToLidMappings[i], n + 1);
+}
+}
+if (d.companionMetaNonce != null) {
+m.companionMetaNonce = String(d.companionMetaNonce);
+}
+if (d.shareableChatIdentifierEncryptionKey != null) {
+if (typeof d.shareableChatIdentifierEncryptionKey === "string")
+$util.base64.decode(d.shareableChatIdentifierEncryptionKey, m.shareableChatIdentifierEncryptionKey = $util.newBuffer($util.base64.length(d.shareableChatIdentifierEncryptionKey)), 0);
+else if (d.shareableChatIdentifierEncryptionKey.length >= 0)
+m.shareableChatIdentifierEncryptionKey = d.shareableChatIdentifierEncryptionKey;
+}
+if (d.accounts) {
+if (!Array.isArray(d.accounts))
+throw TypeError(".proto.HistorySync.accounts: array expected");
+m.accounts = [];
+for (var i = 0; i < d.accounts.length; ++i) {
+if (typeof d.accounts[i] !== "object")
+throw TypeError(".proto.HistorySync.accounts: object expected");
+m.accounts[i] = $root.proto.Account.fromObject(d.accounts[i], n + 1);
+}
+}
+if (d.nctSalt != null) {
+if (typeof d.nctSalt === "string")
+$util.base64.decode(d.nctSalt, m.nctSalt = $util.newBuffer($util.base64.length(d.nctSalt)), 0);
+else if (d.nctSalt.length >= 0)
+m.nctSalt = d.nctSalt;
+}
+if (d.inlineContacts) {
+if (!Array.isArray(d.inlineContacts))
+throw TypeError(".proto.HistorySync.inlineContacts: array expected");
+m.inlineContacts = [];
+for (var i = 0; i < d.inlineContacts.length; ++i) {
+if (typeof d.inlineContacts[i] !== "object")
+throw TypeError(".proto.HistorySync.inlineContacts: object expected");
+m.inlineContacts[i] = $root.proto.InlineContact.fromObject(d.inlineContacts[i], n + 1);
+}
+}
+if (d.inlineContactsProvided != null) {
+m.inlineContactsProvided = Boolean(d.inlineContactsProvided);
+}
+return m;
+};
+HistorySync.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.conversations = [];
+d.statusV3Messages = [];
+d.pushnames = [];
+d.recentStickers = [];
+d.pastParticipants = [];
+d.callLogRecords = [];
+d.phoneNumberToLidMappings = [];
+d.accounts = [];
+d.inlineContacts = [];
+}
+if (o.defaults) {
+d.syncType = o.enums === String ? "INITIAL_BOOTSTRAP" : 0;
+}
+if (m.syncType != null && m.hasOwnProperty("syncType")) {
+d.syncType = o.enums === String ? $root.proto.HistorySync.HistorySyncType[m.syncType] === undefined ? m.syncType : $root.proto.HistorySync.HistorySyncType[m.syncType] : m.syncType;
+}
+if (m.conversations && m.conversations.length) {
+d.conversations = [];
+for (var j = 0; j < m.conversations.length; ++j) {
+d.conversations[j] = $root.proto.Conversation.toObject(m.conversations[j], o);
+}
+}
+if (m.statusV3Messages && m.statusV3Messages.length) {
+d.statusV3Messages = [];
+for (var j = 0; j < m.statusV3Messages.length; ++j) {
+d.statusV3Messages[j] = $root.proto.WebMessageInfo.toObject(m.statusV3Messages[j], o);
+}
+}
+if (m.chunkOrder != null && m.hasOwnProperty("chunkOrder")) {
+d.chunkOrder = m.chunkOrder;
+if (o.oneofs)
+d._chunkOrder = "chunkOrder";
+}
+if (m.progress != null && m.hasOwnProperty("progress")) {
+d.progress = m.progress;
+if (o.oneofs)
+d._progress = "progress";
+}
+if (m.pushnames && m.pushnames.length) {
+d.pushnames = [];
+for (var j = 0; j < m.pushnames.length; ++j) {
+d.pushnames[j] = $root.proto.Pushname.toObject(m.pushnames[j], o);
+}
+}
+if (m.globalSettings != null && m.hasOwnProperty("globalSettings")) {
+d.globalSettings = $root.proto.GlobalSettings.toObject(m.globalSettings, o);
+if (o.oneofs)
+d._globalSettings = "globalSettings";
+}
+if (m.threadIdUserSecret != null && m.hasOwnProperty("threadIdUserSecret")) {
+d.threadIdUserSecret = o.bytes === String ? $util.base64.encode(m.threadIdUserSecret, 0, m.threadIdUserSecret.length) : o.bytes === Array ? Array.prototype.slice.call(m.threadIdUserSecret) : m.threadIdUserSecret;
+if (o.oneofs)
+d._threadIdUserSecret = "threadIdUserSecret";
+}
+if (m.threadDsTimeframeOffset != null && m.hasOwnProperty("threadDsTimeframeOffset")) {
+d.threadDsTimeframeOffset = m.threadDsTimeframeOffset;
+if (o.oneofs)
+d._threadDsTimeframeOffset = "threadDsTimeframeOffset";
+}
+if (m.recentStickers && m.recentStickers.length) {
+d.recentStickers = [];
+for (var j = 0; j < m.recentStickers.length; ++j) {
+d.recentStickers[j] = $root.proto.StickerMetadata.toObject(m.recentStickers[j], o);
+}
+}
+if (m.pastParticipants && m.pastParticipants.length) {
+d.pastParticipants = [];
+for (var j = 0; j < m.pastParticipants.length; ++j) {
+d.pastParticipants[j] = $root.proto.PastParticipants.toObject(m.pastParticipants[j], o);
+}
+}
+if (m.callLogRecords && m.callLogRecords.length) {
+d.callLogRecords = [];
+for (var j = 0; j < m.callLogRecords.length; ++j) {
+d.callLogRecords[j] = $root.proto.CallLogRecord.toObject(m.callLogRecords[j], o);
+}
+}
+if (m.aiWaitListState != null && m.hasOwnProperty("aiWaitListState")) {
+d.aiWaitListState = o.enums === String ? $root.proto.HistorySync.BotAIWaitListState[m.aiWaitListState] === undefined ? m.aiWaitListState : $root.proto.HistorySync.BotAIWaitListState[m.aiWaitListState] : m.aiWaitListState;
+if (o.oneofs)
+d._aiWaitListState = "aiWaitListState";
+}
+if (m.phoneNumberToLidMappings && m.phoneNumberToLidMappings.length) {
+d.phoneNumberToLidMappings = [];
+for (var j = 0; j < m.phoneNumberToLidMappings.length; ++j) {
+d.phoneNumberToLidMappings[j] = $root.proto.PhoneNumberToLIDMapping.toObject(m.phoneNumberToLidMappings[j], o);
+}
+}
+if (m.companionMetaNonce != null && m.hasOwnProperty("companionMetaNonce")) {
+d.companionMetaNonce = m.companionMetaNonce;
+if (o.oneofs)
+d._companionMetaNonce = "companionMetaNonce";
+}
+if (m.shareableChatIdentifierEncryptionKey != null && m.hasOwnProperty("shareableChatIdentifierEncryptionKey")) {
+d.shareableChatIdentifierEncryptionKey = o.bytes === String ? $util.base64.encode(m.shareableChatIdentifierEncryptionKey, 0, m.shareableChatIdentifierEncryptionKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.shareableChatIdentifierEncryptionKey) : m.shareableChatIdentifierEncryptionKey;
+if (o.oneofs)
+d._shareableChatIdentifierEncryptionKey = "shareableChatIdentifierEncryptionKey";
+}
+if (m.accounts && m.accounts.length) {
+d.accounts = [];
+for (var j = 0; j < m.accounts.length; ++j) {
+d.accounts[j] = $root.proto.Account.toObject(m.accounts[j], o);
+}
+}
+if (m.nctSalt != null && m.hasOwnProperty("nctSalt")) {
+d.nctSalt = o.bytes === String ? $util.base64.encode(m.nctSalt, 0, m.nctSalt.length) : o.bytes === Array ? Array.prototype.slice.call(m.nctSalt) : m.nctSalt;
+if (o.oneofs)
+d._nctSalt = "nctSalt";
+}
+if (m.inlineContacts && m.inlineContacts.length) {
+d.inlineContacts = [];
+for (var j = 0; j < m.inlineContacts.length; ++j) {
+d.inlineContacts[j] = $root.proto.InlineContact.toObject(m.inlineContacts[j], o);
+}
+}
+if (m.inlineContactsProvided != null && m.hasOwnProperty("inlineContactsProvided")) {
+d.inlineContactsProvided = m.inlineContactsProvided;
+if (o.oneofs)
+d._inlineContactsProvided = "inlineContactsProvided";
+}
+return d;
+};
+HistorySync.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+HistorySync.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.HistorySync";
+};
+$lazy(HistorySync, "BotAIWaitListState", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "IN_WAITLIST"] = 0;
+values[valuesById[1] = "AI_AVAILABLE"] = 1;
+return values;
+});
+$lazy(HistorySync, "HistorySyncType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "INITIAL_BOOTSTRAP"] = 0;
+values[valuesById[1] = "INITIAL_STATUS_V3"] = 1;
+values[valuesById[2] = "FULL"] = 2;
+values[valuesById[3] = "RECENT"] = 3;
+values[valuesById[4] = "PUSH_NAME"] = 4;
+values[valuesById[5] = "NON_BLOCKING_DATA"] = 5;
+values[valuesById[6] = "ON_DEMAND"] = 6;
+return values;
+});
+return HistorySync;

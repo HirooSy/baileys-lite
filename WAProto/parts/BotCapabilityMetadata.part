@@ -1,0 +1,437 @@
+"use strict";
+function BotCapabilityMetadata(p) {
+this.capabilities = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotCapabilityMetadata.prototype.capabilities = $util.emptyArray;
+BotCapabilityMetadata.create = function create(properties) {
+return new BotCapabilityMetadata(properties);
+};
+BotCapabilityMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.capabilities != null && m.capabilities.length) {
+w.uint32(10).fork();
+for (var i = 0; i < m.capabilities.length; ++i)
+w.int32(m.capabilities[i]);
+w.ldelim();
+}
+return w;
+};
+BotCapabilityMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotCapabilityMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+if (!(m.capabilities && m.capabilities.length))
+m.capabilities = [];
+if ((t & 7) === 2) {
+var c2 = r.uint32() + r.pos;
+while (r.pos < c2)
+m.capabilities.push(r.int32());
+} else
+m.capabilities.push(r.int32());
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotCapabilityMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotCapabilityMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotCapabilityMetadata();
+if (d.capabilities) {
+if (!Array.isArray(d.capabilities))
+throw TypeError(".proto.BotCapabilityMetadata.capabilities: array expected");
+m.capabilities = [];
+for (var i = 0; i < d.capabilities.length; ++i) {
+switch (d.capabilities[i]) {
+default:
+if (typeof d.capabilities[i] === "number") {
+m.capabilities[i] = d.capabilities[i];
+break;
+}
+case "UNKNOWN":
+case 0:
+m.capabilities[i] = 0;
+break;
+case "PROGRESS_INDICATOR":
+case 1:
+m.capabilities[i] = 1;
+break;
+case "RICH_RESPONSE_HEADING":
+case 2:
+m.capabilities[i] = 2;
+break;
+case "RICH_RESPONSE_NESTED_LIST":
+case 3:
+m.capabilities[i] = 3;
+break;
+case "AI_MEMORY":
+case 4:
+m.capabilities[i] = 4;
+break;
+case "RICH_RESPONSE_THREAD_SURFING":
+case 5:
+m.capabilities[i] = 5;
+break;
+case "RICH_RESPONSE_TABLE":
+case 6:
+m.capabilities[i] = 6;
+break;
+case "RICH_RESPONSE_CODE":
+case 7:
+m.capabilities[i] = 7;
+break;
+case "RICH_RESPONSE_STRUCTURED_RESPONSE":
+case 8:
+m.capabilities[i] = 8;
+break;
+case "RICH_RESPONSE_INLINE_IMAGE":
+case 9:
+m.capabilities[i] = 9;
+break;
+case "WA_IG_1P_PLUGIN_RANKING_CONTROL":
+case 10:
+m.capabilities[i] = 10;
+break;
+case "WA_IG_1P_PLUGIN_RANKING_UPDATE_1":
+case 11:
+m.capabilities[i] = 11;
+break;
+case "WA_IG_1P_PLUGIN_RANKING_UPDATE_2":
+case 12:
+m.capabilities[i] = 12;
+break;
+case "WA_IG_1P_PLUGIN_RANKING_UPDATE_3":
+case 13:
+m.capabilities[i] = 13;
+break;
+case "WA_IG_1P_PLUGIN_RANKING_UPDATE_4":
+case 14:
+m.capabilities[i] = 14;
+break;
+case "WA_IG_1P_PLUGIN_RANKING_UPDATE_5":
+case 15:
+m.capabilities[i] = 15;
+break;
+case "WA_IG_1P_PLUGIN_RANKING_UPDATE_6":
+case 16:
+m.capabilities[i] = 16;
+break;
+case "WA_IG_1P_PLUGIN_RANKING_UPDATE_7":
+case 17:
+m.capabilities[i] = 17;
+break;
+case "WA_IG_1P_PLUGIN_RANKING_UPDATE_8":
+case 18:
+m.capabilities[i] = 18;
+break;
+case "WA_IG_1P_PLUGIN_RANKING_UPDATE_9":
+case 19:
+m.capabilities[i] = 19;
+break;
+case "WA_IG_1P_PLUGIN_RANKING_UPDATE_10":
+case 20:
+m.capabilities[i] = 20;
+break;
+case "RICH_RESPONSE_SUB_HEADING":
+case 21:
+m.capabilities[i] = 21;
+break;
+case "RICH_RESPONSE_GRID_IMAGE":
+case 22:
+m.capabilities[i] = 22;
+break;
+case "AI_STUDIO_UGC_MEMORY":
+case 23:
+m.capabilities[i] = 23;
+break;
+case "RICH_RESPONSE_LATEX":
+case 24:
+m.capabilities[i] = 24;
+break;
+case "RICH_RESPONSE_MAPS":
+case 25:
+m.capabilities[i] = 25;
+break;
+case "RICH_RESPONSE_INLINE_REELS":
+case 26:
+m.capabilities[i] = 26;
+break;
+case "AGENTIC_PLANNING":
+case 27:
+m.capabilities[i] = 27;
+break;
+case "ACCOUNT_LINKING":
+case 28:
+m.capabilities[i] = 28;
+break;
+case "STREAMING_DISAGGREGATION":
+case 29:
+m.capabilities[i] = 29;
+break;
+case "RICH_RESPONSE_GRID_IMAGE_3P":
+case 30:
+m.capabilities[i] = 30;
+break;
+case "RICH_RESPONSE_LATEX_INLINE":
+case 31:
+m.capabilities[i] = 31;
+break;
+case "QUERY_PLAN":
+case 32:
+m.capabilities[i] = 32;
+break;
+case "PROACTIVE_MESSAGE":
+case 33:
+m.capabilities[i] = 33;
+break;
+case "RICH_RESPONSE_UNIFIED_RESPONSE":
+case 34:
+m.capabilities[i] = 34;
+break;
+case "PROMOTION_MESSAGE":
+case 35:
+m.capabilities[i] = 35;
+break;
+case "SIMPLIFIED_PROFILE_PAGE":
+case 36:
+m.capabilities[i] = 36;
+break;
+case "RICH_RESPONSE_SOURCES_IN_MESSAGE":
+case 37:
+m.capabilities[i] = 37;
+break;
+case "RICH_RESPONSE_SIDE_BY_SIDE_SURVEY":
+case 38:
+m.capabilities[i] = 38;
+break;
+case "RICH_RESPONSE_UNIFIED_TEXT_COMPONENT":
+case 39:
+m.capabilities[i] = 39;
+break;
+case "AI_SHARED_MEMORY":
+case 40:
+m.capabilities[i] = 40;
+break;
+case "RICH_RESPONSE_UNIFIED_SOURCES":
+case 41:
+m.capabilities[i] = 41;
+break;
+case "RICH_RESPONSE_UNIFIED_DOMAIN_CITATIONS":
+case 42:
+m.capabilities[i] = 42;
+break;
+case "RICH_RESPONSE_UR_INLINE_REELS_ENABLED":
+case 43:
+m.capabilities[i] = 43;
+break;
+case "RICH_RESPONSE_UR_MEDIA_GRID_ENABLED":
+case 44:
+m.capabilities[i] = 44;
+break;
+case "RICH_RESPONSE_UR_TIMESTAMP_PLACEHOLDER":
+case 45:
+m.capabilities[i] = 45;
+break;
+case "RICH_RESPONSE_IN_APP_SURVEY":
+case 46:
+m.capabilities[i] = 46;
+break;
+case "AI_RESPONSE_MODEL_BRANDING":
+case 47:
+m.capabilities[i] = 47;
+break;
+case "SESSION_TRANSPARENCY_SYSTEM_MESSAGE":
+case 48:
+m.capabilities[i] = 48;
+break;
+case "RICH_RESPONSE_UR_REASONING":
+case 49:
+m.capabilities[i] = 49;
+break;
+case "RICH_RESPONSE_UR_ZEITGEIST_CITATIONS":
+case 50:
+m.capabilities[i] = 50;
+break;
+case "RICH_RESPONSE_UR_ZEITGEIST_CAROUSEL":
+case 51:
+m.capabilities[i] = 51;
+break;
+case "AI_IMAGINE_LOADING_INDICATOR":
+case 52:
+m.capabilities[i] = 52;
+break;
+case "RICH_RESPONSE_UR_IMAGINE":
+case 53:
+m.capabilities[i] = 53;
+break;
+case "AI_IMAGINE_UR_TO_NATIVE_LOADING_INDICATOR":
+case 54:
+m.capabilities[i] = 54;
+break;
+case "RICH_RESPONSE_UR_BLOKS_ENABLED":
+case 55:
+m.capabilities[i] = 55;
+break;
+case "RICH_RESPONSE_INLINE_LINKS_ENABLED":
+case 56:
+m.capabilities[i] = 56;
+break;
+case "RICH_RESPONSE_UR_IMAGINE_VIDEO":
+case 57:
+m.capabilities[i] = 57;
+break;
+case "JSON_PATCH_STREAMING":
+case 58:
+m.capabilities[i] = 58;
+break;
+case "AI_TAB_FORCE_CLIPPY":
+case 59:
+m.capabilities[i] = 59;
+break;
+case "UNIFIED_RESPONSE_EMBEDDED_SCREENS":
+case 60:
+m.capabilities[i] = 60;
+break;
+case "AI_SUBSCRIPTION_ENABLED":
+case 61:
+m.capabilities[i] = 61;
+break;
+case "UNIFIED_RESPONSE_AI_CONTENT_SEARCH_ENABLED":
+case 62:
+m.capabilities[i] = 62;
+break;
+case "UNIFIED_RESPONSE_MARKDOWN_LINKS_ENABLED":
+case 63:
+m.capabilities[i] = 63;
+break;
+case "AI_RICH_RESPONSE_MAPS_V2_ENABLED":
+case 64:
+m.capabilities[i] = 64;
+break;
+case "AI_SUBSCRIPTION_METERING_ENABLED":
+case 65:
+m.capabilities[i] = 65;
+break;
+}
+}
+}
+return m;
+};
+BotCapabilityMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.capabilities = [];
+}
+if (m.capabilities && m.capabilities.length) {
+d.capabilities = [];
+for (var j = 0; j < m.capabilities.length; ++j) {
+d.capabilities[j] = o.enums === String ? $root.proto.BotCapabilityMetadata.BotCapabilityType[m.capabilities[j]] === undefined ? m.capabilities[j] : $root.proto.BotCapabilityMetadata.BotCapabilityType[m.capabilities[j]] : m.capabilities[j];
+}
+}
+return d;
+};
+BotCapabilityMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotCapabilityMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotCapabilityMetadata";
+};
+$lazy(BotCapabilityMetadata, "BotCapabilityType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN"] = 0;
+values[valuesById[1] = "PROGRESS_INDICATOR"] = 1;
+values[valuesById[2] = "RICH_RESPONSE_HEADING"] = 2;
+values[valuesById[3] = "RICH_RESPONSE_NESTED_LIST"] = 3;
+values[valuesById[4] = "AI_MEMORY"] = 4;
+values[valuesById[5] = "RICH_RESPONSE_THREAD_SURFING"] = 5;
+values[valuesById[6] = "RICH_RESPONSE_TABLE"] = 6;
+values[valuesById[7] = "RICH_RESPONSE_CODE"] = 7;
+values[valuesById[8] = "RICH_RESPONSE_STRUCTURED_RESPONSE"] = 8;
+values[valuesById[9] = "RICH_RESPONSE_INLINE_IMAGE"] = 9;
+values[valuesById[10] = "WA_IG_1P_PLUGIN_RANKING_CONTROL"] = 10;
+values[valuesById[11] = "WA_IG_1P_PLUGIN_RANKING_UPDATE_1"] = 11;
+values[valuesById[12] = "WA_IG_1P_PLUGIN_RANKING_UPDATE_2"] = 12;
+values[valuesById[13] = "WA_IG_1P_PLUGIN_RANKING_UPDATE_3"] = 13;
+values[valuesById[14] = "WA_IG_1P_PLUGIN_RANKING_UPDATE_4"] = 14;
+values[valuesById[15] = "WA_IG_1P_PLUGIN_RANKING_UPDATE_5"] = 15;
+values[valuesById[16] = "WA_IG_1P_PLUGIN_RANKING_UPDATE_6"] = 16;
+values[valuesById[17] = "WA_IG_1P_PLUGIN_RANKING_UPDATE_7"] = 17;
+values[valuesById[18] = "WA_IG_1P_PLUGIN_RANKING_UPDATE_8"] = 18;
+values[valuesById[19] = "WA_IG_1P_PLUGIN_RANKING_UPDATE_9"] = 19;
+values[valuesById[20] = "WA_IG_1P_PLUGIN_RANKING_UPDATE_10"] = 20;
+values[valuesById[21] = "RICH_RESPONSE_SUB_HEADING"] = 21;
+values[valuesById[22] = "RICH_RESPONSE_GRID_IMAGE"] = 22;
+values[valuesById[23] = "AI_STUDIO_UGC_MEMORY"] = 23;
+values[valuesById[24] = "RICH_RESPONSE_LATEX"] = 24;
+values[valuesById[25] = "RICH_RESPONSE_MAPS"] = 25;
+values[valuesById[26] = "RICH_RESPONSE_INLINE_REELS"] = 26;
+values[valuesById[27] = "AGENTIC_PLANNING"] = 27;
+values[valuesById[28] = "ACCOUNT_LINKING"] = 28;
+values[valuesById[29] = "STREAMING_DISAGGREGATION"] = 29;
+values[valuesById[30] = "RICH_RESPONSE_GRID_IMAGE_3P"] = 30;
+values[valuesById[31] = "RICH_RESPONSE_LATEX_INLINE"] = 31;
+values[valuesById[32] = "QUERY_PLAN"] = 32;
+values[valuesById[33] = "PROACTIVE_MESSAGE"] = 33;
+values[valuesById[34] = "RICH_RESPONSE_UNIFIED_RESPONSE"] = 34;
+values[valuesById[35] = "PROMOTION_MESSAGE"] = 35;
+values[valuesById[36] = "SIMPLIFIED_PROFILE_PAGE"] = 36;
+values[valuesById[37] = "RICH_RESPONSE_SOURCES_IN_MESSAGE"] = 37;
+values[valuesById[38] = "RICH_RESPONSE_SIDE_BY_SIDE_SURVEY"] = 38;
+values[valuesById[39] = "RICH_RESPONSE_UNIFIED_TEXT_COMPONENT"] = 39;
+values[valuesById[40] = "AI_SHARED_MEMORY"] = 40;
+values[valuesById[41] = "RICH_RESPONSE_UNIFIED_SOURCES"] = 41;
+values[valuesById[42] = "RICH_RESPONSE_UNIFIED_DOMAIN_CITATIONS"] = 42;
+values[valuesById[43] = "RICH_RESPONSE_UR_INLINE_REELS_ENABLED"] = 43;
+values[valuesById[44] = "RICH_RESPONSE_UR_MEDIA_GRID_ENABLED"] = 44;
+values[valuesById[45] = "RICH_RESPONSE_UR_TIMESTAMP_PLACEHOLDER"] = 45;
+values[valuesById[46] = "RICH_RESPONSE_IN_APP_SURVEY"] = 46;
+values[valuesById[47] = "AI_RESPONSE_MODEL_BRANDING"] = 47;
+values[valuesById[48] = "SESSION_TRANSPARENCY_SYSTEM_MESSAGE"] = 48;
+values[valuesById[49] = "RICH_RESPONSE_UR_REASONING"] = 49;
+values[valuesById[50] = "RICH_RESPONSE_UR_ZEITGEIST_CITATIONS"] = 50;
+values[valuesById[51] = "RICH_RESPONSE_UR_ZEITGEIST_CAROUSEL"] = 51;
+values[valuesById[52] = "AI_IMAGINE_LOADING_INDICATOR"] = 52;
+values[valuesById[53] = "RICH_RESPONSE_UR_IMAGINE"] = 53;
+values[valuesById[54] = "AI_IMAGINE_UR_TO_NATIVE_LOADING_INDICATOR"] = 54;
+values[valuesById[55] = "RICH_RESPONSE_UR_BLOKS_ENABLED"] = 55;
+values[valuesById[56] = "RICH_RESPONSE_INLINE_LINKS_ENABLED"] = 56;
+values[valuesById[57] = "RICH_RESPONSE_UR_IMAGINE_VIDEO"] = 57;
+values[valuesById[58] = "JSON_PATCH_STREAMING"] = 58;
+values[valuesById[59] = "AI_TAB_FORCE_CLIPPY"] = 59;
+values[valuesById[60] = "UNIFIED_RESPONSE_EMBEDDED_SCREENS"] = 60;
+values[valuesById[61] = "AI_SUBSCRIPTION_ENABLED"] = 61;
+values[valuesById[62] = "UNIFIED_RESPONSE_AI_CONTENT_SEARCH_ENABLED"] = 62;
+values[valuesById[63] = "UNIFIED_RESPONSE_MARKDOWN_LINKS_ENABLED"] = 63;
+values[valuesById[64] = "AI_RICH_RESPONSE_MAPS_V2_ENABLED"] = 64;
+values[valuesById[65] = "AI_SUBSCRIPTION_METERING_ENABLED"] = 65;
+return values;
+});
+return BotCapabilityMetadata;

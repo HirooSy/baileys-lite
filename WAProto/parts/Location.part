@@ -1,0 +1,119 @@
+"use strict";
+function Location(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+Location.prototype.degreesLatitude = null;
+Location.prototype.degreesLongitude = null;
+Location.prototype.name = null;
+let $oneOfFields;
+Object.defineProperty(Location.prototype, "_degreesLatitude", {
+get: $util.oneOfGetter($oneOfFields = ["degreesLatitude"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Location.prototype, "_degreesLongitude", {
+get: $util.oneOfGetter($oneOfFields = ["degreesLongitude"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Location.prototype, "_name", {
+get: $util.oneOfGetter($oneOfFields = ["name"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Location.create = function create(properties) {
+return new Location(properties);
+};
+Location.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.degreesLatitude != null && Object.hasOwnProperty.call(m, "degreesLatitude"))
+w.uint32(9).double(m.degreesLatitude);
+if (m.degreesLongitude != null && Object.hasOwnProperty.call(m, "degreesLongitude"))
+w.uint32(17).double(m.degreesLongitude);
+if (m.name != null && Object.hasOwnProperty.call(m, "name"))
+w.uint32(26).string(m.name);
+return w;
+};
+Location.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.Location();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.degreesLatitude = r.double();
+break;
+}
+case 2: {
+m.degreesLongitude = r.double();
+break;
+}
+case 3: {
+m.name = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+Location.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.Location)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.Location();
+if (d.degreesLatitude != null) {
+m.degreesLatitude = Number(d.degreesLatitude);
+}
+if (d.degreesLongitude != null) {
+m.degreesLongitude = Number(d.degreesLongitude);
+}
+if (d.name != null) {
+m.name = String(d.name);
+}
+return m;
+};
+Location.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.degreesLatitude != null && m.hasOwnProperty("degreesLatitude")) {
+d.degreesLatitude = o.json && !isFinite(m.degreesLatitude) ? String(m.degreesLatitude) : m.degreesLatitude;
+if (o.oneofs)
+d._degreesLatitude = "degreesLatitude";
+}
+if (m.degreesLongitude != null && m.hasOwnProperty("degreesLongitude")) {
+d.degreesLongitude = o.json && !isFinite(m.degreesLongitude) ? String(m.degreesLongitude) : m.degreesLongitude;
+if (o.oneofs)
+d._degreesLongitude = "degreesLongitude";
+}
+if (m.name != null && m.hasOwnProperty("name")) {
+d.name = m.name;
+if (o.oneofs)
+d._name = "name";
+}
+return d;
+};
+Location.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+Location.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.Location";
+};
+return Location;

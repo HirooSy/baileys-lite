@@ -1,0 +1,227 @@
+"use strict";
+function CompanionEphemeralIdentity(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+CompanionEphemeralIdentity.prototype.publicKey = null;
+CompanionEphemeralIdentity.prototype.deviceType = null;
+CompanionEphemeralIdentity.prototype.ref = null;
+let $oneOfFields;
+Object.defineProperty(CompanionEphemeralIdentity.prototype, "_publicKey", {
+get: $util.oneOfGetter($oneOfFields = ["publicKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CompanionEphemeralIdentity.prototype, "_deviceType", {
+get: $util.oneOfGetter($oneOfFields = ["deviceType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CompanionEphemeralIdentity.prototype, "_ref", {
+get: $util.oneOfGetter($oneOfFields = ["ref"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+CompanionEphemeralIdentity.create = function create(properties) {
+return new CompanionEphemeralIdentity(properties);
+};
+CompanionEphemeralIdentity.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.publicKey != null && Object.hasOwnProperty.call(m, "publicKey"))
+w.uint32(10).bytes(m.publicKey);
+if (m.deviceType != null && Object.hasOwnProperty.call(m, "deviceType"))
+w.uint32(16).int32(m.deviceType);
+if (m.ref != null && Object.hasOwnProperty.call(m, "ref"))
+w.uint32(26).string(m.ref);
+return w;
+};
+CompanionEphemeralIdentity.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.CompanionEphemeralIdentity();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.publicKey = r.bytes();
+break;
+}
+case 2: {
+m.deviceType = r.int32();
+break;
+}
+case 3: {
+m.ref = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+CompanionEphemeralIdentity.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.CompanionEphemeralIdentity)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.CompanionEphemeralIdentity();
+if (d.publicKey != null) {
+if (typeof d.publicKey === "string")
+$util.base64.decode(d.publicKey, m.publicKey = $util.newBuffer($util.base64.length(d.publicKey)), 0);
+else if (d.publicKey.length >= 0)
+m.publicKey = d.publicKey;
+}
+switch (d.deviceType) {
+default:
+if (typeof d.deviceType === "number") {
+m.deviceType = d.deviceType;
+break;
+}
+break;
+case "UNKNOWN":
+case 0:
+m.deviceType = 0;
+break;
+case "CHROME":
+case 1:
+m.deviceType = 1;
+break;
+case "FIREFOX":
+case 2:
+m.deviceType = 2;
+break;
+case "IE":
+case 3:
+m.deviceType = 3;
+break;
+case "OPERA":
+case 4:
+m.deviceType = 4;
+break;
+case "SAFARI":
+case 5:
+m.deviceType = 5;
+break;
+case "EDGE":
+case 6:
+m.deviceType = 6;
+break;
+case "DESKTOP":
+case 7:
+m.deviceType = 7;
+break;
+case "IPAD":
+case 8:
+m.deviceType = 8;
+break;
+case "ANDROID_TABLET":
+case 9:
+m.deviceType = 9;
+break;
+case "OHANA":
+case 10:
+m.deviceType = 10;
+break;
+case "ALOHA":
+case 11:
+m.deviceType = 11;
+break;
+case "CATALINA":
+case 12:
+m.deviceType = 12;
+break;
+case "TCL_TV":
+case 13:
+m.deviceType = 13;
+break;
+case "IOS_PHONE":
+case 14:
+m.deviceType = 14;
+break;
+case "IOS_CATALYST":
+case 15:
+m.deviceType = 15;
+break;
+case "ANDROID_PHONE":
+case 16:
+m.deviceType = 16;
+break;
+case "ANDROID_AMBIGUOUS":
+case 17:
+m.deviceType = 17;
+break;
+case "WEAR_OS":
+case 18:
+m.deviceType = 18;
+break;
+case "AR_WRIST":
+case 19:
+m.deviceType = 19;
+break;
+case "AR_DEVICE":
+case 20:
+m.deviceType = 20;
+break;
+case "UWP":
+case 21:
+m.deviceType = 21;
+break;
+case "VR":
+case 22:
+m.deviceType = 22;
+break;
+case "CLOUD_API":
+case 23:
+m.deviceType = 23;
+break;
+case "SMARTGLASSES":
+case 24:
+m.deviceType = 24;
+break;
+}
+if (d.ref != null) {
+m.ref = String(d.ref);
+}
+return m;
+};
+CompanionEphemeralIdentity.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.publicKey != null && m.hasOwnProperty("publicKey")) {
+d.publicKey = o.bytes === String ? $util.base64.encode(m.publicKey, 0, m.publicKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.publicKey) : m.publicKey;
+if (o.oneofs)
+d._publicKey = "publicKey";
+}
+if (m.deviceType != null && m.hasOwnProperty("deviceType")) {
+d.deviceType = o.enums === String ? $root.proto.DeviceProps.PlatformType[m.deviceType] === undefined ? m.deviceType : $root.proto.DeviceProps.PlatformType[m.deviceType] : m.deviceType;
+if (o.oneofs)
+d._deviceType = "deviceType";
+}
+if (m.ref != null && m.hasOwnProperty("ref")) {
+d.ref = m.ref;
+if (o.oneofs)
+d._ref = "ref";
+}
+return d;
+};
+CompanionEphemeralIdentity.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+CompanionEphemeralIdentity.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.CompanionEphemeralIdentity";
+};
+return CompanionEphemeralIdentity;

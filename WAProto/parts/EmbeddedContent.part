@@ -1,0 +1,100 @@
+"use strict";
+function EmbeddedContent(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+EmbeddedContent.prototype.embeddedMessage = null;
+EmbeddedContent.prototype.embeddedMusic = null;
+let $oneOfFields;
+Object.defineProperty(EmbeddedContent.prototype, "content", {
+get: $util.oneOfGetter($oneOfFields = ["embeddedMessage", "embeddedMusic"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+EmbeddedContent.create = function create(properties) {
+return new EmbeddedContent(properties);
+};
+EmbeddedContent.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.embeddedMessage != null && Object.hasOwnProperty.call(m, "embeddedMessage"))
+$root.proto.EmbeddedMessage.encode(m.embeddedMessage, w.uint32(10).fork()).ldelim();
+if (m.embeddedMusic != null && Object.hasOwnProperty.call(m, "embeddedMusic"))
+$root.proto.EmbeddedMusic.encode(m.embeddedMusic, w.uint32(18).fork()).ldelim();
+return w;
+};
+EmbeddedContent.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.EmbeddedContent();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.embeddedMessage = $root.proto.EmbeddedMessage.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.embeddedMusic = $root.proto.EmbeddedMusic.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+EmbeddedContent.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.EmbeddedContent)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.EmbeddedContent();
+if (d.embeddedMessage != null) {
+if (typeof d.embeddedMessage !== "object")
+throw TypeError(".proto.EmbeddedContent.embeddedMessage: object expected");
+m.embeddedMessage = $root.proto.EmbeddedMessage.fromObject(d.embeddedMessage, n + 1);
+}
+if (d.embeddedMusic != null) {
+if (typeof d.embeddedMusic !== "object")
+throw TypeError(".proto.EmbeddedContent.embeddedMusic: object expected");
+m.embeddedMusic = $root.proto.EmbeddedMusic.fromObject(d.embeddedMusic, n + 1);
+}
+return m;
+};
+EmbeddedContent.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.embeddedMessage != null && m.hasOwnProperty("embeddedMessage")) {
+d.embeddedMessage = $root.proto.EmbeddedMessage.toObject(m.embeddedMessage, o);
+if (o.oneofs)
+d.content = "embeddedMessage";
+}
+if (m.embeddedMusic != null && m.hasOwnProperty("embeddedMusic")) {
+d.embeddedMusic = $root.proto.EmbeddedMusic.toObject(m.embeddedMusic, o);
+if (o.oneofs)
+d.content = "embeddedMusic";
+}
+return d;
+};
+EmbeddedContent.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+EmbeddedContent.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.EmbeddedContent";
+};
+return EmbeddedContent;

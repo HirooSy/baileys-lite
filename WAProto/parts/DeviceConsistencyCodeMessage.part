@@ -1,0 +1,103 @@
+"use strict";
+function DeviceConsistencyCodeMessage(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+DeviceConsistencyCodeMessage.prototype.generation = null;
+DeviceConsistencyCodeMessage.prototype.signature = null;
+let $oneOfFields;
+Object.defineProperty(DeviceConsistencyCodeMessage.prototype, "_generation", {
+get: $util.oneOfGetter($oneOfFields = ["generation"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DeviceConsistencyCodeMessage.prototype, "_signature", {
+get: $util.oneOfGetter($oneOfFields = ["signature"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+DeviceConsistencyCodeMessage.create = function create(properties) {
+return new DeviceConsistencyCodeMessage(properties);
+};
+DeviceConsistencyCodeMessage.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.generation != null && Object.hasOwnProperty.call(m, "generation"))
+w.uint32(8).uint32(m.generation);
+if (m.signature != null && Object.hasOwnProperty.call(m, "signature"))
+w.uint32(18).bytes(m.signature);
+return w;
+};
+DeviceConsistencyCodeMessage.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.DeviceConsistencyCodeMessage();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.generation = r.uint32();
+break;
+}
+case 2: {
+m.signature = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+DeviceConsistencyCodeMessage.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.DeviceConsistencyCodeMessage)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.DeviceConsistencyCodeMessage();
+if (d.generation != null) {
+m.generation = d.generation >>> 0;
+}
+if (d.signature != null) {
+if (typeof d.signature === "string")
+$util.base64.decode(d.signature, m.signature = $util.newBuffer($util.base64.length(d.signature)), 0);
+else if (d.signature.length >= 0)
+m.signature = d.signature;
+}
+return m;
+};
+DeviceConsistencyCodeMessage.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.generation != null && m.hasOwnProperty("generation")) {
+d.generation = m.generation;
+if (o.oneofs)
+d._generation = "generation";
+}
+if (m.signature != null && m.hasOwnProperty("signature")) {
+d.signature = o.bytes === String ? $util.base64.encode(m.signature, 0, m.signature.length) : o.bytes === Array ? Array.prototype.slice.call(m.signature) : m.signature;
+if (o.oneofs)
+d._signature = "signature";
+}
+return d;
+};
+DeviceConsistencyCodeMessage.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+DeviceConsistencyCodeMessage.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.DeviceConsistencyCodeMessage";
+};
+return DeviceConsistencyCodeMessage;

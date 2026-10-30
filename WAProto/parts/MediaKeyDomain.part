@@ -1,0 +1,6 @@
+"use strict";
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "MEDIA_KEY_DOMAIN_UNKNOWN"] = 0;
+values[valuesById[1] = "MEDIA_KEY_DOMAIN_E2EE"] = 1;
+values[valuesById[2] = "MEDIA_KEY_DOMAIN_NON_E2EE"] = 2;
+return values;

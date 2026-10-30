@@ -1,0 +1,100 @@
+"use strict";
+function BotResolvedToolCallMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotResolvedToolCallMetadata.prototype.toolCallId = null;
+BotResolvedToolCallMetadata.prototype.resolutionDataSerialized = null;
+let $oneOfFields;
+Object.defineProperty(BotResolvedToolCallMetadata.prototype, "_toolCallId", {
+get: $util.oneOfGetter($oneOfFields = ["toolCallId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotResolvedToolCallMetadata.prototype, "_resolutionDataSerialized", {
+get: $util.oneOfGetter($oneOfFields = ["resolutionDataSerialized"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotResolvedToolCallMetadata.create = function create(properties) {
+return new BotResolvedToolCallMetadata(properties);
+};
+BotResolvedToolCallMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.toolCallId != null && Object.hasOwnProperty.call(m, "toolCallId"))
+w.uint32(10).string(m.toolCallId);
+if (m.resolutionDataSerialized != null && Object.hasOwnProperty.call(m, "resolutionDataSerialized"))
+w.uint32(18).string(m.resolutionDataSerialized);
+return w;
+};
+BotResolvedToolCallMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotResolvedToolCallMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.toolCallId = r.string();
+break;
+}
+case 2: {
+m.resolutionDataSerialized = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotResolvedToolCallMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotResolvedToolCallMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotResolvedToolCallMetadata();
+if (d.toolCallId != null) {
+m.toolCallId = String(d.toolCallId);
+}
+if (d.resolutionDataSerialized != null) {
+m.resolutionDataSerialized = String(d.resolutionDataSerialized);
+}
+return m;
+};
+BotResolvedToolCallMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.toolCallId != null && m.hasOwnProperty("toolCallId")) {
+d.toolCallId = m.toolCallId;
+if (o.oneofs)
+d._toolCallId = "toolCallId";
+}
+if (m.resolutionDataSerialized != null && m.hasOwnProperty("resolutionDataSerialized")) {
+d.resolutionDataSerialized = m.resolutionDataSerialized;
+if (o.oneofs)
+d._resolutionDataSerialized = "resolutionDataSerialized";
+}
+return d;
+};
+BotResolvedToolCallMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotResolvedToolCallMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotResolvedToolCallMetadata";
+};
+return BotResolvedToolCallMetadata;

@@ -1,0 +1,148 @@
+"use strict";
+function PastParticipant(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+PastParticipant.prototype.userJid = null;
+PastParticipant.prototype.leaveReason = null;
+PastParticipant.prototype.leaveTs = null;
+let $oneOfFields;
+Object.defineProperty(PastParticipant.prototype, "_userJid", {
+get: $util.oneOfGetter($oneOfFields = ["userJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PastParticipant.prototype, "_leaveReason", {
+get: $util.oneOfGetter($oneOfFields = ["leaveReason"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PastParticipant.prototype, "_leaveTs", {
+get: $util.oneOfGetter($oneOfFields = ["leaveTs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+PastParticipant.create = function create(properties) {
+return new PastParticipant(properties);
+};
+PastParticipant.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.userJid != null && Object.hasOwnProperty.call(m, "userJid"))
+w.uint32(10).string(m.userJid);
+if (m.leaveReason != null && Object.hasOwnProperty.call(m, "leaveReason"))
+w.uint32(16).int32(m.leaveReason);
+if (m.leaveTs != null && Object.hasOwnProperty.call(m, "leaveTs"))
+w.uint32(24).uint64(m.leaveTs);
+return w;
+};
+PastParticipant.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.PastParticipant();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.userJid = r.string();
+break;
+}
+case 2: {
+m.leaveReason = r.int32();
+break;
+}
+case 3: {
+m.leaveTs = r.uint64();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+PastParticipant.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.PastParticipant)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.PastParticipant();
+if (d.userJid != null) {
+m.userJid = String(d.userJid);
+}
+switch (d.leaveReason) {
+default:
+if (typeof d.leaveReason === "number") {
+m.leaveReason = d.leaveReason;
+break;
+}
+break;
+case "LEFT":
+case 0:
+m.leaveReason = 0;
+break;
+case "REMOVED":
+case 1:
+m.leaveReason = 1;
+break;
+}
+if (d.leaveTs != null) {
+if ($util.Long)
+(m.leaveTs = $util.Long.fromValue(d.leaveTs)).unsigned = true;
+else if (typeof d.leaveTs === "string")
+m.leaveTs = parseInt(d.leaveTs, 10);
+else if (typeof d.leaveTs === "number")
+m.leaveTs = d.leaveTs;
+else if (typeof d.leaveTs === "object")
+m.leaveTs = new $util.LongBits(d.leaveTs.low >>> 0, d.leaveTs.high >>> 0).toNumber(true);
+}
+return m;
+};
+PastParticipant.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.userJid != null && m.hasOwnProperty("userJid")) {
+d.userJid = m.userJid;
+if (o.oneofs)
+d._userJid = "userJid";
+}
+if (m.leaveReason != null && m.hasOwnProperty("leaveReason")) {
+d.leaveReason = o.enums === String ? $root.proto.PastParticipant.LeaveReason[m.leaveReason] === undefined ? m.leaveReason : $root.proto.PastParticipant.LeaveReason[m.leaveReason] : m.leaveReason;
+if (o.oneofs)
+d._leaveReason = "leaveReason";
+}
+if (m.leaveTs != null && m.hasOwnProperty("leaveTs")) {
+if (typeof m.leaveTs === "number")
+d.leaveTs = o.longs === String ? String(m.leaveTs) : m.leaveTs;
+else
+d.leaveTs = o.longs === String ? longToString(m.leaveTs, true) : o.longs === Number ? longToNumber(m.leaveTs, true) : m.leaveTs;
+if (o.oneofs)
+d._leaveTs = "leaveTs";
+}
+return d;
+};
+PastParticipant.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+PastParticipant.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.PastParticipant";
+};
+$lazy(PastParticipant, "LeaveReason", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "LEFT"] = 0;
+values[valuesById[1] = "REMOVED"] = 1;
+return values;
+});
+return PastParticipant;

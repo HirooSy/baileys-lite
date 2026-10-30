@@ -1,0 +1,110 @@
+"use strict";
+function ExitCode(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ExitCode.prototype.code = null;
+ExitCode.prototype.text = null;
+let $oneOfFields;
+Object.defineProperty(ExitCode.prototype, "_code", {
+get: $util.oneOfGetter($oneOfFields = ["code"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExitCode.prototype, "_text", {
+get: $util.oneOfGetter($oneOfFields = ["text"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ExitCode.create = function create(properties) {
+return new ExitCode(properties);
+};
+ExitCode.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.code != null && Object.hasOwnProperty.call(m, "code"))
+w.uint32(8).uint64(m.code);
+if (m.text != null && Object.hasOwnProperty.call(m, "text"))
+w.uint32(18).string(m.text);
+return w;
+};
+ExitCode.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ExitCode();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.code = r.uint64();
+break;
+}
+case 2: {
+m.text = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ExitCode.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ExitCode)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ExitCode();
+if (d.code != null) {
+if ($util.Long)
+(m.code = $util.Long.fromValue(d.code)).unsigned = true;
+else if (typeof d.code === "string")
+m.code = parseInt(d.code, 10);
+else if (typeof d.code === "number")
+m.code = d.code;
+else if (typeof d.code === "object")
+m.code = new $util.LongBits(d.code.low >>> 0, d.code.high >>> 0).toNumber(true);
+}
+if (d.text != null) {
+m.text = String(d.text);
+}
+return m;
+};
+ExitCode.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.code != null && m.hasOwnProperty("code")) {
+if (typeof m.code === "number")
+d.code = o.longs === String ? String(m.code) : m.code;
+else
+d.code = o.longs === String ? longToString(m.code, true) : o.longs === Number ? longToNumber(m.code, true) : m.code;
+if (o.oneofs)
+d._code = "code";
+}
+if (m.text != null && m.hasOwnProperty("text")) {
+d.text = m.text;
+if (o.oneofs)
+d._text = "text";
+}
+return d;
+};
+ExitCode.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ExitCode.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ExitCode";
+};
+return ExitCode;

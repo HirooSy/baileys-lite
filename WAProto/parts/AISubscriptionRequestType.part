@@ -1,0 +1,7 @@
+"use strict";
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNSPECIFIED"] = 0;
+values[valuesById[1] = "THINK_HARD"] = 1;
+values[valuesById[2] = "IMAGE_GEN"] = 2;
+values[valuesById[3] = "VIDEO_GEN"] = 3;
+return values;

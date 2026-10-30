@@ -1,0 +1,100 @@
+"use strict";
+function BotMemoryFact(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotMemoryFact.prototype.fact = null;
+BotMemoryFact.prototype.factId = null;
+let $oneOfFields;
+Object.defineProperty(BotMemoryFact.prototype, "_fact", {
+get: $util.oneOfGetter($oneOfFields = ["fact"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMemoryFact.prototype, "_factId", {
+get: $util.oneOfGetter($oneOfFields = ["factId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotMemoryFact.create = function create(properties) {
+return new BotMemoryFact(properties);
+};
+BotMemoryFact.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.fact != null && Object.hasOwnProperty.call(m, "fact"))
+w.uint32(10).string(m.fact);
+if (m.factId != null && Object.hasOwnProperty.call(m, "factId"))
+w.uint32(18).string(m.factId);
+return w;
+};
+BotMemoryFact.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotMemoryFact();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.fact = r.string();
+break;
+}
+case 2: {
+m.factId = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotMemoryFact.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotMemoryFact)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotMemoryFact();
+if (d.fact != null) {
+m.fact = String(d.fact);
+}
+if (d.factId != null) {
+m.factId = String(d.factId);
+}
+return m;
+};
+BotMemoryFact.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.fact != null && m.hasOwnProperty("fact")) {
+d.fact = m.fact;
+if (o.oneofs)
+d._fact = "fact";
+}
+if (m.factId != null && m.hasOwnProperty("factId")) {
+d.factId = m.factId;
+if (o.oneofs)
+d._factId = "factId";
+}
+return d;
+};
+BotMemoryFact.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotMemoryFact.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotMemoryFact";
+};
+return BotMemoryFact;

@@ -1,0 +1,193 @@
+"use strict";
+function Field(p) {
+this.subfield = {};
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+Field.prototype.minVersion = null;
+Field.prototype.maxVersion = null;
+Field.prototype.notReportableMinVersion = null;
+Field.prototype.isMessage = null;
+Field.prototype.subfield = $util.emptyObject;
+let $oneOfFields;
+Object.defineProperty(Field.prototype, "_minVersion", {
+get: $util.oneOfGetter($oneOfFields = ["minVersion"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Field.prototype, "_maxVersion", {
+get: $util.oneOfGetter($oneOfFields = ["maxVersion"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Field.prototype, "_notReportableMinVersion", {
+get: $util.oneOfGetter($oneOfFields = ["notReportableMinVersion"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Field.prototype, "_isMessage", {
+get: $util.oneOfGetter($oneOfFields = ["isMessage"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Field.create = function create(properties) {
+return new Field(properties);
+};
+Field.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.minVersion != null && Object.hasOwnProperty.call(m, "minVersion"))
+w.uint32(8).uint32(m.minVersion);
+if (m.maxVersion != null && Object.hasOwnProperty.call(m, "maxVersion"))
+w.uint32(16).uint32(m.maxVersion);
+if (m.notReportableMinVersion != null && Object.hasOwnProperty.call(m, "notReportableMinVersion"))
+w.uint32(24).uint32(m.notReportableMinVersion);
+if (m.isMessage != null && Object.hasOwnProperty.call(m, "isMessage"))
+w.uint32(32).bool(m.isMessage);
+if (m.subfield != null && Object.hasOwnProperty.call(m, "subfield")) {
+for (var ks = Object.keys(m.subfield), i = 0; i < ks.length; ++i) {
+w.uint32(42).fork().uint32(8).uint32(ks[i]);
+$root.proto.Field.encode(m.subfield[ks[i]], w.uint32(18).fork()).ldelim().ldelim();
+}
+}
+return w;
+};
+Field.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.Field(), k, value;
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.minVersion = r.uint32();
+break;
+}
+case 2: {
+m.maxVersion = r.uint32();
+break;
+}
+case 3: {
+m.notReportableMinVersion = r.uint32();
+break;
+}
+case 4: {
+m.isMessage = r.bool();
+break;
+}
+case 5: {
+if (m.subfield === $util.emptyObject)
+m.subfield = {};
+var c2 = r.uint32() + r.pos;
+k = 0;
+value = null;
+while (r.pos < c2) {
+var tag2 = r.uint32();
+switch (tag2 >>> 3) {
+case 1:
+k = r.uint32();
+break;
+case 2:
+value = $root.proto.Field.decode(r, r.uint32(), undefined, n + 1);
+break;
+default:
+r.skipType(tag2 & 7, n);
+break;
+}
+}
+m.subfield[k] = value;
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+Field.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.Field)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.Field();
+if (d.minVersion != null) {
+m.minVersion = d.minVersion >>> 0;
+}
+if (d.maxVersion != null) {
+m.maxVersion = d.maxVersion >>> 0;
+}
+if (d.notReportableMinVersion != null) {
+m.notReportableMinVersion = d.notReportableMinVersion >>> 0;
+}
+if (d.isMessage != null) {
+m.isMessage = Boolean(d.isMessage);
+}
+if (d.subfield) {
+if (typeof d.subfield !== "object")
+throw TypeError(".proto.Field.subfield: object expected");
+m.subfield = {};
+for (var ks = Object.keys(d.subfield), i = 0; i < ks.length; ++i) {
+if (ks[i] === "__proto__")
+$util.makeProp(m.subfield, ks[i]);
+if (typeof d.subfield[ks[i]] !== "object")
+throw TypeError(".proto.Field.subfield: object expected");
+m.subfield[ks[i]] = $root.proto.Field.fromObject(d.subfield[ks[i]], n + 1);
+}
+}
+return m;
+};
+Field.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.objects || o.defaults) {
+d.subfield = {};
+}
+if (m.minVersion != null && m.hasOwnProperty("minVersion")) {
+d.minVersion = m.minVersion;
+if (o.oneofs)
+d._minVersion = "minVersion";
+}
+if (m.maxVersion != null && m.hasOwnProperty("maxVersion")) {
+d.maxVersion = m.maxVersion;
+if (o.oneofs)
+d._maxVersion = "maxVersion";
+}
+if (m.notReportableMinVersion != null && m.hasOwnProperty("notReportableMinVersion")) {
+d.notReportableMinVersion = m.notReportableMinVersion;
+if (o.oneofs)
+d._notReportableMinVersion = "notReportableMinVersion";
+}
+if (m.isMessage != null && m.hasOwnProperty("isMessage")) {
+d.isMessage = m.isMessage;
+if (o.oneofs)
+d._isMessage = "isMessage";
+}
+var ks2;
+if (m.subfield && (ks2 = Object.keys(m.subfield)).length) {
+d.subfield = {};
+for (var j = 0; j < ks2.length; ++j) {
+if (ks2[j] === "__proto__")
+$util.makeProp(d.subfield, ks2[j]);
+d.subfield[ks2[j]] = $root.proto.Field.toObject(m.subfield[ks2[j]], o);
+}
+}
+return d;
+};
+Field.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+Field.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.Field";
+};
+return Field;

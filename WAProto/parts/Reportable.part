@@ -1,0 +1,138 @@
+"use strict";
+function Reportable(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+Reportable.prototype.minVersion = null;
+Reportable.prototype.maxVersion = null;
+Reportable.prototype.notReportableMinVersion = null;
+Reportable.prototype.never = null;
+let $oneOfFields;
+Object.defineProperty(Reportable.prototype, "_minVersion", {
+get: $util.oneOfGetter($oneOfFields = ["minVersion"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Reportable.prototype, "_maxVersion", {
+get: $util.oneOfGetter($oneOfFields = ["maxVersion"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Reportable.prototype, "_notReportableMinVersion", {
+get: $util.oneOfGetter($oneOfFields = ["notReportableMinVersion"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Reportable.prototype, "_never", {
+get: $util.oneOfGetter($oneOfFields = ["never"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Reportable.create = function create(properties) {
+return new Reportable(properties);
+};
+Reportable.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.minVersion != null && Object.hasOwnProperty.call(m, "minVersion"))
+w.uint32(8).uint32(m.minVersion);
+if (m.maxVersion != null && Object.hasOwnProperty.call(m, "maxVersion"))
+w.uint32(16).uint32(m.maxVersion);
+if (m.notReportableMinVersion != null && Object.hasOwnProperty.call(m, "notReportableMinVersion"))
+w.uint32(24).uint32(m.notReportableMinVersion);
+if (m.never != null && Object.hasOwnProperty.call(m, "never"))
+w.uint32(32).bool(m.never);
+return w;
+};
+Reportable.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.Reportable();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.minVersion = r.uint32();
+break;
+}
+case 2: {
+m.maxVersion = r.uint32();
+break;
+}
+case 3: {
+m.notReportableMinVersion = r.uint32();
+break;
+}
+case 4: {
+m.never = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+Reportable.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.Reportable)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.Reportable();
+if (d.minVersion != null) {
+m.minVersion = d.minVersion >>> 0;
+}
+if (d.maxVersion != null) {
+m.maxVersion = d.maxVersion >>> 0;
+}
+if (d.notReportableMinVersion != null) {
+m.notReportableMinVersion = d.notReportableMinVersion >>> 0;
+}
+if (d.never != null) {
+m.never = Boolean(d.never);
+}
+return m;
+};
+Reportable.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.minVersion != null && m.hasOwnProperty("minVersion")) {
+d.minVersion = m.minVersion;
+if (o.oneofs)
+d._minVersion = "minVersion";
+}
+if (m.maxVersion != null && m.hasOwnProperty("maxVersion")) {
+d.maxVersion = m.maxVersion;
+if (o.oneofs)
+d._maxVersion = "maxVersion";
+}
+if (m.notReportableMinVersion != null && m.hasOwnProperty("notReportableMinVersion")) {
+d.notReportableMinVersion = m.notReportableMinVersion;
+if (o.oneofs)
+d._notReportableMinVersion = "notReportableMinVersion";
+}
+if (m.never != null && m.hasOwnProperty("never")) {
+d.never = m.never;
+if (o.oneofs)
+d._never = "never";
+}
+return d;
+};
+Reportable.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+Reportable.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.Reportable";
+};
+return Reportable;

@@ -1,0 +1,469 @@
+"use strict";
+function SenderKeyStateStructure(p) {
+this.senderMessageKeys = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SenderKeyStateStructure.prototype.senderKeyId = null;
+SenderKeyStateStructure.prototype.senderChainKey = null;
+SenderKeyStateStructure.prototype.senderSigningKey = null;
+SenderKeyStateStructure.prototype.senderMessageKeys = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(SenderKeyStateStructure.prototype, "_senderKeyId", {
+get: $util.oneOfGetter($oneOfFields = ["senderKeyId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SenderKeyStateStructure.prototype, "_senderChainKey", {
+get: $util.oneOfGetter($oneOfFields = ["senderChainKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SenderKeyStateStructure.prototype, "_senderSigningKey", {
+get: $util.oneOfGetter($oneOfFields = ["senderSigningKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SenderKeyStateStructure.create = function create(properties) {
+return new SenderKeyStateStructure(properties);
+};
+SenderKeyStateStructure.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.senderKeyId != null && Object.hasOwnProperty.call(m, "senderKeyId"))
+w.uint32(8).uint32(m.senderKeyId);
+if (m.senderChainKey != null && Object.hasOwnProperty.call(m, "senderChainKey"))
+$root.proto.SenderKeyStateStructure.SenderChainKey.encode(m.senderChainKey, w.uint32(18).fork()).ldelim();
+if (m.senderSigningKey != null && Object.hasOwnProperty.call(m, "senderSigningKey"))
+$root.proto.SenderKeyStateStructure.SenderSigningKey.encode(m.senderSigningKey, w.uint32(26).fork()).ldelim();
+if (m.senderMessageKeys != null && m.senderMessageKeys.length) {
+for (var i = 0; i < m.senderMessageKeys.length; ++i)
+$root.proto.SenderKeyStateStructure.SenderMessageKey.encode(m.senderMessageKeys[i], w.uint32(34).fork()).ldelim();
+}
+return w;
+};
+SenderKeyStateStructure.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.SenderKeyStateStructure();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.senderKeyId = r.uint32();
+break;
+}
+case 2: {
+m.senderChainKey = $root.proto.SenderKeyStateStructure.SenderChainKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 3: {
+m.senderSigningKey = $root.proto.SenderKeyStateStructure.SenderSigningKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 4: {
+if (!(m.senderMessageKeys && m.senderMessageKeys.length))
+m.senderMessageKeys = [];
+m.senderMessageKeys.push($root.proto.SenderKeyStateStructure.SenderMessageKey.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SenderKeyStateStructure.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.SenderKeyStateStructure)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.SenderKeyStateStructure();
+if (d.senderKeyId != null) {
+m.senderKeyId = d.senderKeyId >>> 0;
+}
+if (d.senderChainKey != null) {
+if (typeof d.senderChainKey !== "object")
+throw TypeError(".proto.SenderKeyStateStructure.senderChainKey: object expected");
+m.senderChainKey = $root.proto.SenderKeyStateStructure.SenderChainKey.fromObject(d.senderChainKey, n + 1);
+}
+if (d.senderSigningKey != null) {
+if (typeof d.senderSigningKey !== "object")
+throw TypeError(".proto.SenderKeyStateStructure.senderSigningKey: object expected");
+m.senderSigningKey = $root.proto.SenderKeyStateStructure.SenderSigningKey.fromObject(d.senderSigningKey, n + 1);
+}
+if (d.senderMessageKeys) {
+if (!Array.isArray(d.senderMessageKeys))
+throw TypeError(".proto.SenderKeyStateStructure.senderMessageKeys: array expected");
+m.senderMessageKeys = [];
+for (var i = 0; i < d.senderMessageKeys.length; ++i) {
+if (typeof d.senderMessageKeys[i] !== "object")
+throw TypeError(".proto.SenderKeyStateStructure.senderMessageKeys: object expected");
+m.senderMessageKeys[i] = $root.proto.SenderKeyStateStructure.SenderMessageKey.fromObject(d.senderMessageKeys[i], n + 1);
+}
+}
+return m;
+};
+SenderKeyStateStructure.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.senderMessageKeys = [];
+}
+if (m.senderKeyId != null && m.hasOwnProperty("senderKeyId")) {
+d.senderKeyId = m.senderKeyId;
+if (o.oneofs)
+d._senderKeyId = "senderKeyId";
+}
+if (m.senderChainKey != null && m.hasOwnProperty("senderChainKey")) {
+d.senderChainKey = $root.proto.SenderKeyStateStructure.SenderChainKey.toObject(m.senderChainKey, o);
+if (o.oneofs)
+d._senderChainKey = "senderChainKey";
+}
+if (m.senderSigningKey != null && m.hasOwnProperty("senderSigningKey")) {
+d.senderSigningKey = $root.proto.SenderKeyStateStructure.SenderSigningKey.toObject(m.senderSigningKey, o);
+if (o.oneofs)
+d._senderSigningKey = "senderSigningKey";
+}
+if (m.senderMessageKeys && m.senderMessageKeys.length) {
+d.senderMessageKeys = [];
+for (var j = 0; j < m.senderMessageKeys.length; ++j) {
+d.senderMessageKeys[j] = $root.proto.SenderKeyStateStructure.SenderMessageKey.toObject(m.senderMessageKeys[j], o);
+}
+}
+return d;
+};
+SenderKeyStateStructure.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SenderKeyStateStructure.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.SenderKeyStateStructure";
+};
+$lazy(SenderKeyStateStructure, "SenderChainKey", function() {
+function SenderChainKey(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SenderChainKey.prototype.iteration = null;
+SenderChainKey.prototype.seed = null;
+let $oneOfFields;
+Object.defineProperty(SenderChainKey.prototype, "_iteration", {
+get: $util.oneOfGetter($oneOfFields = ["iteration"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SenderChainKey.prototype, "_seed", {
+get: $util.oneOfGetter($oneOfFields = ["seed"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SenderChainKey.create = function create(properties) {
+return new SenderChainKey(properties);
+};
+SenderChainKey.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.iteration != null && Object.hasOwnProperty.call(m, "iteration"))
+w.uint32(8).uint32(m.iteration);
+if (m.seed != null && Object.hasOwnProperty.call(m, "seed"))
+w.uint32(18).bytes(m.seed);
+return w;
+};
+SenderChainKey.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.SenderKeyStateStructure.SenderChainKey();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.iteration = r.uint32();
+break;
+}
+case 2: {
+m.seed = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SenderChainKey.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.SenderKeyStateStructure.SenderChainKey)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.SenderKeyStateStructure.SenderChainKey();
+if (d.iteration != null) {
+m.iteration = d.iteration >>> 0;
+}
+if (d.seed != null) {
+if (typeof d.seed === "string")
+$util.base64.decode(d.seed, m.seed = $util.newBuffer($util.base64.length(d.seed)), 0);
+else if (d.seed.length >= 0)
+m.seed = d.seed;
+}
+return m;
+};
+SenderChainKey.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.iteration != null && m.hasOwnProperty("iteration")) {
+d.iteration = m.iteration;
+if (o.oneofs)
+d._iteration = "iteration";
+}
+if (m.seed != null && m.hasOwnProperty("seed")) {
+d.seed = o.bytes === String ? $util.base64.encode(m.seed, 0, m.seed.length) : o.bytes === Array ? Array.prototype.slice.call(m.seed) : m.seed;
+if (o.oneofs)
+d._seed = "seed";
+}
+return d;
+};
+SenderChainKey.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SenderChainKey.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.SenderKeyStateStructure.SenderChainKey";
+};
+return SenderChainKey;
+});
+$lazy(SenderKeyStateStructure, "SenderMessageKey", function() {
+function SenderMessageKey(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SenderMessageKey.prototype.iteration = null;
+SenderMessageKey.prototype.seed = null;
+let $oneOfFields;
+Object.defineProperty(SenderMessageKey.prototype, "_iteration", {
+get: $util.oneOfGetter($oneOfFields = ["iteration"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SenderMessageKey.prototype, "_seed", {
+get: $util.oneOfGetter($oneOfFields = ["seed"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SenderMessageKey.create = function create(properties) {
+return new SenderMessageKey(properties);
+};
+SenderMessageKey.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.iteration != null && Object.hasOwnProperty.call(m, "iteration"))
+w.uint32(8).uint32(m.iteration);
+if (m.seed != null && Object.hasOwnProperty.call(m, "seed"))
+w.uint32(18).bytes(m.seed);
+return w;
+};
+SenderMessageKey.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.SenderKeyStateStructure.SenderMessageKey();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.iteration = r.uint32();
+break;
+}
+case 2: {
+m.seed = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SenderMessageKey.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.SenderKeyStateStructure.SenderMessageKey)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.SenderKeyStateStructure.SenderMessageKey();
+if (d.iteration != null) {
+m.iteration = d.iteration >>> 0;
+}
+if (d.seed != null) {
+if (typeof d.seed === "string")
+$util.base64.decode(d.seed, m.seed = $util.newBuffer($util.base64.length(d.seed)), 0);
+else if (d.seed.length >= 0)
+m.seed = d.seed;
+}
+return m;
+};
+SenderMessageKey.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.iteration != null && m.hasOwnProperty("iteration")) {
+d.iteration = m.iteration;
+if (o.oneofs)
+d._iteration = "iteration";
+}
+if (m.seed != null && m.hasOwnProperty("seed")) {
+d.seed = o.bytes === String ? $util.base64.encode(m.seed, 0, m.seed.length) : o.bytes === Array ? Array.prototype.slice.call(m.seed) : m.seed;
+if (o.oneofs)
+d._seed = "seed";
+}
+return d;
+};
+SenderMessageKey.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SenderMessageKey.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.SenderKeyStateStructure.SenderMessageKey";
+};
+return SenderMessageKey;
+});
+$lazy(SenderKeyStateStructure, "SenderSigningKey", function() {
+function SenderSigningKey(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SenderSigningKey.prototype["public"] = null;
+SenderSigningKey.prototype["private"] = null;
+let $oneOfFields;
+Object.defineProperty(SenderSigningKey.prototype, "_public", {
+get: $util.oneOfGetter($oneOfFields = ["public"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SenderSigningKey.prototype, "_private", {
+get: $util.oneOfGetter($oneOfFields = ["private"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SenderSigningKey.create = function create(properties) {
+return new SenderSigningKey(properties);
+};
+SenderSigningKey.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m["public"] != null && Object.hasOwnProperty.call(m, "public"))
+w.uint32(10).bytes(m["public"]);
+if (m["private"] != null && Object.hasOwnProperty.call(m, "private"))
+w.uint32(18).bytes(m["private"]);
+return w;
+};
+SenderSigningKey.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.SenderKeyStateStructure.SenderSigningKey();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m["public"] = r.bytes();
+break;
+}
+case 2: {
+m["private"] = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SenderSigningKey.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.SenderKeyStateStructure.SenderSigningKey)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.SenderKeyStateStructure.SenderSigningKey();
+if (d["public"] != null) {
+if (typeof d["public"] === "string")
+$util.base64.decode(d["public"], m["public"] = $util.newBuffer($util.base64.length(d["public"])), 0);
+else if (d["public"].length >= 0)
+m["public"] = d["public"];
+}
+if (d["private"] != null) {
+if (typeof d["private"] === "string")
+$util.base64.decode(d["private"], m["private"] = $util.newBuffer($util.base64.length(d["private"])), 0);
+else if (d["private"].length >= 0)
+m["private"] = d["private"];
+}
+return m;
+};
+SenderSigningKey.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m["public"] != null && m.hasOwnProperty("public")) {
+d["public"] = o.bytes === String ? $util.base64.encode(m["public"], 0, m["public"].length) : o.bytes === Array ? Array.prototype.slice.call(m["public"]) : m["public"];
+if (o.oneofs)
+d._public = "public";
+}
+if (m["private"] != null && m.hasOwnProperty("private")) {
+d["private"] = o.bytes === String ? $util.base64.encode(m["private"], 0, m["private"].length) : o.bytes === Array ? Array.prototype.slice.call(m["private"]) : m["private"];
+if (o.oneofs)
+d._private = "private";
+}
+return d;
+};
+SenderSigningKey.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SenderSigningKey.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.SenderKeyStateStructure.SenderSigningKey";
+};
+return SenderSigningKey;
+});
+return SenderKeyStateStructure;

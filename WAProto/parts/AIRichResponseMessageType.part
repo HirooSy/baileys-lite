@@ -1,0 +1,5 @@
+"use strict";
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "AI_RICH_RESPONSE_TYPE_UNKNOWN"] = 0;
+values[valuesById[1] = "AI_RICH_RESPONSE_TYPE_STANDARD"] = 1;
+return values;

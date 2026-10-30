@@ -1,0 +1,134 @@
+"use strict";
+function BotLinkedAccountsMetadata(p) {
+this.accounts = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotLinkedAccountsMetadata.prototype.accounts = $util.emptyArray;
+BotLinkedAccountsMetadata.prototype.acAuthTokens = null;
+BotLinkedAccountsMetadata.prototype.acErrorCode = null;
+let $oneOfFields;
+Object.defineProperty(BotLinkedAccountsMetadata.prototype, "_acAuthTokens", {
+get: $util.oneOfGetter($oneOfFields = ["acAuthTokens"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotLinkedAccountsMetadata.prototype, "_acErrorCode", {
+get: $util.oneOfGetter($oneOfFields = ["acErrorCode"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotLinkedAccountsMetadata.create = function create(properties) {
+return new BotLinkedAccountsMetadata(properties);
+};
+BotLinkedAccountsMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.accounts != null && m.accounts.length) {
+for (var i = 0; i < m.accounts.length; ++i)
+$root.proto.BotLinkedAccount.encode(m.accounts[i], w.uint32(10).fork()).ldelim();
+}
+if (m.acAuthTokens != null && Object.hasOwnProperty.call(m, "acAuthTokens"))
+w.uint32(18).bytes(m.acAuthTokens);
+if (m.acErrorCode != null && Object.hasOwnProperty.call(m, "acErrorCode"))
+w.uint32(24).int32(m.acErrorCode);
+return w;
+};
+BotLinkedAccountsMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotLinkedAccountsMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+if (!(m.accounts && m.accounts.length))
+m.accounts = [];
+m.accounts.push($root.proto.BotLinkedAccount.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 2: {
+m.acAuthTokens = r.bytes();
+break;
+}
+case 3: {
+m.acErrorCode = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotLinkedAccountsMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotLinkedAccountsMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotLinkedAccountsMetadata();
+if (d.accounts) {
+if (!Array.isArray(d.accounts))
+throw TypeError(".proto.BotLinkedAccountsMetadata.accounts: array expected");
+m.accounts = [];
+for (var i = 0; i < d.accounts.length; ++i) {
+if (typeof d.accounts[i] !== "object")
+throw TypeError(".proto.BotLinkedAccountsMetadata.accounts: object expected");
+m.accounts[i] = $root.proto.BotLinkedAccount.fromObject(d.accounts[i], n + 1);
+}
+}
+if (d.acAuthTokens != null) {
+if (typeof d.acAuthTokens === "string")
+$util.base64.decode(d.acAuthTokens, m.acAuthTokens = $util.newBuffer($util.base64.length(d.acAuthTokens)), 0);
+else if (d.acAuthTokens.length >= 0)
+m.acAuthTokens = d.acAuthTokens;
+}
+if (d.acErrorCode != null) {
+m.acErrorCode = d.acErrorCode | 0;
+}
+return m;
+};
+BotLinkedAccountsMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.accounts = [];
+}
+if (m.accounts && m.accounts.length) {
+d.accounts = [];
+for (var j = 0; j < m.accounts.length; ++j) {
+d.accounts[j] = $root.proto.BotLinkedAccount.toObject(m.accounts[j], o);
+}
+}
+if (m.acAuthTokens != null && m.hasOwnProperty("acAuthTokens")) {
+d.acAuthTokens = o.bytes === String ? $util.base64.encode(m.acAuthTokens, 0, m.acAuthTokens.length) : o.bytes === Array ? Array.prototype.slice.call(m.acAuthTokens) : m.acAuthTokens;
+if (o.oneofs)
+d._acAuthTokens = "acAuthTokens";
+}
+if (m.acErrorCode != null && m.hasOwnProperty("acErrorCode")) {
+d.acErrorCode = m.acErrorCode;
+if (o.oneofs)
+d._acErrorCode = "acErrorCode";
+}
+return d;
+};
+BotLinkedAccountsMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotLinkedAccountsMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotLinkedAccountsMetadata";
+};
+return BotLinkedAccountsMetadata;

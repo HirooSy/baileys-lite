@@ -1,0 +1,346 @@
+"use strict";
+function AIRichResponseLatexMetadata(p) {
+this.expressions = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIRichResponseLatexMetadata.prototype.text = null;
+AIRichResponseLatexMetadata.prototype.expressions = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(AIRichResponseLatexMetadata.prototype, "_text", {
+get: $util.oneOfGetter($oneOfFields = ["text"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIRichResponseLatexMetadata.create = function create(properties) {
+return new AIRichResponseLatexMetadata(properties);
+};
+AIRichResponseLatexMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.text != null && Object.hasOwnProperty.call(m, "text"))
+w.uint32(10).string(m.text);
+if (m.expressions != null && m.expressions.length) {
+for (var i = 0; i < m.expressions.length; ++i)
+$root.proto.AIRichResponseLatexMetadata.AIRichResponseLatexExpression.encode(m.expressions[i], w.uint32(18).fork()).ldelim();
+}
+return w;
+};
+AIRichResponseLatexMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIRichResponseLatexMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.text = r.string();
+break;
+}
+case 2: {
+if (!(m.expressions && m.expressions.length))
+m.expressions = [];
+m.expressions.push($root.proto.AIRichResponseLatexMetadata.AIRichResponseLatexExpression.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIRichResponseLatexMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIRichResponseLatexMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIRichResponseLatexMetadata();
+if (d.text != null) {
+m.text = String(d.text);
+}
+if (d.expressions) {
+if (!Array.isArray(d.expressions))
+throw TypeError(".proto.AIRichResponseLatexMetadata.expressions: array expected");
+m.expressions = [];
+for (var i = 0; i < d.expressions.length; ++i) {
+if (typeof d.expressions[i] !== "object")
+throw TypeError(".proto.AIRichResponseLatexMetadata.expressions: object expected");
+m.expressions[i] = $root.proto.AIRichResponseLatexMetadata.AIRichResponseLatexExpression.fromObject(d.expressions[i], n + 1);
+}
+}
+return m;
+};
+AIRichResponseLatexMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.expressions = [];
+}
+if (m.text != null && m.hasOwnProperty("text")) {
+d.text = m.text;
+if (o.oneofs)
+d._text = "text";
+}
+if (m.expressions && m.expressions.length) {
+d.expressions = [];
+for (var j = 0; j < m.expressions.length; ++j) {
+d.expressions[j] = $root.proto.AIRichResponseLatexMetadata.AIRichResponseLatexExpression.toObject(m.expressions[j], o);
+}
+}
+return d;
+};
+AIRichResponseLatexMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIRichResponseLatexMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIRichResponseLatexMetadata";
+};
+$lazy(AIRichResponseLatexMetadata, "AIRichResponseLatexExpression", function() {
+function AIRichResponseLatexExpression(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIRichResponseLatexExpression.prototype.latexExpression = null;
+AIRichResponseLatexExpression.prototype.url = null;
+AIRichResponseLatexExpression.prototype.width = null;
+AIRichResponseLatexExpression.prototype.height = null;
+AIRichResponseLatexExpression.prototype.fontHeight = null;
+AIRichResponseLatexExpression.prototype.imageTopPadding = null;
+AIRichResponseLatexExpression.prototype.imageLeadingPadding = null;
+AIRichResponseLatexExpression.prototype.imageBottomPadding = null;
+AIRichResponseLatexExpression.prototype.imageTrailingPadding = null;
+let $oneOfFields;
+Object.defineProperty(AIRichResponseLatexExpression.prototype, "_latexExpression", {
+get: $util.oneOfGetter($oneOfFields = ["latexExpression"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseLatexExpression.prototype, "_url", {
+get: $util.oneOfGetter($oneOfFields = ["url"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseLatexExpression.prototype, "_width", {
+get: $util.oneOfGetter($oneOfFields = ["width"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseLatexExpression.prototype, "_height", {
+get: $util.oneOfGetter($oneOfFields = ["height"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseLatexExpression.prototype, "_fontHeight", {
+get: $util.oneOfGetter($oneOfFields = ["fontHeight"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseLatexExpression.prototype, "_imageTopPadding", {
+get: $util.oneOfGetter($oneOfFields = ["imageTopPadding"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseLatexExpression.prototype, "_imageLeadingPadding", {
+get: $util.oneOfGetter($oneOfFields = ["imageLeadingPadding"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseLatexExpression.prototype, "_imageBottomPadding", {
+get: $util.oneOfGetter($oneOfFields = ["imageBottomPadding"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseLatexExpression.prototype, "_imageTrailingPadding", {
+get: $util.oneOfGetter($oneOfFields = ["imageTrailingPadding"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIRichResponseLatexExpression.create = function create(properties) {
+return new AIRichResponseLatexExpression(properties);
+};
+AIRichResponseLatexExpression.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.latexExpression != null && Object.hasOwnProperty.call(m, "latexExpression"))
+w.uint32(10).string(m.latexExpression);
+if (m.url != null && Object.hasOwnProperty.call(m, "url"))
+w.uint32(18).string(m.url);
+if (m.width != null && Object.hasOwnProperty.call(m, "width"))
+w.uint32(25).double(m.width);
+if (m.height != null && Object.hasOwnProperty.call(m, "height"))
+w.uint32(33).double(m.height);
+if (m.fontHeight != null && Object.hasOwnProperty.call(m, "fontHeight"))
+w.uint32(41).double(m.fontHeight);
+if (m.imageTopPadding != null && Object.hasOwnProperty.call(m, "imageTopPadding"))
+w.uint32(49).double(m.imageTopPadding);
+if (m.imageLeadingPadding != null && Object.hasOwnProperty.call(m, "imageLeadingPadding"))
+w.uint32(57).double(m.imageLeadingPadding);
+if (m.imageBottomPadding != null && Object.hasOwnProperty.call(m, "imageBottomPadding"))
+w.uint32(65).double(m.imageBottomPadding);
+if (m.imageTrailingPadding != null && Object.hasOwnProperty.call(m, "imageTrailingPadding"))
+w.uint32(73).double(m.imageTrailingPadding);
+return w;
+};
+AIRichResponseLatexExpression.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIRichResponseLatexMetadata.AIRichResponseLatexExpression();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.latexExpression = r.string();
+break;
+}
+case 2: {
+m.url = r.string();
+break;
+}
+case 3: {
+m.width = r.double();
+break;
+}
+case 4: {
+m.height = r.double();
+break;
+}
+case 5: {
+m.fontHeight = r.double();
+break;
+}
+case 6: {
+m.imageTopPadding = r.double();
+break;
+}
+case 7: {
+m.imageLeadingPadding = r.double();
+break;
+}
+case 8: {
+m.imageBottomPadding = r.double();
+break;
+}
+case 9: {
+m.imageTrailingPadding = r.double();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIRichResponseLatexExpression.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIRichResponseLatexMetadata.AIRichResponseLatexExpression)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIRichResponseLatexMetadata.AIRichResponseLatexExpression();
+if (d.latexExpression != null) {
+m.latexExpression = String(d.latexExpression);
+}
+if (d.url != null) {
+m.url = String(d.url);
+}
+if (d.width != null) {
+m.width = Number(d.width);
+}
+if (d.height != null) {
+m.height = Number(d.height);
+}
+if (d.fontHeight != null) {
+m.fontHeight = Number(d.fontHeight);
+}
+if (d.imageTopPadding != null) {
+m.imageTopPadding = Number(d.imageTopPadding);
+}
+if (d.imageLeadingPadding != null) {
+m.imageLeadingPadding = Number(d.imageLeadingPadding);
+}
+if (d.imageBottomPadding != null) {
+m.imageBottomPadding = Number(d.imageBottomPadding);
+}
+if (d.imageTrailingPadding != null) {
+m.imageTrailingPadding = Number(d.imageTrailingPadding);
+}
+return m;
+};
+AIRichResponseLatexExpression.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.latexExpression != null && m.hasOwnProperty("latexExpression")) {
+d.latexExpression = m.latexExpression;
+if (o.oneofs)
+d._latexExpression = "latexExpression";
+}
+if (m.url != null && m.hasOwnProperty("url")) {
+d.url = m.url;
+if (o.oneofs)
+d._url = "url";
+}
+if (m.width != null && m.hasOwnProperty("width")) {
+d.width = o.json && !isFinite(m.width) ? String(m.width) : m.width;
+if (o.oneofs)
+d._width = "width";
+}
+if (m.height != null && m.hasOwnProperty("height")) {
+d.height = o.json && !isFinite(m.height) ? String(m.height) : m.height;
+if (o.oneofs)
+d._height = "height";
+}
+if (m.fontHeight != null && m.hasOwnProperty("fontHeight")) {
+d.fontHeight = o.json && !isFinite(m.fontHeight) ? String(m.fontHeight) : m.fontHeight;
+if (o.oneofs)
+d._fontHeight = "fontHeight";
+}
+if (m.imageTopPadding != null && m.hasOwnProperty("imageTopPadding")) {
+d.imageTopPadding = o.json && !isFinite(m.imageTopPadding) ? String(m.imageTopPadding) : m.imageTopPadding;
+if (o.oneofs)
+d._imageTopPadding = "imageTopPadding";
+}
+if (m.imageLeadingPadding != null && m.hasOwnProperty("imageLeadingPadding")) {
+d.imageLeadingPadding = o.json && !isFinite(m.imageLeadingPadding) ? String(m.imageLeadingPadding) : m.imageLeadingPadding;
+if (o.oneofs)
+d._imageLeadingPadding = "imageLeadingPadding";
+}
+if (m.imageBottomPadding != null && m.hasOwnProperty("imageBottomPadding")) {
+d.imageBottomPadding = o.json && !isFinite(m.imageBottomPadding) ? String(m.imageBottomPadding) : m.imageBottomPadding;
+if (o.oneofs)
+d._imageBottomPadding = "imageBottomPadding";
+}
+if (m.imageTrailingPadding != null && m.hasOwnProperty("imageTrailingPadding")) {
+d.imageTrailingPadding = o.json && !isFinite(m.imageTrailingPadding) ? String(m.imageTrailingPadding) : m.imageTrailingPadding;
+if (o.oneofs)
+d._imageTrailingPadding = "imageTrailingPadding";
+}
+return d;
+};
+AIRichResponseLatexExpression.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIRichResponseLatexExpression.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIRichResponseLatexMetadata.AIRichResponseLatexExpression";
+};
+return AIRichResponseLatexExpression;
+});
+return AIRichResponseLatexMetadata;

@@ -1,0 +1,81 @@
+"use strict";
+function ServerErrorReceipt(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ServerErrorReceipt.prototype.stanzaId = null;
+let $oneOfFields;
+Object.defineProperty(ServerErrorReceipt.prototype, "_stanzaId", {
+get: $util.oneOfGetter($oneOfFields = ["stanzaId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ServerErrorReceipt.create = function create(properties) {
+return new ServerErrorReceipt(properties);
+};
+ServerErrorReceipt.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.stanzaId != null && Object.hasOwnProperty.call(m, "stanzaId"))
+w.uint32(10).string(m.stanzaId);
+return w;
+};
+ServerErrorReceipt.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ServerErrorReceipt();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.stanzaId = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ServerErrorReceipt.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ServerErrorReceipt)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ServerErrorReceipt();
+if (d.stanzaId != null) {
+m.stanzaId = String(d.stanzaId);
+}
+return m;
+};
+ServerErrorReceipt.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.stanzaId != null && m.hasOwnProperty("stanzaId")) {
+d.stanzaId = m.stanzaId;
+if (o.oneofs)
+d._stanzaId = "stanzaId";
+}
+return d;
+};
+ServerErrorReceipt.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ServerErrorReceipt.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ServerErrorReceipt";
+};
+return ServerErrorReceipt;

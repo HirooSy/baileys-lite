@@ -1,0 +1,160 @@
+"use strict";
+function ClientPairingProps(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ClientPairingProps.prototype.isChatDbLidMigrated = null;
+ClientPairingProps.prototype.isSyncdPureLidSession = null;
+ClientPairingProps.prototype.isSyncdSnapshotRecoveryEnabled = null;
+ClientPairingProps.prototype.isHsThumbnailSyncEnabled = null;
+ClientPairingProps.prototype.subscriptionSyncPayload = null;
+let $oneOfFields;
+Object.defineProperty(ClientPairingProps.prototype, "_isChatDbLidMigrated", {
+get: $util.oneOfGetter($oneOfFields = ["isChatDbLidMigrated"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ClientPairingProps.prototype, "_isSyncdPureLidSession", {
+get: $util.oneOfGetter($oneOfFields = ["isSyncdPureLidSession"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ClientPairingProps.prototype, "_isSyncdSnapshotRecoveryEnabled", {
+get: $util.oneOfGetter($oneOfFields = ["isSyncdSnapshotRecoveryEnabled"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ClientPairingProps.prototype, "_isHsThumbnailSyncEnabled", {
+get: $util.oneOfGetter($oneOfFields = ["isHsThumbnailSyncEnabled"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ClientPairingProps.prototype, "_subscriptionSyncPayload", {
+get: $util.oneOfGetter($oneOfFields = ["subscriptionSyncPayload"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ClientPairingProps.create = function create(properties) {
+return new ClientPairingProps(properties);
+};
+ClientPairingProps.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.isChatDbLidMigrated != null && Object.hasOwnProperty.call(m, "isChatDbLidMigrated"))
+w.uint32(8).bool(m.isChatDbLidMigrated);
+if (m.isSyncdPureLidSession != null && Object.hasOwnProperty.call(m, "isSyncdPureLidSession"))
+w.uint32(16).bool(m.isSyncdPureLidSession);
+if (m.isSyncdSnapshotRecoveryEnabled != null && Object.hasOwnProperty.call(m, "isSyncdSnapshotRecoveryEnabled"))
+w.uint32(24).bool(m.isSyncdSnapshotRecoveryEnabled);
+if (m.isHsThumbnailSyncEnabled != null && Object.hasOwnProperty.call(m, "isHsThumbnailSyncEnabled"))
+w.uint32(32).bool(m.isHsThumbnailSyncEnabled);
+if (m.subscriptionSyncPayload != null && Object.hasOwnProperty.call(m, "subscriptionSyncPayload"))
+w.uint32(42).bytes(m.subscriptionSyncPayload);
+return w;
+};
+ClientPairingProps.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ClientPairingProps();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.isChatDbLidMigrated = r.bool();
+break;
+}
+case 2: {
+m.isSyncdPureLidSession = r.bool();
+break;
+}
+case 3: {
+m.isSyncdSnapshotRecoveryEnabled = r.bool();
+break;
+}
+case 4: {
+m.isHsThumbnailSyncEnabled = r.bool();
+break;
+}
+case 5: {
+m.subscriptionSyncPayload = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ClientPairingProps.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ClientPairingProps)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ClientPairingProps();
+if (d.isChatDbLidMigrated != null) {
+m.isChatDbLidMigrated = Boolean(d.isChatDbLidMigrated);
+}
+if (d.isSyncdPureLidSession != null) {
+m.isSyncdPureLidSession = Boolean(d.isSyncdPureLidSession);
+}
+if (d.isSyncdSnapshotRecoveryEnabled != null) {
+m.isSyncdSnapshotRecoveryEnabled = Boolean(d.isSyncdSnapshotRecoveryEnabled);
+}
+if (d.isHsThumbnailSyncEnabled != null) {
+m.isHsThumbnailSyncEnabled = Boolean(d.isHsThumbnailSyncEnabled);
+}
+if (d.subscriptionSyncPayload != null) {
+if (typeof d.subscriptionSyncPayload === "string")
+$util.base64.decode(d.subscriptionSyncPayload, m.subscriptionSyncPayload = $util.newBuffer($util.base64.length(d.subscriptionSyncPayload)), 0);
+else if (d.subscriptionSyncPayload.length >= 0)
+m.subscriptionSyncPayload = d.subscriptionSyncPayload;
+}
+return m;
+};
+ClientPairingProps.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.isChatDbLidMigrated != null && m.hasOwnProperty("isChatDbLidMigrated")) {
+d.isChatDbLidMigrated = m.isChatDbLidMigrated;
+if (o.oneofs)
+d._isChatDbLidMigrated = "isChatDbLidMigrated";
+}
+if (m.isSyncdPureLidSession != null && m.hasOwnProperty("isSyncdPureLidSession")) {
+d.isSyncdPureLidSession = m.isSyncdPureLidSession;
+if (o.oneofs)
+d._isSyncdPureLidSession = "isSyncdPureLidSession";
+}
+if (m.isSyncdSnapshotRecoveryEnabled != null && m.hasOwnProperty("isSyncdSnapshotRecoveryEnabled")) {
+d.isSyncdSnapshotRecoveryEnabled = m.isSyncdSnapshotRecoveryEnabled;
+if (o.oneofs)
+d._isSyncdSnapshotRecoveryEnabled = "isSyncdSnapshotRecoveryEnabled";
+}
+if (m.isHsThumbnailSyncEnabled != null && m.hasOwnProperty("isHsThumbnailSyncEnabled")) {
+d.isHsThumbnailSyncEnabled = m.isHsThumbnailSyncEnabled;
+if (o.oneofs)
+d._isHsThumbnailSyncEnabled = "isHsThumbnailSyncEnabled";
+}
+if (m.subscriptionSyncPayload != null && m.hasOwnProperty("subscriptionSyncPayload")) {
+d.subscriptionSyncPayload = o.bytes === String ? $util.base64.encode(m.subscriptionSyncPayload, 0, m.subscriptionSyncPayload.length) : o.bytes === Array ? Array.prototype.slice.call(m.subscriptionSyncPayload) : m.subscriptionSyncPayload;
+if (o.oneofs)
+d._subscriptionSyncPayload = "subscriptionSyncPayload";
+}
+return d;
+};
+ClientPairingProps.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ClientPairingProps.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ClientPairingProps";
+};
+return ClientPairingProps;

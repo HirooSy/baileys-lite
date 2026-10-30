@@ -1,0 +1,6 @@
+"use strict";
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "DEFAULT"] = 0;
+values[valuesById[1] = "OFF"] = 1;
+values[valuesById[2] = "ON"] = 2;
+return values;

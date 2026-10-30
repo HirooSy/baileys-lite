@@ -1,0 +1,305 @@
+"use strict";
+function MessageAddOn(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+MessageAddOn.prototype.messageAddOnType = null;
+MessageAddOn.prototype.messageAddOn = null;
+MessageAddOn.prototype.senderTimestampMs = null;
+MessageAddOn.prototype.serverTimestampMs = null;
+MessageAddOn.prototype.status = null;
+MessageAddOn.prototype.addOnContextInfo = null;
+MessageAddOn.prototype.messageAddOnKey = null;
+MessageAddOn.prototype.legacyMessage = null;
+let $oneOfFields;
+Object.defineProperty(MessageAddOn.prototype, "_messageAddOnType", {
+get: $util.oneOfGetter($oneOfFields = ["messageAddOnType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageAddOn.prototype, "_messageAddOn", {
+get: $util.oneOfGetter($oneOfFields = ["messageAddOn"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageAddOn.prototype, "_senderTimestampMs", {
+get: $util.oneOfGetter($oneOfFields = ["senderTimestampMs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageAddOn.prototype, "_serverTimestampMs", {
+get: $util.oneOfGetter($oneOfFields = ["serverTimestampMs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageAddOn.prototype, "_status", {
+get: $util.oneOfGetter($oneOfFields = ["status"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageAddOn.prototype, "_addOnContextInfo", {
+get: $util.oneOfGetter($oneOfFields = ["addOnContextInfo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageAddOn.prototype, "_messageAddOnKey", {
+get: $util.oneOfGetter($oneOfFields = ["messageAddOnKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageAddOn.prototype, "_legacyMessage", {
+get: $util.oneOfGetter($oneOfFields = ["legacyMessage"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+MessageAddOn.create = function create(properties) {
+return new MessageAddOn(properties);
+};
+MessageAddOn.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.messageAddOnType != null && Object.hasOwnProperty.call(m, "messageAddOnType"))
+w.uint32(8).int32(m.messageAddOnType);
+if (m.messageAddOn != null && Object.hasOwnProperty.call(m, "messageAddOn"))
+$root.proto.Message.encode(m.messageAddOn, w.uint32(18).fork()).ldelim();
+if (m.senderTimestampMs != null && Object.hasOwnProperty.call(m, "senderTimestampMs"))
+w.uint32(24).int64(m.senderTimestampMs);
+if (m.serverTimestampMs != null && Object.hasOwnProperty.call(m, "serverTimestampMs"))
+w.uint32(32).int64(m.serverTimestampMs);
+if (m.status != null && Object.hasOwnProperty.call(m, "status"))
+w.uint32(40).int32(m.status);
+if (m.addOnContextInfo != null && Object.hasOwnProperty.call(m, "addOnContextInfo"))
+$root.proto.MessageAddOnContextInfo.encode(m.addOnContextInfo, w.uint32(50).fork()).ldelim();
+if (m.messageAddOnKey != null && Object.hasOwnProperty.call(m, "messageAddOnKey"))
+$root.proto.MessageKey.encode(m.messageAddOnKey, w.uint32(58).fork()).ldelim();
+if (m.legacyMessage != null && Object.hasOwnProperty.call(m, "legacyMessage"))
+$root.proto.LegacyMessage.encode(m.legacyMessage, w.uint32(66).fork()).ldelim();
+return w;
+};
+MessageAddOn.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.MessageAddOn();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.messageAddOnType = r.int32();
+break;
+}
+case 2: {
+m.messageAddOn = $root.proto.Message.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 3: {
+m.senderTimestampMs = r.int64();
+break;
+}
+case 4: {
+m.serverTimestampMs = r.int64();
+break;
+}
+case 5: {
+m.status = r.int32();
+break;
+}
+case 6: {
+m.addOnContextInfo = $root.proto.MessageAddOnContextInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 7: {
+m.messageAddOnKey = $root.proto.MessageKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 8: {
+m.legacyMessage = $root.proto.LegacyMessage.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+MessageAddOn.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.MessageAddOn)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.MessageAddOn();
+switch (d.messageAddOnType) {
+default:
+if (typeof d.messageAddOnType === "number") {
+m.messageAddOnType = d.messageAddOnType;
+break;
+}
+break;
+case "UNDEFINED":
+case 0:
+m.messageAddOnType = 0;
+break;
+case "REACTION":
+case 1:
+m.messageAddOnType = 1;
+break;
+case "EVENT_RESPONSE":
+case 2:
+m.messageAddOnType = 2;
+break;
+case "POLL_UPDATE":
+case 3:
+m.messageAddOnType = 3;
+break;
+case "PIN_IN_CHAT":
+case 4:
+m.messageAddOnType = 4;
+break;
+}
+if (d.messageAddOn != null) {
+if (typeof d.messageAddOn !== "object")
+throw TypeError(".proto.MessageAddOn.messageAddOn: object expected");
+m.messageAddOn = $root.proto.Message.fromObject(d.messageAddOn, n + 1);
+}
+if (d.senderTimestampMs != null) {
+if ($util.Long)
+(m.senderTimestampMs = $util.Long.fromValue(d.senderTimestampMs)).unsigned = false;
+else if (typeof d.senderTimestampMs === "string")
+m.senderTimestampMs = parseInt(d.senderTimestampMs, 10);
+else if (typeof d.senderTimestampMs === "number")
+m.senderTimestampMs = d.senderTimestampMs;
+else if (typeof d.senderTimestampMs === "object")
+m.senderTimestampMs = new $util.LongBits(d.senderTimestampMs.low >>> 0, d.senderTimestampMs.high >>> 0).toNumber();
+}
+if (d.serverTimestampMs != null) {
+if ($util.Long)
+(m.serverTimestampMs = $util.Long.fromValue(d.serverTimestampMs)).unsigned = false;
+else if (typeof d.serverTimestampMs === "string")
+m.serverTimestampMs = parseInt(d.serverTimestampMs, 10);
+else if (typeof d.serverTimestampMs === "number")
+m.serverTimestampMs = d.serverTimestampMs;
+else if (typeof d.serverTimestampMs === "object")
+m.serverTimestampMs = new $util.LongBits(d.serverTimestampMs.low >>> 0, d.serverTimestampMs.high >>> 0).toNumber();
+}
+switch (d.status) {
+default:
+if (typeof d.status === "number") {
+m.status = d.status;
+break;
+}
+break;
+case "ERROR":
+case 0:
+m.status = 0;
+break;
+case "PENDING":
+case 1:
+m.status = 1;
+break;
+case "SERVER_ACK":
+case 2:
+m.status = 2;
+break;
+case "DELIVERY_ACK":
+case 3:
+m.status = 3;
+break;
+case "READ":
+case 4:
+m.status = 4;
+break;
+case "PLAYED":
+case 5:
+m.status = 5;
+break;
+}
+if (d.addOnContextInfo != null) {
+if (typeof d.addOnContextInfo !== "object")
+throw TypeError(".proto.MessageAddOn.addOnContextInfo: object expected");
+m.addOnContextInfo = $root.proto.MessageAddOnContextInfo.fromObject(d.addOnContextInfo, n + 1);
+}
+if (d.messageAddOnKey != null) {
+if (typeof d.messageAddOnKey !== "object")
+throw TypeError(".proto.MessageAddOn.messageAddOnKey: object expected");
+m.messageAddOnKey = $root.proto.MessageKey.fromObject(d.messageAddOnKey, n + 1);
+}
+if (d.legacyMessage != null) {
+if (typeof d.legacyMessage !== "object")
+throw TypeError(".proto.MessageAddOn.legacyMessage: object expected");
+m.legacyMessage = $root.proto.LegacyMessage.fromObject(d.legacyMessage, n + 1);
+}
+return m;
+};
+MessageAddOn.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.messageAddOnType != null && m.hasOwnProperty("messageAddOnType")) {
+d.messageAddOnType = o.enums === String ? $root.proto.MessageAddOn.MessageAddOnType[m.messageAddOnType] === undefined ? m.messageAddOnType : $root.proto.MessageAddOn.MessageAddOnType[m.messageAddOnType] : m.messageAddOnType;
+if (o.oneofs)
+d._messageAddOnType = "messageAddOnType";
+}
+if (m.messageAddOn != null && m.hasOwnProperty("messageAddOn")) {
+d.messageAddOn = $root.proto.Message.toObject(m.messageAddOn, o);
+if (o.oneofs)
+d._messageAddOn = "messageAddOn";
+}
+if (m.senderTimestampMs != null && m.hasOwnProperty("senderTimestampMs")) {
+if (typeof m.senderTimestampMs === "number")
+d.senderTimestampMs = o.longs === String ? String(m.senderTimestampMs) : m.senderTimestampMs;
+else
+d.senderTimestampMs = o.longs === String ? longToString(m.senderTimestampMs) : o.longs === Number ? longToNumber(m.senderTimestampMs) : m.senderTimestampMs;
+if (o.oneofs)
+d._senderTimestampMs = "senderTimestampMs";
+}
+if (m.serverTimestampMs != null && m.hasOwnProperty("serverTimestampMs")) {
+if (typeof m.serverTimestampMs === "number")
+d.serverTimestampMs = o.longs === String ? String(m.serverTimestampMs) : m.serverTimestampMs;
+else
+d.serverTimestampMs = o.longs === String ? longToString(m.serverTimestampMs) : o.longs === Number ? longToNumber(m.serverTimestampMs) : m.serverTimestampMs;
+if (o.oneofs)
+d._serverTimestampMs = "serverTimestampMs";
+}
+if (m.status != null && m.hasOwnProperty("status")) {
+d.status = o.enums === String ? $root.proto.WebMessageInfo.Status[m.status] === undefined ? m.status : $root.proto.WebMessageInfo.Status[m.status] : m.status;
+if (o.oneofs)
+d._status = "status";
+}
+if (m.addOnContextInfo != null && m.hasOwnProperty("addOnContextInfo")) {
+d.addOnContextInfo = $root.proto.MessageAddOnContextInfo.toObject(m.addOnContextInfo, o);
+if (o.oneofs)
+d._addOnContextInfo = "addOnContextInfo";
+}
+if (m.messageAddOnKey != null && m.hasOwnProperty("messageAddOnKey")) {
+d.messageAddOnKey = $root.proto.MessageKey.toObject(m.messageAddOnKey, o);
+if (o.oneofs)
+d._messageAddOnKey = "messageAddOnKey";
+}
+if (m.legacyMessage != null && m.hasOwnProperty("legacyMessage")) {
+d.legacyMessage = $root.proto.LegacyMessage.toObject(m.legacyMessage, o);
+if (o.oneofs)
+d._legacyMessage = "legacyMessage";
+}
+return d;
+};
+MessageAddOn.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+MessageAddOn.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.MessageAddOn";
+};
+$lazy(MessageAddOn, "MessageAddOnType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNDEFINED"] = 0;
+values[valuesById[1] = "REACTION"] = 1;
+values[valuesById[2] = "EVENT_RESPONSE"] = 2;
+values[valuesById[3] = "POLL_UPDATE"] = 3;
+values[valuesById[4] = "PIN_IN_CHAT"] = 4;
+return values;
+});
+return MessageAddOn;

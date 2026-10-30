@@ -1,0 +1,169 @@
+"use strict";
+function KeyExchangeMessage(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+KeyExchangeMessage.prototype.id = null;
+KeyExchangeMessage.prototype.baseKey = null;
+KeyExchangeMessage.prototype.ratchetKey = null;
+KeyExchangeMessage.prototype.identityKey = null;
+KeyExchangeMessage.prototype.baseKeySignature = null;
+let $oneOfFields;
+Object.defineProperty(KeyExchangeMessage.prototype, "_id", {
+get: $util.oneOfGetter($oneOfFields = ["id"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(KeyExchangeMessage.prototype, "_baseKey", {
+get: $util.oneOfGetter($oneOfFields = ["baseKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(KeyExchangeMessage.prototype, "_ratchetKey", {
+get: $util.oneOfGetter($oneOfFields = ["ratchetKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(KeyExchangeMessage.prototype, "_identityKey", {
+get: $util.oneOfGetter($oneOfFields = ["identityKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(KeyExchangeMessage.prototype, "_baseKeySignature", {
+get: $util.oneOfGetter($oneOfFields = ["baseKeySignature"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+KeyExchangeMessage.create = function create(properties) {
+return new KeyExchangeMessage(properties);
+};
+KeyExchangeMessage.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.id != null && Object.hasOwnProperty.call(m, "id"))
+w.uint32(8).uint32(m.id);
+if (m.baseKey != null && Object.hasOwnProperty.call(m, "baseKey"))
+w.uint32(18).bytes(m.baseKey);
+if (m.ratchetKey != null && Object.hasOwnProperty.call(m, "ratchetKey"))
+w.uint32(26).bytes(m.ratchetKey);
+if (m.identityKey != null && Object.hasOwnProperty.call(m, "identityKey"))
+w.uint32(34).bytes(m.identityKey);
+if (m.baseKeySignature != null && Object.hasOwnProperty.call(m, "baseKeySignature"))
+w.uint32(42).bytes(m.baseKeySignature);
+return w;
+};
+KeyExchangeMessage.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.KeyExchangeMessage();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.id = r.uint32();
+break;
+}
+case 2: {
+m.baseKey = r.bytes();
+break;
+}
+case 3: {
+m.ratchetKey = r.bytes();
+break;
+}
+case 4: {
+m.identityKey = r.bytes();
+break;
+}
+case 5: {
+m.baseKeySignature = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+KeyExchangeMessage.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.KeyExchangeMessage)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.KeyExchangeMessage();
+if (d.id != null) {
+m.id = d.id >>> 0;
+}
+if (d.baseKey != null) {
+if (typeof d.baseKey === "string")
+$util.base64.decode(d.baseKey, m.baseKey = $util.newBuffer($util.base64.length(d.baseKey)), 0);
+else if (d.baseKey.length >= 0)
+m.baseKey = d.baseKey;
+}
+if (d.ratchetKey != null) {
+if (typeof d.ratchetKey === "string")
+$util.base64.decode(d.ratchetKey, m.ratchetKey = $util.newBuffer($util.base64.length(d.ratchetKey)), 0);
+else if (d.ratchetKey.length >= 0)
+m.ratchetKey = d.ratchetKey;
+}
+if (d.identityKey != null) {
+if (typeof d.identityKey === "string")
+$util.base64.decode(d.identityKey, m.identityKey = $util.newBuffer($util.base64.length(d.identityKey)), 0);
+else if (d.identityKey.length >= 0)
+m.identityKey = d.identityKey;
+}
+if (d.baseKeySignature != null) {
+if (typeof d.baseKeySignature === "string")
+$util.base64.decode(d.baseKeySignature, m.baseKeySignature = $util.newBuffer($util.base64.length(d.baseKeySignature)), 0);
+else if (d.baseKeySignature.length >= 0)
+m.baseKeySignature = d.baseKeySignature;
+}
+return m;
+};
+KeyExchangeMessage.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.id != null && m.hasOwnProperty("id")) {
+d.id = m.id;
+if (o.oneofs)
+d._id = "id";
+}
+if (m.baseKey != null && m.hasOwnProperty("baseKey")) {
+d.baseKey = o.bytes === String ? $util.base64.encode(m.baseKey, 0, m.baseKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.baseKey) : m.baseKey;
+if (o.oneofs)
+d._baseKey = "baseKey";
+}
+if (m.ratchetKey != null && m.hasOwnProperty("ratchetKey")) {
+d.ratchetKey = o.bytes === String ? $util.base64.encode(m.ratchetKey, 0, m.ratchetKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.ratchetKey) : m.ratchetKey;
+if (o.oneofs)
+d._ratchetKey = "ratchetKey";
+}
+if (m.identityKey != null && m.hasOwnProperty("identityKey")) {
+d.identityKey = o.bytes === String ? $util.base64.encode(m.identityKey, 0, m.identityKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.identityKey) : m.identityKey;
+if (o.oneofs)
+d._identityKey = "identityKey";
+}
+if (m.baseKeySignature != null && m.hasOwnProperty("baseKeySignature")) {
+d.baseKeySignature = o.bytes === String ? $util.base64.encode(m.baseKeySignature, 0, m.baseKeySignature.length) : o.bytes === Array ? Array.prototype.slice.call(m.baseKeySignature) : m.baseKeySignature;
+if (o.oneofs)
+d._baseKeySignature = "baseKeySignature";
+}
+return d;
+};
+KeyExchangeMessage.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+KeyExchangeMessage.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.KeyExchangeMessage";
+};
+return KeyExchangeMessage;

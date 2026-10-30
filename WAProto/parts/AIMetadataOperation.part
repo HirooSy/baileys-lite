@@ -1,0 +1,83 @@
+"use strict";
+function AIMetadataOperation(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIMetadataOperation.prototype.hatchMetadataSync = null;
+let $oneOfFields;
+Object.defineProperty(AIMetadataOperation.prototype, "_hatchMetadataSync", {
+get: $util.oneOfGetter($oneOfFields = ["hatchMetadataSync"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIMetadataOperation.create = function create(properties) {
+return new AIMetadataOperation(properties);
+};
+AIMetadataOperation.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.hatchMetadataSync != null && Object.hasOwnProperty.call(m, "hatchMetadataSync"))
+$root.proto.HatchMetadataSync.encode(m.hatchMetadataSync, w.uint32(10).fork()).ldelim();
+return w;
+};
+AIMetadataOperation.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIMetadataOperation();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.hatchMetadataSync = $root.proto.HatchMetadataSync.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIMetadataOperation.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIMetadataOperation)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIMetadataOperation();
+if (d.hatchMetadataSync != null) {
+if (typeof d.hatchMetadataSync !== "object")
+throw TypeError(".proto.AIMetadataOperation.hatchMetadataSync: object expected");
+m.hatchMetadataSync = $root.proto.HatchMetadataSync.fromObject(d.hatchMetadataSync, n + 1);
+}
+return m;
+};
+AIMetadataOperation.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.hatchMetadataSync != null && m.hasOwnProperty("hatchMetadataSync")) {
+d.hatchMetadataSync = $root.proto.HatchMetadataSync.toObject(m.hatchMetadataSync, o);
+if (o.oneofs)
+d._hatchMetadataSync = "hatchMetadataSync";
+}
+return d;
+};
+AIMetadataOperation.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIMetadataOperation.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIMetadataOperation";
+};
+return AIMetadataOperation;

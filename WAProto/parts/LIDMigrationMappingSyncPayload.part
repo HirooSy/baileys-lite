@@ -1,0 +1,122 @@
+"use strict";
+function LIDMigrationMappingSyncPayload(p) {
+this.pnToLidMappings = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+LIDMigrationMappingSyncPayload.prototype.pnToLidMappings = $util.emptyArray;
+LIDMigrationMappingSyncPayload.prototype.chatDbMigrationTimestamp = null;
+let $oneOfFields;
+Object.defineProperty(LIDMigrationMappingSyncPayload.prototype, "_chatDbMigrationTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["chatDbMigrationTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+LIDMigrationMappingSyncPayload.create = function create(properties) {
+return new LIDMigrationMappingSyncPayload(properties);
+};
+LIDMigrationMappingSyncPayload.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.pnToLidMappings != null && m.pnToLidMappings.length) {
+for (var i = 0; i < m.pnToLidMappings.length; ++i)
+$root.proto.LIDMigrationMapping.encode(m.pnToLidMappings[i], w.uint32(10).fork()).ldelim();
+}
+if (m.chatDbMigrationTimestamp != null && Object.hasOwnProperty.call(m, "chatDbMigrationTimestamp"))
+w.uint32(16).uint64(m.chatDbMigrationTimestamp);
+return w;
+};
+LIDMigrationMappingSyncPayload.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.LIDMigrationMappingSyncPayload();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+if (!(m.pnToLidMappings && m.pnToLidMappings.length))
+m.pnToLidMappings = [];
+m.pnToLidMappings.push($root.proto.LIDMigrationMapping.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 2: {
+m.chatDbMigrationTimestamp = r.uint64();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+LIDMigrationMappingSyncPayload.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.LIDMigrationMappingSyncPayload)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.LIDMigrationMappingSyncPayload();
+if (d.pnToLidMappings) {
+if (!Array.isArray(d.pnToLidMappings))
+throw TypeError(".proto.LIDMigrationMappingSyncPayload.pnToLidMappings: array expected");
+m.pnToLidMappings = [];
+for (var i = 0; i < d.pnToLidMappings.length; ++i) {
+if (typeof d.pnToLidMappings[i] !== "object")
+throw TypeError(".proto.LIDMigrationMappingSyncPayload.pnToLidMappings: object expected");
+m.pnToLidMappings[i] = $root.proto.LIDMigrationMapping.fromObject(d.pnToLidMappings[i], n + 1);
+}
+}
+if (d.chatDbMigrationTimestamp != null) {
+if ($util.Long)
+(m.chatDbMigrationTimestamp = $util.Long.fromValue(d.chatDbMigrationTimestamp)).unsigned = true;
+else if (typeof d.chatDbMigrationTimestamp === "string")
+m.chatDbMigrationTimestamp = parseInt(d.chatDbMigrationTimestamp, 10);
+else if (typeof d.chatDbMigrationTimestamp === "number")
+m.chatDbMigrationTimestamp = d.chatDbMigrationTimestamp;
+else if (typeof d.chatDbMigrationTimestamp === "object")
+m.chatDbMigrationTimestamp = new $util.LongBits(d.chatDbMigrationTimestamp.low >>> 0, d.chatDbMigrationTimestamp.high >>> 0).toNumber(true);
+}
+return m;
+};
+LIDMigrationMappingSyncPayload.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.pnToLidMappings = [];
+}
+if (m.pnToLidMappings && m.pnToLidMappings.length) {
+d.pnToLidMappings = [];
+for (var j = 0; j < m.pnToLidMappings.length; ++j) {
+d.pnToLidMappings[j] = $root.proto.LIDMigrationMapping.toObject(m.pnToLidMappings[j], o);
+}
+}
+if (m.chatDbMigrationTimestamp != null && m.hasOwnProperty("chatDbMigrationTimestamp")) {
+if (typeof m.chatDbMigrationTimestamp === "number")
+d.chatDbMigrationTimestamp = o.longs === String ? String(m.chatDbMigrationTimestamp) : m.chatDbMigrationTimestamp;
+else
+d.chatDbMigrationTimestamp = o.longs === String ? longToString(m.chatDbMigrationTimestamp, true) : o.longs === Number ? longToNumber(m.chatDbMigrationTimestamp, true) : m.chatDbMigrationTimestamp;
+if (o.oneofs)
+d._chatDbMigrationTimestamp = "chatDbMigrationTimestamp";
+}
+return d;
+};
+LIDMigrationMappingSyncPayload.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+LIDMigrationMappingSyncPayload.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.LIDMigrationMappingSyncPayload";
+};
+return LIDMigrationMappingSyncPayload;

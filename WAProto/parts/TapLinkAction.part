@@ -1,0 +1,100 @@
+"use strict";
+function TapLinkAction(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+TapLinkAction.prototype.title = null;
+TapLinkAction.prototype.tapUrl = null;
+let $oneOfFields;
+Object.defineProperty(TapLinkAction.prototype, "_title", {
+get: $util.oneOfGetter($oneOfFields = ["title"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(TapLinkAction.prototype, "_tapUrl", {
+get: $util.oneOfGetter($oneOfFields = ["tapUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+TapLinkAction.create = function create(properties) {
+return new TapLinkAction(properties);
+};
+TapLinkAction.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.title != null && Object.hasOwnProperty.call(m, "title"))
+w.uint32(10).string(m.title);
+if (m.tapUrl != null && Object.hasOwnProperty.call(m, "tapUrl"))
+w.uint32(18).string(m.tapUrl);
+return w;
+};
+TapLinkAction.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.TapLinkAction();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.title = r.string();
+break;
+}
+case 2: {
+m.tapUrl = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+TapLinkAction.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.TapLinkAction)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.TapLinkAction();
+if (d.title != null) {
+m.title = String(d.title);
+}
+if (d.tapUrl != null) {
+m.tapUrl = String(d.tapUrl);
+}
+return m;
+};
+TapLinkAction.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.title != null && m.hasOwnProperty("title")) {
+d.title = m.title;
+if (o.oneofs)
+d._title = "title";
+}
+if (m.tapUrl != null && m.hasOwnProperty("tapUrl")) {
+d.tapUrl = m.tapUrl;
+if (o.oneofs)
+d._tapUrl = "tapUrl";
+}
+return d;
+};
+TapLinkAction.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+TapLinkAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.TapLinkAction";
+};
+return TapLinkAction;

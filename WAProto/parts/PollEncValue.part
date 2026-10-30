@@ -1,0 +1,106 @@
+"use strict";
+function PollEncValue(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+PollEncValue.prototype.encPayload = null;
+PollEncValue.prototype.encIv = null;
+let $oneOfFields;
+Object.defineProperty(PollEncValue.prototype, "_encPayload", {
+get: $util.oneOfGetter($oneOfFields = ["encPayload"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PollEncValue.prototype, "_encIv", {
+get: $util.oneOfGetter($oneOfFields = ["encIv"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+PollEncValue.create = function create(properties) {
+return new PollEncValue(properties);
+};
+PollEncValue.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.encPayload != null && Object.hasOwnProperty.call(m, "encPayload"))
+w.uint32(10).bytes(m.encPayload);
+if (m.encIv != null && Object.hasOwnProperty.call(m, "encIv"))
+w.uint32(18).bytes(m.encIv);
+return w;
+};
+PollEncValue.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.PollEncValue();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.encPayload = r.bytes();
+break;
+}
+case 2: {
+m.encIv = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+PollEncValue.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.PollEncValue)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.PollEncValue();
+if (d.encPayload != null) {
+if (typeof d.encPayload === "string")
+$util.base64.decode(d.encPayload, m.encPayload = $util.newBuffer($util.base64.length(d.encPayload)), 0);
+else if (d.encPayload.length >= 0)
+m.encPayload = d.encPayload;
+}
+if (d.encIv != null) {
+if (typeof d.encIv === "string")
+$util.base64.decode(d.encIv, m.encIv = $util.newBuffer($util.base64.length(d.encIv)), 0);
+else if (d.encIv.length >= 0)
+m.encIv = d.encIv;
+}
+return m;
+};
+PollEncValue.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.encPayload != null && m.hasOwnProperty("encPayload")) {
+d.encPayload = o.bytes === String ? $util.base64.encode(m.encPayload, 0, m.encPayload.length) : o.bytes === Array ? Array.prototype.slice.call(m.encPayload) : m.encPayload;
+if (o.oneofs)
+d._encPayload = "encPayload";
+}
+if (m.encIv != null && m.hasOwnProperty("encIv")) {
+d.encIv = o.bytes === String ? $util.base64.encode(m.encIv, 0, m.encIv.length) : o.bytes === Array ? Array.prototype.slice.call(m.encIv) : m.encIv;
+if (o.oneofs)
+d._encIv = "encIv";
+}
+return d;
+};
+PollEncValue.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+PollEncValue.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.PollEncValue";
+};
+return PollEncValue;

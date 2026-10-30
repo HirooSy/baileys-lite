@@ -1,0 +1,137 @@
+"use strict";
+function BotSessionMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotSessionMetadata.prototype.sessionId = null;
+BotSessionMetadata.prototype.sessionSource = null;
+let $oneOfFields;
+Object.defineProperty(BotSessionMetadata.prototype, "_sessionId", {
+get: $util.oneOfGetter($oneOfFields = ["sessionId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotSessionMetadata.prototype, "_sessionSource", {
+get: $util.oneOfGetter($oneOfFields = ["sessionSource"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotSessionMetadata.create = function create(properties) {
+return new BotSessionMetadata(properties);
+};
+BotSessionMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.sessionId != null && Object.hasOwnProperty.call(m, "sessionId"))
+w.uint32(10).string(m.sessionId);
+if (m.sessionSource != null && Object.hasOwnProperty.call(m, "sessionSource"))
+w.uint32(16).int32(m.sessionSource);
+return w;
+};
+BotSessionMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotSessionMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.sessionId = r.string();
+break;
+}
+case 2: {
+m.sessionSource = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotSessionMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotSessionMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotSessionMetadata();
+if (d.sessionId != null) {
+m.sessionId = String(d.sessionId);
+}
+switch (d.sessionSource) {
+default:
+if (typeof d.sessionSource === "number") {
+m.sessionSource = d.sessionSource;
+break;
+}
+break;
+case "NONE":
+case 0:
+m.sessionSource = 0;
+break;
+case "NULL_STATE":
+case 1:
+m.sessionSource = 1;
+break;
+case "TYPEAHEAD":
+case 2:
+m.sessionSource = 2;
+break;
+case "USER_INPUT":
+case 3:
+m.sessionSource = 3;
+break;
+case "EMU_FLASH":
+case 4:
+m.sessionSource = 4;
+break;
+case "EMU_FLASH_FOLLOWUP":
+case 5:
+m.sessionSource = 5;
+break;
+case "VOICE":
+case 6:
+m.sessionSource = 6;
+break;
+case "AI_HOME_SESSION":
+case 7:
+m.sessionSource = 7;
+break;
+}
+return m;
+};
+BotSessionMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.sessionId != null && m.hasOwnProperty("sessionId")) {
+d.sessionId = m.sessionId;
+if (o.oneofs)
+d._sessionId = "sessionId";
+}
+if (m.sessionSource != null && m.hasOwnProperty("sessionSource")) {
+d.sessionSource = o.enums === String ? $root.proto.BotSessionSource[m.sessionSource] === undefined ? m.sessionSource : $root.proto.BotSessionSource[m.sessionSource] : m.sessionSource;
+if (o.oneofs)
+d._sessionSource = "sessionSource";
+}
+return d;
+};
+BotSessionMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotSessionMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotSessionMetadata";
+};
+return BotSessionMetadata;

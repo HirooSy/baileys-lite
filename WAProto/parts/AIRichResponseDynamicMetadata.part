@@ -1,0 +1,172 @@
+"use strict";
+function AIRichResponseDynamicMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIRichResponseDynamicMetadata.prototype.type = null;
+AIRichResponseDynamicMetadata.prototype.version = null;
+AIRichResponseDynamicMetadata.prototype.url = null;
+AIRichResponseDynamicMetadata.prototype.loopCount = null;
+let $oneOfFields;
+Object.defineProperty(AIRichResponseDynamicMetadata.prototype, "_type", {
+get: $util.oneOfGetter($oneOfFields = ["type"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseDynamicMetadata.prototype, "_version", {
+get: $util.oneOfGetter($oneOfFields = ["version"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseDynamicMetadata.prototype, "_url", {
+get: $util.oneOfGetter($oneOfFields = ["url"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseDynamicMetadata.prototype, "_loopCount", {
+get: $util.oneOfGetter($oneOfFields = ["loopCount"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIRichResponseDynamicMetadata.create = function create(properties) {
+return new AIRichResponseDynamicMetadata(properties);
+};
+AIRichResponseDynamicMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.type != null && Object.hasOwnProperty.call(m, "type"))
+w.uint32(8).int32(m.type);
+if (m.version != null && Object.hasOwnProperty.call(m, "version"))
+w.uint32(16).uint64(m.version);
+if (m.url != null && Object.hasOwnProperty.call(m, "url"))
+w.uint32(26).string(m.url);
+if (m.loopCount != null && Object.hasOwnProperty.call(m, "loopCount"))
+w.uint32(32).uint32(m.loopCount);
+return w;
+};
+AIRichResponseDynamicMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIRichResponseDynamicMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.type = r.int32();
+break;
+}
+case 2: {
+m.version = r.uint64();
+break;
+}
+case 3: {
+m.url = r.string();
+break;
+}
+case 4: {
+m.loopCount = r.uint32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIRichResponseDynamicMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIRichResponseDynamicMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIRichResponseDynamicMetadata();
+switch (d.type) {
+default:
+if (typeof d.type === "number") {
+m.type = d.type;
+break;
+}
+break;
+case "AI_RICH_RESPONSE_DYNAMIC_METADATA_TYPE_UNKNOWN":
+case 0:
+m.type = 0;
+break;
+case "AI_RICH_RESPONSE_DYNAMIC_METADATA_TYPE_IMAGE":
+case 1:
+m.type = 1;
+break;
+case "AI_RICH_RESPONSE_DYNAMIC_METADATA_TYPE_GIF":
+case 2:
+m.type = 2;
+break;
+}
+if (d.version != null) {
+if ($util.Long)
+(m.version = $util.Long.fromValue(d.version)).unsigned = true;
+else if (typeof d.version === "string")
+m.version = parseInt(d.version, 10);
+else if (typeof d.version === "number")
+m.version = d.version;
+else if (typeof d.version === "object")
+m.version = new $util.LongBits(d.version.low >>> 0, d.version.high >>> 0).toNumber(true);
+}
+if (d.url != null) {
+m.url = String(d.url);
+}
+if (d.loopCount != null) {
+m.loopCount = d.loopCount >>> 0;
+}
+return m;
+};
+AIRichResponseDynamicMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.type != null && m.hasOwnProperty("type")) {
+d.type = o.enums === String ? $root.proto.AIRichResponseDynamicMetadata.AIRichResponseDynamicMetadataType[m.type] === undefined ? m.type : $root.proto.AIRichResponseDynamicMetadata.AIRichResponseDynamicMetadataType[m.type] : m.type;
+if (o.oneofs)
+d._type = "type";
+}
+if (m.version != null && m.hasOwnProperty("version")) {
+if (typeof m.version === "number")
+d.version = o.longs === String ? String(m.version) : m.version;
+else
+d.version = o.longs === String ? longToString(m.version, true) : o.longs === Number ? longToNumber(m.version, true) : m.version;
+if (o.oneofs)
+d._version = "version";
+}
+if (m.url != null && m.hasOwnProperty("url")) {
+d.url = m.url;
+if (o.oneofs)
+d._url = "url";
+}
+if (m.loopCount != null && m.hasOwnProperty("loopCount")) {
+d.loopCount = m.loopCount;
+if (o.oneofs)
+d._loopCount = "loopCount";
+}
+return d;
+};
+AIRichResponseDynamicMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIRichResponseDynamicMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIRichResponseDynamicMetadata";
+};
+$lazy(AIRichResponseDynamicMetadata, "AIRichResponseDynamicMetadataType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "AI_RICH_RESPONSE_DYNAMIC_METADATA_TYPE_UNKNOWN"] = 0;
+values[valuesById[1] = "AI_RICH_RESPONSE_DYNAMIC_METADATA_TYPE_IMAGE"] = 1;
+values[valuesById[2] = "AI_RICH_RESPONSE_DYNAMIC_METADATA_TYPE_GIF"] = 2;
+return values;
+});
+return AIRichResponseDynamicMetadata;

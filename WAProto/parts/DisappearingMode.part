@@ -1,0 +1,206 @@
+"use strict";
+function DisappearingMode(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+DisappearingMode.prototype.initiator = null;
+DisappearingMode.prototype.trigger = null;
+DisappearingMode.prototype.initiatorDeviceJid = null;
+DisappearingMode.prototype.initiatedByMe = null;
+let $oneOfFields;
+Object.defineProperty(DisappearingMode.prototype, "_initiator", {
+get: $util.oneOfGetter($oneOfFields = ["initiator"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DisappearingMode.prototype, "_trigger", {
+get: $util.oneOfGetter($oneOfFields = ["trigger"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DisappearingMode.prototype, "_initiatorDeviceJid", {
+get: $util.oneOfGetter($oneOfFields = ["initiatorDeviceJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DisappearingMode.prototype, "_initiatedByMe", {
+get: $util.oneOfGetter($oneOfFields = ["initiatedByMe"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+DisappearingMode.create = function create(properties) {
+return new DisappearingMode(properties);
+};
+DisappearingMode.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.initiator != null && Object.hasOwnProperty.call(m, "initiator"))
+w.uint32(8).int32(m.initiator);
+if (m.trigger != null && Object.hasOwnProperty.call(m, "trigger"))
+w.uint32(16).int32(m.trigger);
+if (m.initiatorDeviceJid != null && Object.hasOwnProperty.call(m, "initiatorDeviceJid"))
+w.uint32(26).string(m.initiatorDeviceJid);
+if (m.initiatedByMe != null && Object.hasOwnProperty.call(m, "initiatedByMe"))
+w.uint32(32).bool(m.initiatedByMe);
+return w;
+};
+DisappearingMode.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.DisappearingMode();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.initiator = r.int32();
+break;
+}
+case 2: {
+m.trigger = r.int32();
+break;
+}
+case 3: {
+m.initiatorDeviceJid = r.string();
+break;
+}
+case 4: {
+m.initiatedByMe = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+DisappearingMode.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.DisappearingMode)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.DisappearingMode();
+switch (d.initiator) {
+default:
+if (typeof d.initiator === "number") {
+m.initiator = d.initiator;
+break;
+}
+break;
+case "CHANGED_IN_CHAT":
+case 0:
+m.initiator = 0;
+break;
+case "INITIATED_BY_ME":
+case 1:
+m.initiator = 1;
+break;
+case "INITIATED_BY_OTHER":
+case 2:
+m.initiator = 2;
+break;
+case "BIZ_UPGRADE_FB_HOSTING":
+case 3:
+m.initiator = 3;
+break;
+}
+switch (d.trigger) {
+default:
+if (typeof d.trigger === "number") {
+m.trigger = d.trigger;
+break;
+}
+break;
+case "UNKNOWN":
+case 0:
+m.trigger = 0;
+break;
+case "CHAT_SETTING":
+case 1:
+m.trigger = 1;
+break;
+case "ACCOUNT_SETTING":
+case 2:
+m.trigger = 2;
+break;
+case "BULK_CHANGE":
+case 3:
+m.trigger = 3;
+break;
+case "BIZ_SUPPORTS_FB_HOSTING":
+case 4:
+m.trigger = 4;
+break;
+case "UNKNOWN_GROUPS":
+case 5:
+m.trigger = 5;
+break;
+}
+if (d.initiatorDeviceJid != null) {
+m.initiatorDeviceJid = String(d.initiatorDeviceJid);
+}
+if (d.initiatedByMe != null) {
+m.initiatedByMe = Boolean(d.initiatedByMe);
+}
+return m;
+};
+DisappearingMode.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.initiator != null && m.hasOwnProperty("initiator")) {
+d.initiator = o.enums === String ? $root.proto.DisappearingMode.Initiator[m.initiator] === undefined ? m.initiator : $root.proto.DisappearingMode.Initiator[m.initiator] : m.initiator;
+if (o.oneofs)
+d._initiator = "initiator";
+}
+if (m.trigger != null && m.hasOwnProperty("trigger")) {
+d.trigger = o.enums === String ? $root.proto.DisappearingMode.Trigger[m.trigger] === undefined ? m.trigger : $root.proto.DisappearingMode.Trigger[m.trigger] : m.trigger;
+if (o.oneofs)
+d._trigger = "trigger";
+}
+if (m.initiatorDeviceJid != null && m.hasOwnProperty("initiatorDeviceJid")) {
+d.initiatorDeviceJid = m.initiatorDeviceJid;
+if (o.oneofs)
+d._initiatorDeviceJid = "initiatorDeviceJid";
+}
+if (m.initiatedByMe != null && m.hasOwnProperty("initiatedByMe")) {
+d.initiatedByMe = m.initiatedByMe;
+if (o.oneofs)
+d._initiatedByMe = "initiatedByMe";
+}
+return d;
+};
+DisappearingMode.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+DisappearingMode.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.DisappearingMode";
+};
+$lazy(DisappearingMode, "Initiator", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "CHANGED_IN_CHAT"] = 0;
+values[valuesById[1] = "INITIATED_BY_ME"] = 1;
+values[valuesById[2] = "INITIATED_BY_OTHER"] = 2;
+values[valuesById[3] = "BIZ_UPGRADE_FB_HOSTING"] = 3;
+return values;
+});
+$lazy(DisappearingMode, "Trigger", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN"] = 0;
+values[valuesById[1] = "CHAT_SETTING"] = 1;
+values[valuesById[2] = "ACCOUNT_SETTING"] = 2;
+values[valuesById[3] = "BULK_CHANGE"] = 3;
+values[valuesById[4] = "BIZ_SUPPORTS_FB_HOSTING"] = 4;
+values[valuesById[5] = "UNKNOWN_GROUPS"] = 5;
+return values;
+});
+return DisappearingMode;

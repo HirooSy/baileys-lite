@@ -1,0 +1,138 @@
+"use strict";
+function Point(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+Point.prototype.xDeprecated = null;
+Point.prototype.yDeprecated = null;
+Point.prototype.x = null;
+Point.prototype.y = null;
+let $oneOfFields;
+Object.defineProperty(Point.prototype, "_xDeprecated", {
+get: $util.oneOfGetter($oneOfFields = ["xDeprecated"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Point.prototype, "_yDeprecated", {
+get: $util.oneOfGetter($oneOfFields = ["yDeprecated"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Point.prototype, "_x", {
+get: $util.oneOfGetter($oneOfFields = ["x"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Point.prototype, "_y", {
+get: $util.oneOfGetter($oneOfFields = ["y"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Point.create = function create(properties) {
+return new Point(properties);
+};
+Point.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.xDeprecated != null && Object.hasOwnProperty.call(m, "xDeprecated"))
+w.uint32(8).int32(m.xDeprecated);
+if (m.yDeprecated != null && Object.hasOwnProperty.call(m, "yDeprecated"))
+w.uint32(16).int32(m.yDeprecated);
+if (m.x != null && Object.hasOwnProperty.call(m, "x"))
+w.uint32(25).double(m.x);
+if (m.y != null && Object.hasOwnProperty.call(m, "y"))
+w.uint32(33).double(m.y);
+return w;
+};
+Point.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.Point();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.xDeprecated = r.int32();
+break;
+}
+case 2: {
+m.yDeprecated = r.int32();
+break;
+}
+case 3: {
+m.x = r.double();
+break;
+}
+case 4: {
+m.y = r.double();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+Point.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.Point)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.Point();
+if (d.xDeprecated != null) {
+m.xDeprecated = d.xDeprecated | 0;
+}
+if (d.yDeprecated != null) {
+m.yDeprecated = d.yDeprecated | 0;
+}
+if (d.x != null) {
+m.x = Number(d.x);
+}
+if (d.y != null) {
+m.y = Number(d.y);
+}
+return m;
+};
+Point.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.xDeprecated != null && m.hasOwnProperty("xDeprecated")) {
+d.xDeprecated = m.xDeprecated;
+if (o.oneofs)
+d._xDeprecated = "xDeprecated";
+}
+if (m.yDeprecated != null && m.hasOwnProperty("yDeprecated")) {
+d.yDeprecated = m.yDeprecated;
+if (o.oneofs)
+d._yDeprecated = "yDeprecated";
+}
+if (m.x != null && m.hasOwnProperty("x")) {
+d.x = o.json && !isFinite(m.x) ? String(m.x) : m.x;
+if (o.oneofs)
+d._x = "x";
+}
+if (m.y != null && m.hasOwnProperty("y")) {
+d.y = o.json && !isFinite(m.y) ? String(m.y) : m.y;
+if (o.oneofs)
+d._y = "y";
+}
+return d;
+};
+Point.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+Point.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.Point";
+};
+return Point;

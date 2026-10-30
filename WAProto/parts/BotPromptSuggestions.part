@@ -1,0 +1,92 @@
+"use strict";
+function BotPromptSuggestions(p) {
+this.suggestions = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotPromptSuggestions.prototype.suggestions = $util.emptyArray;
+BotPromptSuggestions.create = function create(properties) {
+return new BotPromptSuggestions(properties);
+};
+BotPromptSuggestions.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.suggestions != null && m.suggestions.length) {
+for (var i = 0; i < m.suggestions.length; ++i)
+$root.proto.BotPromptSuggestion.encode(m.suggestions[i], w.uint32(10).fork()).ldelim();
+}
+return w;
+};
+BotPromptSuggestions.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotPromptSuggestions();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+if (!(m.suggestions && m.suggestions.length))
+m.suggestions = [];
+m.suggestions.push($root.proto.BotPromptSuggestion.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotPromptSuggestions.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotPromptSuggestions)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotPromptSuggestions();
+if (d.suggestions) {
+if (!Array.isArray(d.suggestions))
+throw TypeError(".proto.BotPromptSuggestions.suggestions: array expected");
+m.suggestions = [];
+for (var i = 0; i < d.suggestions.length; ++i) {
+if (typeof d.suggestions[i] !== "object")
+throw TypeError(".proto.BotPromptSuggestions.suggestions: object expected");
+m.suggestions[i] = $root.proto.BotPromptSuggestion.fromObject(d.suggestions[i], n + 1);
+}
+}
+return m;
+};
+BotPromptSuggestions.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.suggestions = [];
+}
+if (m.suggestions && m.suggestions.length) {
+d.suggestions = [];
+for (var j = 0; j < m.suggestions.length; ++j) {
+d.suggestions[j] = $root.proto.BotPromptSuggestion.toObject(m.suggestions[j], o);
+}
+}
+return d;
+};
+BotPromptSuggestions.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotPromptSuggestions.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotPromptSuggestions";
+};
+return BotPromptSuggestions;

@@ -1,0 +1,11 @@
+"use strict";
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "NONE"] = 0;
+values[valuesById[1] = "NULL_STATE"] = 1;
+values[valuesById[2] = "TYPEAHEAD"] = 2;
+values[valuesById[3] = "USER_INPUT"] = 3;
+values[valuesById[4] = "EMU_FLASH"] = 4;
+values[valuesById[5] = "EMU_FLASH_FOLLOWUP"] = 5;
+values[valuesById[6] = "VOICE"] = 6;
+values[valuesById[7] = "AI_HOME_SESSION"] = 7;
+return values;

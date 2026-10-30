@@ -1,0 +1,8 @@
+"use strict";
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[1] = "AI_TAB_THREAD"] = 1;
+values[valuesById[2] = "AI_HOME_THREAD"] = 2;
+values[valuesById[3] = "AI_DEEPLINK_IMMERSIVE_THREAD"] = 3;
+values[valuesById[4] = "AI_DEEPLINK_THREAD"] = 4;
+values[valuesById[5] = "ASK_META_AI_CONTEXT_MENU_THREAD"] = 5;
+return values;

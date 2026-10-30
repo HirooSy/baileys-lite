@@ -1,0 +1,5 @@
+"use strict";
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "WEBVIEW"] = 0;
+values[valuesById[1] = "SYSTEM"] = 1;
+return values;

@@ -1,0 +1,152 @@
+"use strict";
+function NotificationMessageInfo(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+NotificationMessageInfo.prototype.key = null;
+NotificationMessageInfo.prototype.message = null;
+NotificationMessageInfo.prototype.messageTimestamp = null;
+NotificationMessageInfo.prototype.participant = null;
+let $oneOfFields;
+Object.defineProperty(NotificationMessageInfo.prototype, "_key", {
+get: $util.oneOfGetter($oneOfFields = ["key"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(NotificationMessageInfo.prototype, "_message", {
+get: $util.oneOfGetter($oneOfFields = ["message"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(NotificationMessageInfo.prototype, "_messageTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["messageTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(NotificationMessageInfo.prototype, "_participant", {
+get: $util.oneOfGetter($oneOfFields = ["participant"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+NotificationMessageInfo.create = function create(properties) {
+return new NotificationMessageInfo(properties);
+};
+NotificationMessageInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.key != null && Object.hasOwnProperty.call(m, "key"))
+$root.proto.MessageKey.encode(m.key, w.uint32(10).fork()).ldelim();
+if (m.message != null && Object.hasOwnProperty.call(m, "message"))
+$root.proto.Message.encode(m.message, w.uint32(18).fork()).ldelim();
+if (m.messageTimestamp != null && Object.hasOwnProperty.call(m, "messageTimestamp"))
+w.uint32(24).uint64(m.messageTimestamp);
+if (m.participant != null && Object.hasOwnProperty.call(m, "participant"))
+w.uint32(34).string(m.participant);
+return w;
+};
+NotificationMessageInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.NotificationMessageInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.key = $root.proto.MessageKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.message = $root.proto.Message.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 3: {
+m.messageTimestamp = r.uint64();
+break;
+}
+case 4: {
+m.participant = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+NotificationMessageInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.NotificationMessageInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.NotificationMessageInfo();
+if (d.key != null) {
+if (typeof d.key !== "object")
+throw TypeError(".proto.NotificationMessageInfo.key: object expected");
+m.key = $root.proto.MessageKey.fromObject(d.key, n + 1);
+}
+if (d.message != null) {
+if (typeof d.message !== "object")
+throw TypeError(".proto.NotificationMessageInfo.message: object expected");
+m.message = $root.proto.Message.fromObject(d.message, n + 1);
+}
+if (d.messageTimestamp != null) {
+if ($util.Long)
+(m.messageTimestamp = $util.Long.fromValue(d.messageTimestamp)).unsigned = true;
+else if (typeof d.messageTimestamp === "string")
+m.messageTimestamp = parseInt(d.messageTimestamp, 10);
+else if (typeof d.messageTimestamp === "number")
+m.messageTimestamp = d.messageTimestamp;
+else if (typeof d.messageTimestamp === "object")
+m.messageTimestamp = new $util.LongBits(d.messageTimestamp.low >>> 0, d.messageTimestamp.high >>> 0).toNumber(true);
+}
+if (d.participant != null) {
+m.participant = String(d.participant);
+}
+return m;
+};
+NotificationMessageInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.key != null && m.hasOwnProperty("key")) {
+d.key = $root.proto.MessageKey.toObject(m.key, o);
+if (o.oneofs)
+d._key = "key";
+}
+if (m.message != null && m.hasOwnProperty("message")) {
+d.message = $root.proto.Message.toObject(m.message, o);
+if (o.oneofs)
+d._message = "message";
+}
+if (m.messageTimestamp != null && m.hasOwnProperty("messageTimestamp")) {
+if (typeof m.messageTimestamp === "number")
+d.messageTimestamp = o.longs === String ? String(m.messageTimestamp) : m.messageTimestamp;
+else
+d.messageTimestamp = o.longs === String ? longToString(m.messageTimestamp, true) : o.longs === Number ? longToNumber(m.messageTimestamp, true) : m.messageTimestamp;
+if (o.oneofs)
+d._messageTimestamp = "messageTimestamp";
+}
+if (m.participant != null && m.hasOwnProperty("participant")) {
+d.participant = m.participant;
+if (o.oneofs)
+d._participant = "participant";
+}
+return d;
+};
+NotificationMessageInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+NotificationMessageInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.NotificationMessageInfo";
+};
+return NotificationMessageInfo;

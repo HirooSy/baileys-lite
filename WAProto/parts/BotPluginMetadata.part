@@ -1,0 +1,379 @@
+"use strict";
+function BotPluginMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotPluginMetadata.prototype.provider = null;
+BotPluginMetadata.prototype.pluginType = null;
+BotPluginMetadata.prototype.thumbnailCdnUrl = null;
+BotPluginMetadata.prototype.profilePhotoCdnUrl = null;
+BotPluginMetadata.prototype.searchProviderUrl = null;
+BotPluginMetadata.prototype.referenceIndex = null;
+BotPluginMetadata.prototype.expectedLinksCount = null;
+BotPluginMetadata.prototype.searchQuery = null;
+BotPluginMetadata.prototype.parentPluginMessageKey = null;
+BotPluginMetadata.prototype.deprecatedField = null;
+BotPluginMetadata.prototype.parentPluginType = null;
+BotPluginMetadata.prototype.faviconCdnUrl = null;
+let $oneOfFields;
+Object.defineProperty(BotPluginMetadata.prototype, "_provider", {
+get: $util.oneOfGetter($oneOfFields = ["provider"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPluginMetadata.prototype, "_pluginType", {
+get: $util.oneOfGetter($oneOfFields = ["pluginType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPluginMetadata.prototype, "_thumbnailCdnUrl", {
+get: $util.oneOfGetter($oneOfFields = ["thumbnailCdnUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPluginMetadata.prototype, "_profilePhotoCdnUrl", {
+get: $util.oneOfGetter($oneOfFields = ["profilePhotoCdnUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPluginMetadata.prototype, "_searchProviderUrl", {
+get: $util.oneOfGetter($oneOfFields = ["searchProviderUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPluginMetadata.prototype, "_referenceIndex", {
+get: $util.oneOfGetter($oneOfFields = ["referenceIndex"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPluginMetadata.prototype, "_expectedLinksCount", {
+get: $util.oneOfGetter($oneOfFields = ["expectedLinksCount"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPluginMetadata.prototype, "_searchQuery", {
+get: $util.oneOfGetter($oneOfFields = ["searchQuery"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPluginMetadata.prototype, "_parentPluginMessageKey", {
+get: $util.oneOfGetter($oneOfFields = ["parentPluginMessageKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPluginMetadata.prototype, "_deprecatedField", {
+get: $util.oneOfGetter($oneOfFields = ["deprecatedField"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPluginMetadata.prototype, "_parentPluginType", {
+get: $util.oneOfGetter($oneOfFields = ["parentPluginType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPluginMetadata.prototype, "_faviconCdnUrl", {
+get: $util.oneOfGetter($oneOfFields = ["faviconCdnUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotPluginMetadata.create = function create(properties) {
+return new BotPluginMetadata(properties);
+};
+BotPluginMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.provider != null && Object.hasOwnProperty.call(m, "provider"))
+w.uint32(8).int32(m.provider);
+if (m.pluginType != null && Object.hasOwnProperty.call(m, "pluginType"))
+w.uint32(16).int32(m.pluginType);
+if (m.thumbnailCdnUrl != null && Object.hasOwnProperty.call(m, "thumbnailCdnUrl"))
+w.uint32(26).string(m.thumbnailCdnUrl);
+if (m.profilePhotoCdnUrl != null && Object.hasOwnProperty.call(m, "profilePhotoCdnUrl"))
+w.uint32(34).string(m.profilePhotoCdnUrl);
+if (m.searchProviderUrl != null && Object.hasOwnProperty.call(m, "searchProviderUrl"))
+w.uint32(42).string(m.searchProviderUrl);
+if (m.referenceIndex != null && Object.hasOwnProperty.call(m, "referenceIndex"))
+w.uint32(48).uint32(m.referenceIndex);
+if (m.expectedLinksCount != null && Object.hasOwnProperty.call(m, "expectedLinksCount"))
+w.uint32(56).uint32(m.expectedLinksCount);
+if (m.searchQuery != null && Object.hasOwnProperty.call(m, "searchQuery"))
+w.uint32(74).string(m.searchQuery);
+if (m.parentPluginMessageKey != null && Object.hasOwnProperty.call(m, "parentPluginMessageKey"))
+$root.proto.MessageKey.encode(m.parentPluginMessageKey, w.uint32(82).fork()).ldelim();
+if (m.deprecatedField != null && Object.hasOwnProperty.call(m, "deprecatedField"))
+w.uint32(88).int32(m.deprecatedField);
+if (m.parentPluginType != null && Object.hasOwnProperty.call(m, "parentPluginType"))
+w.uint32(96).int32(m.parentPluginType);
+if (m.faviconCdnUrl != null && Object.hasOwnProperty.call(m, "faviconCdnUrl"))
+w.uint32(106).string(m.faviconCdnUrl);
+return w;
+};
+BotPluginMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotPluginMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.provider = r.int32();
+break;
+}
+case 2: {
+m.pluginType = r.int32();
+break;
+}
+case 3: {
+m.thumbnailCdnUrl = r.string();
+break;
+}
+case 4: {
+m.profilePhotoCdnUrl = r.string();
+break;
+}
+case 5: {
+m.searchProviderUrl = r.string();
+break;
+}
+case 6: {
+m.referenceIndex = r.uint32();
+break;
+}
+case 7: {
+m.expectedLinksCount = r.uint32();
+break;
+}
+case 9: {
+m.searchQuery = r.string();
+break;
+}
+case 10: {
+m.parentPluginMessageKey = $root.proto.MessageKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 11: {
+m.deprecatedField = r.int32();
+break;
+}
+case 12: {
+m.parentPluginType = r.int32();
+break;
+}
+case 13: {
+m.faviconCdnUrl = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotPluginMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotPluginMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotPluginMetadata();
+switch (d.provider) {
+default:
+if (typeof d.provider === "number") {
+m.provider = d.provider;
+break;
+}
+break;
+case "UNKNOWN":
+case 0:
+m.provider = 0;
+break;
+case "BING":
+case 1:
+m.provider = 1;
+break;
+case "GOOGLE":
+case 2:
+m.provider = 2;
+break;
+case "SUPPORT":
+case 3:
+m.provider = 3;
+break;
+}
+switch (d.pluginType) {
+default:
+if (typeof d.pluginType === "number") {
+m.pluginType = d.pluginType;
+break;
+}
+break;
+case "UNKNOWN_PLUGIN":
+case 0:
+m.pluginType = 0;
+break;
+case "REELS":
+case 1:
+m.pluginType = 1;
+break;
+case "SEARCH":
+case 2:
+m.pluginType = 2;
+break;
+}
+if (d.thumbnailCdnUrl != null) {
+m.thumbnailCdnUrl = String(d.thumbnailCdnUrl);
+}
+if (d.profilePhotoCdnUrl != null) {
+m.profilePhotoCdnUrl = String(d.profilePhotoCdnUrl);
+}
+if (d.searchProviderUrl != null) {
+m.searchProviderUrl = String(d.searchProviderUrl);
+}
+if (d.referenceIndex != null) {
+m.referenceIndex = d.referenceIndex >>> 0;
+}
+if (d.expectedLinksCount != null) {
+m.expectedLinksCount = d.expectedLinksCount >>> 0;
+}
+if (d.searchQuery != null) {
+m.searchQuery = String(d.searchQuery);
+}
+if (d.parentPluginMessageKey != null) {
+if (typeof d.parentPluginMessageKey !== "object")
+throw TypeError(".proto.BotPluginMetadata.parentPluginMessageKey: object expected");
+m.parentPluginMessageKey = $root.proto.MessageKey.fromObject(d.parentPluginMessageKey, n + 1);
+}
+switch (d.deprecatedField) {
+default:
+if (typeof d.deprecatedField === "number") {
+m.deprecatedField = d.deprecatedField;
+break;
+}
+break;
+case "UNKNOWN_PLUGIN":
+case 0:
+m.deprecatedField = 0;
+break;
+case "REELS":
+case 1:
+m.deprecatedField = 1;
+break;
+case "SEARCH":
+case 2:
+m.deprecatedField = 2;
+break;
+}
+switch (d.parentPluginType) {
+default:
+if (typeof d.parentPluginType === "number") {
+m.parentPluginType = d.parentPluginType;
+break;
+}
+break;
+case "UNKNOWN_PLUGIN":
+case 0:
+m.parentPluginType = 0;
+break;
+case "REELS":
+case 1:
+m.parentPluginType = 1;
+break;
+case "SEARCH":
+case 2:
+m.parentPluginType = 2;
+break;
+}
+if (d.faviconCdnUrl != null) {
+m.faviconCdnUrl = String(d.faviconCdnUrl);
+}
+return m;
+};
+BotPluginMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.provider != null && m.hasOwnProperty("provider")) {
+d.provider = o.enums === String ? $root.proto.BotPluginMetadata.SearchProvider[m.provider] === undefined ? m.provider : $root.proto.BotPluginMetadata.SearchProvider[m.provider] : m.provider;
+if (o.oneofs)
+d._provider = "provider";
+}
+if (m.pluginType != null && m.hasOwnProperty("pluginType")) {
+d.pluginType = o.enums === String ? $root.proto.BotPluginMetadata.PluginType[m.pluginType] === undefined ? m.pluginType : $root.proto.BotPluginMetadata.PluginType[m.pluginType] : m.pluginType;
+if (o.oneofs)
+d._pluginType = "pluginType";
+}
+if (m.thumbnailCdnUrl != null && m.hasOwnProperty("thumbnailCdnUrl")) {
+d.thumbnailCdnUrl = m.thumbnailCdnUrl;
+if (o.oneofs)
+d._thumbnailCdnUrl = "thumbnailCdnUrl";
+}
+if (m.profilePhotoCdnUrl != null && m.hasOwnProperty("profilePhotoCdnUrl")) {
+d.profilePhotoCdnUrl = m.profilePhotoCdnUrl;
+if (o.oneofs)
+d._profilePhotoCdnUrl = "profilePhotoCdnUrl";
+}
+if (m.searchProviderUrl != null && m.hasOwnProperty("searchProviderUrl")) {
+d.searchProviderUrl = m.searchProviderUrl;
+if (o.oneofs)
+d._searchProviderUrl = "searchProviderUrl";
+}
+if (m.referenceIndex != null && m.hasOwnProperty("referenceIndex")) {
+d.referenceIndex = m.referenceIndex;
+if (o.oneofs)
+d._referenceIndex = "referenceIndex";
+}
+if (m.expectedLinksCount != null && m.hasOwnProperty("expectedLinksCount")) {
+d.expectedLinksCount = m.expectedLinksCount;
+if (o.oneofs)
+d._expectedLinksCount = "expectedLinksCount";
+}
+if (m.searchQuery != null && m.hasOwnProperty("searchQuery")) {
+d.searchQuery = m.searchQuery;
+if (o.oneofs)
+d._searchQuery = "searchQuery";
+}
+if (m.parentPluginMessageKey != null && m.hasOwnProperty("parentPluginMessageKey")) {
+d.parentPluginMessageKey = $root.proto.MessageKey.toObject(m.parentPluginMessageKey, o);
+if (o.oneofs)
+d._parentPluginMessageKey = "parentPluginMessageKey";
+}
+if (m.deprecatedField != null && m.hasOwnProperty("deprecatedField")) {
+d.deprecatedField = o.enums === String ? $root.proto.BotPluginMetadata.PluginType[m.deprecatedField] === undefined ? m.deprecatedField : $root.proto.BotPluginMetadata.PluginType[m.deprecatedField] : m.deprecatedField;
+if (o.oneofs)
+d._deprecatedField = "deprecatedField";
+}
+if (m.parentPluginType != null && m.hasOwnProperty("parentPluginType")) {
+d.parentPluginType = o.enums === String ? $root.proto.BotPluginMetadata.PluginType[m.parentPluginType] === undefined ? m.parentPluginType : $root.proto.BotPluginMetadata.PluginType[m.parentPluginType] : m.parentPluginType;
+if (o.oneofs)
+d._parentPluginType = "parentPluginType";
+}
+if (m.faviconCdnUrl != null && m.hasOwnProperty("faviconCdnUrl")) {
+d.faviconCdnUrl = m.faviconCdnUrl;
+if (o.oneofs)
+d._faviconCdnUrl = "faviconCdnUrl";
+}
+return d;
+};
+BotPluginMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotPluginMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotPluginMetadata";
+};
+$lazy(BotPluginMetadata, "PluginType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN_PLUGIN"] = 0;
+values[valuesById[1] = "REELS"] = 1;
+values[valuesById[2] = "SEARCH"] = 2;
+return values;
+});
+$lazy(BotPluginMetadata, "SearchProvider", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN"] = 0;
+values[valuesById[1] = "BING"] = 1;
+values[valuesById[2] = "GOOGLE"] = 2;
+values[valuesById[3] = "SUPPORT"] = 3;
+return values;
+});
+return BotPluginMetadata;

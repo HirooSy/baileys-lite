@@ -1,0 +1,105 @@
+"use strict";
+function ProloguePayload(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ProloguePayload.prototype.companionEphemeralIdentity = null;
+ProloguePayload.prototype.commitment = null;
+let $oneOfFields;
+Object.defineProperty(ProloguePayload.prototype, "_companionEphemeralIdentity", {
+get: $util.oneOfGetter($oneOfFields = ["companionEphemeralIdentity"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ProloguePayload.prototype, "_commitment", {
+get: $util.oneOfGetter($oneOfFields = ["commitment"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ProloguePayload.create = function create(properties) {
+return new ProloguePayload(properties);
+};
+ProloguePayload.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.companionEphemeralIdentity != null && Object.hasOwnProperty.call(m, "companionEphemeralIdentity"))
+w.uint32(10).bytes(m.companionEphemeralIdentity);
+if (m.commitment != null && Object.hasOwnProperty.call(m, "commitment"))
+$root.proto.CompanionCommitment.encode(m.commitment, w.uint32(18).fork()).ldelim();
+return w;
+};
+ProloguePayload.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ProloguePayload();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.companionEphemeralIdentity = r.bytes();
+break;
+}
+case 2: {
+m.commitment = $root.proto.CompanionCommitment.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ProloguePayload.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ProloguePayload)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ProloguePayload();
+if (d.companionEphemeralIdentity != null) {
+if (typeof d.companionEphemeralIdentity === "string")
+$util.base64.decode(d.companionEphemeralIdentity, m.companionEphemeralIdentity = $util.newBuffer($util.base64.length(d.companionEphemeralIdentity)), 0);
+else if (d.companionEphemeralIdentity.length >= 0)
+m.companionEphemeralIdentity = d.companionEphemeralIdentity;
+}
+if (d.commitment != null) {
+if (typeof d.commitment !== "object")
+throw TypeError(".proto.ProloguePayload.commitment: object expected");
+m.commitment = $root.proto.CompanionCommitment.fromObject(d.commitment, n + 1);
+}
+return m;
+};
+ProloguePayload.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.companionEphemeralIdentity != null && m.hasOwnProperty("companionEphemeralIdentity")) {
+d.companionEphemeralIdentity = o.bytes === String ? $util.base64.encode(m.companionEphemeralIdentity, 0, m.companionEphemeralIdentity.length) : o.bytes === Array ? Array.prototype.slice.call(m.companionEphemeralIdentity) : m.companionEphemeralIdentity;
+if (o.oneofs)
+d._companionEphemeralIdentity = "companionEphemeralIdentity";
+}
+if (m.commitment != null && m.hasOwnProperty("commitment")) {
+d.commitment = $root.proto.CompanionCommitment.toObject(m.commitment, o);
+if (o.oneofs)
+d._commitment = "commitment";
+}
+return d;
+};
+ProloguePayload.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ProloguePayload.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ProloguePayload";
+};
+return ProloguePayload;

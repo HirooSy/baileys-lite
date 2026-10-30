@@ -1,0 +1,205 @@
+"use strict";
+function PinInChat(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+PinInChat.prototype.type = null;
+PinInChat.prototype.key = null;
+PinInChat.prototype.senderTimestampMs = null;
+PinInChat.prototype.serverTimestampMs = null;
+PinInChat.prototype.messageAddOnContextInfo = null;
+let $oneOfFields;
+Object.defineProperty(PinInChat.prototype, "_type", {
+get: $util.oneOfGetter($oneOfFields = ["type"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PinInChat.prototype, "_key", {
+get: $util.oneOfGetter($oneOfFields = ["key"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PinInChat.prototype, "_senderTimestampMs", {
+get: $util.oneOfGetter($oneOfFields = ["senderTimestampMs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PinInChat.prototype, "_serverTimestampMs", {
+get: $util.oneOfGetter($oneOfFields = ["serverTimestampMs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PinInChat.prototype, "_messageAddOnContextInfo", {
+get: $util.oneOfGetter($oneOfFields = ["messageAddOnContextInfo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+PinInChat.create = function create(properties) {
+return new PinInChat(properties);
+};
+PinInChat.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.type != null && Object.hasOwnProperty.call(m, "type"))
+w.uint32(8).int32(m.type);
+if (m.key != null && Object.hasOwnProperty.call(m, "key"))
+$root.proto.MessageKey.encode(m.key, w.uint32(18).fork()).ldelim();
+if (m.senderTimestampMs != null && Object.hasOwnProperty.call(m, "senderTimestampMs"))
+w.uint32(24).int64(m.senderTimestampMs);
+if (m.serverTimestampMs != null && Object.hasOwnProperty.call(m, "serverTimestampMs"))
+w.uint32(32).int64(m.serverTimestampMs);
+if (m.messageAddOnContextInfo != null && Object.hasOwnProperty.call(m, "messageAddOnContextInfo"))
+$root.proto.MessageAddOnContextInfo.encode(m.messageAddOnContextInfo, w.uint32(42).fork()).ldelim();
+return w;
+};
+PinInChat.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.PinInChat();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.type = r.int32();
+break;
+}
+case 2: {
+m.key = $root.proto.MessageKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 3: {
+m.senderTimestampMs = r.int64();
+break;
+}
+case 4: {
+m.serverTimestampMs = r.int64();
+break;
+}
+case 5: {
+m.messageAddOnContextInfo = $root.proto.MessageAddOnContextInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+PinInChat.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.PinInChat)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.PinInChat();
+switch (d.type) {
+default:
+if (typeof d.type === "number") {
+m.type = d.type;
+break;
+}
+break;
+case "UNKNOWN_TYPE":
+case 0:
+m.type = 0;
+break;
+case "PIN_FOR_ALL":
+case 1:
+m.type = 1;
+break;
+case "UNPIN_FOR_ALL":
+case 2:
+m.type = 2;
+break;
+}
+if (d.key != null) {
+if (typeof d.key !== "object")
+throw TypeError(".proto.PinInChat.key: object expected");
+m.key = $root.proto.MessageKey.fromObject(d.key, n + 1);
+}
+if (d.senderTimestampMs != null) {
+if ($util.Long)
+(m.senderTimestampMs = $util.Long.fromValue(d.senderTimestampMs)).unsigned = false;
+else if (typeof d.senderTimestampMs === "string")
+m.senderTimestampMs = parseInt(d.senderTimestampMs, 10);
+else if (typeof d.senderTimestampMs === "number")
+m.senderTimestampMs = d.senderTimestampMs;
+else if (typeof d.senderTimestampMs === "object")
+m.senderTimestampMs = new $util.LongBits(d.senderTimestampMs.low >>> 0, d.senderTimestampMs.high >>> 0).toNumber();
+}
+if (d.serverTimestampMs != null) {
+if ($util.Long)
+(m.serverTimestampMs = $util.Long.fromValue(d.serverTimestampMs)).unsigned = false;
+else if (typeof d.serverTimestampMs === "string")
+m.serverTimestampMs = parseInt(d.serverTimestampMs, 10);
+else if (typeof d.serverTimestampMs === "number")
+m.serverTimestampMs = d.serverTimestampMs;
+else if (typeof d.serverTimestampMs === "object")
+m.serverTimestampMs = new $util.LongBits(d.serverTimestampMs.low >>> 0, d.serverTimestampMs.high >>> 0).toNumber();
+}
+if (d.messageAddOnContextInfo != null) {
+if (typeof d.messageAddOnContextInfo !== "object")
+throw TypeError(".proto.PinInChat.messageAddOnContextInfo: object expected");
+m.messageAddOnContextInfo = $root.proto.MessageAddOnContextInfo.fromObject(d.messageAddOnContextInfo, n + 1);
+}
+return m;
+};
+PinInChat.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.type != null && m.hasOwnProperty("type")) {
+d.type = o.enums === String ? $root.proto.PinInChat.Type[m.type] === undefined ? m.type : $root.proto.PinInChat.Type[m.type] : m.type;
+if (o.oneofs)
+d._type = "type";
+}
+if (m.key != null && m.hasOwnProperty("key")) {
+d.key = $root.proto.MessageKey.toObject(m.key, o);
+if (o.oneofs)
+d._key = "key";
+}
+if (m.senderTimestampMs != null && m.hasOwnProperty("senderTimestampMs")) {
+if (typeof m.senderTimestampMs === "number")
+d.senderTimestampMs = o.longs === String ? String(m.senderTimestampMs) : m.senderTimestampMs;
+else
+d.senderTimestampMs = o.longs === String ? longToString(m.senderTimestampMs) : o.longs === Number ? longToNumber(m.senderTimestampMs) : m.senderTimestampMs;
+if (o.oneofs)
+d._senderTimestampMs = "senderTimestampMs";
+}
+if (m.serverTimestampMs != null && m.hasOwnProperty("serverTimestampMs")) {
+if (typeof m.serverTimestampMs === "number")
+d.serverTimestampMs = o.longs === String ? String(m.serverTimestampMs) : m.serverTimestampMs;
+else
+d.serverTimestampMs = o.longs === String ? longToString(m.serverTimestampMs) : o.longs === Number ? longToNumber(m.serverTimestampMs) : m.serverTimestampMs;
+if (o.oneofs)
+d._serverTimestampMs = "serverTimestampMs";
+}
+if (m.messageAddOnContextInfo != null && m.hasOwnProperty("messageAddOnContextInfo")) {
+d.messageAddOnContextInfo = $root.proto.MessageAddOnContextInfo.toObject(m.messageAddOnContextInfo, o);
+if (o.oneofs)
+d._messageAddOnContextInfo = "messageAddOnContextInfo";
+}
+return d;
+};
+PinInChat.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+PinInChat.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.PinInChat";
+};
+$lazy(PinInChat, "Type", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN_TYPE"] = 0;
+values[valuesById[1] = "PIN_FOR_ALL"] = 1;
+values[valuesById[2] = "UNPIN_FOR_ALL"] = 2;
+return values;
+});
+return PinInChat;

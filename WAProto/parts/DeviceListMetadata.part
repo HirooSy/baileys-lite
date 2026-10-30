@@ -1,0 +1,306 @@
+"use strict";
+function DeviceListMetadata(p) {
+this.senderKeyIndexes = [];
+this.recipientKeyIndexes = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+DeviceListMetadata.prototype.senderKeyHash = null;
+DeviceListMetadata.prototype.senderTimestamp = null;
+DeviceListMetadata.prototype.senderKeyIndexes = $util.emptyArray;
+DeviceListMetadata.prototype.senderAccountType = null;
+DeviceListMetadata.prototype.receiverAccountType = null;
+DeviceListMetadata.prototype.recipientKeyHash = null;
+DeviceListMetadata.prototype.recipientTimestamp = null;
+DeviceListMetadata.prototype.recipientKeyIndexes = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(DeviceListMetadata.prototype, "_senderKeyHash", {
+get: $util.oneOfGetter($oneOfFields = ["senderKeyHash"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DeviceListMetadata.prototype, "_senderTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["senderTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DeviceListMetadata.prototype, "_senderAccountType", {
+get: $util.oneOfGetter($oneOfFields = ["senderAccountType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DeviceListMetadata.prototype, "_receiverAccountType", {
+get: $util.oneOfGetter($oneOfFields = ["receiverAccountType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DeviceListMetadata.prototype, "_recipientKeyHash", {
+get: $util.oneOfGetter($oneOfFields = ["recipientKeyHash"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DeviceListMetadata.prototype, "_recipientTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["recipientTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+DeviceListMetadata.create = function create(properties) {
+return new DeviceListMetadata(properties);
+};
+DeviceListMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.senderKeyHash != null && Object.hasOwnProperty.call(m, "senderKeyHash"))
+w.uint32(10).bytes(m.senderKeyHash);
+if (m.senderTimestamp != null && Object.hasOwnProperty.call(m, "senderTimestamp"))
+w.uint32(16).uint64(m.senderTimestamp);
+if (m.senderKeyIndexes != null && m.senderKeyIndexes.length) {
+w.uint32(26).fork();
+for (var i = 0; i < m.senderKeyIndexes.length; ++i)
+w.uint32(m.senderKeyIndexes[i]);
+w.ldelim();
+}
+if (m.senderAccountType != null && Object.hasOwnProperty.call(m, "senderAccountType"))
+w.uint32(32).int32(m.senderAccountType);
+if (m.receiverAccountType != null && Object.hasOwnProperty.call(m, "receiverAccountType"))
+w.uint32(40).int32(m.receiverAccountType);
+if (m.recipientKeyHash != null && Object.hasOwnProperty.call(m, "recipientKeyHash"))
+w.uint32(66).bytes(m.recipientKeyHash);
+if (m.recipientTimestamp != null && Object.hasOwnProperty.call(m, "recipientTimestamp"))
+w.uint32(72).uint64(m.recipientTimestamp);
+if (m.recipientKeyIndexes != null && m.recipientKeyIndexes.length) {
+w.uint32(82).fork();
+for (var i = 0; i < m.recipientKeyIndexes.length; ++i)
+w.uint32(m.recipientKeyIndexes[i]);
+w.ldelim();
+}
+return w;
+};
+DeviceListMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.DeviceListMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.senderKeyHash = r.bytes();
+break;
+}
+case 2: {
+m.senderTimestamp = r.uint64();
+break;
+}
+case 3: {
+if (!(m.senderKeyIndexes && m.senderKeyIndexes.length))
+m.senderKeyIndexes = [];
+if ((t & 7) === 2) {
+var c2 = r.uint32() + r.pos;
+while (r.pos < c2)
+m.senderKeyIndexes.push(r.uint32());
+} else
+m.senderKeyIndexes.push(r.uint32());
+break;
+}
+case 4: {
+m.senderAccountType = r.int32();
+break;
+}
+case 5: {
+m.receiverAccountType = r.int32();
+break;
+}
+case 8: {
+m.recipientKeyHash = r.bytes();
+break;
+}
+case 9: {
+m.recipientTimestamp = r.uint64();
+break;
+}
+case 10: {
+if (!(m.recipientKeyIndexes && m.recipientKeyIndexes.length))
+m.recipientKeyIndexes = [];
+if ((t & 7) === 2) {
+var c2 = r.uint32() + r.pos;
+while (r.pos < c2)
+m.recipientKeyIndexes.push(r.uint32());
+} else
+m.recipientKeyIndexes.push(r.uint32());
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+DeviceListMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.DeviceListMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.DeviceListMetadata();
+if (d.senderKeyHash != null) {
+if (typeof d.senderKeyHash === "string")
+$util.base64.decode(d.senderKeyHash, m.senderKeyHash = $util.newBuffer($util.base64.length(d.senderKeyHash)), 0);
+else if (d.senderKeyHash.length >= 0)
+m.senderKeyHash = d.senderKeyHash;
+}
+if (d.senderTimestamp != null) {
+if ($util.Long)
+(m.senderTimestamp = $util.Long.fromValue(d.senderTimestamp)).unsigned = true;
+else if (typeof d.senderTimestamp === "string")
+m.senderTimestamp = parseInt(d.senderTimestamp, 10);
+else if (typeof d.senderTimestamp === "number")
+m.senderTimestamp = d.senderTimestamp;
+else if (typeof d.senderTimestamp === "object")
+m.senderTimestamp = new $util.LongBits(d.senderTimestamp.low >>> 0, d.senderTimestamp.high >>> 0).toNumber(true);
+}
+if (d.senderKeyIndexes) {
+if (!Array.isArray(d.senderKeyIndexes))
+throw TypeError(".proto.DeviceListMetadata.senderKeyIndexes: array expected");
+m.senderKeyIndexes = [];
+for (var i = 0; i < d.senderKeyIndexes.length; ++i) {
+m.senderKeyIndexes[i] = d.senderKeyIndexes[i] >>> 0;
+}
+}
+switch (d.senderAccountType) {
+default:
+if (typeof d.senderAccountType === "number") {
+m.senderAccountType = d.senderAccountType;
+break;
+}
+break;
+case "E2EE":
+case 0:
+m.senderAccountType = 0;
+break;
+case "HOSTED":
+case 1:
+m.senderAccountType = 1;
+break;
+case "NON_E2EE":
+case 2:
+m.senderAccountType = 2;
+break;
+}
+switch (d.receiverAccountType) {
+default:
+if (typeof d.receiverAccountType === "number") {
+m.receiverAccountType = d.receiverAccountType;
+break;
+}
+break;
+case "E2EE":
+case 0:
+m.receiverAccountType = 0;
+break;
+case "HOSTED":
+case 1:
+m.receiverAccountType = 1;
+break;
+case "NON_E2EE":
+case 2:
+m.receiverAccountType = 2;
+break;
+}
+if (d.recipientKeyHash != null) {
+if (typeof d.recipientKeyHash === "string")
+$util.base64.decode(d.recipientKeyHash, m.recipientKeyHash = $util.newBuffer($util.base64.length(d.recipientKeyHash)), 0);
+else if (d.recipientKeyHash.length >= 0)
+m.recipientKeyHash = d.recipientKeyHash;
+}
+if (d.recipientTimestamp != null) {
+if ($util.Long)
+(m.recipientTimestamp = $util.Long.fromValue(d.recipientTimestamp)).unsigned = true;
+else if (typeof d.recipientTimestamp === "string")
+m.recipientTimestamp = parseInt(d.recipientTimestamp, 10);
+else if (typeof d.recipientTimestamp === "number")
+m.recipientTimestamp = d.recipientTimestamp;
+else if (typeof d.recipientTimestamp === "object")
+m.recipientTimestamp = new $util.LongBits(d.recipientTimestamp.low >>> 0, d.recipientTimestamp.high >>> 0).toNumber(true);
+}
+if (d.recipientKeyIndexes) {
+if (!Array.isArray(d.recipientKeyIndexes))
+throw TypeError(".proto.DeviceListMetadata.recipientKeyIndexes: array expected");
+m.recipientKeyIndexes = [];
+for (var i = 0; i < d.recipientKeyIndexes.length; ++i) {
+m.recipientKeyIndexes[i] = d.recipientKeyIndexes[i] >>> 0;
+}
+}
+return m;
+};
+DeviceListMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.senderKeyIndexes = [];
+d.recipientKeyIndexes = [];
+}
+if (m.senderKeyHash != null && m.hasOwnProperty("senderKeyHash")) {
+d.senderKeyHash = o.bytes === String ? $util.base64.encode(m.senderKeyHash, 0, m.senderKeyHash.length) : o.bytes === Array ? Array.prototype.slice.call(m.senderKeyHash) : m.senderKeyHash;
+if (o.oneofs)
+d._senderKeyHash = "senderKeyHash";
+}
+if (m.senderTimestamp != null && m.hasOwnProperty("senderTimestamp")) {
+if (typeof m.senderTimestamp === "number")
+d.senderTimestamp = o.longs === String ? String(m.senderTimestamp) : m.senderTimestamp;
+else
+d.senderTimestamp = o.longs === String ? longToString(m.senderTimestamp, true) : o.longs === Number ? longToNumber(m.senderTimestamp, true) : m.senderTimestamp;
+if (o.oneofs)
+d._senderTimestamp = "senderTimestamp";
+}
+if (m.senderKeyIndexes && m.senderKeyIndexes.length) {
+d.senderKeyIndexes = [];
+for (var j = 0; j < m.senderKeyIndexes.length; ++j) {
+d.senderKeyIndexes[j] = m.senderKeyIndexes[j];
+}
+}
+if (m.senderAccountType != null && m.hasOwnProperty("senderAccountType")) {
+d.senderAccountType = o.enums === String ? $root.proto.ADVEncryptionType[m.senderAccountType] === undefined ? m.senderAccountType : $root.proto.ADVEncryptionType[m.senderAccountType] : m.senderAccountType;
+if (o.oneofs)
+d._senderAccountType = "senderAccountType";
+}
+if (m.receiverAccountType != null && m.hasOwnProperty("receiverAccountType")) {
+d.receiverAccountType = o.enums === String ? $root.proto.ADVEncryptionType[m.receiverAccountType] === undefined ? m.receiverAccountType : $root.proto.ADVEncryptionType[m.receiverAccountType] : m.receiverAccountType;
+if (o.oneofs)
+d._receiverAccountType = "receiverAccountType";
+}
+if (m.recipientKeyHash != null && m.hasOwnProperty("recipientKeyHash")) {
+d.recipientKeyHash = o.bytes === String ? $util.base64.encode(m.recipientKeyHash, 0, m.recipientKeyHash.length) : o.bytes === Array ? Array.prototype.slice.call(m.recipientKeyHash) : m.recipientKeyHash;
+if (o.oneofs)
+d._recipientKeyHash = "recipientKeyHash";
+}
+if (m.recipientTimestamp != null && m.hasOwnProperty("recipientTimestamp")) {
+if (typeof m.recipientTimestamp === "number")
+d.recipientTimestamp = o.longs === String ? String(m.recipientTimestamp) : m.recipientTimestamp;
+else
+d.recipientTimestamp = o.longs === String ? longToString(m.recipientTimestamp, true) : o.longs === Number ? longToNumber(m.recipientTimestamp, true) : m.recipientTimestamp;
+if (o.oneofs)
+d._recipientTimestamp = "recipientTimestamp";
+}
+if (m.recipientKeyIndexes && m.recipientKeyIndexes.length) {
+d.recipientKeyIndexes = [];
+for (var j = 0; j < m.recipientKeyIndexes.length; ++j) {
+d.recipientKeyIndexes[j] = m.recipientKeyIndexes[j];
+}
+}
+return d;
+};
+DeviceListMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+DeviceListMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.DeviceListMetadata";
+};
+return DeviceListMetadata;

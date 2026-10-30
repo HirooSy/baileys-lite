@@ -1,0 +1,81 @@
+"use strict";
+function EventAdditionalMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+EventAdditionalMetadata.prototype.isStale = null;
+let $oneOfFields;
+Object.defineProperty(EventAdditionalMetadata.prototype, "_isStale", {
+get: $util.oneOfGetter($oneOfFields = ["isStale"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+EventAdditionalMetadata.create = function create(properties) {
+return new EventAdditionalMetadata(properties);
+};
+EventAdditionalMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.isStale != null && Object.hasOwnProperty.call(m, "isStale"))
+w.uint32(8).bool(m.isStale);
+return w;
+};
+EventAdditionalMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.EventAdditionalMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.isStale = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+EventAdditionalMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.EventAdditionalMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.EventAdditionalMetadata();
+if (d.isStale != null) {
+m.isStale = Boolean(d.isStale);
+}
+return m;
+};
+EventAdditionalMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.isStale != null && m.hasOwnProperty("isStale")) {
+d.isStale = m.isStale;
+if (o.oneofs)
+d._isStale = "isStale";
+}
+return d;
+};
+EventAdditionalMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+EventAdditionalMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.EventAdditionalMetadata";
+};
+return EventAdditionalMetadata;

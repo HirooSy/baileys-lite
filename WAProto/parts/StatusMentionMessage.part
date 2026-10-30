@@ -1,0 +1,83 @@
+"use strict";
+function StatusMentionMessage(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+StatusMentionMessage.prototype.quotedStatus = null;
+let $oneOfFields;
+Object.defineProperty(StatusMentionMessage.prototype, "_quotedStatus", {
+get: $util.oneOfGetter($oneOfFields = ["quotedStatus"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+StatusMentionMessage.create = function create(properties) {
+return new StatusMentionMessage(properties);
+};
+StatusMentionMessage.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.quotedStatus != null && Object.hasOwnProperty.call(m, "quotedStatus"))
+$root.proto.Message.encode(m.quotedStatus, w.uint32(10).fork()).ldelim();
+return w;
+};
+StatusMentionMessage.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.StatusMentionMessage();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.quotedStatus = $root.proto.Message.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+StatusMentionMessage.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.StatusMentionMessage)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.StatusMentionMessage();
+if (d.quotedStatus != null) {
+if (typeof d.quotedStatus !== "object")
+throw TypeError(".proto.StatusMentionMessage.quotedStatus: object expected");
+m.quotedStatus = $root.proto.Message.fromObject(d.quotedStatus, n + 1);
+}
+return m;
+};
+StatusMentionMessage.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.quotedStatus != null && m.hasOwnProperty("quotedStatus")) {
+d.quotedStatus = $root.proto.Message.toObject(m.quotedStatus, o);
+if (o.oneofs)
+d._quotedStatus = "quotedStatus";
+}
+return d;
+};
+StatusMentionMessage.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+StatusMentionMessage.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.StatusMentionMessage";
+};
+return StatusMentionMessage;

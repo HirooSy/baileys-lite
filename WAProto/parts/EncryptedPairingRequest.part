@@ -1,0 +1,106 @@
+"use strict";
+function EncryptedPairingRequest(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+EncryptedPairingRequest.prototype.encryptedPayload = null;
+EncryptedPairingRequest.prototype.iv = null;
+let $oneOfFields;
+Object.defineProperty(EncryptedPairingRequest.prototype, "_encryptedPayload", {
+get: $util.oneOfGetter($oneOfFields = ["encryptedPayload"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(EncryptedPairingRequest.prototype, "_iv", {
+get: $util.oneOfGetter($oneOfFields = ["iv"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+EncryptedPairingRequest.create = function create(properties) {
+return new EncryptedPairingRequest(properties);
+};
+EncryptedPairingRequest.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.encryptedPayload != null && Object.hasOwnProperty.call(m, "encryptedPayload"))
+w.uint32(10).bytes(m.encryptedPayload);
+if (m.iv != null && Object.hasOwnProperty.call(m, "iv"))
+w.uint32(18).bytes(m.iv);
+return w;
+};
+EncryptedPairingRequest.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.EncryptedPairingRequest();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.encryptedPayload = r.bytes();
+break;
+}
+case 2: {
+m.iv = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+EncryptedPairingRequest.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.EncryptedPairingRequest)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.EncryptedPairingRequest();
+if (d.encryptedPayload != null) {
+if (typeof d.encryptedPayload === "string")
+$util.base64.decode(d.encryptedPayload, m.encryptedPayload = $util.newBuffer($util.base64.length(d.encryptedPayload)), 0);
+else if (d.encryptedPayload.length >= 0)
+m.encryptedPayload = d.encryptedPayload;
+}
+if (d.iv != null) {
+if (typeof d.iv === "string")
+$util.base64.decode(d.iv, m.iv = $util.newBuffer($util.base64.length(d.iv)), 0);
+else if (d.iv.length >= 0)
+m.iv = d.iv;
+}
+return m;
+};
+EncryptedPairingRequest.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.encryptedPayload != null && m.hasOwnProperty("encryptedPayload")) {
+d.encryptedPayload = o.bytes === String ? $util.base64.encode(m.encryptedPayload, 0, m.encryptedPayload.length) : o.bytes === Array ? Array.prototype.slice.call(m.encryptedPayload) : m.encryptedPayload;
+if (o.oneofs)
+d._encryptedPayload = "encryptedPayload";
+}
+if (m.iv != null && m.hasOwnProperty("iv")) {
+d.iv = o.bytes === String ? $util.base64.encode(m.iv, 0, m.iv.length) : o.bytes === Array ? Array.prototype.slice.call(m.iv) : m.iv;
+if (o.oneofs)
+d._iv = "iv";
+}
+return d;
+};
+EncryptedPairingRequest.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+EncryptedPairingRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.EncryptedPairingRequest";
+};
+return EncryptedPairingRequest;

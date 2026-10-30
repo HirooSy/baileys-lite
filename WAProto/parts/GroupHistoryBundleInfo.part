@@ -1,0 +1,141 @@
+"use strict";
+function GroupHistoryBundleInfo(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+GroupHistoryBundleInfo.prototype.deprecatedMessageHistoryBundle = null;
+GroupHistoryBundleInfo.prototype.processState = null;
+let $oneOfFields;
+Object.defineProperty(GroupHistoryBundleInfo.prototype, "_deprecatedMessageHistoryBundle", {
+get: $util.oneOfGetter($oneOfFields = ["deprecatedMessageHistoryBundle"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GroupHistoryBundleInfo.prototype, "_processState", {
+get: $util.oneOfGetter($oneOfFields = ["processState"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+GroupHistoryBundleInfo.create = function create(properties) {
+return new GroupHistoryBundleInfo(properties);
+};
+GroupHistoryBundleInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.deprecatedMessageHistoryBundle != null && Object.hasOwnProperty.call(m, "deprecatedMessageHistoryBundle"))
+$root.proto.Message.MessageHistoryBundle.encode(m.deprecatedMessageHistoryBundle, w.uint32(10).fork()).ldelim();
+if (m.processState != null && Object.hasOwnProperty.call(m, "processState"))
+w.uint32(16).int32(m.processState);
+return w;
+};
+GroupHistoryBundleInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.GroupHistoryBundleInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.deprecatedMessageHistoryBundle = $root.proto.Message.MessageHistoryBundle.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.processState = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+GroupHistoryBundleInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.GroupHistoryBundleInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.GroupHistoryBundleInfo();
+if (d.deprecatedMessageHistoryBundle != null) {
+if (typeof d.deprecatedMessageHistoryBundle !== "object")
+throw TypeError(".proto.GroupHistoryBundleInfo.deprecatedMessageHistoryBundle: object expected");
+m.deprecatedMessageHistoryBundle = $root.proto.Message.MessageHistoryBundle.fromObject(d.deprecatedMessageHistoryBundle, n + 1);
+}
+switch (d.processState) {
+default:
+if (typeof d.processState === "number") {
+m.processState = d.processState;
+break;
+}
+break;
+case "NOT_INJECTED":
+case 0:
+m.processState = 0;
+break;
+case "INJECTED":
+case 1:
+m.processState = 1;
+break;
+case "INJECTED_PARTIAL":
+case 2:
+m.processState = 2;
+break;
+case "INJECTION_FAILED":
+case 3:
+m.processState = 3;
+break;
+case "INJECTION_FAILED_NO_RETRY":
+case 4:
+m.processState = 4;
+break;
+case "DEDUPED":
+case 5:
+m.processState = 5;
+break;
+}
+return m;
+};
+GroupHistoryBundleInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.deprecatedMessageHistoryBundle != null && m.hasOwnProperty("deprecatedMessageHistoryBundle")) {
+d.deprecatedMessageHistoryBundle = $root.proto.Message.MessageHistoryBundle.toObject(m.deprecatedMessageHistoryBundle, o);
+if (o.oneofs)
+d._deprecatedMessageHistoryBundle = "deprecatedMessageHistoryBundle";
+}
+if (m.processState != null && m.hasOwnProperty("processState")) {
+d.processState = o.enums === String ? $root.proto.GroupHistoryBundleInfo.ProcessState[m.processState] === undefined ? m.processState : $root.proto.GroupHistoryBundleInfo.ProcessState[m.processState] : m.processState;
+if (o.oneofs)
+d._processState = "processState";
+}
+return d;
+};
+GroupHistoryBundleInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+GroupHistoryBundleInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.GroupHistoryBundleInfo";
+};
+$lazy(GroupHistoryBundleInfo, "ProcessState", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "NOT_INJECTED"] = 0;
+values[valuesById[1] = "INJECTED"] = 1;
+values[valuesById[2] = "INJECTED_PARTIAL"] = 2;
+values[valuesById[3] = "INJECTION_FAILED"] = 3;
+values[valuesById[4] = "INJECTION_FAILED_NO_RETRY"] = 4;
+values[valuesById[5] = "DEDUPED"] = 5;
+return values;
+});
+return GroupHistoryBundleInfo;

@@ -1,0 +1,1870 @@
+"use strict";
+function WebFeatures(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+WebFeatures.prototype.labelsDisplay = null;
+WebFeatures.prototype.voipIndividualOutgoing = null;
+WebFeatures.prototype.groupsV3 = null;
+WebFeatures.prototype.groupsV3Create = null;
+WebFeatures.prototype.changeNumberV2 = null;
+WebFeatures.prototype.queryStatusV3Thumbnail = null;
+WebFeatures.prototype.liveLocations = null;
+WebFeatures.prototype.queryVname = null;
+WebFeatures.prototype.voipIndividualIncoming = null;
+WebFeatures.prototype.quickRepliesQuery = null;
+WebFeatures.prototype.payments = null;
+WebFeatures.prototype.stickerPackQuery = null;
+WebFeatures.prototype.liveLocationsFinal = null;
+WebFeatures.prototype.labelsEdit = null;
+WebFeatures.prototype.mediaUpload = null;
+WebFeatures.prototype.mediaUploadRichQuickReplies = null;
+WebFeatures.prototype.vnameV2 = null;
+WebFeatures.prototype.videoPlaybackUrl = null;
+WebFeatures.prototype.statusRanking = null;
+WebFeatures.prototype.voipIndividualVideo = null;
+WebFeatures.prototype.thirdPartyStickers = null;
+WebFeatures.prototype.frequentlyForwardedSetting = null;
+WebFeatures.prototype.groupsV4JoinPermission = null;
+WebFeatures.prototype.recentStickers = null;
+WebFeatures.prototype.catalog = null;
+WebFeatures.prototype.starredStickers = null;
+WebFeatures.prototype.voipGroupCall = null;
+WebFeatures.prototype.templateMessage = null;
+WebFeatures.prototype.templateMessageInteractivity = null;
+WebFeatures.prototype.ephemeralMessages = null;
+WebFeatures.prototype.e2ENotificationSync = null;
+WebFeatures.prototype.recentStickersV2 = null;
+WebFeatures.prototype.recentStickersV3 = null;
+WebFeatures.prototype.userNotice = null;
+WebFeatures.prototype.support = null;
+WebFeatures.prototype.groupUiiCleanup = null;
+WebFeatures.prototype.groupDogfoodingInternalOnly = null;
+WebFeatures.prototype.settingsSync = null;
+WebFeatures.prototype.archiveV2 = null;
+WebFeatures.prototype.ephemeralAllowGroupMembers = null;
+WebFeatures.prototype.ephemeral24HDuration = null;
+WebFeatures.prototype.mdForceUpgrade = null;
+WebFeatures.prototype.disappearingMode = null;
+WebFeatures.prototype.externalMdOptInAvailable = null;
+WebFeatures.prototype.noDeleteMessageTimeLimit = null;
+let $oneOfFields;
+Object.defineProperty(WebFeatures.prototype, "_labelsDisplay", {
+get: $util.oneOfGetter($oneOfFields = ["labelsDisplay"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_voipIndividualOutgoing", {
+get: $util.oneOfGetter($oneOfFields = ["voipIndividualOutgoing"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_groupsV3", {
+get: $util.oneOfGetter($oneOfFields = ["groupsV3"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_groupsV3Create", {
+get: $util.oneOfGetter($oneOfFields = ["groupsV3Create"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_changeNumberV2", {
+get: $util.oneOfGetter($oneOfFields = ["changeNumberV2"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_queryStatusV3Thumbnail", {
+get: $util.oneOfGetter($oneOfFields = ["queryStatusV3Thumbnail"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_liveLocations", {
+get: $util.oneOfGetter($oneOfFields = ["liveLocations"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_queryVname", {
+get: $util.oneOfGetter($oneOfFields = ["queryVname"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_voipIndividualIncoming", {
+get: $util.oneOfGetter($oneOfFields = ["voipIndividualIncoming"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_quickRepliesQuery", {
+get: $util.oneOfGetter($oneOfFields = ["quickRepliesQuery"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_payments", {
+get: $util.oneOfGetter($oneOfFields = ["payments"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_stickerPackQuery", {
+get: $util.oneOfGetter($oneOfFields = ["stickerPackQuery"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_liveLocationsFinal", {
+get: $util.oneOfGetter($oneOfFields = ["liveLocationsFinal"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_labelsEdit", {
+get: $util.oneOfGetter($oneOfFields = ["labelsEdit"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_mediaUpload", {
+get: $util.oneOfGetter($oneOfFields = ["mediaUpload"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_mediaUploadRichQuickReplies", {
+get: $util.oneOfGetter($oneOfFields = ["mediaUploadRichQuickReplies"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_vnameV2", {
+get: $util.oneOfGetter($oneOfFields = ["vnameV2"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_videoPlaybackUrl", {
+get: $util.oneOfGetter($oneOfFields = ["videoPlaybackUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_statusRanking", {
+get: $util.oneOfGetter($oneOfFields = ["statusRanking"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_voipIndividualVideo", {
+get: $util.oneOfGetter($oneOfFields = ["voipIndividualVideo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_thirdPartyStickers", {
+get: $util.oneOfGetter($oneOfFields = ["thirdPartyStickers"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_frequentlyForwardedSetting", {
+get: $util.oneOfGetter($oneOfFields = ["frequentlyForwardedSetting"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_groupsV4JoinPermission", {
+get: $util.oneOfGetter($oneOfFields = ["groupsV4JoinPermission"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_recentStickers", {
+get: $util.oneOfGetter($oneOfFields = ["recentStickers"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_catalog", {
+get: $util.oneOfGetter($oneOfFields = ["catalog"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_starredStickers", {
+get: $util.oneOfGetter($oneOfFields = ["starredStickers"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_voipGroupCall", {
+get: $util.oneOfGetter($oneOfFields = ["voipGroupCall"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_templateMessage", {
+get: $util.oneOfGetter($oneOfFields = ["templateMessage"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_templateMessageInteractivity", {
+get: $util.oneOfGetter($oneOfFields = ["templateMessageInteractivity"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_ephemeralMessages", {
+get: $util.oneOfGetter($oneOfFields = ["ephemeralMessages"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_e2ENotificationSync", {
+get: $util.oneOfGetter($oneOfFields = ["e2ENotificationSync"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_recentStickersV2", {
+get: $util.oneOfGetter($oneOfFields = ["recentStickersV2"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_recentStickersV3", {
+get: $util.oneOfGetter($oneOfFields = ["recentStickersV3"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_userNotice", {
+get: $util.oneOfGetter($oneOfFields = ["userNotice"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_support", {
+get: $util.oneOfGetter($oneOfFields = ["support"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_groupUiiCleanup", {
+get: $util.oneOfGetter($oneOfFields = ["groupUiiCleanup"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_groupDogfoodingInternalOnly", {
+get: $util.oneOfGetter($oneOfFields = ["groupDogfoodingInternalOnly"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_settingsSync", {
+get: $util.oneOfGetter($oneOfFields = ["settingsSync"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_archiveV2", {
+get: $util.oneOfGetter($oneOfFields = ["archiveV2"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_ephemeralAllowGroupMembers", {
+get: $util.oneOfGetter($oneOfFields = ["ephemeralAllowGroupMembers"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_ephemeral24HDuration", {
+get: $util.oneOfGetter($oneOfFields = ["ephemeral24HDuration"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_mdForceUpgrade", {
+get: $util.oneOfGetter($oneOfFields = ["mdForceUpgrade"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_disappearingMode", {
+get: $util.oneOfGetter($oneOfFields = ["disappearingMode"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_externalMdOptInAvailable", {
+get: $util.oneOfGetter($oneOfFields = ["externalMdOptInAvailable"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebFeatures.prototype, "_noDeleteMessageTimeLimit", {
+get: $util.oneOfGetter($oneOfFields = ["noDeleteMessageTimeLimit"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+WebFeatures.create = function create(properties) {
+return new WebFeatures(properties);
+};
+WebFeatures.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.labelsDisplay != null && Object.hasOwnProperty.call(m, "labelsDisplay"))
+w.uint32(8).int32(m.labelsDisplay);
+if (m.voipIndividualOutgoing != null && Object.hasOwnProperty.call(m, "voipIndividualOutgoing"))
+w.uint32(16).int32(m.voipIndividualOutgoing);
+if (m.groupsV3 != null && Object.hasOwnProperty.call(m, "groupsV3"))
+w.uint32(24).int32(m.groupsV3);
+if (m.groupsV3Create != null && Object.hasOwnProperty.call(m, "groupsV3Create"))
+w.uint32(32).int32(m.groupsV3Create);
+if (m.changeNumberV2 != null && Object.hasOwnProperty.call(m, "changeNumberV2"))
+w.uint32(40).int32(m.changeNumberV2);
+if (m.queryStatusV3Thumbnail != null && Object.hasOwnProperty.call(m, "queryStatusV3Thumbnail"))
+w.uint32(48).int32(m.queryStatusV3Thumbnail);
+if (m.liveLocations != null && Object.hasOwnProperty.call(m, "liveLocations"))
+w.uint32(56).int32(m.liveLocations);
+if (m.queryVname != null && Object.hasOwnProperty.call(m, "queryVname"))
+w.uint32(64).int32(m.queryVname);
+if (m.voipIndividualIncoming != null && Object.hasOwnProperty.call(m, "voipIndividualIncoming"))
+w.uint32(72).int32(m.voipIndividualIncoming);
+if (m.quickRepliesQuery != null && Object.hasOwnProperty.call(m, "quickRepliesQuery"))
+w.uint32(80).int32(m.quickRepliesQuery);
+if (m.payments != null && Object.hasOwnProperty.call(m, "payments"))
+w.uint32(88).int32(m.payments);
+if (m.stickerPackQuery != null && Object.hasOwnProperty.call(m, "stickerPackQuery"))
+w.uint32(96).int32(m.stickerPackQuery);
+if (m.liveLocationsFinal != null && Object.hasOwnProperty.call(m, "liveLocationsFinal"))
+w.uint32(104).int32(m.liveLocationsFinal);
+if (m.labelsEdit != null && Object.hasOwnProperty.call(m, "labelsEdit"))
+w.uint32(112).int32(m.labelsEdit);
+if (m.mediaUpload != null && Object.hasOwnProperty.call(m, "mediaUpload"))
+w.uint32(120).int32(m.mediaUpload);
+if (m.mediaUploadRichQuickReplies != null && Object.hasOwnProperty.call(m, "mediaUploadRichQuickReplies"))
+w.uint32(144).int32(m.mediaUploadRichQuickReplies);
+if (m.vnameV2 != null && Object.hasOwnProperty.call(m, "vnameV2"))
+w.uint32(152).int32(m.vnameV2);
+if (m.videoPlaybackUrl != null && Object.hasOwnProperty.call(m, "videoPlaybackUrl"))
+w.uint32(160).int32(m.videoPlaybackUrl);
+if (m.statusRanking != null && Object.hasOwnProperty.call(m, "statusRanking"))
+w.uint32(168).int32(m.statusRanking);
+if (m.voipIndividualVideo != null && Object.hasOwnProperty.call(m, "voipIndividualVideo"))
+w.uint32(176).int32(m.voipIndividualVideo);
+if (m.thirdPartyStickers != null && Object.hasOwnProperty.call(m, "thirdPartyStickers"))
+w.uint32(184).int32(m.thirdPartyStickers);
+if (m.frequentlyForwardedSetting != null && Object.hasOwnProperty.call(m, "frequentlyForwardedSetting"))
+w.uint32(192).int32(m.frequentlyForwardedSetting);
+if (m.groupsV4JoinPermission != null && Object.hasOwnProperty.call(m, "groupsV4JoinPermission"))
+w.uint32(200).int32(m.groupsV4JoinPermission);
+if (m.recentStickers != null && Object.hasOwnProperty.call(m, "recentStickers"))
+w.uint32(208).int32(m.recentStickers);
+if (m.catalog != null && Object.hasOwnProperty.call(m, "catalog"))
+w.uint32(216).int32(m.catalog);
+if (m.starredStickers != null && Object.hasOwnProperty.call(m, "starredStickers"))
+w.uint32(224).int32(m.starredStickers);
+if (m.voipGroupCall != null && Object.hasOwnProperty.call(m, "voipGroupCall"))
+w.uint32(232).int32(m.voipGroupCall);
+if (m.templateMessage != null && Object.hasOwnProperty.call(m, "templateMessage"))
+w.uint32(240).int32(m.templateMessage);
+if (m.templateMessageInteractivity != null && Object.hasOwnProperty.call(m, "templateMessageInteractivity"))
+w.uint32(248).int32(m.templateMessageInteractivity);
+if (m.ephemeralMessages != null && Object.hasOwnProperty.call(m, "ephemeralMessages"))
+w.uint32(256).int32(m.ephemeralMessages);
+if (m.e2ENotificationSync != null && Object.hasOwnProperty.call(m, "e2ENotificationSync"))
+w.uint32(264).int32(m.e2ENotificationSync);
+if (m.recentStickersV2 != null && Object.hasOwnProperty.call(m, "recentStickersV2"))
+w.uint32(272).int32(m.recentStickersV2);
+if (m.recentStickersV3 != null && Object.hasOwnProperty.call(m, "recentStickersV3"))
+w.uint32(288).int32(m.recentStickersV3);
+if (m.userNotice != null && Object.hasOwnProperty.call(m, "userNotice"))
+w.uint32(296).int32(m.userNotice);
+if (m.support != null && Object.hasOwnProperty.call(m, "support"))
+w.uint32(312).int32(m.support);
+if (m.groupUiiCleanup != null && Object.hasOwnProperty.call(m, "groupUiiCleanup"))
+w.uint32(320).int32(m.groupUiiCleanup);
+if (m.groupDogfoodingInternalOnly != null && Object.hasOwnProperty.call(m, "groupDogfoodingInternalOnly"))
+w.uint32(328).int32(m.groupDogfoodingInternalOnly);
+if (m.settingsSync != null && Object.hasOwnProperty.call(m, "settingsSync"))
+w.uint32(336).int32(m.settingsSync);
+if (m.archiveV2 != null && Object.hasOwnProperty.call(m, "archiveV2"))
+w.uint32(344).int32(m.archiveV2);
+if (m.ephemeralAllowGroupMembers != null && Object.hasOwnProperty.call(m, "ephemeralAllowGroupMembers"))
+w.uint32(352).int32(m.ephemeralAllowGroupMembers);
+if (m.ephemeral24HDuration != null && Object.hasOwnProperty.call(m, "ephemeral24HDuration"))
+w.uint32(360).int32(m.ephemeral24HDuration);
+if (m.mdForceUpgrade != null && Object.hasOwnProperty.call(m, "mdForceUpgrade"))
+w.uint32(368).int32(m.mdForceUpgrade);
+if (m.disappearingMode != null && Object.hasOwnProperty.call(m, "disappearingMode"))
+w.uint32(376).int32(m.disappearingMode);
+if (m.externalMdOptInAvailable != null && Object.hasOwnProperty.call(m, "externalMdOptInAvailable"))
+w.uint32(384).int32(m.externalMdOptInAvailable);
+if (m.noDeleteMessageTimeLimit != null && Object.hasOwnProperty.call(m, "noDeleteMessageTimeLimit"))
+w.uint32(392).int32(m.noDeleteMessageTimeLimit);
+return w;
+};
+WebFeatures.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.WebFeatures();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.labelsDisplay = r.int32();
+break;
+}
+case 2: {
+m.voipIndividualOutgoing = r.int32();
+break;
+}
+case 3: {
+m.groupsV3 = r.int32();
+break;
+}
+case 4: {
+m.groupsV3Create = r.int32();
+break;
+}
+case 5: {
+m.changeNumberV2 = r.int32();
+break;
+}
+case 6: {
+m.queryStatusV3Thumbnail = r.int32();
+break;
+}
+case 7: {
+m.liveLocations = r.int32();
+break;
+}
+case 8: {
+m.queryVname = r.int32();
+break;
+}
+case 9: {
+m.voipIndividualIncoming = r.int32();
+break;
+}
+case 10: {
+m.quickRepliesQuery = r.int32();
+break;
+}
+case 11: {
+m.payments = r.int32();
+break;
+}
+case 12: {
+m.stickerPackQuery = r.int32();
+break;
+}
+case 13: {
+m.liveLocationsFinal = r.int32();
+break;
+}
+case 14: {
+m.labelsEdit = r.int32();
+break;
+}
+case 15: {
+m.mediaUpload = r.int32();
+break;
+}
+case 18: {
+m.mediaUploadRichQuickReplies = r.int32();
+break;
+}
+case 19: {
+m.vnameV2 = r.int32();
+break;
+}
+case 20: {
+m.videoPlaybackUrl = r.int32();
+break;
+}
+case 21: {
+m.statusRanking = r.int32();
+break;
+}
+case 22: {
+m.voipIndividualVideo = r.int32();
+break;
+}
+case 23: {
+m.thirdPartyStickers = r.int32();
+break;
+}
+case 24: {
+m.frequentlyForwardedSetting = r.int32();
+break;
+}
+case 25: {
+m.groupsV4JoinPermission = r.int32();
+break;
+}
+case 26: {
+m.recentStickers = r.int32();
+break;
+}
+case 27: {
+m.catalog = r.int32();
+break;
+}
+case 28: {
+m.starredStickers = r.int32();
+break;
+}
+case 29: {
+m.voipGroupCall = r.int32();
+break;
+}
+case 30: {
+m.templateMessage = r.int32();
+break;
+}
+case 31: {
+m.templateMessageInteractivity = r.int32();
+break;
+}
+case 32: {
+m.ephemeralMessages = r.int32();
+break;
+}
+case 33: {
+m.e2ENotificationSync = r.int32();
+break;
+}
+case 34: {
+m.recentStickersV2 = r.int32();
+break;
+}
+case 36: {
+m.recentStickersV3 = r.int32();
+break;
+}
+case 37: {
+m.userNotice = r.int32();
+break;
+}
+case 39: {
+m.support = r.int32();
+break;
+}
+case 40: {
+m.groupUiiCleanup = r.int32();
+break;
+}
+case 41: {
+m.groupDogfoodingInternalOnly = r.int32();
+break;
+}
+case 42: {
+m.settingsSync = r.int32();
+break;
+}
+case 43: {
+m.archiveV2 = r.int32();
+break;
+}
+case 44: {
+m.ephemeralAllowGroupMembers = r.int32();
+break;
+}
+case 45: {
+m.ephemeral24HDuration = r.int32();
+break;
+}
+case 46: {
+m.mdForceUpgrade = r.int32();
+break;
+}
+case 47: {
+m.disappearingMode = r.int32();
+break;
+}
+case 48: {
+m.externalMdOptInAvailable = r.int32();
+break;
+}
+case 49: {
+m.noDeleteMessageTimeLimit = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+WebFeatures.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.WebFeatures)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.WebFeatures();
+switch (d.labelsDisplay) {
+default:
+if (typeof d.labelsDisplay === "number") {
+m.labelsDisplay = d.labelsDisplay;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.labelsDisplay = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.labelsDisplay = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.labelsDisplay = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.labelsDisplay = 3;
+break;
+}
+switch (d.voipIndividualOutgoing) {
+default:
+if (typeof d.voipIndividualOutgoing === "number") {
+m.voipIndividualOutgoing = d.voipIndividualOutgoing;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.voipIndividualOutgoing = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.voipIndividualOutgoing = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.voipIndividualOutgoing = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.voipIndividualOutgoing = 3;
+break;
+}
+switch (d.groupsV3) {
+default:
+if (typeof d.groupsV3 === "number") {
+m.groupsV3 = d.groupsV3;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.groupsV3 = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.groupsV3 = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.groupsV3 = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.groupsV3 = 3;
+break;
+}
+switch (d.groupsV3Create) {
+default:
+if (typeof d.groupsV3Create === "number") {
+m.groupsV3Create = d.groupsV3Create;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.groupsV3Create = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.groupsV3Create = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.groupsV3Create = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.groupsV3Create = 3;
+break;
+}
+switch (d.changeNumberV2) {
+default:
+if (typeof d.changeNumberV2 === "number") {
+m.changeNumberV2 = d.changeNumberV2;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.changeNumberV2 = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.changeNumberV2 = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.changeNumberV2 = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.changeNumberV2 = 3;
+break;
+}
+switch (d.queryStatusV3Thumbnail) {
+default:
+if (typeof d.queryStatusV3Thumbnail === "number") {
+m.queryStatusV3Thumbnail = d.queryStatusV3Thumbnail;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.queryStatusV3Thumbnail = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.queryStatusV3Thumbnail = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.queryStatusV3Thumbnail = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.queryStatusV3Thumbnail = 3;
+break;
+}
+switch (d.liveLocations) {
+default:
+if (typeof d.liveLocations === "number") {
+m.liveLocations = d.liveLocations;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.liveLocations = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.liveLocations = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.liveLocations = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.liveLocations = 3;
+break;
+}
+switch (d.queryVname) {
+default:
+if (typeof d.queryVname === "number") {
+m.queryVname = d.queryVname;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.queryVname = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.queryVname = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.queryVname = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.queryVname = 3;
+break;
+}
+switch (d.voipIndividualIncoming) {
+default:
+if (typeof d.voipIndividualIncoming === "number") {
+m.voipIndividualIncoming = d.voipIndividualIncoming;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.voipIndividualIncoming = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.voipIndividualIncoming = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.voipIndividualIncoming = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.voipIndividualIncoming = 3;
+break;
+}
+switch (d.quickRepliesQuery) {
+default:
+if (typeof d.quickRepliesQuery === "number") {
+m.quickRepliesQuery = d.quickRepliesQuery;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.quickRepliesQuery = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.quickRepliesQuery = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.quickRepliesQuery = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.quickRepliesQuery = 3;
+break;
+}
+switch (d.payments) {
+default:
+if (typeof d.payments === "number") {
+m.payments = d.payments;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.payments = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.payments = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.payments = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.payments = 3;
+break;
+}
+switch (d.stickerPackQuery) {
+default:
+if (typeof d.stickerPackQuery === "number") {
+m.stickerPackQuery = d.stickerPackQuery;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.stickerPackQuery = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.stickerPackQuery = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.stickerPackQuery = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.stickerPackQuery = 3;
+break;
+}
+switch (d.liveLocationsFinal) {
+default:
+if (typeof d.liveLocationsFinal === "number") {
+m.liveLocationsFinal = d.liveLocationsFinal;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.liveLocationsFinal = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.liveLocationsFinal = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.liveLocationsFinal = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.liveLocationsFinal = 3;
+break;
+}
+switch (d.labelsEdit) {
+default:
+if (typeof d.labelsEdit === "number") {
+m.labelsEdit = d.labelsEdit;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.labelsEdit = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.labelsEdit = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.labelsEdit = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.labelsEdit = 3;
+break;
+}
+switch (d.mediaUpload) {
+default:
+if (typeof d.mediaUpload === "number") {
+m.mediaUpload = d.mediaUpload;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.mediaUpload = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.mediaUpload = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.mediaUpload = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.mediaUpload = 3;
+break;
+}
+switch (d.mediaUploadRichQuickReplies) {
+default:
+if (typeof d.mediaUploadRichQuickReplies === "number") {
+m.mediaUploadRichQuickReplies = d.mediaUploadRichQuickReplies;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.mediaUploadRichQuickReplies = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.mediaUploadRichQuickReplies = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.mediaUploadRichQuickReplies = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.mediaUploadRichQuickReplies = 3;
+break;
+}
+switch (d.vnameV2) {
+default:
+if (typeof d.vnameV2 === "number") {
+m.vnameV2 = d.vnameV2;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.vnameV2 = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.vnameV2 = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.vnameV2 = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.vnameV2 = 3;
+break;
+}
+switch (d.videoPlaybackUrl) {
+default:
+if (typeof d.videoPlaybackUrl === "number") {
+m.videoPlaybackUrl = d.videoPlaybackUrl;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.videoPlaybackUrl = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.videoPlaybackUrl = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.videoPlaybackUrl = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.videoPlaybackUrl = 3;
+break;
+}
+switch (d.statusRanking) {
+default:
+if (typeof d.statusRanking === "number") {
+m.statusRanking = d.statusRanking;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.statusRanking = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.statusRanking = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.statusRanking = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.statusRanking = 3;
+break;
+}
+switch (d.voipIndividualVideo) {
+default:
+if (typeof d.voipIndividualVideo === "number") {
+m.voipIndividualVideo = d.voipIndividualVideo;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.voipIndividualVideo = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.voipIndividualVideo = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.voipIndividualVideo = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.voipIndividualVideo = 3;
+break;
+}
+switch (d.thirdPartyStickers) {
+default:
+if (typeof d.thirdPartyStickers === "number") {
+m.thirdPartyStickers = d.thirdPartyStickers;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.thirdPartyStickers = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.thirdPartyStickers = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.thirdPartyStickers = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.thirdPartyStickers = 3;
+break;
+}
+switch (d.frequentlyForwardedSetting) {
+default:
+if (typeof d.frequentlyForwardedSetting === "number") {
+m.frequentlyForwardedSetting = d.frequentlyForwardedSetting;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.frequentlyForwardedSetting = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.frequentlyForwardedSetting = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.frequentlyForwardedSetting = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.frequentlyForwardedSetting = 3;
+break;
+}
+switch (d.groupsV4JoinPermission) {
+default:
+if (typeof d.groupsV4JoinPermission === "number") {
+m.groupsV4JoinPermission = d.groupsV4JoinPermission;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.groupsV4JoinPermission = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.groupsV4JoinPermission = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.groupsV4JoinPermission = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.groupsV4JoinPermission = 3;
+break;
+}
+switch (d.recentStickers) {
+default:
+if (typeof d.recentStickers === "number") {
+m.recentStickers = d.recentStickers;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.recentStickers = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.recentStickers = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.recentStickers = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.recentStickers = 3;
+break;
+}
+switch (d.catalog) {
+default:
+if (typeof d.catalog === "number") {
+m.catalog = d.catalog;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.catalog = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.catalog = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.catalog = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.catalog = 3;
+break;
+}
+switch (d.starredStickers) {
+default:
+if (typeof d.starredStickers === "number") {
+m.starredStickers = d.starredStickers;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.starredStickers = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.starredStickers = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.starredStickers = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.starredStickers = 3;
+break;
+}
+switch (d.voipGroupCall) {
+default:
+if (typeof d.voipGroupCall === "number") {
+m.voipGroupCall = d.voipGroupCall;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.voipGroupCall = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.voipGroupCall = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.voipGroupCall = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.voipGroupCall = 3;
+break;
+}
+switch (d.templateMessage) {
+default:
+if (typeof d.templateMessage === "number") {
+m.templateMessage = d.templateMessage;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.templateMessage = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.templateMessage = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.templateMessage = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.templateMessage = 3;
+break;
+}
+switch (d.templateMessageInteractivity) {
+default:
+if (typeof d.templateMessageInteractivity === "number") {
+m.templateMessageInteractivity = d.templateMessageInteractivity;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.templateMessageInteractivity = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.templateMessageInteractivity = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.templateMessageInteractivity = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.templateMessageInteractivity = 3;
+break;
+}
+switch (d.ephemeralMessages) {
+default:
+if (typeof d.ephemeralMessages === "number") {
+m.ephemeralMessages = d.ephemeralMessages;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.ephemeralMessages = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.ephemeralMessages = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.ephemeralMessages = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.ephemeralMessages = 3;
+break;
+}
+switch (d.e2ENotificationSync) {
+default:
+if (typeof d.e2ENotificationSync === "number") {
+m.e2ENotificationSync = d.e2ENotificationSync;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.e2ENotificationSync = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.e2ENotificationSync = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.e2ENotificationSync = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.e2ENotificationSync = 3;
+break;
+}
+switch (d.recentStickersV2) {
+default:
+if (typeof d.recentStickersV2 === "number") {
+m.recentStickersV2 = d.recentStickersV2;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.recentStickersV2 = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.recentStickersV2 = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.recentStickersV2 = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.recentStickersV2 = 3;
+break;
+}
+switch (d.recentStickersV3) {
+default:
+if (typeof d.recentStickersV3 === "number") {
+m.recentStickersV3 = d.recentStickersV3;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.recentStickersV3 = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.recentStickersV3 = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.recentStickersV3 = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.recentStickersV3 = 3;
+break;
+}
+switch (d.userNotice) {
+default:
+if (typeof d.userNotice === "number") {
+m.userNotice = d.userNotice;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.userNotice = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.userNotice = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.userNotice = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.userNotice = 3;
+break;
+}
+switch (d.support) {
+default:
+if (typeof d.support === "number") {
+m.support = d.support;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.support = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.support = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.support = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.support = 3;
+break;
+}
+switch (d.groupUiiCleanup) {
+default:
+if (typeof d.groupUiiCleanup === "number") {
+m.groupUiiCleanup = d.groupUiiCleanup;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.groupUiiCleanup = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.groupUiiCleanup = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.groupUiiCleanup = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.groupUiiCleanup = 3;
+break;
+}
+switch (d.groupDogfoodingInternalOnly) {
+default:
+if (typeof d.groupDogfoodingInternalOnly === "number") {
+m.groupDogfoodingInternalOnly = d.groupDogfoodingInternalOnly;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.groupDogfoodingInternalOnly = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.groupDogfoodingInternalOnly = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.groupDogfoodingInternalOnly = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.groupDogfoodingInternalOnly = 3;
+break;
+}
+switch (d.settingsSync) {
+default:
+if (typeof d.settingsSync === "number") {
+m.settingsSync = d.settingsSync;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.settingsSync = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.settingsSync = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.settingsSync = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.settingsSync = 3;
+break;
+}
+switch (d.archiveV2) {
+default:
+if (typeof d.archiveV2 === "number") {
+m.archiveV2 = d.archiveV2;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.archiveV2 = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.archiveV2 = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.archiveV2 = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.archiveV2 = 3;
+break;
+}
+switch (d.ephemeralAllowGroupMembers) {
+default:
+if (typeof d.ephemeralAllowGroupMembers === "number") {
+m.ephemeralAllowGroupMembers = d.ephemeralAllowGroupMembers;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.ephemeralAllowGroupMembers = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.ephemeralAllowGroupMembers = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.ephemeralAllowGroupMembers = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.ephemeralAllowGroupMembers = 3;
+break;
+}
+switch (d.ephemeral24HDuration) {
+default:
+if (typeof d.ephemeral24HDuration === "number") {
+m.ephemeral24HDuration = d.ephemeral24HDuration;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.ephemeral24HDuration = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.ephemeral24HDuration = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.ephemeral24HDuration = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.ephemeral24HDuration = 3;
+break;
+}
+switch (d.mdForceUpgrade) {
+default:
+if (typeof d.mdForceUpgrade === "number") {
+m.mdForceUpgrade = d.mdForceUpgrade;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.mdForceUpgrade = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.mdForceUpgrade = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.mdForceUpgrade = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.mdForceUpgrade = 3;
+break;
+}
+switch (d.disappearingMode) {
+default:
+if (typeof d.disappearingMode === "number") {
+m.disappearingMode = d.disappearingMode;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.disappearingMode = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.disappearingMode = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.disappearingMode = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.disappearingMode = 3;
+break;
+}
+switch (d.externalMdOptInAvailable) {
+default:
+if (typeof d.externalMdOptInAvailable === "number") {
+m.externalMdOptInAvailable = d.externalMdOptInAvailable;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.externalMdOptInAvailable = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.externalMdOptInAvailable = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.externalMdOptInAvailable = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.externalMdOptInAvailable = 3;
+break;
+}
+switch (d.noDeleteMessageTimeLimit) {
+default:
+if (typeof d.noDeleteMessageTimeLimit === "number") {
+m.noDeleteMessageTimeLimit = d.noDeleteMessageTimeLimit;
+break;
+}
+break;
+case "NOT_STARTED":
+case 0:
+m.noDeleteMessageTimeLimit = 0;
+break;
+case "FORCE_UPGRADE":
+case 1:
+m.noDeleteMessageTimeLimit = 1;
+break;
+case "DEVELOPMENT":
+case 2:
+m.noDeleteMessageTimeLimit = 2;
+break;
+case "PRODUCTION":
+case 3:
+m.noDeleteMessageTimeLimit = 3;
+break;
+}
+return m;
+};
+WebFeatures.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.labelsDisplay != null && m.hasOwnProperty("labelsDisplay")) {
+d.labelsDisplay = o.enums === String ? $root.proto.WebFeatures.Flag[m.labelsDisplay] === undefined ? m.labelsDisplay : $root.proto.WebFeatures.Flag[m.labelsDisplay] : m.labelsDisplay;
+if (o.oneofs)
+d._labelsDisplay = "labelsDisplay";
+}
+if (m.voipIndividualOutgoing != null && m.hasOwnProperty("voipIndividualOutgoing")) {
+d.voipIndividualOutgoing = o.enums === String ? $root.proto.WebFeatures.Flag[m.voipIndividualOutgoing] === undefined ? m.voipIndividualOutgoing : $root.proto.WebFeatures.Flag[m.voipIndividualOutgoing] : m.voipIndividualOutgoing;
+if (o.oneofs)
+d._voipIndividualOutgoing = "voipIndividualOutgoing";
+}
+if (m.groupsV3 != null && m.hasOwnProperty("groupsV3")) {
+d.groupsV3 = o.enums === String ? $root.proto.WebFeatures.Flag[m.groupsV3] === undefined ? m.groupsV3 : $root.proto.WebFeatures.Flag[m.groupsV3] : m.groupsV3;
+if (o.oneofs)
+d._groupsV3 = "groupsV3";
+}
+if (m.groupsV3Create != null && m.hasOwnProperty("groupsV3Create")) {
+d.groupsV3Create = o.enums === String ? $root.proto.WebFeatures.Flag[m.groupsV3Create] === undefined ? m.groupsV3Create : $root.proto.WebFeatures.Flag[m.groupsV3Create] : m.groupsV3Create;
+if (o.oneofs)
+d._groupsV3Create = "groupsV3Create";
+}
+if (m.changeNumberV2 != null && m.hasOwnProperty("changeNumberV2")) {
+d.changeNumberV2 = o.enums === String ? $root.proto.WebFeatures.Flag[m.changeNumberV2] === undefined ? m.changeNumberV2 : $root.proto.WebFeatures.Flag[m.changeNumberV2] : m.changeNumberV2;
+if (o.oneofs)
+d._changeNumberV2 = "changeNumberV2";
+}
+if (m.queryStatusV3Thumbnail != null && m.hasOwnProperty("queryStatusV3Thumbnail")) {
+d.queryStatusV3Thumbnail = o.enums === String ? $root.proto.WebFeatures.Flag[m.queryStatusV3Thumbnail] === undefined ? m.queryStatusV3Thumbnail : $root.proto.WebFeatures.Flag[m.queryStatusV3Thumbnail] : m.queryStatusV3Thumbnail;
+if (o.oneofs)
+d._queryStatusV3Thumbnail = "queryStatusV3Thumbnail";
+}
+if (m.liveLocations != null && m.hasOwnProperty("liveLocations")) {
+d.liveLocations = o.enums === String ? $root.proto.WebFeatures.Flag[m.liveLocations] === undefined ? m.liveLocations : $root.proto.WebFeatures.Flag[m.liveLocations] : m.liveLocations;
+if (o.oneofs)
+d._liveLocations = "liveLocations";
+}
+if (m.queryVname != null && m.hasOwnProperty("queryVname")) {
+d.queryVname = o.enums === String ? $root.proto.WebFeatures.Flag[m.queryVname] === undefined ? m.queryVname : $root.proto.WebFeatures.Flag[m.queryVname] : m.queryVname;
+if (o.oneofs)
+d._queryVname = "queryVname";
+}
+if (m.voipIndividualIncoming != null && m.hasOwnProperty("voipIndividualIncoming")) {
+d.voipIndividualIncoming = o.enums === String ? $root.proto.WebFeatures.Flag[m.voipIndividualIncoming] === undefined ? m.voipIndividualIncoming : $root.proto.WebFeatures.Flag[m.voipIndividualIncoming] : m.voipIndividualIncoming;
+if (o.oneofs)
+d._voipIndividualIncoming = "voipIndividualIncoming";
+}
+if (m.quickRepliesQuery != null && m.hasOwnProperty("quickRepliesQuery")) {
+d.quickRepliesQuery = o.enums === String ? $root.proto.WebFeatures.Flag[m.quickRepliesQuery] === undefined ? m.quickRepliesQuery : $root.proto.WebFeatures.Flag[m.quickRepliesQuery] : m.quickRepliesQuery;
+if (o.oneofs)
+d._quickRepliesQuery = "quickRepliesQuery";
+}
+if (m.payments != null && m.hasOwnProperty("payments")) {
+d.payments = o.enums === String ? $root.proto.WebFeatures.Flag[m.payments] === undefined ? m.payments : $root.proto.WebFeatures.Flag[m.payments] : m.payments;
+if (o.oneofs)
+d._payments = "payments";
+}
+if (m.stickerPackQuery != null && m.hasOwnProperty("stickerPackQuery")) {
+d.stickerPackQuery = o.enums === String ? $root.proto.WebFeatures.Flag[m.stickerPackQuery] === undefined ? m.stickerPackQuery : $root.proto.WebFeatures.Flag[m.stickerPackQuery] : m.stickerPackQuery;
+if (o.oneofs)
+d._stickerPackQuery = "stickerPackQuery";
+}
+if (m.liveLocationsFinal != null && m.hasOwnProperty("liveLocationsFinal")) {
+d.liveLocationsFinal = o.enums === String ? $root.proto.WebFeatures.Flag[m.liveLocationsFinal] === undefined ? m.liveLocationsFinal : $root.proto.WebFeatures.Flag[m.liveLocationsFinal] : m.liveLocationsFinal;
+if (o.oneofs)
+d._liveLocationsFinal = "liveLocationsFinal";
+}
+if (m.labelsEdit != null && m.hasOwnProperty("labelsEdit")) {
+d.labelsEdit = o.enums === String ? $root.proto.WebFeatures.Flag[m.labelsEdit] === undefined ? m.labelsEdit : $root.proto.WebFeatures.Flag[m.labelsEdit] : m.labelsEdit;
+if (o.oneofs)
+d._labelsEdit = "labelsEdit";
+}
+if (m.mediaUpload != null && m.hasOwnProperty("mediaUpload")) {
+d.mediaUpload = o.enums === String ? $root.proto.WebFeatures.Flag[m.mediaUpload] === undefined ? m.mediaUpload : $root.proto.WebFeatures.Flag[m.mediaUpload] : m.mediaUpload;
+if (o.oneofs)
+d._mediaUpload = "mediaUpload";
+}
+if (m.mediaUploadRichQuickReplies != null && m.hasOwnProperty("mediaUploadRichQuickReplies")) {
+d.mediaUploadRichQuickReplies = o.enums === String ? $root.proto.WebFeatures.Flag[m.mediaUploadRichQuickReplies] === undefined ? m.mediaUploadRichQuickReplies : $root.proto.WebFeatures.Flag[m.mediaUploadRichQuickReplies] : m.mediaUploadRichQuickReplies;
+if (o.oneofs)
+d._mediaUploadRichQuickReplies = "mediaUploadRichQuickReplies";
+}
+if (m.vnameV2 != null && m.hasOwnProperty("vnameV2")) {
+d.vnameV2 = o.enums === String ? $root.proto.WebFeatures.Flag[m.vnameV2] === undefined ? m.vnameV2 : $root.proto.WebFeatures.Flag[m.vnameV2] : m.vnameV2;
+if (o.oneofs)
+d._vnameV2 = "vnameV2";
+}
+if (m.videoPlaybackUrl != null && m.hasOwnProperty("videoPlaybackUrl")) {
+d.videoPlaybackUrl = o.enums === String ? $root.proto.WebFeatures.Flag[m.videoPlaybackUrl] === undefined ? m.videoPlaybackUrl : $root.proto.WebFeatures.Flag[m.videoPlaybackUrl] : m.videoPlaybackUrl;
+if (o.oneofs)
+d._videoPlaybackUrl = "videoPlaybackUrl";
+}
+if (m.statusRanking != null && m.hasOwnProperty("statusRanking")) {
+d.statusRanking = o.enums === String ? $root.proto.WebFeatures.Flag[m.statusRanking] === undefined ? m.statusRanking : $root.proto.WebFeatures.Flag[m.statusRanking] : m.statusRanking;
+if (o.oneofs)
+d._statusRanking = "statusRanking";
+}
+if (m.voipIndividualVideo != null && m.hasOwnProperty("voipIndividualVideo")) {
+d.voipIndividualVideo = o.enums === String ? $root.proto.WebFeatures.Flag[m.voipIndividualVideo] === undefined ? m.voipIndividualVideo : $root.proto.WebFeatures.Flag[m.voipIndividualVideo] : m.voipIndividualVideo;
+if (o.oneofs)
+d._voipIndividualVideo = "voipIndividualVideo";
+}
+if (m.thirdPartyStickers != null && m.hasOwnProperty("thirdPartyStickers")) {
+d.thirdPartyStickers = o.enums === String ? $root.proto.WebFeatures.Flag[m.thirdPartyStickers] === undefined ? m.thirdPartyStickers : $root.proto.WebFeatures.Flag[m.thirdPartyStickers] : m.thirdPartyStickers;
+if (o.oneofs)
+d._thirdPartyStickers = "thirdPartyStickers";
+}
+if (m.frequentlyForwardedSetting != null && m.hasOwnProperty("frequentlyForwardedSetting")) {
+d.frequentlyForwardedSetting = o.enums === String ? $root.proto.WebFeatures.Flag[m.frequentlyForwardedSetting] === undefined ? m.frequentlyForwardedSetting : $root.proto.WebFeatures.Flag[m.frequentlyForwardedSetting] : m.frequentlyForwardedSetting;
+if (o.oneofs)
+d._frequentlyForwardedSetting = "frequentlyForwardedSetting";
+}
+if (m.groupsV4JoinPermission != null && m.hasOwnProperty("groupsV4JoinPermission")) {
+d.groupsV4JoinPermission = o.enums === String ? $root.proto.WebFeatures.Flag[m.groupsV4JoinPermission] === undefined ? m.groupsV4JoinPermission : $root.proto.WebFeatures.Flag[m.groupsV4JoinPermission] : m.groupsV4JoinPermission;
+if (o.oneofs)
+d._groupsV4JoinPermission = "groupsV4JoinPermission";
+}
+if (m.recentStickers != null && m.hasOwnProperty("recentStickers")) {
+d.recentStickers = o.enums === String ? $root.proto.WebFeatures.Flag[m.recentStickers] === undefined ? m.recentStickers : $root.proto.WebFeatures.Flag[m.recentStickers] : m.recentStickers;
+if (o.oneofs)
+d._recentStickers = "recentStickers";
+}
+if (m.catalog != null && m.hasOwnProperty("catalog")) {
+d.catalog = o.enums === String ? $root.proto.WebFeatures.Flag[m.catalog] === undefined ? m.catalog : $root.proto.WebFeatures.Flag[m.catalog] : m.catalog;
+if (o.oneofs)
+d._catalog = "catalog";
+}
+if (m.starredStickers != null && m.hasOwnProperty("starredStickers")) {
+d.starredStickers = o.enums === String ? $root.proto.WebFeatures.Flag[m.starredStickers] === undefined ? m.starredStickers : $root.proto.WebFeatures.Flag[m.starredStickers] : m.starredStickers;
+if (o.oneofs)
+d._starredStickers = "starredStickers";
+}
+if (m.voipGroupCall != null && m.hasOwnProperty("voipGroupCall")) {
+d.voipGroupCall = o.enums === String ? $root.proto.WebFeatures.Flag[m.voipGroupCall] === undefined ? m.voipGroupCall : $root.proto.WebFeatures.Flag[m.voipGroupCall] : m.voipGroupCall;
+if (o.oneofs)
+d._voipGroupCall = "voipGroupCall";
+}
+if (m.templateMessage != null && m.hasOwnProperty("templateMessage")) {
+d.templateMessage = o.enums === String ? $root.proto.WebFeatures.Flag[m.templateMessage] === undefined ? m.templateMessage : $root.proto.WebFeatures.Flag[m.templateMessage] : m.templateMessage;
+if (o.oneofs)
+d._templateMessage = "templateMessage";
+}
+if (m.templateMessageInteractivity != null && m.hasOwnProperty("templateMessageInteractivity")) {
+d.templateMessageInteractivity = o.enums === String ? $root.proto.WebFeatures.Flag[m.templateMessageInteractivity] === undefined ? m.templateMessageInteractivity : $root.proto.WebFeatures.Flag[m.templateMessageInteractivity] : m.templateMessageInteractivity;
+if (o.oneofs)
+d._templateMessageInteractivity = "templateMessageInteractivity";
+}
+if (m.ephemeralMessages != null && m.hasOwnProperty("ephemeralMessages")) {
+d.ephemeralMessages = o.enums === String ? $root.proto.WebFeatures.Flag[m.ephemeralMessages] === undefined ? m.ephemeralMessages : $root.proto.WebFeatures.Flag[m.ephemeralMessages] : m.ephemeralMessages;
+if (o.oneofs)
+d._ephemeralMessages = "ephemeralMessages";
+}
+if (m.e2ENotificationSync != null && m.hasOwnProperty("e2ENotificationSync")) {
+d.e2ENotificationSync = o.enums === String ? $root.proto.WebFeatures.Flag[m.e2ENotificationSync] === undefined ? m.e2ENotificationSync : $root.proto.WebFeatures.Flag[m.e2ENotificationSync] : m.e2ENotificationSync;
+if (o.oneofs)
+d._e2ENotificationSync = "e2ENotificationSync";
+}
+if (m.recentStickersV2 != null && m.hasOwnProperty("recentStickersV2")) {
+d.recentStickersV2 = o.enums === String ? $root.proto.WebFeatures.Flag[m.recentStickersV2] === undefined ? m.recentStickersV2 : $root.proto.WebFeatures.Flag[m.recentStickersV2] : m.recentStickersV2;
+if (o.oneofs)
+d._recentStickersV2 = "recentStickersV2";
+}
+if (m.recentStickersV3 != null && m.hasOwnProperty("recentStickersV3")) {
+d.recentStickersV3 = o.enums === String ? $root.proto.WebFeatures.Flag[m.recentStickersV3] === undefined ? m.recentStickersV3 : $root.proto.WebFeatures.Flag[m.recentStickersV3] : m.recentStickersV3;
+if (o.oneofs)
+d._recentStickersV3 = "recentStickersV3";
+}
+if (m.userNotice != null && m.hasOwnProperty("userNotice")) {
+d.userNotice = o.enums === String ? $root.proto.WebFeatures.Flag[m.userNotice] === undefined ? m.userNotice : $root.proto.WebFeatures.Flag[m.userNotice] : m.userNotice;
+if (o.oneofs)
+d._userNotice = "userNotice";
+}
+if (m.support != null && m.hasOwnProperty("support")) {
+d.support = o.enums === String ? $root.proto.WebFeatures.Flag[m.support] === undefined ? m.support : $root.proto.WebFeatures.Flag[m.support] : m.support;
+if (o.oneofs)
+d._support = "support";
+}
+if (m.groupUiiCleanup != null && m.hasOwnProperty("groupUiiCleanup")) {
+d.groupUiiCleanup = o.enums === String ? $root.proto.WebFeatures.Flag[m.groupUiiCleanup] === undefined ? m.groupUiiCleanup : $root.proto.WebFeatures.Flag[m.groupUiiCleanup] : m.groupUiiCleanup;
+if (o.oneofs)
+d._groupUiiCleanup = "groupUiiCleanup";
+}
+if (m.groupDogfoodingInternalOnly != null && m.hasOwnProperty("groupDogfoodingInternalOnly")) {
+d.groupDogfoodingInternalOnly = o.enums === String ? $root.proto.WebFeatures.Flag[m.groupDogfoodingInternalOnly] === undefined ? m.groupDogfoodingInternalOnly : $root.proto.WebFeatures.Flag[m.groupDogfoodingInternalOnly] : m.groupDogfoodingInternalOnly;
+if (o.oneofs)
+d._groupDogfoodingInternalOnly = "groupDogfoodingInternalOnly";
+}
+if (m.settingsSync != null && m.hasOwnProperty("settingsSync")) {
+d.settingsSync = o.enums === String ? $root.proto.WebFeatures.Flag[m.settingsSync] === undefined ? m.settingsSync : $root.proto.WebFeatures.Flag[m.settingsSync] : m.settingsSync;
+if (o.oneofs)
+d._settingsSync = "settingsSync";
+}
+if (m.archiveV2 != null && m.hasOwnProperty("archiveV2")) {
+d.archiveV2 = o.enums === String ? $root.proto.WebFeatures.Flag[m.archiveV2] === undefined ? m.archiveV2 : $root.proto.WebFeatures.Flag[m.archiveV2] : m.archiveV2;
+if (o.oneofs)
+d._archiveV2 = "archiveV2";
+}
+if (m.ephemeralAllowGroupMembers != null && m.hasOwnProperty("ephemeralAllowGroupMembers")) {
+d.ephemeralAllowGroupMembers = o.enums === String ? $root.proto.WebFeatures.Flag[m.ephemeralAllowGroupMembers] === undefined ? m.ephemeralAllowGroupMembers : $root.proto.WebFeatures.Flag[m.ephemeralAllowGroupMembers] : m.ephemeralAllowGroupMembers;
+if (o.oneofs)
+d._ephemeralAllowGroupMembers = "ephemeralAllowGroupMembers";
+}
+if (m.ephemeral24HDuration != null && m.hasOwnProperty("ephemeral24HDuration")) {
+d.ephemeral24HDuration = o.enums === String ? $root.proto.WebFeatures.Flag[m.ephemeral24HDuration] === undefined ? m.ephemeral24HDuration : $root.proto.WebFeatures.Flag[m.ephemeral24HDuration] : m.ephemeral24HDuration;
+if (o.oneofs)
+d._ephemeral24HDuration = "ephemeral24HDuration";
+}
+if (m.mdForceUpgrade != null && m.hasOwnProperty("mdForceUpgrade")) {
+d.mdForceUpgrade = o.enums === String ? $root.proto.WebFeatures.Flag[m.mdForceUpgrade] === undefined ? m.mdForceUpgrade : $root.proto.WebFeatures.Flag[m.mdForceUpgrade] : m.mdForceUpgrade;
+if (o.oneofs)
+d._mdForceUpgrade = "mdForceUpgrade";
+}
+if (m.disappearingMode != null && m.hasOwnProperty("disappearingMode")) {
+d.disappearingMode = o.enums === String ? $root.proto.WebFeatures.Flag[m.disappearingMode] === undefined ? m.disappearingMode : $root.proto.WebFeatures.Flag[m.disappearingMode] : m.disappearingMode;
+if (o.oneofs)
+d._disappearingMode = "disappearingMode";
+}
+if (m.externalMdOptInAvailable != null && m.hasOwnProperty("externalMdOptInAvailable")) {
+d.externalMdOptInAvailable = o.enums === String ? $root.proto.WebFeatures.Flag[m.externalMdOptInAvailable] === undefined ? m.externalMdOptInAvailable : $root.proto.WebFeatures.Flag[m.externalMdOptInAvailable] : m.externalMdOptInAvailable;
+if (o.oneofs)
+d._externalMdOptInAvailable = "externalMdOptInAvailable";
+}
+if (m.noDeleteMessageTimeLimit != null && m.hasOwnProperty("noDeleteMessageTimeLimit")) {
+d.noDeleteMessageTimeLimit = o.enums === String ? $root.proto.WebFeatures.Flag[m.noDeleteMessageTimeLimit] === undefined ? m.noDeleteMessageTimeLimit : $root.proto.WebFeatures.Flag[m.noDeleteMessageTimeLimit] : m.noDeleteMessageTimeLimit;
+if (o.oneofs)
+d._noDeleteMessageTimeLimit = "noDeleteMessageTimeLimit";
+}
+return d;
+};
+WebFeatures.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+WebFeatures.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.WebFeatures";
+};
+$lazy(WebFeatures, "Flag", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "NOT_STARTED"] = 0;
+values[valuesById[1] = "FORCE_UPGRADE"] = 1;
+values[valuesById[2] = "DEVELOPMENT"] = 2;
+values[valuesById[3] = "PRODUCTION"] = 3;
+return values;
+});
+return WebFeatures;

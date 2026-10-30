@@ -1,0 +1,195 @@
+"use strict";
+function ExternalBlobReference(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ExternalBlobReference.prototype.mediaKey = null;
+ExternalBlobReference.prototype.directPath = null;
+ExternalBlobReference.prototype.handle = null;
+ExternalBlobReference.prototype.fileSizeBytes = null;
+ExternalBlobReference.prototype.fileSha256 = null;
+ExternalBlobReference.prototype.fileEncSha256 = null;
+let $oneOfFields;
+Object.defineProperty(ExternalBlobReference.prototype, "_mediaKey", {
+get: $util.oneOfGetter($oneOfFields = ["mediaKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalBlobReference.prototype, "_directPath", {
+get: $util.oneOfGetter($oneOfFields = ["directPath"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalBlobReference.prototype, "_handle", {
+get: $util.oneOfGetter($oneOfFields = ["handle"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalBlobReference.prototype, "_fileSizeBytes", {
+get: $util.oneOfGetter($oneOfFields = ["fileSizeBytes"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalBlobReference.prototype, "_fileSha256", {
+get: $util.oneOfGetter($oneOfFields = ["fileSha256"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalBlobReference.prototype, "_fileEncSha256", {
+get: $util.oneOfGetter($oneOfFields = ["fileEncSha256"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ExternalBlobReference.create = function create(properties) {
+return new ExternalBlobReference(properties);
+};
+ExternalBlobReference.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.mediaKey != null && Object.hasOwnProperty.call(m, "mediaKey"))
+w.uint32(10).bytes(m.mediaKey);
+if (m.directPath != null && Object.hasOwnProperty.call(m, "directPath"))
+w.uint32(18).string(m.directPath);
+if (m.handle != null && Object.hasOwnProperty.call(m, "handle"))
+w.uint32(26).string(m.handle);
+if (m.fileSizeBytes != null && Object.hasOwnProperty.call(m, "fileSizeBytes"))
+w.uint32(32).uint64(m.fileSizeBytes);
+if (m.fileSha256 != null && Object.hasOwnProperty.call(m, "fileSha256"))
+w.uint32(42).bytes(m.fileSha256);
+if (m.fileEncSha256 != null && Object.hasOwnProperty.call(m, "fileEncSha256"))
+w.uint32(50).bytes(m.fileEncSha256);
+return w;
+};
+ExternalBlobReference.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ExternalBlobReference();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.mediaKey = r.bytes();
+break;
+}
+case 2: {
+m.directPath = r.string();
+break;
+}
+case 3: {
+m.handle = r.string();
+break;
+}
+case 4: {
+m.fileSizeBytes = r.uint64();
+break;
+}
+case 5: {
+m.fileSha256 = r.bytes();
+break;
+}
+case 6: {
+m.fileEncSha256 = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ExternalBlobReference.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ExternalBlobReference)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ExternalBlobReference();
+if (d.mediaKey != null) {
+if (typeof d.mediaKey === "string")
+$util.base64.decode(d.mediaKey, m.mediaKey = $util.newBuffer($util.base64.length(d.mediaKey)), 0);
+else if (d.mediaKey.length >= 0)
+m.mediaKey = d.mediaKey;
+}
+if (d.directPath != null) {
+m.directPath = String(d.directPath);
+}
+if (d.handle != null) {
+m.handle = String(d.handle);
+}
+if (d.fileSizeBytes != null) {
+if ($util.Long)
+(m.fileSizeBytes = $util.Long.fromValue(d.fileSizeBytes)).unsigned = true;
+else if (typeof d.fileSizeBytes === "string")
+m.fileSizeBytes = parseInt(d.fileSizeBytes, 10);
+else if (typeof d.fileSizeBytes === "number")
+m.fileSizeBytes = d.fileSizeBytes;
+else if (typeof d.fileSizeBytes === "object")
+m.fileSizeBytes = new $util.LongBits(d.fileSizeBytes.low >>> 0, d.fileSizeBytes.high >>> 0).toNumber(true);
+}
+if (d.fileSha256 != null) {
+if (typeof d.fileSha256 === "string")
+$util.base64.decode(d.fileSha256, m.fileSha256 = $util.newBuffer($util.base64.length(d.fileSha256)), 0);
+else if (d.fileSha256.length >= 0)
+m.fileSha256 = d.fileSha256;
+}
+if (d.fileEncSha256 != null) {
+if (typeof d.fileEncSha256 === "string")
+$util.base64.decode(d.fileEncSha256, m.fileEncSha256 = $util.newBuffer($util.base64.length(d.fileEncSha256)), 0);
+else if (d.fileEncSha256.length >= 0)
+m.fileEncSha256 = d.fileEncSha256;
+}
+return m;
+};
+ExternalBlobReference.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.mediaKey != null && m.hasOwnProperty("mediaKey")) {
+d.mediaKey = o.bytes === String ? $util.base64.encode(m.mediaKey, 0, m.mediaKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.mediaKey) : m.mediaKey;
+if (o.oneofs)
+d._mediaKey = "mediaKey";
+}
+if (m.directPath != null && m.hasOwnProperty("directPath")) {
+d.directPath = m.directPath;
+if (o.oneofs)
+d._directPath = "directPath";
+}
+if (m.handle != null && m.hasOwnProperty("handle")) {
+d.handle = m.handle;
+if (o.oneofs)
+d._handle = "handle";
+}
+if (m.fileSizeBytes != null && m.hasOwnProperty("fileSizeBytes")) {
+if (typeof m.fileSizeBytes === "number")
+d.fileSizeBytes = o.longs === String ? String(m.fileSizeBytes) : m.fileSizeBytes;
+else
+d.fileSizeBytes = o.longs === String ? longToString(m.fileSizeBytes, true) : o.longs === Number ? longToNumber(m.fileSizeBytes, true) : m.fileSizeBytes;
+if (o.oneofs)
+d._fileSizeBytes = "fileSizeBytes";
+}
+if (m.fileSha256 != null && m.hasOwnProperty("fileSha256")) {
+d.fileSha256 = o.bytes === String ? $util.base64.encode(m.fileSha256, 0, m.fileSha256.length) : o.bytes === Array ? Array.prototype.slice.call(m.fileSha256) : m.fileSha256;
+if (o.oneofs)
+d._fileSha256 = "fileSha256";
+}
+if (m.fileEncSha256 != null && m.hasOwnProperty("fileEncSha256")) {
+d.fileEncSha256 = o.bytes === String ? $util.base64.encode(m.fileEncSha256, 0, m.fileEncSha256.length) : o.bytes === Array ? Array.prototype.slice.call(m.fileEncSha256) : m.fileEncSha256;
+if (o.oneofs)
+d._fileEncSha256 = "fileEncSha256";
+}
+return d;
+};
+ExternalBlobReference.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ExternalBlobReference.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ExternalBlobReference";
+};
+return ExternalBlobReference;

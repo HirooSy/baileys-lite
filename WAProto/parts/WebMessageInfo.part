@@ -1,0 +1,2851 @@
+"use strict";
+function WebMessageInfo(p) {
+this.messageStubParameters = [];
+this.labels = [];
+this.userReceipt = [];
+this.reactions = [];
+this.pollUpdates = [];
+this.eventResponses = [];
+this.statusMentions = [];
+this.messageAddOns = [];
+this.statusMentionSources = [];
+this.supportAiCitations = [];
+this.decisionSources = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+WebMessageInfo.prototype.key = null;
+WebMessageInfo.prototype.message = null;
+WebMessageInfo.prototype.messageTimestamp = null;
+WebMessageInfo.prototype.status = null;
+WebMessageInfo.prototype.participant = null;
+WebMessageInfo.prototype.messageC2STimestamp = null;
+WebMessageInfo.prototype.ignore = null;
+WebMessageInfo.prototype.starred = null;
+WebMessageInfo.prototype.broadcast = null;
+WebMessageInfo.prototype.pushName = null;
+WebMessageInfo.prototype.mediaCiphertextSha256 = null;
+WebMessageInfo.prototype.multicast = null;
+WebMessageInfo.prototype.urlText = null;
+WebMessageInfo.prototype.urlNumber = null;
+WebMessageInfo.prototype.messageStubType = null;
+WebMessageInfo.prototype.clearMedia = null;
+WebMessageInfo.prototype.messageStubParameters = $util.emptyArray;
+WebMessageInfo.prototype.duration = null;
+WebMessageInfo.prototype.labels = $util.emptyArray;
+WebMessageInfo.prototype.paymentInfo = null;
+WebMessageInfo.prototype.finalLiveLocation = null;
+WebMessageInfo.prototype.quotedPaymentInfo = null;
+WebMessageInfo.prototype.ephemeralStartTimestamp = null;
+WebMessageInfo.prototype.ephemeralDuration = null;
+WebMessageInfo.prototype.ephemeralOffToOn = null;
+WebMessageInfo.prototype.ephemeralOutOfSync = null;
+WebMessageInfo.prototype.bizPrivacyStatus = null;
+WebMessageInfo.prototype.verifiedBizName = null;
+WebMessageInfo.prototype.mediaData = null;
+WebMessageInfo.prototype.photoChange = null;
+WebMessageInfo.prototype.userReceipt = $util.emptyArray;
+WebMessageInfo.prototype.reactions = $util.emptyArray;
+WebMessageInfo.prototype.quotedStickerData = null;
+WebMessageInfo.prototype.futureproofData = null;
+WebMessageInfo.prototype.statusPsa = null;
+WebMessageInfo.prototype.pollUpdates = $util.emptyArray;
+WebMessageInfo.prototype.pollAdditionalMetadata = null;
+WebMessageInfo.prototype.agentId = null;
+WebMessageInfo.prototype.statusAlreadyViewed = null;
+WebMessageInfo.prototype.messageSecret = null;
+WebMessageInfo.prototype.keepInChat = null;
+WebMessageInfo.prototype.originalSelfAuthorUserJidString = null;
+WebMessageInfo.prototype.revokeMessageTimestamp = null;
+WebMessageInfo.prototype.pinInChat = null;
+WebMessageInfo.prototype.premiumMessageInfo = null;
+WebMessageInfo.prototype.is1PBizBotMessage = null;
+WebMessageInfo.prototype.isGroupHistoryMessage = null;
+WebMessageInfo.prototype.botMessageInvokerJid = null;
+WebMessageInfo.prototype.commentMetadata = null;
+WebMessageInfo.prototype.eventResponses = $util.emptyArray;
+WebMessageInfo.prototype.reportingTokenInfo = null;
+WebMessageInfo.prototype.newsletterServerId = null;
+WebMessageInfo.prototype.eventAdditionalMetadata = null;
+WebMessageInfo.prototype.isMentionedInStatus = null;
+WebMessageInfo.prototype.statusMentions = $util.emptyArray;
+WebMessageInfo.prototype.targetMessageId = null;
+WebMessageInfo.prototype.messageAddOns = $util.emptyArray;
+WebMessageInfo.prototype.statusMentionMessageInfo = null;
+WebMessageInfo.prototype.isSupportAiMessage = null;
+WebMessageInfo.prototype.statusMentionSources = $util.emptyArray;
+WebMessageInfo.prototype.supportAiCitations = $util.emptyArray;
+WebMessageInfo.prototype.botTargetId = null;
+WebMessageInfo.prototype.groupHistoryIndividualMessageInfo = null;
+WebMessageInfo.prototype.groupHistoryBundleInfo = null;
+WebMessageInfo.prototype.interactiveMessageAdditionalMetadata = null;
+WebMessageInfo.prototype.quarantinedMessage = null;
+WebMessageInfo.prototype.nonJidMentions = null;
+WebMessageInfo.prototype.hsmTag = null;
+WebMessageInfo.prototype.ephemeralExpirationTimestamp = null;
+WebMessageInfo.prototype.scheduledMessageMetadata = null;
+WebMessageInfo.prototype.decisionId = null;
+WebMessageInfo.prototype.decisionSources = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(WebMessageInfo.prototype, "_message", {
+get: $util.oneOfGetter($oneOfFields = ["message"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_messageTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["messageTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_status", {
+get: $util.oneOfGetter($oneOfFields = ["status"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_participant", {
+get: $util.oneOfGetter($oneOfFields = ["participant"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_messageC2STimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["messageC2STimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_ignore", {
+get: $util.oneOfGetter($oneOfFields = ["ignore"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_starred", {
+get: $util.oneOfGetter($oneOfFields = ["starred"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_broadcast", {
+get: $util.oneOfGetter($oneOfFields = ["broadcast"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_pushName", {
+get: $util.oneOfGetter($oneOfFields = ["pushName"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_mediaCiphertextSha256", {
+get: $util.oneOfGetter($oneOfFields = ["mediaCiphertextSha256"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_multicast", {
+get: $util.oneOfGetter($oneOfFields = ["multicast"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_urlText", {
+get: $util.oneOfGetter($oneOfFields = ["urlText"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_urlNumber", {
+get: $util.oneOfGetter($oneOfFields = ["urlNumber"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_messageStubType", {
+get: $util.oneOfGetter($oneOfFields = ["messageStubType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_clearMedia", {
+get: $util.oneOfGetter($oneOfFields = ["clearMedia"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_duration", {
+get: $util.oneOfGetter($oneOfFields = ["duration"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_paymentInfo", {
+get: $util.oneOfGetter($oneOfFields = ["paymentInfo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_finalLiveLocation", {
+get: $util.oneOfGetter($oneOfFields = ["finalLiveLocation"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_quotedPaymentInfo", {
+get: $util.oneOfGetter($oneOfFields = ["quotedPaymentInfo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_ephemeralStartTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["ephemeralStartTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_ephemeralDuration", {
+get: $util.oneOfGetter($oneOfFields = ["ephemeralDuration"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_ephemeralOffToOn", {
+get: $util.oneOfGetter($oneOfFields = ["ephemeralOffToOn"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_ephemeralOutOfSync", {
+get: $util.oneOfGetter($oneOfFields = ["ephemeralOutOfSync"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_bizPrivacyStatus", {
+get: $util.oneOfGetter($oneOfFields = ["bizPrivacyStatus"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_verifiedBizName", {
+get: $util.oneOfGetter($oneOfFields = ["verifiedBizName"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_mediaData", {
+get: $util.oneOfGetter($oneOfFields = ["mediaData"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_photoChange", {
+get: $util.oneOfGetter($oneOfFields = ["photoChange"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_quotedStickerData", {
+get: $util.oneOfGetter($oneOfFields = ["quotedStickerData"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_futureproofData", {
+get: $util.oneOfGetter($oneOfFields = ["futureproofData"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_statusPsa", {
+get: $util.oneOfGetter($oneOfFields = ["statusPsa"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_pollAdditionalMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["pollAdditionalMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_agentId", {
+get: $util.oneOfGetter($oneOfFields = ["agentId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_statusAlreadyViewed", {
+get: $util.oneOfGetter($oneOfFields = ["statusAlreadyViewed"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_messageSecret", {
+get: $util.oneOfGetter($oneOfFields = ["messageSecret"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_keepInChat", {
+get: $util.oneOfGetter($oneOfFields = ["keepInChat"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_originalSelfAuthorUserJidString", {
+get: $util.oneOfGetter($oneOfFields = ["originalSelfAuthorUserJidString"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_revokeMessageTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["revokeMessageTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_pinInChat", {
+get: $util.oneOfGetter($oneOfFields = ["pinInChat"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_premiumMessageInfo", {
+get: $util.oneOfGetter($oneOfFields = ["premiumMessageInfo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_is1PBizBotMessage", {
+get: $util.oneOfGetter($oneOfFields = ["is1PBizBotMessage"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_isGroupHistoryMessage", {
+get: $util.oneOfGetter($oneOfFields = ["isGroupHistoryMessage"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_botMessageInvokerJid", {
+get: $util.oneOfGetter($oneOfFields = ["botMessageInvokerJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_commentMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["commentMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_reportingTokenInfo", {
+get: $util.oneOfGetter($oneOfFields = ["reportingTokenInfo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_newsletterServerId", {
+get: $util.oneOfGetter($oneOfFields = ["newsletterServerId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_eventAdditionalMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["eventAdditionalMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_isMentionedInStatus", {
+get: $util.oneOfGetter($oneOfFields = ["isMentionedInStatus"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_targetMessageId", {
+get: $util.oneOfGetter($oneOfFields = ["targetMessageId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_statusMentionMessageInfo", {
+get: $util.oneOfGetter($oneOfFields = ["statusMentionMessageInfo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_isSupportAiMessage", {
+get: $util.oneOfGetter($oneOfFields = ["isSupportAiMessage"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_botTargetId", {
+get: $util.oneOfGetter($oneOfFields = ["botTargetId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_groupHistoryIndividualMessageInfo", {
+get: $util.oneOfGetter($oneOfFields = ["groupHistoryIndividualMessageInfo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_groupHistoryBundleInfo", {
+get: $util.oneOfGetter($oneOfFields = ["groupHistoryBundleInfo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_interactiveMessageAdditionalMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["interactiveMessageAdditionalMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_quarantinedMessage", {
+get: $util.oneOfGetter($oneOfFields = ["quarantinedMessage"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_nonJidMentions", {
+get: $util.oneOfGetter($oneOfFields = ["nonJidMentions"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_hsmTag", {
+get: $util.oneOfGetter($oneOfFields = ["hsmTag"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_ephemeralExpirationTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["ephemeralExpirationTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_scheduledMessageMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["scheduledMessageMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebMessageInfo.prototype, "_decisionId", {
+get: $util.oneOfGetter($oneOfFields = ["decisionId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+WebMessageInfo.create = function create(properties) {
+return new WebMessageInfo(properties);
+};
+WebMessageInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.key != null && Object.hasOwnProperty.call(m, "key"))
+$root.proto.MessageKey.encode(m.key, w.uint32(10).fork()).ldelim();
+if (m.message != null && Object.hasOwnProperty.call(m, "message"))
+$root.proto.Message.encode(m.message, w.uint32(18).fork()).ldelim();
+if (m.messageTimestamp != null && Object.hasOwnProperty.call(m, "messageTimestamp"))
+w.uint32(24).uint64(m.messageTimestamp);
+if (m.status != null && Object.hasOwnProperty.call(m, "status"))
+w.uint32(32).int32(m.status);
+if (m.participant != null && Object.hasOwnProperty.call(m, "participant"))
+w.uint32(42).string(m.participant);
+if (m.messageC2STimestamp != null && Object.hasOwnProperty.call(m, "messageC2STimestamp"))
+w.uint32(48).uint64(m.messageC2STimestamp);
+if (m.ignore != null && Object.hasOwnProperty.call(m, "ignore"))
+w.uint32(128).bool(m.ignore);
+if (m.starred != null && Object.hasOwnProperty.call(m, "starred"))
+w.uint32(136).bool(m.starred);
+if (m.broadcast != null && Object.hasOwnProperty.call(m, "broadcast"))
+w.uint32(144).bool(m.broadcast);
+if (m.pushName != null && Object.hasOwnProperty.call(m, "pushName"))
+w.uint32(154).string(m.pushName);
+if (m.mediaCiphertextSha256 != null && Object.hasOwnProperty.call(m, "mediaCiphertextSha256"))
+w.uint32(162).bytes(m.mediaCiphertextSha256);
+if (m.multicast != null && Object.hasOwnProperty.call(m, "multicast"))
+w.uint32(168).bool(m.multicast);
+if (m.urlText != null && Object.hasOwnProperty.call(m, "urlText"))
+w.uint32(176).bool(m.urlText);
+if (m.urlNumber != null && Object.hasOwnProperty.call(m, "urlNumber"))
+w.uint32(184).bool(m.urlNumber);
+if (m.messageStubType != null && Object.hasOwnProperty.call(m, "messageStubType"))
+w.uint32(192).int32(m.messageStubType);
+if (m.clearMedia != null && Object.hasOwnProperty.call(m, "clearMedia"))
+w.uint32(200).bool(m.clearMedia);
+if (m.messageStubParameters != null && m.messageStubParameters.length) {
+for (var i = 0; i < m.messageStubParameters.length; ++i)
+w.uint32(210).string(m.messageStubParameters[i]);
+}
+if (m.duration != null && Object.hasOwnProperty.call(m, "duration"))
+w.uint32(216).uint32(m.duration);
+if (m.labels != null && m.labels.length) {
+for (var i = 0; i < m.labels.length; ++i)
+w.uint32(226).string(m.labels[i]);
+}
+if (m.paymentInfo != null && Object.hasOwnProperty.call(m, "paymentInfo"))
+$root.proto.PaymentInfo.encode(m.paymentInfo, w.uint32(234).fork()).ldelim();
+if (m.finalLiveLocation != null && Object.hasOwnProperty.call(m, "finalLiveLocation"))
+$root.proto.Message.LiveLocationMessage.encode(m.finalLiveLocation, w.uint32(242).fork()).ldelim();
+if (m.quotedPaymentInfo != null && Object.hasOwnProperty.call(m, "quotedPaymentInfo"))
+$root.proto.PaymentInfo.encode(m.quotedPaymentInfo, w.uint32(250).fork()).ldelim();
+if (m.ephemeralStartTimestamp != null && Object.hasOwnProperty.call(m, "ephemeralStartTimestamp"))
+w.uint32(256).uint64(m.ephemeralStartTimestamp);
+if (m.ephemeralDuration != null && Object.hasOwnProperty.call(m, "ephemeralDuration"))
+w.uint32(264).uint32(m.ephemeralDuration);
+if (m.ephemeralOffToOn != null && Object.hasOwnProperty.call(m, "ephemeralOffToOn"))
+w.uint32(272).bool(m.ephemeralOffToOn);
+if (m.ephemeralOutOfSync != null && Object.hasOwnProperty.call(m, "ephemeralOutOfSync"))
+w.uint32(280).bool(m.ephemeralOutOfSync);
+if (m.bizPrivacyStatus != null && Object.hasOwnProperty.call(m, "bizPrivacyStatus"))
+w.uint32(288).int32(m.bizPrivacyStatus);
+if (m.verifiedBizName != null && Object.hasOwnProperty.call(m, "verifiedBizName"))
+w.uint32(298).string(m.verifiedBizName);
+if (m.mediaData != null && Object.hasOwnProperty.call(m, "mediaData"))
+$root.proto.MediaData.encode(m.mediaData, w.uint32(306).fork()).ldelim();
+if (m.photoChange != null && Object.hasOwnProperty.call(m, "photoChange"))
+$root.proto.PhotoChange.encode(m.photoChange, w.uint32(314).fork()).ldelim();
+if (m.userReceipt != null && m.userReceipt.length) {
+for (var i = 0; i < m.userReceipt.length; ++i)
+$root.proto.UserReceipt.encode(m.userReceipt[i], w.uint32(322).fork()).ldelim();
+}
+if (m.reactions != null && m.reactions.length) {
+for (var i = 0; i < m.reactions.length; ++i)
+$root.proto.Reaction.encode(m.reactions[i], w.uint32(330).fork()).ldelim();
+}
+if (m.quotedStickerData != null && Object.hasOwnProperty.call(m, "quotedStickerData"))
+$root.proto.MediaData.encode(m.quotedStickerData, w.uint32(338).fork()).ldelim();
+if (m.futureproofData != null && Object.hasOwnProperty.call(m, "futureproofData"))
+w.uint32(346).bytes(m.futureproofData);
+if (m.statusPsa != null && Object.hasOwnProperty.call(m, "statusPsa"))
+$root.proto.StatusPSA.encode(m.statusPsa, w.uint32(354).fork()).ldelim();
+if (m.pollUpdates != null && m.pollUpdates.length) {
+for (var i = 0; i < m.pollUpdates.length; ++i)
+$root.proto.PollUpdate.encode(m.pollUpdates[i], w.uint32(362).fork()).ldelim();
+}
+if (m.pollAdditionalMetadata != null && Object.hasOwnProperty.call(m, "pollAdditionalMetadata"))
+$root.proto.PollAdditionalMetadata.encode(m.pollAdditionalMetadata, w.uint32(370).fork()).ldelim();
+if (m.agentId != null && Object.hasOwnProperty.call(m, "agentId"))
+w.uint32(378).string(m.agentId);
+if (m.statusAlreadyViewed != null && Object.hasOwnProperty.call(m, "statusAlreadyViewed"))
+w.uint32(384).bool(m.statusAlreadyViewed);
+if (m.messageSecret != null && Object.hasOwnProperty.call(m, "messageSecret"))
+w.uint32(394).bytes(m.messageSecret);
+if (m.keepInChat != null && Object.hasOwnProperty.call(m, "keepInChat"))
+$root.proto.KeepInChat.encode(m.keepInChat, w.uint32(402).fork()).ldelim();
+if (m.originalSelfAuthorUserJidString != null && Object.hasOwnProperty.call(m, "originalSelfAuthorUserJidString"))
+w.uint32(410).string(m.originalSelfAuthorUserJidString);
+if (m.revokeMessageTimestamp != null && Object.hasOwnProperty.call(m, "revokeMessageTimestamp"))
+w.uint32(416).uint64(m.revokeMessageTimestamp);
+if (m.pinInChat != null && Object.hasOwnProperty.call(m, "pinInChat"))
+$root.proto.PinInChat.encode(m.pinInChat, w.uint32(434).fork()).ldelim();
+if (m.premiumMessageInfo != null && Object.hasOwnProperty.call(m, "premiumMessageInfo"))
+$root.proto.PremiumMessageInfo.encode(m.premiumMessageInfo, w.uint32(442).fork()).ldelim();
+if (m.is1PBizBotMessage != null && Object.hasOwnProperty.call(m, "is1PBizBotMessage"))
+w.uint32(448).bool(m.is1PBizBotMessage);
+if (m.isGroupHistoryMessage != null && Object.hasOwnProperty.call(m, "isGroupHistoryMessage"))
+w.uint32(456).bool(m.isGroupHistoryMessage);
+if (m.botMessageInvokerJid != null && Object.hasOwnProperty.call(m, "botMessageInvokerJid"))
+w.uint32(466).string(m.botMessageInvokerJid);
+if (m.commentMetadata != null && Object.hasOwnProperty.call(m, "commentMetadata"))
+$root.proto.CommentMetadata.encode(m.commentMetadata, w.uint32(474).fork()).ldelim();
+if (m.eventResponses != null && m.eventResponses.length) {
+for (var i = 0; i < m.eventResponses.length; ++i)
+$root.proto.EventResponse.encode(m.eventResponses[i], w.uint32(490).fork()).ldelim();
+}
+if (m.reportingTokenInfo != null && Object.hasOwnProperty.call(m, "reportingTokenInfo"))
+$root.proto.ReportingTokenInfo.encode(m.reportingTokenInfo, w.uint32(498).fork()).ldelim();
+if (m.newsletterServerId != null && Object.hasOwnProperty.call(m, "newsletterServerId"))
+w.uint32(504).uint64(m.newsletterServerId);
+if (m.eventAdditionalMetadata != null && Object.hasOwnProperty.call(m, "eventAdditionalMetadata"))
+$root.proto.EventAdditionalMetadata.encode(m.eventAdditionalMetadata, w.uint32(514).fork()).ldelim();
+if (m.isMentionedInStatus != null && Object.hasOwnProperty.call(m, "isMentionedInStatus"))
+w.uint32(520).bool(m.isMentionedInStatus);
+if (m.statusMentions != null && m.statusMentions.length) {
+for (var i = 0; i < m.statusMentions.length; ++i)
+w.uint32(530).string(m.statusMentions[i]);
+}
+if (m.targetMessageId != null && Object.hasOwnProperty.call(m, "targetMessageId"))
+$root.proto.MessageKey.encode(m.targetMessageId, w.uint32(538).fork()).ldelim();
+if (m.messageAddOns != null && m.messageAddOns.length) {
+for (var i = 0; i < m.messageAddOns.length; ++i)
+$root.proto.MessageAddOn.encode(m.messageAddOns[i], w.uint32(546).fork()).ldelim();
+}
+if (m.statusMentionMessageInfo != null && Object.hasOwnProperty.call(m, "statusMentionMessageInfo"))
+$root.proto.StatusMentionMessage.encode(m.statusMentionMessageInfo, w.uint32(554).fork()).ldelim();
+if (m.isSupportAiMessage != null && Object.hasOwnProperty.call(m, "isSupportAiMessage"))
+w.uint32(560).bool(m.isSupportAiMessage);
+if (m.statusMentionSources != null && m.statusMentionSources.length) {
+for (var i = 0; i < m.statusMentionSources.length; ++i)
+w.uint32(570).string(m.statusMentionSources[i]);
+}
+if (m.supportAiCitations != null && m.supportAiCitations.length) {
+for (var i = 0; i < m.supportAiCitations.length; ++i)
+$root.proto.Citation.encode(m.supportAiCitations[i], w.uint32(578).fork()).ldelim();
+}
+if (m.botTargetId != null && Object.hasOwnProperty.call(m, "botTargetId"))
+w.uint32(586).string(m.botTargetId);
+if (m.groupHistoryIndividualMessageInfo != null && Object.hasOwnProperty.call(m, "groupHistoryIndividualMessageInfo"))
+$root.proto.GroupHistoryIndividualMessageInfo.encode(m.groupHistoryIndividualMessageInfo, w.uint32(594).fork()).ldelim();
+if (m.groupHistoryBundleInfo != null && Object.hasOwnProperty.call(m, "groupHistoryBundleInfo"))
+$root.proto.GroupHistoryBundleInfo.encode(m.groupHistoryBundleInfo, w.uint32(602).fork()).ldelim();
+if (m.interactiveMessageAdditionalMetadata != null && Object.hasOwnProperty.call(m, "interactiveMessageAdditionalMetadata"))
+$root.proto.InteractiveMessageAdditionalMetadata.encode(m.interactiveMessageAdditionalMetadata, w.uint32(610).fork()).ldelim();
+if (m.quarantinedMessage != null && Object.hasOwnProperty.call(m, "quarantinedMessage"))
+$root.proto.QuarantinedMessage.encode(m.quarantinedMessage, w.uint32(618).fork()).ldelim();
+if (m.nonJidMentions != null && Object.hasOwnProperty.call(m, "nonJidMentions"))
+w.uint32(624).uint32(m.nonJidMentions);
+if (m.hsmTag != null && Object.hasOwnProperty.call(m, "hsmTag"))
+w.uint32(634).string(m.hsmTag);
+if (m.ephemeralExpirationTimestamp != null && Object.hasOwnProperty.call(m, "ephemeralExpirationTimestamp"))
+w.uint32(640).uint64(m.ephemeralExpirationTimestamp);
+if (m.scheduledMessageMetadata != null && Object.hasOwnProperty.call(m, "scheduledMessageMetadata"))
+$root.proto.ScheduledMessageMetadata.encode(m.scheduledMessageMetadata, w.uint32(650).fork()).ldelim();
+if (m.decisionId != null && Object.hasOwnProperty.call(m, "decisionId"))
+w.uint32(658).string(m.decisionId);
+if (m.decisionSources != null && m.decisionSources.length) {
+for (var i = 0; i < m.decisionSources.length; ++i)
+w.uint32(666).string(m.decisionSources[i]);
+}
+return w;
+};
+WebMessageInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.WebMessageInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.key = $root.proto.MessageKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.message = $root.proto.Message.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 3: {
+m.messageTimestamp = r.uint64();
+break;
+}
+case 4: {
+m.status = r.int32();
+break;
+}
+case 5: {
+m.participant = r.string();
+break;
+}
+case 6: {
+m.messageC2STimestamp = r.uint64();
+break;
+}
+case 16: {
+m.ignore = r.bool();
+break;
+}
+case 17: {
+m.starred = r.bool();
+break;
+}
+case 18: {
+m.broadcast = r.bool();
+break;
+}
+case 19: {
+m.pushName = r.string();
+break;
+}
+case 20: {
+m.mediaCiphertextSha256 = r.bytes();
+break;
+}
+case 21: {
+m.multicast = r.bool();
+break;
+}
+case 22: {
+m.urlText = r.bool();
+break;
+}
+case 23: {
+m.urlNumber = r.bool();
+break;
+}
+case 24: {
+m.messageStubType = r.int32();
+break;
+}
+case 25: {
+m.clearMedia = r.bool();
+break;
+}
+case 26: {
+if (!(m.messageStubParameters && m.messageStubParameters.length))
+m.messageStubParameters = [];
+m.messageStubParameters.push(r.string());
+break;
+}
+case 27: {
+m.duration = r.uint32();
+break;
+}
+case 28: {
+if (!(m.labels && m.labels.length))
+m.labels = [];
+m.labels.push(r.string());
+break;
+}
+case 29: {
+m.paymentInfo = $root.proto.PaymentInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 30: {
+m.finalLiveLocation = $root.proto.Message.LiveLocationMessage.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 31: {
+m.quotedPaymentInfo = $root.proto.PaymentInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 32: {
+m.ephemeralStartTimestamp = r.uint64();
+break;
+}
+case 33: {
+m.ephemeralDuration = r.uint32();
+break;
+}
+case 34: {
+m.ephemeralOffToOn = r.bool();
+break;
+}
+case 35: {
+m.ephemeralOutOfSync = r.bool();
+break;
+}
+case 36: {
+m.bizPrivacyStatus = r.int32();
+break;
+}
+case 37: {
+m.verifiedBizName = r.string();
+break;
+}
+case 38: {
+m.mediaData = $root.proto.MediaData.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 39: {
+m.photoChange = $root.proto.PhotoChange.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 40: {
+if (!(m.userReceipt && m.userReceipt.length))
+m.userReceipt = [];
+m.userReceipt.push($root.proto.UserReceipt.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 41: {
+if (!(m.reactions && m.reactions.length))
+m.reactions = [];
+m.reactions.push($root.proto.Reaction.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 42: {
+m.quotedStickerData = $root.proto.MediaData.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 43: {
+m.futureproofData = r.bytes();
+break;
+}
+case 44: {
+m.statusPsa = $root.proto.StatusPSA.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 45: {
+if (!(m.pollUpdates && m.pollUpdates.length))
+m.pollUpdates = [];
+m.pollUpdates.push($root.proto.PollUpdate.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 46: {
+m.pollAdditionalMetadata = $root.proto.PollAdditionalMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 47: {
+m.agentId = r.string();
+break;
+}
+case 48: {
+m.statusAlreadyViewed = r.bool();
+break;
+}
+case 49: {
+m.messageSecret = r.bytes();
+break;
+}
+case 50: {
+m.keepInChat = $root.proto.KeepInChat.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 51: {
+m.originalSelfAuthorUserJidString = r.string();
+break;
+}
+case 52: {
+m.revokeMessageTimestamp = r.uint64();
+break;
+}
+case 54: {
+m.pinInChat = $root.proto.PinInChat.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 55: {
+m.premiumMessageInfo = $root.proto.PremiumMessageInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 56: {
+m.is1PBizBotMessage = r.bool();
+break;
+}
+case 57: {
+m.isGroupHistoryMessage = r.bool();
+break;
+}
+case 58: {
+m.botMessageInvokerJid = r.string();
+break;
+}
+case 59: {
+m.commentMetadata = $root.proto.CommentMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 61: {
+if (!(m.eventResponses && m.eventResponses.length))
+m.eventResponses = [];
+m.eventResponses.push($root.proto.EventResponse.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 62: {
+m.reportingTokenInfo = $root.proto.ReportingTokenInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 63: {
+m.newsletterServerId = r.uint64();
+break;
+}
+case 64: {
+m.eventAdditionalMetadata = $root.proto.EventAdditionalMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 65: {
+m.isMentionedInStatus = r.bool();
+break;
+}
+case 66: {
+if (!(m.statusMentions && m.statusMentions.length))
+m.statusMentions = [];
+m.statusMentions.push(r.string());
+break;
+}
+case 67: {
+m.targetMessageId = $root.proto.MessageKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 68: {
+if (!(m.messageAddOns && m.messageAddOns.length))
+m.messageAddOns = [];
+m.messageAddOns.push($root.proto.MessageAddOn.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 69: {
+m.statusMentionMessageInfo = $root.proto.StatusMentionMessage.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 70: {
+m.isSupportAiMessage = r.bool();
+break;
+}
+case 71: {
+if (!(m.statusMentionSources && m.statusMentionSources.length))
+m.statusMentionSources = [];
+m.statusMentionSources.push(r.string());
+break;
+}
+case 72: {
+if (!(m.supportAiCitations && m.supportAiCitations.length))
+m.supportAiCitations = [];
+m.supportAiCitations.push($root.proto.Citation.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 73: {
+m.botTargetId = r.string();
+break;
+}
+case 74: {
+m.groupHistoryIndividualMessageInfo = $root.proto.GroupHistoryIndividualMessageInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 75: {
+m.groupHistoryBundleInfo = $root.proto.GroupHistoryBundleInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 76: {
+m.interactiveMessageAdditionalMetadata = $root.proto.InteractiveMessageAdditionalMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 77: {
+m.quarantinedMessage = $root.proto.QuarantinedMessage.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 78: {
+m.nonJidMentions = r.uint32();
+break;
+}
+case 79: {
+m.hsmTag = r.string();
+break;
+}
+case 80: {
+m.ephemeralExpirationTimestamp = r.uint64();
+break;
+}
+case 81: {
+m.scheduledMessageMetadata = $root.proto.ScheduledMessageMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 82: {
+m.decisionId = r.string();
+break;
+}
+case 83: {
+if (!(m.decisionSources && m.decisionSources.length))
+m.decisionSources = [];
+m.decisionSources.push(r.string());
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+WebMessageInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.WebMessageInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.WebMessageInfo();
+if (d.key != null) {
+if (typeof d.key !== "object")
+throw TypeError(".proto.WebMessageInfo.key: object expected");
+m.key = $root.proto.MessageKey.fromObject(d.key, n + 1);
+}
+if (d.message != null) {
+if (typeof d.message !== "object")
+throw TypeError(".proto.WebMessageInfo.message: object expected");
+m.message = $root.proto.Message.fromObject(d.message, n + 1);
+}
+if (d.messageTimestamp != null) {
+if ($util.Long)
+(m.messageTimestamp = $util.Long.fromValue(d.messageTimestamp)).unsigned = true;
+else if (typeof d.messageTimestamp === "string")
+m.messageTimestamp = parseInt(d.messageTimestamp, 10);
+else if (typeof d.messageTimestamp === "number")
+m.messageTimestamp = d.messageTimestamp;
+else if (typeof d.messageTimestamp === "object")
+m.messageTimestamp = new $util.LongBits(d.messageTimestamp.low >>> 0, d.messageTimestamp.high >>> 0).toNumber(true);
+}
+switch (d.status) {
+default:
+if (typeof d.status === "number") {
+m.status = d.status;
+break;
+}
+break;
+case "ERROR":
+case 0:
+m.status = 0;
+break;
+case "PENDING":
+case 1:
+m.status = 1;
+break;
+case "SERVER_ACK":
+case 2:
+m.status = 2;
+break;
+case "DELIVERY_ACK":
+case 3:
+m.status = 3;
+break;
+case "READ":
+case 4:
+m.status = 4;
+break;
+case "PLAYED":
+case 5:
+m.status = 5;
+break;
+}
+if (d.participant != null) {
+m.participant = String(d.participant);
+}
+if (d.messageC2STimestamp != null) {
+if ($util.Long)
+(m.messageC2STimestamp = $util.Long.fromValue(d.messageC2STimestamp)).unsigned = true;
+else if (typeof d.messageC2STimestamp === "string")
+m.messageC2STimestamp = parseInt(d.messageC2STimestamp, 10);
+else if (typeof d.messageC2STimestamp === "number")
+m.messageC2STimestamp = d.messageC2STimestamp;
+else if (typeof d.messageC2STimestamp === "object")
+m.messageC2STimestamp = new $util.LongBits(d.messageC2STimestamp.low >>> 0, d.messageC2STimestamp.high >>> 0).toNumber(true);
+}
+if (d.ignore != null) {
+m.ignore = Boolean(d.ignore);
+}
+if (d.starred != null) {
+m.starred = Boolean(d.starred);
+}
+if (d.broadcast != null) {
+m.broadcast = Boolean(d.broadcast);
+}
+if (d.pushName != null) {
+m.pushName = String(d.pushName);
+}
+if (d.mediaCiphertextSha256 != null) {
+if (typeof d.mediaCiphertextSha256 === "string")
+$util.base64.decode(d.mediaCiphertextSha256, m.mediaCiphertextSha256 = $util.newBuffer($util.base64.length(d.mediaCiphertextSha256)), 0);
+else if (d.mediaCiphertextSha256.length >= 0)
+m.mediaCiphertextSha256 = d.mediaCiphertextSha256;
+}
+if (d.multicast != null) {
+m.multicast = Boolean(d.multicast);
+}
+if (d.urlText != null) {
+m.urlText = Boolean(d.urlText);
+}
+if (d.urlNumber != null) {
+m.urlNumber = Boolean(d.urlNumber);
+}
+switch (d.messageStubType) {
+default:
+if (typeof d.messageStubType === "number") {
+m.messageStubType = d.messageStubType;
+break;
+}
+break;
+case "UNKNOWN":
+case 0:
+m.messageStubType = 0;
+break;
+case "REVOKE":
+case 1:
+m.messageStubType = 1;
+break;
+case "CIPHERTEXT":
+case 2:
+m.messageStubType = 2;
+break;
+case "FUTUREPROOF":
+case 3:
+m.messageStubType = 3;
+break;
+case "NON_VERIFIED_TRANSITION":
+case 4:
+m.messageStubType = 4;
+break;
+case "UNVERIFIED_TRANSITION":
+case 5:
+m.messageStubType = 5;
+break;
+case "VERIFIED_TRANSITION":
+case 6:
+m.messageStubType = 6;
+break;
+case "VERIFIED_LOW_UNKNOWN":
+case 7:
+m.messageStubType = 7;
+break;
+case "VERIFIED_HIGH":
+case 8:
+m.messageStubType = 8;
+break;
+case "VERIFIED_INITIAL_UNKNOWN":
+case 9:
+m.messageStubType = 9;
+break;
+case "VERIFIED_INITIAL_LOW":
+case 10:
+m.messageStubType = 10;
+break;
+case "VERIFIED_INITIAL_HIGH":
+case 11:
+m.messageStubType = 11;
+break;
+case "VERIFIED_TRANSITION_ANY_TO_NONE":
+case 12:
+m.messageStubType = 12;
+break;
+case "VERIFIED_TRANSITION_ANY_TO_HIGH":
+case 13:
+m.messageStubType = 13;
+break;
+case "VERIFIED_TRANSITION_HIGH_TO_LOW":
+case 14:
+m.messageStubType = 14;
+break;
+case "VERIFIED_TRANSITION_HIGH_TO_UNKNOWN":
+case 15:
+m.messageStubType = 15;
+break;
+case "VERIFIED_TRANSITION_UNKNOWN_TO_LOW":
+case 16:
+m.messageStubType = 16;
+break;
+case "VERIFIED_TRANSITION_LOW_TO_UNKNOWN":
+case 17:
+m.messageStubType = 17;
+break;
+case "VERIFIED_TRANSITION_NONE_TO_LOW":
+case 18:
+m.messageStubType = 18;
+break;
+case "VERIFIED_TRANSITION_NONE_TO_UNKNOWN":
+case 19:
+m.messageStubType = 19;
+break;
+case "GROUP_CREATE":
+case 20:
+m.messageStubType = 20;
+break;
+case "GROUP_CHANGE_SUBJECT":
+case 21:
+m.messageStubType = 21;
+break;
+case "GROUP_CHANGE_ICON":
+case 22:
+m.messageStubType = 22;
+break;
+case "GROUP_CHANGE_INVITE_LINK":
+case 23:
+m.messageStubType = 23;
+break;
+case "GROUP_CHANGE_DESCRIPTION":
+case 24:
+m.messageStubType = 24;
+break;
+case "GROUP_CHANGE_RESTRICT":
+case 25:
+m.messageStubType = 25;
+break;
+case "GROUP_CHANGE_ANNOUNCE":
+case 26:
+m.messageStubType = 26;
+break;
+case "GROUP_PARTICIPANT_ADD":
+case 27:
+m.messageStubType = 27;
+break;
+case "GROUP_PARTICIPANT_REMOVE":
+case 28:
+m.messageStubType = 28;
+break;
+case "GROUP_PARTICIPANT_PROMOTE":
+case 29:
+m.messageStubType = 29;
+break;
+case "GROUP_PARTICIPANT_DEMOTE":
+case 30:
+m.messageStubType = 30;
+break;
+case "GROUP_PARTICIPANT_INVITE":
+case 31:
+m.messageStubType = 31;
+break;
+case "GROUP_PARTICIPANT_LEAVE":
+case 32:
+m.messageStubType = 32;
+break;
+case "GROUP_PARTICIPANT_CHANGE_NUMBER":
+case 33:
+m.messageStubType = 33;
+break;
+case "BROADCAST_CREATE":
+case 34:
+m.messageStubType = 34;
+break;
+case "BROADCAST_ADD":
+case 35:
+m.messageStubType = 35;
+break;
+case "BROADCAST_REMOVE":
+case 36:
+m.messageStubType = 36;
+break;
+case "GENERIC_NOTIFICATION":
+case 37:
+m.messageStubType = 37;
+break;
+case "E2E_IDENTITY_CHANGED":
+case 38:
+m.messageStubType = 38;
+break;
+case "E2E_ENCRYPTED":
+case 39:
+m.messageStubType = 39;
+break;
+case "CALL_MISSED_VOICE":
+case 40:
+m.messageStubType = 40;
+break;
+case "CALL_MISSED_VIDEO":
+case 41:
+m.messageStubType = 41;
+break;
+case "INDIVIDUAL_CHANGE_NUMBER":
+case 42:
+m.messageStubType = 42;
+break;
+case "GROUP_DELETE":
+case 43:
+m.messageStubType = 43;
+break;
+case "GROUP_ANNOUNCE_MODE_MESSAGE_BOUNCE":
+case 44:
+m.messageStubType = 44;
+break;
+case "CALL_MISSED_GROUP_VOICE":
+case 45:
+m.messageStubType = 45;
+break;
+case "CALL_MISSED_GROUP_VIDEO":
+case 46:
+m.messageStubType = 46;
+break;
+case "PAYMENT_CIPHERTEXT":
+case 47:
+m.messageStubType = 47;
+break;
+case "PAYMENT_FUTUREPROOF":
+case 48:
+m.messageStubType = 48;
+break;
+case "PAYMENT_TRANSACTION_STATUS_UPDATE_FAILED":
+case 49:
+m.messageStubType = 49;
+break;
+case "PAYMENT_TRANSACTION_STATUS_UPDATE_REFUNDED":
+case 50:
+m.messageStubType = 50;
+break;
+case "PAYMENT_TRANSACTION_STATUS_UPDATE_REFUND_FAILED":
+case 51:
+m.messageStubType = 51;
+break;
+case "PAYMENT_TRANSACTION_STATUS_RECEIVER_PENDING_SETUP":
+case 52:
+m.messageStubType = 52;
+break;
+case "PAYMENT_TRANSACTION_STATUS_RECEIVER_SUCCESS_AFTER_HICCUP":
+case 53:
+m.messageStubType = 53;
+break;
+case "PAYMENT_ACTION_ACCOUNT_SETUP_REMINDER":
+case 54:
+m.messageStubType = 54;
+break;
+case "PAYMENT_ACTION_SEND_PAYMENT_REMINDER":
+case 55:
+m.messageStubType = 55;
+break;
+case "PAYMENT_ACTION_SEND_PAYMENT_INVITATION":
+case 56:
+m.messageStubType = 56;
+break;
+case "PAYMENT_ACTION_REQUEST_DECLINED":
+case 57:
+m.messageStubType = 57;
+break;
+case "PAYMENT_ACTION_REQUEST_EXPIRED":
+case 58:
+m.messageStubType = 58;
+break;
+case "PAYMENT_ACTION_REQUEST_CANCELLED":
+case 59:
+m.messageStubType = 59;
+break;
+case "BIZ_VERIFIED_TRANSITION_TOP_TO_BOTTOM":
+case 60:
+m.messageStubType = 60;
+break;
+case "BIZ_VERIFIED_TRANSITION_BOTTOM_TO_TOP":
+case 61:
+m.messageStubType = 61;
+break;
+case "BIZ_INTRO_TOP":
+case 62:
+m.messageStubType = 62;
+break;
+case "BIZ_INTRO_BOTTOM":
+case 63:
+m.messageStubType = 63;
+break;
+case "BIZ_NAME_CHANGE":
+case 64:
+m.messageStubType = 64;
+break;
+case "BIZ_MOVE_TO_CONSUMER_APP":
+case 65:
+m.messageStubType = 65;
+break;
+case "BIZ_TWO_TIER_MIGRATION_TOP":
+case 66:
+m.messageStubType = 66;
+break;
+case "BIZ_TWO_TIER_MIGRATION_BOTTOM":
+case 67:
+m.messageStubType = 67;
+break;
+case "OVERSIZED":
+case 68:
+m.messageStubType = 68;
+break;
+case "GROUP_CHANGE_NO_FREQUENTLY_FORWARDED":
+case 69:
+m.messageStubType = 69;
+break;
+case "GROUP_V4_ADD_INVITE_SENT":
+case 70:
+m.messageStubType = 70;
+break;
+case "GROUP_PARTICIPANT_ADD_REQUEST_JOIN":
+case 71:
+m.messageStubType = 71;
+break;
+case "CHANGE_EPHEMERAL_SETTING":
+case 72:
+m.messageStubType = 72;
+break;
+case "E2E_DEVICE_CHANGED":
+case 73:
+m.messageStubType = 73;
+break;
+case "VIEWED_ONCE":
+case 74:
+m.messageStubType = 74;
+break;
+case "E2E_ENCRYPTED_NOW":
+case 75:
+m.messageStubType = 75;
+break;
+case "BLUE_MSG_BSP_FB_TO_BSP_PREMISE":
+case 76:
+m.messageStubType = 76;
+break;
+case "BLUE_MSG_BSP_FB_TO_SELF_FB":
+case 77:
+m.messageStubType = 77;
+break;
+case "BLUE_MSG_BSP_FB_TO_SELF_PREMISE":
+case 78:
+m.messageStubType = 78;
+break;
+case "BLUE_MSG_BSP_FB_UNVERIFIED":
+case 79:
+m.messageStubType = 79;
+break;
+case "BLUE_MSG_BSP_FB_UNVERIFIED_TO_SELF_PREMISE_VERIFIED":
+case 80:
+m.messageStubType = 80;
+break;
+case "BLUE_MSG_BSP_FB_VERIFIED":
+case 81:
+m.messageStubType = 81;
+break;
+case "BLUE_MSG_BSP_FB_VERIFIED_TO_SELF_PREMISE_UNVERIFIED":
+case 82:
+m.messageStubType = 82;
+break;
+case "BLUE_MSG_BSP_PREMISE_TO_SELF_PREMISE":
+case 83:
+m.messageStubType = 83;
+break;
+case "BLUE_MSG_BSP_PREMISE_UNVERIFIED":
+case 84:
+m.messageStubType = 84;
+break;
+case "BLUE_MSG_BSP_PREMISE_UNVERIFIED_TO_SELF_PREMISE_VERIFIED":
+case 85:
+m.messageStubType = 85;
+break;
+case "BLUE_MSG_BSP_PREMISE_VERIFIED":
+case 86:
+m.messageStubType = 86;
+break;
+case "BLUE_MSG_BSP_PREMISE_VERIFIED_TO_SELF_PREMISE_UNVERIFIED":
+case 87:
+m.messageStubType = 87;
+break;
+case "BLUE_MSG_CONSUMER_TO_BSP_FB_UNVERIFIED":
+case 88:
+m.messageStubType = 88;
+break;
+case "BLUE_MSG_CONSUMER_TO_BSP_PREMISE_UNVERIFIED":
+case 89:
+m.messageStubType = 89;
+break;
+case "BLUE_MSG_CONSUMER_TO_SELF_FB_UNVERIFIED":
+case 90:
+m.messageStubType = 90;
+break;
+case "BLUE_MSG_CONSUMER_TO_SELF_PREMISE_UNVERIFIED":
+case 91:
+m.messageStubType = 91;
+break;
+case "BLUE_MSG_SELF_FB_TO_BSP_PREMISE":
+case 92:
+m.messageStubType = 92;
+break;
+case "BLUE_MSG_SELF_FB_TO_SELF_PREMISE":
+case 93:
+m.messageStubType = 93;
+break;
+case "BLUE_MSG_SELF_FB_UNVERIFIED":
+case 94:
+m.messageStubType = 94;
+break;
+case "BLUE_MSG_SELF_FB_UNVERIFIED_TO_SELF_PREMISE_VERIFIED":
+case 95:
+m.messageStubType = 95;
+break;
+case "BLUE_MSG_SELF_FB_VERIFIED":
+case 96:
+m.messageStubType = 96;
+break;
+case "BLUE_MSG_SELF_FB_VERIFIED_TO_SELF_PREMISE_UNVERIFIED":
+case 97:
+m.messageStubType = 97;
+break;
+case "BLUE_MSG_SELF_PREMISE_TO_BSP_PREMISE":
+case 98:
+m.messageStubType = 98;
+break;
+case "BLUE_MSG_SELF_PREMISE_UNVERIFIED":
+case 99:
+m.messageStubType = 99;
+break;
+case "BLUE_MSG_SELF_PREMISE_VERIFIED":
+case 100:
+m.messageStubType = 100;
+break;
+case "BLUE_MSG_TO_BSP_FB":
+case 101:
+m.messageStubType = 101;
+break;
+case "BLUE_MSG_TO_CONSUMER":
+case 102:
+m.messageStubType = 102;
+break;
+case "BLUE_MSG_TO_SELF_FB":
+case 103:
+m.messageStubType = 103;
+break;
+case "BLUE_MSG_UNVERIFIED_TO_BSP_FB_VERIFIED":
+case 104:
+m.messageStubType = 104;
+break;
+case "BLUE_MSG_UNVERIFIED_TO_BSP_PREMISE_VERIFIED":
+case 105:
+m.messageStubType = 105;
+break;
+case "BLUE_MSG_UNVERIFIED_TO_SELF_FB_VERIFIED":
+case 106:
+m.messageStubType = 106;
+break;
+case "BLUE_MSG_UNVERIFIED_TO_VERIFIED":
+case 107:
+m.messageStubType = 107;
+break;
+case "BLUE_MSG_VERIFIED_TO_BSP_FB_UNVERIFIED":
+case 108:
+m.messageStubType = 108;
+break;
+case "BLUE_MSG_VERIFIED_TO_BSP_PREMISE_UNVERIFIED":
+case 109:
+m.messageStubType = 109;
+break;
+case "BLUE_MSG_VERIFIED_TO_SELF_FB_UNVERIFIED":
+case 110:
+m.messageStubType = 110;
+break;
+case "BLUE_MSG_VERIFIED_TO_UNVERIFIED":
+case 111:
+m.messageStubType = 111;
+break;
+case "BLUE_MSG_BSP_FB_UNVERIFIED_TO_BSP_PREMISE_VERIFIED":
+case 112:
+m.messageStubType = 112;
+break;
+case "BLUE_MSG_BSP_FB_UNVERIFIED_TO_SELF_FB_VERIFIED":
+case 113:
+m.messageStubType = 113;
+break;
+case "BLUE_MSG_BSP_FB_VERIFIED_TO_BSP_PREMISE_UNVERIFIED":
+case 114:
+m.messageStubType = 114;
+break;
+case "BLUE_MSG_BSP_FB_VERIFIED_TO_SELF_FB_UNVERIFIED":
+case 115:
+m.messageStubType = 115;
+break;
+case "BLUE_MSG_SELF_FB_UNVERIFIED_TO_BSP_PREMISE_VERIFIED":
+case 116:
+m.messageStubType = 116;
+break;
+case "BLUE_MSG_SELF_FB_VERIFIED_TO_BSP_PREMISE_UNVERIFIED":
+case 117:
+m.messageStubType = 117;
+break;
+case "E2E_IDENTITY_UNAVAILABLE":
+case 118:
+m.messageStubType = 118;
+break;
+case "GROUP_CREATING":
+case 119:
+m.messageStubType = 119;
+break;
+case "GROUP_CREATE_FAILED":
+case 120:
+m.messageStubType = 120;
+break;
+case "GROUP_BOUNCED":
+case 121:
+m.messageStubType = 121;
+break;
+case "BLOCK_CONTACT":
+case 122:
+m.messageStubType = 122;
+break;
+case "EPHEMERAL_SETTING_NOT_APPLIED":
+case 123:
+m.messageStubType = 123;
+break;
+case "SYNC_FAILED":
+case 124:
+m.messageStubType = 124;
+break;
+case "SYNCING":
+case 125:
+m.messageStubType = 125;
+break;
+case "BIZ_PRIVACY_MODE_INIT_FB":
+case 126:
+m.messageStubType = 126;
+break;
+case "BIZ_PRIVACY_MODE_INIT_BSP":
+case 127:
+m.messageStubType = 127;
+break;
+case "BIZ_PRIVACY_MODE_TO_FB":
+case 128:
+m.messageStubType = 128;
+break;
+case "BIZ_PRIVACY_MODE_TO_BSP":
+case 129:
+m.messageStubType = 129;
+break;
+case "DISAPPEARING_MODE":
+case 130:
+m.messageStubType = 130;
+break;
+case "E2E_DEVICE_FETCH_FAILED":
+case 131:
+m.messageStubType = 131;
+break;
+case "ADMIN_REVOKE":
+case 132:
+m.messageStubType = 132;
+break;
+case "GROUP_INVITE_LINK_GROWTH_LOCKED":
+case 133:
+m.messageStubType = 133;
+break;
+case "COMMUNITY_LINK_PARENT_GROUP":
+case 134:
+m.messageStubType = 134;
+break;
+case "COMMUNITY_LINK_SIBLING_GROUP":
+case 135:
+m.messageStubType = 135;
+break;
+case "COMMUNITY_LINK_SUB_GROUP":
+case 136:
+m.messageStubType = 136;
+break;
+case "COMMUNITY_UNLINK_PARENT_GROUP":
+case 137:
+m.messageStubType = 137;
+break;
+case "COMMUNITY_UNLINK_SIBLING_GROUP":
+case 138:
+m.messageStubType = 138;
+break;
+case "COMMUNITY_UNLINK_SUB_GROUP":
+case 139:
+m.messageStubType = 139;
+break;
+case "GROUP_PARTICIPANT_ACCEPT":
+case 140:
+m.messageStubType = 140;
+break;
+case "GROUP_PARTICIPANT_LINKED_GROUP_JOIN":
+case 141:
+m.messageStubType = 141;
+break;
+case "COMMUNITY_CREATE":
+case 142:
+m.messageStubType = 142;
+break;
+case "EPHEMERAL_KEEP_IN_CHAT":
+case 143:
+m.messageStubType = 143;
+break;
+case "GROUP_MEMBERSHIP_JOIN_APPROVAL_REQUEST":
+case 144:
+m.messageStubType = 144;
+break;
+case "GROUP_MEMBERSHIP_JOIN_APPROVAL_MODE":
+case 145:
+m.messageStubType = 145;
+break;
+case "INTEGRITY_UNLINK_PARENT_GROUP":
+case 146:
+m.messageStubType = 146;
+break;
+case "COMMUNITY_PARTICIPANT_PROMOTE":
+case 147:
+m.messageStubType = 147;
+break;
+case "COMMUNITY_PARTICIPANT_DEMOTE":
+case 148:
+m.messageStubType = 148;
+break;
+case "COMMUNITY_PARENT_GROUP_DELETED":
+case 149:
+m.messageStubType = 149;
+break;
+case "COMMUNITY_LINK_PARENT_GROUP_MEMBERSHIP_APPROVAL":
+case 150:
+m.messageStubType = 150;
+break;
+case "GROUP_PARTICIPANT_JOINED_GROUP_AND_PARENT_GROUP":
+case 151:
+m.messageStubType = 151;
+break;
+case "MASKED_THREAD_CREATED":
+case 152:
+m.messageStubType = 152;
+break;
+case "MASKED_THREAD_UNMASKED":
+case 153:
+m.messageStubType = 153;
+break;
+case "BIZ_CHAT_ASSIGNMENT":
+case 154:
+m.messageStubType = 154;
+break;
+case "CHAT_PSA":
+case 155:
+m.messageStubType = 155;
+break;
+case "CHAT_POLL_CREATION_MESSAGE":
+case 156:
+m.messageStubType = 156;
+break;
+case "CAG_MASKED_THREAD_CREATED":
+case 157:
+m.messageStubType = 157;
+break;
+case "COMMUNITY_PARENT_GROUP_SUBJECT_CHANGED":
+case 158:
+m.messageStubType = 158;
+break;
+case "CAG_INVITE_AUTO_ADD":
+case 159:
+m.messageStubType = 159;
+break;
+case "BIZ_CHAT_ASSIGNMENT_UNASSIGN":
+case 160:
+m.messageStubType = 160;
+break;
+case "CAG_INVITE_AUTO_JOINED":
+case 161:
+m.messageStubType = 161;
+break;
+case "SCHEDULED_CALL_START_MESSAGE":
+case 162:
+m.messageStubType = 162;
+break;
+case "COMMUNITY_INVITE_RICH":
+case 163:
+m.messageStubType = 163;
+break;
+case "COMMUNITY_INVITE_AUTO_ADD_RICH":
+case 164:
+m.messageStubType = 164;
+break;
+case "SUB_GROUP_INVITE_RICH":
+case 165:
+m.messageStubType = 165;
+break;
+case "SUB_GROUP_PARTICIPANT_ADD_RICH":
+case 166:
+m.messageStubType = 166;
+break;
+case "COMMUNITY_LINK_PARENT_GROUP_RICH":
+case 167:
+m.messageStubType = 167;
+break;
+case "COMMUNITY_PARTICIPANT_ADD_RICH":
+case 168:
+m.messageStubType = 168;
+break;
+case "SILENCED_UNKNOWN_CALLER_AUDIO":
+case 169:
+m.messageStubType = 169;
+break;
+case "SILENCED_UNKNOWN_CALLER_VIDEO":
+case 170:
+m.messageStubType = 170;
+break;
+case "GROUP_MEMBER_ADD_MODE":
+case 171:
+m.messageStubType = 171;
+break;
+case "GROUP_MEMBERSHIP_JOIN_APPROVAL_REQUEST_NON_ADMIN_ADD":
+case 172:
+m.messageStubType = 172;
+break;
+case "COMMUNITY_CHANGE_DESCRIPTION":
+case 173:
+m.messageStubType = 173;
+break;
+case "SENDER_INVITE":
+case 174:
+m.messageStubType = 174;
+break;
+case "RECEIVER_INVITE":
+case 175:
+m.messageStubType = 175;
+break;
+case "COMMUNITY_ALLOW_MEMBER_ADDED_GROUPS":
+case 176:
+m.messageStubType = 176;
+break;
+case "PINNED_MESSAGE_IN_CHAT":
+case 177:
+m.messageStubType = 177;
+break;
+case "PAYMENT_INVITE_SETUP_INVITER":
+case 178:
+m.messageStubType = 178;
+break;
+case "PAYMENT_INVITE_SETUP_INVITEE_RECEIVE_ONLY":
+case 179:
+m.messageStubType = 179;
+break;
+case "PAYMENT_INVITE_SETUP_INVITEE_SEND_AND_RECEIVE":
+case 180:
+m.messageStubType = 180;
+break;
+case "LINKED_GROUP_CALL_START":
+case 181:
+m.messageStubType = 181;
+break;
+case "REPORT_TO_ADMIN_ENABLED_STATUS":
+case 182:
+m.messageStubType = 182;
+break;
+case "EMPTY_SUBGROUP_CREATE":
+case 183:
+m.messageStubType = 183;
+break;
+case "SCHEDULED_CALL_CANCEL":
+case 184:
+m.messageStubType = 184;
+break;
+case "SUBGROUP_ADMIN_TRIGGERED_AUTO_ADD_RICH":
+case 185:
+m.messageStubType = 185;
+break;
+case "GROUP_CHANGE_RECENT_HISTORY_SHARING":
+case 186:
+m.messageStubType = 186;
+break;
+case "PAID_MESSAGE_SERVER_CAMPAIGN_ID":
+case 187:
+m.messageStubType = 187;
+break;
+case "GENERAL_CHAT_CREATE":
+case 188:
+m.messageStubType = 188;
+break;
+case "GENERAL_CHAT_ADD":
+case 189:
+m.messageStubType = 189;
+break;
+case "GENERAL_CHAT_AUTO_ADD_DISABLED":
+case 190:
+m.messageStubType = 190;
+break;
+case "SUGGESTED_SUBGROUP_ANNOUNCE":
+case 191:
+m.messageStubType = 191;
+break;
+case "BIZ_BOT_1P_MESSAGING_ENABLED":
+case 192:
+m.messageStubType = 192;
+break;
+case "CHANGE_USERNAME":
+case 193:
+m.messageStubType = 193;
+break;
+case "BIZ_COEX_PRIVACY_INIT_SELF":
+case 194:
+m.messageStubType = 194;
+break;
+case "BIZ_COEX_PRIVACY_TRANSITION_SELF":
+case 195:
+m.messageStubType = 195;
+break;
+case "SUPPORT_AI_EDUCATION":
+case 196:
+m.messageStubType = 196;
+break;
+case "BIZ_BOT_3P_MESSAGING_ENABLED":
+case 197:
+m.messageStubType = 197;
+break;
+case "REMINDER_SETUP_MESSAGE":
+case 198:
+m.messageStubType = 198;
+break;
+case "REMINDER_SENT_MESSAGE":
+case 199:
+m.messageStubType = 199;
+break;
+case "REMINDER_CANCEL_MESSAGE":
+case 200:
+m.messageStubType = 200;
+break;
+case "BIZ_COEX_PRIVACY_INIT":
+case 201:
+m.messageStubType = 201;
+break;
+case "BIZ_COEX_PRIVACY_TRANSITION":
+case 202:
+m.messageStubType = 202;
+break;
+case "GROUP_DEACTIVATED":
+case 203:
+m.messageStubType = 203;
+break;
+case "COMMUNITY_DEACTIVATE_SIBLING_GROUP":
+case 204:
+m.messageStubType = 204;
+break;
+case "EVENT_UPDATED":
+case 205:
+m.messageStubType = 205;
+break;
+case "EVENT_CANCELED":
+case 206:
+m.messageStubType = 206;
+break;
+case "COMMUNITY_OWNER_UPDATED":
+case 207:
+m.messageStubType = 207;
+break;
+case "COMMUNITY_SUB_GROUP_VISIBILITY_HIDDEN":
+case 208:
+m.messageStubType = 208;
+break;
+case "CAPI_GROUP_NE2EE_SYSTEM_MESSAGE":
+case 209:
+m.messageStubType = 209;
+break;
+case "STATUS_MENTION":
+case 210:
+m.messageStubType = 210;
+break;
+case "USER_CONTROLS_SYSTEM_MESSAGE":
+case 211:
+m.messageStubType = 211;
+break;
+case "SUPPORT_SYSTEM_MESSAGE":
+case 212:
+m.messageStubType = 212;
+break;
+case "CHANGE_LID":
+case 213:
+m.messageStubType = 213;
+break;
+case "BIZ_CUSTOMER_3PD_DATA_SHARING_OPT_IN_MESSAGE":
+case 214:
+m.messageStubType = 214;
+break;
+case "BIZ_CUSTOMER_3PD_DATA_SHARING_OPT_OUT_MESSAGE":
+case 215:
+m.messageStubType = 215;
+break;
+case "CHANGE_LIMIT_SHARING":
+case 216:
+m.messageStubType = 216;
+break;
+case "GROUP_MEMBER_LINK_MODE":
+case 217:
+m.messageStubType = 217;
+break;
+case "BIZ_AUTOMATICALLY_LABELED_CHAT_SYSTEM_MESSAGE":
+case 218:
+m.messageStubType = 218;
+break;
+case "PHONE_NUMBER_HIDING_CHAT_DEPRECATED_MESSAGE":
+case 219:
+m.messageStubType = 219;
+break;
+case "QUARANTINED_MESSAGE":
+case 220:
+m.messageStubType = 220;
+break;
+case "GROUP_MEMBER_SHARE_GROUP_HISTORY_MODE":
+case 221:
+m.messageStubType = 221;
+break;
+case "GROUP_OPEN_BOT_ADDED":
+case 222:
+m.messageStubType = 222;
+break;
+case "GROUP_TEE_BOT_ADDED":
+case 223:
+m.messageStubType = 223;
+break;
+case "CONTACT_INFO":
+case 224:
+m.messageStubType = 224;
+break;
+case "SCHEDULED_MESSAGE_CREATED":
+case 225:
+m.messageStubType = 225;
+break;
+}
+if (d.clearMedia != null) {
+m.clearMedia = Boolean(d.clearMedia);
+}
+if (d.messageStubParameters) {
+if (!Array.isArray(d.messageStubParameters))
+throw TypeError(".proto.WebMessageInfo.messageStubParameters: array expected");
+m.messageStubParameters = [];
+for (var i = 0; i < d.messageStubParameters.length; ++i) {
+m.messageStubParameters[i] = String(d.messageStubParameters[i]);
+}
+}
+if (d.duration != null) {
+m.duration = d.duration >>> 0;
+}
+if (d.labels) {
+if (!Array.isArray(d.labels))
+throw TypeError(".proto.WebMessageInfo.labels: array expected");
+m.labels = [];
+for (var i = 0; i < d.labels.length; ++i) {
+m.labels[i] = String(d.labels[i]);
+}
+}
+if (d.paymentInfo != null) {
+if (typeof d.paymentInfo !== "object")
+throw TypeError(".proto.WebMessageInfo.paymentInfo: object expected");
+m.paymentInfo = $root.proto.PaymentInfo.fromObject(d.paymentInfo, n + 1);
+}
+if (d.finalLiveLocation != null) {
+if (typeof d.finalLiveLocation !== "object")
+throw TypeError(".proto.WebMessageInfo.finalLiveLocation: object expected");
+m.finalLiveLocation = $root.proto.Message.LiveLocationMessage.fromObject(d.finalLiveLocation, n + 1);
+}
+if (d.quotedPaymentInfo != null) {
+if (typeof d.quotedPaymentInfo !== "object")
+throw TypeError(".proto.WebMessageInfo.quotedPaymentInfo: object expected");
+m.quotedPaymentInfo = $root.proto.PaymentInfo.fromObject(d.quotedPaymentInfo, n + 1);
+}
+if (d.ephemeralStartTimestamp != null) {
+if ($util.Long)
+(m.ephemeralStartTimestamp = $util.Long.fromValue(d.ephemeralStartTimestamp)).unsigned = true;
+else if (typeof d.ephemeralStartTimestamp === "string")
+m.ephemeralStartTimestamp = parseInt(d.ephemeralStartTimestamp, 10);
+else if (typeof d.ephemeralStartTimestamp === "number")
+m.ephemeralStartTimestamp = d.ephemeralStartTimestamp;
+else if (typeof d.ephemeralStartTimestamp === "object")
+m.ephemeralStartTimestamp = new $util.LongBits(d.ephemeralStartTimestamp.low >>> 0, d.ephemeralStartTimestamp.high >>> 0).toNumber(true);
+}
+if (d.ephemeralDuration != null) {
+m.ephemeralDuration = d.ephemeralDuration >>> 0;
+}
+if (d.ephemeralOffToOn != null) {
+m.ephemeralOffToOn = Boolean(d.ephemeralOffToOn);
+}
+if (d.ephemeralOutOfSync != null) {
+m.ephemeralOutOfSync = Boolean(d.ephemeralOutOfSync);
+}
+switch (d.bizPrivacyStatus) {
+default:
+if (typeof d.bizPrivacyStatus === "number") {
+m.bizPrivacyStatus = d.bizPrivacyStatus;
+break;
+}
+break;
+case "E2EE":
+case 0:
+m.bizPrivacyStatus = 0;
+break;
+case "FB":
+case 2:
+m.bizPrivacyStatus = 2;
+break;
+case "BSP":
+case 1:
+m.bizPrivacyStatus = 1;
+break;
+case "BSP_AND_FB":
+case 3:
+m.bizPrivacyStatus = 3;
+break;
+}
+if (d.verifiedBizName != null) {
+m.verifiedBizName = String(d.verifiedBizName);
+}
+if (d.mediaData != null) {
+if (typeof d.mediaData !== "object")
+throw TypeError(".proto.WebMessageInfo.mediaData: object expected");
+m.mediaData = $root.proto.MediaData.fromObject(d.mediaData, n + 1);
+}
+if (d.photoChange != null) {
+if (typeof d.photoChange !== "object")
+throw TypeError(".proto.WebMessageInfo.photoChange: object expected");
+m.photoChange = $root.proto.PhotoChange.fromObject(d.photoChange, n + 1);
+}
+if (d.userReceipt) {
+if (!Array.isArray(d.userReceipt))
+throw TypeError(".proto.WebMessageInfo.userReceipt: array expected");
+m.userReceipt = [];
+for (var i = 0; i < d.userReceipt.length; ++i) {
+if (typeof d.userReceipt[i] !== "object")
+throw TypeError(".proto.WebMessageInfo.userReceipt: object expected");
+m.userReceipt[i] = $root.proto.UserReceipt.fromObject(d.userReceipt[i], n + 1);
+}
+}
+if (d.reactions) {
+if (!Array.isArray(d.reactions))
+throw TypeError(".proto.WebMessageInfo.reactions: array expected");
+m.reactions = [];
+for (var i = 0; i < d.reactions.length; ++i) {
+if (typeof d.reactions[i] !== "object")
+throw TypeError(".proto.WebMessageInfo.reactions: object expected");
+m.reactions[i] = $root.proto.Reaction.fromObject(d.reactions[i], n + 1);
+}
+}
+if (d.quotedStickerData != null) {
+if (typeof d.quotedStickerData !== "object")
+throw TypeError(".proto.WebMessageInfo.quotedStickerData: object expected");
+m.quotedStickerData = $root.proto.MediaData.fromObject(d.quotedStickerData, n + 1);
+}
+if (d.futureproofData != null) {
+if (typeof d.futureproofData === "string")
+$util.base64.decode(d.futureproofData, m.futureproofData = $util.newBuffer($util.base64.length(d.futureproofData)), 0);
+else if (d.futureproofData.length >= 0)
+m.futureproofData = d.futureproofData;
+}
+if (d.statusPsa != null) {
+if (typeof d.statusPsa !== "object")
+throw TypeError(".proto.WebMessageInfo.statusPsa: object expected");
+m.statusPsa = $root.proto.StatusPSA.fromObject(d.statusPsa, n + 1);
+}
+if (d.pollUpdates) {
+if (!Array.isArray(d.pollUpdates))
+throw TypeError(".proto.WebMessageInfo.pollUpdates: array expected");
+m.pollUpdates = [];
+for (var i = 0; i < d.pollUpdates.length; ++i) {
+if (typeof d.pollUpdates[i] !== "object")
+throw TypeError(".proto.WebMessageInfo.pollUpdates: object expected");
+m.pollUpdates[i] = $root.proto.PollUpdate.fromObject(d.pollUpdates[i], n + 1);
+}
+}
+if (d.pollAdditionalMetadata != null) {
+if (typeof d.pollAdditionalMetadata !== "object")
+throw TypeError(".proto.WebMessageInfo.pollAdditionalMetadata: object expected");
+m.pollAdditionalMetadata = $root.proto.PollAdditionalMetadata.fromObject(d.pollAdditionalMetadata, n + 1);
+}
+if (d.agentId != null) {
+m.agentId = String(d.agentId);
+}
+if (d.statusAlreadyViewed != null) {
+m.statusAlreadyViewed = Boolean(d.statusAlreadyViewed);
+}
+if (d.messageSecret != null) {
+if (typeof d.messageSecret === "string")
+$util.base64.decode(d.messageSecret, m.messageSecret = $util.newBuffer($util.base64.length(d.messageSecret)), 0);
+else if (d.messageSecret.length >= 0)
+m.messageSecret = d.messageSecret;
+}
+if (d.keepInChat != null) {
+if (typeof d.keepInChat !== "object")
+throw TypeError(".proto.WebMessageInfo.keepInChat: object expected");
+m.keepInChat = $root.proto.KeepInChat.fromObject(d.keepInChat, n + 1);
+}
+if (d.originalSelfAuthorUserJidString != null) {
+m.originalSelfAuthorUserJidString = String(d.originalSelfAuthorUserJidString);
+}
+if (d.revokeMessageTimestamp != null) {
+if ($util.Long)
+(m.revokeMessageTimestamp = $util.Long.fromValue(d.revokeMessageTimestamp)).unsigned = true;
+else if (typeof d.revokeMessageTimestamp === "string")
+m.revokeMessageTimestamp = parseInt(d.revokeMessageTimestamp, 10);
+else if (typeof d.revokeMessageTimestamp === "number")
+m.revokeMessageTimestamp = d.revokeMessageTimestamp;
+else if (typeof d.revokeMessageTimestamp === "object")
+m.revokeMessageTimestamp = new $util.LongBits(d.revokeMessageTimestamp.low >>> 0, d.revokeMessageTimestamp.high >>> 0).toNumber(true);
+}
+if (d.pinInChat != null) {
+if (typeof d.pinInChat !== "object")
+throw TypeError(".proto.WebMessageInfo.pinInChat: object expected");
+m.pinInChat = $root.proto.PinInChat.fromObject(d.pinInChat, n + 1);
+}
+if (d.premiumMessageInfo != null) {
+if (typeof d.premiumMessageInfo !== "object")
+throw TypeError(".proto.WebMessageInfo.premiumMessageInfo: object expected");
+m.premiumMessageInfo = $root.proto.PremiumMessageInfo.fromObject(d.premiumMessageInfo, n + 1);
+}
+if (d.is1PBizBotMessage != null) {
+m.is1PBizBotMessage = Boolean(d.is1PBizBotMessage);
+}
+if (d.isGroupHistoryMessage != null) {
+m.isGroupHistoryMessage = Boolean(d.isGroupHistoryMessage);
+}
+if (d.botMessageInvokerJid != null) {
+m.botMessageInvokerJid = String(d.botMessageInvokerJid);
+}
+if (d.commentMetadata != null) {
+if (typeof d.commentMetadata !== "object")
+throw TypeError(".proto.WebMessageInfo.commentMetadata: object expected");
+m.commentMetadata = $root.proto.CommentMetadata.fromObject(d.commentMetadata, n + 1);
+}
+if (d.eventResponses) {
+if (!Array.isArray(d.eventResponses))
+throw TypeError(".proto.WebMessageInfo.eventResponses: array expected");
+m.eventResponses = [];
+for (var i = 0; i < d.eventResponses.length; ++i) {
+if (typeof d.eventResponses[i] !== "object")
+throw TypeError(".proto.WebMessageInfo.eventResponses: object expected");
+m.eventResponses[i] = $root.proto.EventResponse.fromObject(d.eventResponses[i], n + 1);
+}
+}
+if (d.reportingTokenInfo != null) {
+if (typeof d.reportingTokenInfo !== "object")
+throw TypeError(".proto.WebMessageInfo.reportingTokenInfo: object expected");
+m.reportingTokenInfo = $root.proto.ReportingTokenInfo.fromObject(d.reportingTokenInfo, n + 1);
+}
+if (d.newsletterServerId != null) {
+if ($util.Long)
+(m.newsletterServerId = $util.Long.fromValue(d.newsletterServerId)).unsigned = true;
+else if (typeof d.newsletterServerId === "string")
+m.newsletterServerId = parseInt(d.newsletterServerId, 10);
+else if (typeof d.newsletterServerId === "number")
+m.newsletterServerId = d.newsletterServerId;
+else if (typeof d.newsletterServerId === "object")
+m.newsletterServerId = new $util.LongBits(d.newsletterServerId.low >>> 0, d.newsletterServerId.high >>> 0).toNumber(true);
+}
+if (d.eventAdditionalMetadata != null) {
+if (typeof d.eventAdditionalMetadata !== "object")
+throw TypeError(".proto.WebMessageInfo.eventAdditionalMetadata: object expected");
+m.eventAdditionalMetadata = $root.proto.EventAdditionalMetadata.fromObject(d.eventAdditionalMetadata, n + 1);
+}
+if (d.isMentionedInStatus != null) {
+m.isMentionedInStatus = Boolean(d.isMentionedInStatus);
+}
+if (d.statusMentions) {
+if (!Array.isArray(d.statusMentions))
+throw TypeError(".proto.WebMessageInfo.statusMentions: array expected");
+m.statusMentions = [];
+for (var i = 0; i < d.statusMentions.length; ++i) {
+m.statusMentions[i] = String(d.statusMentions[i]);
+}
+}
+if (d.targetMessageId != null) {
+if (typeof d.targetMessageId !== "object")
+throw TypeError(".proto.WebMessageInfo.targetMessageId: object expected");
+m.targetMessageId = $root.proto.MessageKey.fromObject(d.targetMessageId, n + 1);
+}
+if (d.messageAddOns) {
+if (!Array.isArray(d.messageAddOns))
+throw TypeError(".proto.WebMessageInfo.messageAddOns: array expected");
+m.messageAddOns = [];
+for (var i = 0; i < d.messageAddOns.length; ++i) {
+if (typeof d.messageAddOns[i] !== "object")
+throw TypeError(".proto.WebMessageInfo.messageAddOns: object expected");
+m.messageAddOns[i] = $root.proto.MessageAddOn.fromObject(d.messageAddOns[i], n + 1);
+}
+}
+if (d.statusMentionMessageInfo != null) {
+if (typeof d.statusMentionMessageInfo !== "object")
+throw TypeError(".proto.WebMessageInfo.statusMentionMessageInfo: object expected");
+m.statusMentionMessageInfo = $root.proto.StatusMentionMessage.fromObject(d.statusMentionMessageInfo, n + 1);
+}
+if (d.isSupportAiMessage != null) {
+m.isSupportAiMessage = Boolean(d.isSupportAiMessage);
+}
+if (d.statusMentionSources) {
+if (!Array.isArray(d.statusMentionSources))
+throw TypeError(".proto.WebMessageInfo.statusMentionSources: array expected");
+m.statusMentionSources = [];
+for (var i = 0; i < d.statusMentionSources.length; ++i) {
+m.statusMentionSources[i] = String(d.statusMentionSources[i]);
+}
+}
+if (d.supportAiCitations) {
+if (!Array.isArray(d.supportAiCitations))
+throw TypeError(".proto.WebMessageInfo.supportAiCitations: array expected");
+m.supportAiCitations = [];
+for (var i = 0; i < d.supportAiCitations.length; ++i) {
+if (typeof d.supportAiCitations[i] !== "object")
+throw TypeError(".proto.WebMessageInfo.supportAiCitations: object expected");
+m.supportAiCitations[i] = $root.proto.Citation.fromObject(d.supportAiCitations[i], n + 1);
+}
+}
+if (d.botTargetId != null) {
+m.botTargetId = String(d.botTargetId);
+}
+if (d.groupHistoryIndividualMessageInfo != null) {
+if (typeof d.groupHistoryIndividualMessageInfo !== "object")
+throw TypeError(".proto.WebMessageInfo.groupHistoryIndividualMessageInfo: object expected");
+m.groupHistoryIndividualMessageInfo = $root.proto.GroupHistoryIndividualMessageInfo.fromObject(d.groupHistoryIndividualMessageInfo, n + 1);
+}
+if (d.groupHistoryBundleInfo != null) {
+if (typeof d.groupHistoryBundleInfo !== "object")
+throw TypeError(".proto.WebMessageInfo.groupHistoryBundleInfo: object expected");
+m.groupHistoryBundleInfo = $root.proto.GroupHistoryBundleInfo.fromObject(d.groupHistoryBundleInfo, n + 1);
+}
+if (d.interactiveMessageAdditionalMetadata != null) {
+if (typeof d.interactiveMessageAdditionalMetadata !== "object")
+throw TypeError(".proto.WebMessageInfo.interactiveMessageAdditionalMetadata: object expected");
+m.interactiveMessageAdditionalMetadata = $root.proto.InteractiveMessageAdditionalMetadata.fromObject(d.interactiveMessageAdditionalMetadata, n + 1);
+}
+if (d.quarantinedMessage != null) {
+if (typeof d.quarantinedMessage !== "object")
+throw TypeError(".proto.WebMessageInfo.quarantinedMessage: object expected");
+m.quarantinedMessage = $root.proto.QuarantinedMessage.fromObject(d.quarantinedMessage, n + 1);
+}
+if (d.nonJidMentions != null) {
+m.nonJidMentions = d.nonJidMentions >>> 0;
+}
+if (d.hsmTag != null) {
+m.hsmTag = String(d.hsmTag);
+}
+if (d.ephemeralExpirationTimestamp != null) {
+if ($util.Long)
+(m.ephemeralExpirationTimestamp = $util.Long.fromValue(d.ephemeralExpirationTimestamp)).unsigned = true;
+else if (typeof d.ephemeralExpirationTimestamp === "string")
+m.ephemeralExpirationTimestamp = parseInt(d.ephemeralExpirationTimestamp, 10);
+else if (typeof d.ephemeralExpirationTimestamp === "number")
+m.ephemeralExpirationTimestamp = d.ephemeralExpirationTimestamp;
+else if (typeof d.ephemeralExpirationTimestamp === "object")
+m.ephemeralExpirationTimestamp = new $util.LongBits(d.ephemeralExpirationTimestamp.low >>> 0, d.ephemeralExpirationTimestamp.high >>> 0).toNumber(true);
+}
+if (d.scheduledMessageMetadata != null) {
+if (typeof d.scheduledMessageMetadata !== "object")
+throw TypeError(".proto.WebMessageInfo.scheduledMessageMetadata: object expected");
+m.scheduledMessageMetadata = $root.proto.ScheduledMessageMetadata.fromObject(d.scheduledMessageMetadata, n + 1);
+}
+if (d.decisionId != null) {
+m.decisionId = String(d.decisionId);
+}
+if (d.decisionSources) {
+if (!Array.isArray(d.decisionSources))
+throw TypeError(".proto.WebMessageInfo.decisionSources: array expected");
+m.decisionSources = [];
+for (var i = 0; i < d.decisionSources.length; ++i) {
+m.decisionSources[i] = String(d.decisionSources[i]);
+}
+}
+return m;
+};
+WebMessageInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.messageStubParameters = [];
+d.labels = [];
+d.userReceipt = [];
+d.reactions = [];
+d.pollUpdates = [];
+d.eventResponses = [];
+d.statusMentions = [];
+d.messageAddOns = [];
+d.statusMentionSources = [];
+d.supportAiCitations = [];
+d.decisionSources = [];
+}
+if (o.defaults) {
+d.key = null;
+}
+if (m.key != null && m.hasOwnProperty("key")) {
+d.key = $root.proto.MessageKey.toObject(m.key, o);
+}
+if (m.message != null && m.hasOwnProperty("message")) {
+d.message = $root.proto.Message.toObject(m.message, o);
+if (o.oneofs)
+d._message = "message";
+}
+if (m.messageTimestamp != null && m.hasOwnProperty("messageTimestamp")) {
+if (typeof m.messageTimestamp === "number")
+d.messageTimestamp = o.longs === String ? String(m.messageTimestamp) : m.messageTimestamp;
+else
+d.messageTimestamp = o.longs === String ? longToString(m.messageTimestamp, true) : o.longs === Number ? longToNumber(m.messageTimestamp, true) : m.messageTimestamp;
+if (o.oneofs)
+d._messageTimestamp = "messageTimestamp";
+}
+if (m.status != null && m.hasOwnProperty("status")) {
+d.status = o.enums === String ? $root.proto.WebMessageInfo.Status[m.status] === undefined ? m.status : $root.proto.WebMessageInfo.Status[m.status] : m.status;
+if (o.oneofs)
+d._status = "status";
+}
+if (m.participant != null && m.hasOwnProperty("participant")) {
+d.participant = m.participant;
+if (o.oneofs)
+d._participant = "participant";
+}
+if (m.messageC2STimestamp != null && m.hasOwnProperty("messageC2STimestamp")) {
+if (typeof m.messageC2STimestamp === "number")
+d.messageC2STimestamp = o.longs === String ? String(m.messageC2STimestamp) : m.messageC2STimestamp;
+else
+d.messageC2STimestamp = o.longs === String ? longToString(m.messageC2STimestamp, true) : o.longs === Number ? longToNumber(m.messageC2STimestamp, true) : m.messageC2STimestamp;
+if (o.oneofs)
+d._messageC2STimestamp = "messageC2STimestamp";
+}
+if (m.ignore != null && m.hasOwnProperty("ignore")) {
+d.ignore = m.ignore;
+if (o.oneofs)
+d._ignore = "ignore";
+}
+if (m.starred != null && m.hasOwnProperty("starred")) {
+d.starred = m.starred;
+if (o.oneofs)
+d._starred = "starred";
+}
+if (m.broadcast != null && m.hasOwnProperty("broadcast")) {
+d.broadcast = m.broadcast;
+if (o.oneofs)
+d._broadcast = "broadcast";
+}
+if (m.pushName != null && m.hasOwnProperty("pushName")) {
+d.pushName = m.pushName;
+if (o.oneofs)
+d._pushName = "pushName";
+}
+if (m.mediaCiphertextSha256 != null && m.hasOwnProperty("mediaCiphertextSha256")) {
+d.mediaCiphertextSha256 = o.bytes === String ? $util.base64.encode(m.mediaCiphertextSha256, 0, m.mediaCiphertextSha256.length) : o.bytes === Array ? Array.prototype.slice.call(m.mediaCiphertextSha256) : m.mediaCiphertextSha256;
+if (o.oneofs)
+d._mediaCiphertextSha256 = "mediaCiphertextSha256";
+}
+if (m.multicast != null && m.hasOwnProperty("multicast")) {
+d.multicast = m.multicast;
+if (o.oneofs)
+d._multicast = "multicast";
+}
+if (m.urlText != null && m.hasOwnProperty("urlText")) {
+d.urlText = m.urlText;
+if (o.oneofs)
+d._urlText = "urlText";
+}
+if (m.urlNumber != null && m.hasOwnProperty("urlNumber")) {
+d.urlNumber = m.urlNumber;
+if (o.oneofs)
+d._urlNumber = "urlNumber";
+}
+if (m.messageStubType != null && m.hasOwnProperty("messageStubType")) {
+d.messageStubType = o.enums === String ? $root.proto.WebMessageInfo.StubType[m.messageStubType] === undefined ? m.messageStubType : $root.proto.WebMessageInfo.StubType[m.messageStubType] : m.messageStubType;
+if (o.oneofs)
+d._messageStubType = "messageStubType";
+}
+if (m.clearMedia != null && m.hasOwnProperty("clearMedia")) {
+d.clearMedia = m.clearMedia;
+if (o.oneofs)
+d._clearMedia = "clearMedia";
+}
+if (m.messageStubParameters && m.messageStubParameters.length) {
+d.messageStubParameters = [];
+for (var j = 0; j < m.messageStubParameters.length; ++j) {
+d.messageStubParameters[j] = m.messageStubParameters[j];
+}
+}
+if (m.duration != null && m.hasOwnProperty("duration")) {
+d.duration = m.duration;
+if (o.oneofs)
+d._duration = "duration";
+}
+if (m.labels && m.labels.length) {
+d.labels = [];
+for (var j = 0; j < m.labels.length; ++j) {
+d.labels[j] = m.labels[j];
+}
+}
+if (m.paymentInfo != null && m.hasOwnProperty("paymentInfo")) {
+d.paymentInfo = $root.proto.PaymentInfo.toObject(m.paymentInfo, o);
+if (o.oneofs)
+d._paymentInfo = "paymentInfo";
+}
+if (m.finalLiveLocation != null && m.hasOwnProperty("finalLiveLocation")) {
+d.finalLiveLocation = $root.proto.Message.LiveLocationMessage.toObject(m.finalLiveLocation, o);
+if (o.oneofs)
+d._finalLiveLocation = "finalLiveLocation";
+}
+if (m.quotedPaymentInfo != null && m.hasOwnProperty("quotedPaymentInfo")) {
+d.quotedPaymentInfo = $root.proto.PaymentInfo.toObject(m.quotedPaymentInfo, o);
+if (o.oneofs)
+d._quotedPaymentInfo = "quotedPaymentInfo";
+}
+if (m.ephemeralStartTimestamp != null && m.hasOwnProperty("ephemeralStartTimestamp")) {
+if (typeof m.ephemeralStartTimestamp === "number")
+d.ephemeralStartTimestamp = o.longs === String ? String(m.ephemeralStartTimestamp) : m.ephemeralStartTimestamp;
+else
+d.ephemeralStartTimestamp = o.longs === String ? longToString(m.ephemeralStartTimestamp, true) : o.longs === Number ? longToNumber(m.ephemeralStartTimestamp, true) : m.ephemeralStartTimestamp;
+if (o.oneofs)
+d._ephemeralStartTimestamp = "ephemeralStartTimestamp";
+}
+if (m.ephemeralDuration != null && m.hasOwnProperty("ephemeralDuration")) {
+d.ephemeralDuration = m.ephemeralDuration;
+if (o.oneofs)
+d._ephemeralDuration = "ephemeralDuration";
+}
+if (m.ephemeralOffToOn != null && m.hasOwnProperty("ephemeralOffToOn")) {
+d.ephemeralOffToOn = m.ephemeralOffToOn;
+if (o.oneofs)
+d._ephemeralOffToOn = "ephemeralOffToOn";
+}
+if (m.ephemeralOutOfSync != null && m.hasOwnProperty("ephemeralOutOfSync")) {
+d.ephemeralOutOfSync = m.ephemeralOutOfSync;
+if (o.oneofs)
+d._ephemeralOutOfSync = "ephemeralOutOfSync";
+}
+if (m.bizPrivacyStatus != null && m.hasOwnProperty("bizPrivacyStatus")) {
+d.bizPrivacyStatus = o.enums === String ? $root.proto.WebMessageInfo.BizPrivacyStatus[m.bizPrivacyStatus] === undefined ? m.bizPrivacyStatus : $root.proto.WebMessageInfo.BizPrivacyStatus[m.bizPrivacyStatus] : m.bizPrivacyStatus;
+if (o.oneofs)
+d._bizPrivacyStatus = "bizPrivacyStatus";
+}
+if (m.verifiedBizName != null && m.hasOwnProperty("verifiedBizName")) {
+d.verifiedBizName = m.verifiedBizName;
+if (o.oneofs)
+d._verifiedBizName = "verifiedBizName";
+}
+if (m.mediaData != null && m.hasOwnProperty("mediaData")) {
+d.mediaData = $root.proto.MediaData.toObject(m.mediaData, o);
+if (o.oneofs)
+d._mediaData = "mediaData";
+}
+if (m.photoChange != null && m.hasOwnProperty("photoChange")) {
+d.photoChange = $root.proto.PhotoChange.toObject(m.photoChange, o);
+if (o.oneofs)
+d._photoChange = "photoChange";
+}
+if (m.userReceipt && m.userReceipt.length) {
+d.userReceipt = [];
+for (var j = 0; j < m.userReceipt.length; ++j) {
+d.userReceipt[j] = $root.proto.UserReceipt.toObject(m.userReceipt[j], o);
+}
+}
+if (m.reactions && m.reactions.length) {
+d.reactions = [];
+for (var j = 0; j < m.reactions.length; ++j) {
+d.reactions[j] = $root.proto.Reaction.toObject(m.reactions[j], o);
+}
+}
+if (m.quotedStickerData != null && m.hasOwnProperty("quotedStickerData")) {
+d.quotedStickerData = $root.proto.MediaData.toObject(m.quotedStickerData, o);
+if (o.oneofs)
+d._quotedStickerData = "quotedStickerData";
+}
+if (m.futureproofData != null && m.hasOwnProperty("futureproofData")) {
+d.futureproofData = o.bytes === String ? $util.base64.encode(m.futureproofData, 0, m.futureproofData.length) : o.bytes === Array ? Array.prototype.slice.call(m.futureproofData) : m.futureproofData;
+if (o.oneofs)
+d._futureproofData = "futureproofData";
+}
+if (m.statusPsa != null && m.hasOwnProperty("statusPsa")) {
+d.statusPsa = $root.proto.StatusPSA.toObject(m.statusPsa, o);
+if (o.oneofs)
+d._statusPsa = "statusPsa";
+}
+if (m.pollUpdates && m.pollUpdates.length) {
+d.pollUpdates = [];
+for (var j = 0; j < m.pollUpdates.length; ++j) {
+d.pollUpdates[j] = $root.proto.PollUpdate.toObject(m.pollUpdates[j], o);
+}
+}
+if (m.pollAdditionalMetadata != null && m.hasOwnProperty("pollAdditionalMetadata")) {
+d.pollAdditionalMetadata = $root.proto.PollAdditionalMetadata.toObject(m.pollAdditionalMetadata, o);
+if (o.oneofs)
+d._pollAdditionalMetadata = "pollAdditionalMetadata";
+}
+if (m.agentId != null && m.hasOwnProperty("agentId")) {
+d.agentId = m.agentId;
+if (o.oneofs)
+d._agentId = "agentId";
+}
+if (m.statusAlreadyViewed != null && m.hasOwnProperty("statusAlreadyViewed")) {
+d.statusAlreadyViewed = m.statusAlreadyViewed;
+if (o.oneofs)
+d._statusAlreadyViewed = "statusAlreadyViewed";
+}
+if (m.messageSecret != null && m.hasOwnProperty("messageSecret")) {
+d.messageSecret = o.bytes === String ? $util.base64.encode(m.messageSecret, 0, m.messageSecret.length) : o.bytes === Array ? Array.prototype.slice.call(m.messageSecret) : m.messageSecret;
+if (o.oneofs)
+d._messageSecret = "messageSecret";
+}
+if (m.keepInChat != null && m.hasOwnProperty("keepInChat")) {
+d.keepInChat = $root.proto.KeepInChat.toObject(m.keepInChat, o);
+if (o.oneofs)
+d._keepInChat = "keepInChat";
+}
+if (m.originalSelfAuthorUserJidString != null && m.hasOwnProperty("originalSelfAuthorUserJidString")) {
+d.originalSelfAuthorUserJidString = m.originalSelfAuthorUserJidString;
+if (o.oneofs)
+d._originalSelfAuthorUserJidString = "originalSelfAuthorUserJidString";
+}
+if (m.revokeMessageTimestamp != null && m.hasOwnProperty("revokeMessageTimestamp")) {
+if (typeof m.revokeMessageTimestamp === "number")
+d.revokeMessageTimestamp = o.longs === String ? String(m.revokeMessageTimestamp) : m.revokeMessageTimestamp;
+else
+d.revokeMessageTimestamp = o.longs === String ? longToString(m.revokeMessageTimestamp, true) : o.longs === Number ? longToNumber(m.revokeMessageTimestamp, true) : m.revokeMessageTimestamp;
+if (o.oneofs)
+d._revokeMessageTimestamp = "revokeMessageTimestamp";
+}
+if (m.pinInChat != null && m.hasOwnProperty("pinInChat")) {
+d.pinInChat = $root.proto.PinInChat.toObject(m.pinInChat, o);
+if (o.oneofs)
+d._pinInChat = "pinInChat";
+}
+if (m.premiumMessageInfo != null && m.hasOwnProperty("premiumMessageInfo")) {
+d.premiumMessageInfo = $root.proto.PremiumMessageInfo.toObject(m.premiumMessageInfo, o);
+if (o.oneofs)
+d._premiumMessageInfo = "premiumMessageInfo";
+}
+if (m.is1PBizBotMessage != null && m.hasOwnProperty("is1PBizBotMessage")) {
+d.is1PBizBotMessage = m.is1PBizBotMessage;
+if (o.oneofs)
+d._is1PBizBotMessage = "is1PBizBotMessage";
+}
+if (m.isGroupHistoryMessage != null && m.hasOwnProperty("isGroupHistoryMessage")) {
+d.isGroupHistoryMessage = m.isGroupHistoryMessage;
+if (o.oneofs)
+d._isGroupHistoryMessage = "isGroupHistoryMessage";
+}
+if (m.botMessageInvokerJid != null && m.hasOwnProperty("botMessageInvokerJid")) {
+d.botMessageInvokerJid = m.botMessageInvokerJid;
+if (o.oneofs)
+d._botMessageInvokerJid = "botMessageInvokerJid";
+}
+if (m.commentMetadata != null && m.hasOwnProperty("commentMetadata")) {
+d.commentMetadata = $root.proto.CommentMetadata.toObject(m.commentMetadata, o);
+if (o.oneofs)
+d._commentMetadata = "commentMetadata";
+}
+if (m.eventResponses && m.eventResponses.length) {
+d.eventResponses = [];
+for (var j = 0; j < m.eventResponses.length; ++j) {
+d.eventResponses[j] = $root.proto.EventResponse.toObject(m.eventResponses[j], o);
+}
+}
+if (m.reportingTokenInfo != null && m.hasOwnProperty("reportingTokenInfo")) {
+d.reportingTokenInfo = $root.proto.ReportingTokenInfo.toObject(m.reportingTokenInfo, o);
+if (o.oneofs)
+d._reportingTokenInfo = "reportingTokenInfo";
+}
+if (m.newsletterServerId != null && m.hasOwnProperty("newsletterServerId")) {
+if (typeof m.newsletterServerId === "number")
+d.newsletterServerId = o.longs === String ? String(m.newsletterServerId) : m.newsletterServerId;
+else
+d.newsletterServerId = o.longs === String ? longToString(m.newsletterServerId, true) : o.longs === Number ? longToNumber(m.newsletterServerId, true) : m.newsletterServerId;
+if (o.oneofs)
+d._newsletterServerId = "newsletterServerId";
+}
+if (m.eventAdditionalMetadata != null && m.hasOwnProperty("eventAdditionalMetadata")) {
+d.eventAdditionalMetadata = $root.proto.EventAdditionalMetadata.toObject(m.eventAdditionalMetadata, o);
+if (o.oneofs)
+d._eventAdditionalMetadata = "eventAdditionalMetadata";
+}
+if (m.isMentionedInStatus != null && m.hasOwnProperty("isMentionedInStatus")) {
+d.isMentionedInStatus = m.isMentionedInStatus;
+if (o.oneofs)
+d._isMentionedInStatus = "isMentionedInStatus";
+}
+if (m.statusMentions && m.statusMentions.length) {
+d.statusMentions = [];
+for (var j = 0; j < m.statusMentions.length; ++j) {
+d.statusMentions[j] = m.statusMentions[j];
+}
+}
+if (m.targetMessageId != null && m.hasOwnProperty("targetMessageId")) {
+d.targetMessageId = $root.proto.MessageKey.toObject(m.targetMessageId, o);
+if (o.oneofs)
+d._targetMessageId = "targetMessageId";
+}
+if (m.messageAddOns && m.messageAddOns.length) {
+d.messageAddOns = [];
+for (var j = 0; j < m.messageAddOns.length; ++j) {
+d.messageAddOns[j] = $root.proto.MessageAddOn.toObject(m.messageAddOns[j], o);
+}
+}
+if (m.statusMentionMessageInfo != null && m.hasOwnProperty("statusMentionMessageInfo")) {
+d.statusMentionMessageInfo = $root.proto.StatusMentionMessage.toObject(m.statusMentionMessageInfo, o);
+if (o.oneofs)
+d._statusMentionMessageInfo = "statusMentionMessageInfo";
+}
+if (m.isSupportAiMessage != null && m.hasOwnProperty("isSupportAiMessage")) {
+d.isSupportAiMessage = m.isSupportAiMessage;
+if (o.oneofs)
+d._isSupportAiMessage = "isSupportAiMessage";
+}
+if (m.statusMentionSources && m.statusMentionSources.length) {
+d.statusMentionSources = [];
+for (var j = 0; j < m.statusMentionSources.length; ++j) {
+d.statusMentionSources[j] = m.statusMentionSources[j];
+}
+}
+if (m.supportAiCitations && m.supportAiCitations.length) {
+d.supportAiCitations = [];
+for (var j = 0; j < m.supportAiCitations.length; ++j) {
+d.supportAiCitations[j] = $root.proto.Citation.toObject(m.supportAiCitations[j], o);
+}
+}
+if (m.botTargetId != null && m.hasOwnProperty("botTargetId")) {
+d.botTargetId = m.botTargetId;
+if (o.oneofs)
+d._botTargetId = "botTargetId";
+}
+if (m.groupHistoryIndividualMessageInfo != null && m.hasOwnProperty("groupHistoryIndividualMessageInfo")) {
+d.groupHistoryIndividualMessageInfo = $root.proto.GroupHistoryIndividualMessageInfo.toObject(m.groupHistoryIndividualMessageInfo, o);
+if (o.oneofs)
+d._groupHistoryIndividualMessageInfo = "groupHistoryIndividualMessageInfo";
+}
+if (m.groupHistoryBundleInfo != null && m.hasOwnProperty("groupHistoryBundleInfo")) {
+d.groupHistoryBundleInfo = $root.proto.GroupHistoryBundleInfo.toObject(m.groupHistoryBundleInfo, o);
+if (o.oneofs)
+d._groupHistoryBundleInfo = "groupHistoryBundleInfo";
+}
+if (m.interactiveMessageAdditionalMetadata != null && m.hasOwnProperty("interactiveMessageAdditionalMetadata")) {
+d.interactiveMessageAdditionalMetadata = $root.proto.InteractiveMessageAdditionalMetadata.toObject(m.interactiveMessageAdditionalMetadata, o);
+if (o.oneofs)
+d._interactiveMessageAdditionalMetadata = "interactiveMessageAdditionalMetadata";
+}
+if (m.quarantinedMessage != null && m.hasOwnProperty("quarantinedMessage")) {
+d.quarantinedMessage = $root.proto.QuarantinedMessage.toObject(m.quarantinedMessage, o);
+if (o.oneofs)
+d._quarantinedMessage = "quarantinedMessage";
+}
+if (m.nonJidMentions != null && m.hasOwnProperty("nonJidMentions")) {
+d.nonJidMentions = m.nonJidMentions;
+if (o.oneofs)
+d._nonJidMentions = "nonJidMentions";
+}
+if (m.hsmTag != null && m.hasOwnProperty("hsmTag")) {
+d.hsmTag = m.hsmTag;
+if (o.oneofs)
+d._hsmTag = "hsmTag";
+}
+if (m.ephemeralExpirationTimestamp != null && m.hasOwnProperty("ephemeralExpirationTimestamp")) {
+if (typeof m.ephemeralExpirationTimestamp === "number")
+d.ephemeralExpirationTimestamp = o.longs === String ? String(m.ephemeralExpirationTimestamp) : m.ephemeralExpirationTimestamp;
+else
+d.ephemeralExpirationTimestamp = o.longs === String ? longToString(m.ephemeralExpirationTimestamp, true) : o.longs === Number ? longToNumber(m.ephemeralExpirationTimestamp, true) : m.ephemeralExpirationTimestamp;
+if (o.oneofs)
+d._ephemeralExpirationTimestamp = "ephemeralExpirationTimestamp";
+}
+if (m.scheduledMessageMetadata != null && m.hasOwnProperty("scheduledMessageMetadata")) {
+d.scheduledMessageMetadata = $root.proto.ScheduledMessageMetadata.toObject(m.scheduledMessageMetadata, o);
+if (o.oneofs)
+d._scheduledMessageMetadata = "scheduledMessageMetadata";
+}
+if (m.decisionId != null && m.hasOwnProperty("decisionId")) {
+d.decisionId = m.decisionId;
+if (o.oneofs)
+d._decisionId = "decisionId";
+}
+if (m.decisionSources && m.decisionSources.length) {
+d.decisionSources = [];
+for (var j = 0; j < m.decisionSources.length; ++j) {
+d.decisionSources[j] = m.decisionSources[j];
+}
+}
+return d;
+};
+WebMessageInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+WebMessageInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.WebMessageInfo";
+};
+$lazy(WebMessageInfo, "BizPrivacyStatus", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "E2EE"] = 0;
+values[valuesById[2] = "FB"] = 2;
+values[valuesById[1] = "BSP"] = 1;
+values[valuesById[3] = "BSP_AND_FB"] = 3;
+return values;
+});
+$lazy(WebMessageInfo, "Status", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "ERROR"] = 0;
+values[valuesById[1] = "PENDING"] = 1;
+values[valuesById[2] = "SERVER_ACK"] = 2;
+values[valuesById[3] = "DELIVERY_ACK"] = 3;
+values[valuesById[4] = "READ"] = 4;
+values[valuesById[5] = "PLAYED"] = 5;
+return values;
+});
+$lazy(WebMessageInfo, "StubType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN"] = 0;
+values[valuesById[1] = "REVOKE"] = 1;
+values[valuesById[2] = "CIPHERTEXT"] = 2;
+values[valuesById[3] = "FUTUREPROOF"] = 3;
+values[valuesById[4] = "NON_VERIFIED_TRANSITION"] = 4;
+values[valuesById[5] = "UNVERIFIED_TRANSITION"] = 5;
+values[valuesById[6] = "VERIFIED_TRANSITION"] = 6;
+values[valuesById[7] = "VERIFIED_LOW_UNKNOWN"] = 7;
+values[valuesById[8] = "VERIFIED_HIGH"] = 8;
+values[valuesById[9] = "VERIFIED_INITIAL_UNKNOWN"] = 9;
+values[valuesById[10] = "VERIFIED_INITIAL_LOW"] = 10;
+values[valuesById[11] = "VERIFIED_INITIAL_HIGH"] = 11;
+values[valuesById[12] = "VERIFIED_TRANSITION_ANY_TO_NONE"] = 12;
+values[valuesById[13] = "VERIFIED_TRANSITION_ANY_TO_HIGH"] = 13;
+values[valuesById[14] = "VERIFIED_TRANSITION_HIGH_TO_LOW"] = 14;
+values[valuesById[15] = "VERIFIED_TRANSITION_HIGH_TO_UNKNOWN"] = 15;
+values[valuesById[16] = "VERIFIED_TRANSITION_UNKNOWN_TO_LOW"] = 16;
+values[valuesById[17] = "VERIFIED_TRANSITION_LOW_TO_UNKNOWN"] = 17;
+values[valuesById[18] = "VERIFIED_TRANSITION_NONE_TO_LOW"] = 18;
+values[valuesById[19] = "VERIFIED_TRANSITION_NONE_TO_UNKNOWN"] = 19;
+values[valuesById[20] = "GROUP_CREATE"] = 20;
+values[valuesById[21] = "GROUP_CHANGE_SUBJECT"] = 21;
+values[valuesById[22] = "GROUP_CHANGE_ICON"] = 22;
+values[valuesById[23] = "GROUP_CHANGE_INVITE_LINK"] = 23;
+values[valuesById[24] = "GROUP_CHANGE_DESCRIPTION"] = 24;
+values[valuesById[25] = "GROUP_CHANGE_RESTRICT"] = 25;
+values[valuesById[26] = "GROUP_CHANGE_ANNOUNCE"] = 26;
+values[valuesById[27] = "GROUP_PARTICIPANT_ADD"] = 27;
+values[valuesById[28] = "GROUP_PARTICIPANT_REMOVE"] = 28;
+values[valuesById[29] = "GROUP_PARTICIPANT_PROMOTE"] = 29;
+values[valuesById[30] = "GROUP_PARTICIPANT_DEMOTE"] = 30;
+values[valuesById[31] = "GROUP_PARTICIPANT_INVITE"] = 31;
+values[valuesById[32] = "GROUP_PARTICIPANT_LEAVE"] = 32;
+values[valuesById[33] = "GROUP_PARTICIPANT_CHANGE_NUMBER"] = 33;
+values[valuesById[34] = "BROADCAST_CREATE"] = 34;
+values[valuesById[35] = "BROADCAST_ADD"] = 35;
+values[valuesById[36] = "BROADCAST_REMOVE"] = 36;
+values[valuesById[37] = "GENERIC_NOTIFICATION"] = 37;
+values[valuesById[38] = "E2E_IDENTITY_CHANGED"] = 38;
+values[valuesById[39] = "E2E_ENCRYPTED"] = 39;
+values[valuesById[40] = "CALL_MISSED_VOICE"] = 40;
+values[valuesById[41] = "CALL_MISSED_VIDEO"] = 41;
+values[valuesById[42] = "INDIVIDUAL_CHANGE_NUMBER"] = 42;
+values[valuesById[43] = "GROUP_DELETE"] = 43;
+values[valuesById[44] = "GROUP_ANNOUNCE_MODE_MESSAGE_BOUNCE"] = 44;
+values[valuesById[45] = "CALL_MISSED_GROUP_VOICE"] = 45;
+values[valuesById[46] = "CALL_MISSED_GROUP_VIDEO"] = 46;
+values[valuesById[47] = "PAYMENT_CIPHERTEXT"] = 47;
+values[valuesById[48] = "PAYMENT_FUTUREPROOF"] = 48;
+values[valuesById[49] = "PAYMENT_TRANSACTION_STATUS_UPDATE_FAILED"] = 49;
+values[valuesById[50] = "PAYMENT_TRANSACTION_STATUS_UPDATE_REFUNDED"] = 50;
+values[valuesById[51] = "PAYMENT_TRANSACTION_STATUS_UPDATE_REFUND_FAILED"] = 51;
+values[valuesById[52] = "PAYMENT_TRANSACTION_STATUS_RECEIVER_PENDING_SETUP"] = 52;
+values[valuesById[53] = "PAYMENT_TRANSACTION_STATUS_RECEIVER_SUCCESS_AFTER_HICCUP"] = 53;
+values[valuesById[54] = "PAYMENT_ACTION_ACCOUNT_SETUP_REMINDER"] = 54;
+values[valuesById[55] = "PAYMENT_ACTION_SEND_PAYMENT_REMINDER"] = 55;
+values[valuesById[56] = "PAYMENT_ACTION_SEND_PAYMENT_INVITATION"] = 56;
+values[valuesById[57] = "PAYMENT_ACTION_REQUEST_DECLINED"] = 57;
+values[valuesById[58] = "PAYMENT_ACTION_REQUEST_EXPIRED"] = 58;
+values[valuesById[59] = "PAYMENT_ACTION_REQUEST_CANCELLED"] = 59;
+values[valuesById[60] = "BIZ_VERIFIED_TRANSITION_TOP_TO_BOTTOM"] = 60;
+values[valuesById[61] = "BIZ_VERIFIED_TRANSITION_BOTTOM_TO_TOP"] = 61;
+values[valuesById[62] = "BIZ_INTRO_TOP"] = 62;
+values[valuesById[63] = "BIZ_INTRO_BOTTOM"] = 63;
+values[valuesById[64] = "BIZ_NAME_CHANGE"] = 64;
+values[valuesById[65] = "BIZ_MOVE_TO_CONSUMER_APP"] = 65;
+values[valuesById[66] = "BIZ_TWO_TIER_MIGRATION_TOP"] = 66;
+values[valuesById[67] = "BIZ_TWO_TIER_MIGRATION_BOTTOM"] = 67;
+values[valuesById[68] = "OVERSIZED"] = 68;
+values[valuesById[69] = "GROUP_CHANGE_NO_FREQUENTLY_FORWARDED"] = 69;
+values[valuesById[70] = "GROUP_V4_ADD_INVITE_SENT"] = 70;
+values[valuesById[71] = "GROUP_PARTICIPANT_ADD_REQUEST_JOIN"] = 71;
+values[valuesById[72] = "CHANGE_EPHEMERAL_SETTING"] = 72;
+values[valuesById[73] = "E2E_DEVICE_CHANGED"] = 73;
+values[valuesById[74] = "VIEWED_ONCE"] = 74;
+values[valuesById[75] = "E2E_ENCRYPTED_NOW"] = 75;
+values[valuesById[76] = "BLUE_MSG_BSP_FB_TO_BSP_PREMISE"] = 76;
+values[valuesById[77] = "BLUE_MSG_BSP_FB_TO_SELF_FB"] = 77;
+values[valuesById[78] = "BLUE_MSG_BSP_FB_TO_SELF_PREMISE"] = 78;
+values[valuesById[79] = "BLUE_MSG_BSP_FB_UNVERIFIED"] = 79;
+values[valuesById[80] = "BLUE_MSG_BSP_FB_UNVERIFIED_TO_SELF_PREMISE_VERIFIED"] = 80;
+values[valuesById[81] = "BLUE_MSG_BSP_FB_VERIFIED"] = 81;
+values[valuesById[82] = "BLUE_MSG_BSP_FB_VERIFIED_TO_SELF_PREMISE_UNVERIFIED"] = 82;
+values[valuesById[83] = "BLUE_MSG_BSP_PREMISE_TO_SELF_PREMISE"] = 83;
+values[valuesById[84] = "BLUE_MSG_BSP_PREMISE_UNVERIFIED"] = 84;
+values[valuesById[85] = "BLUE_MSG_BSP_PREMISE_UNVERIFIED_TO_SELF_PREMISE_VERIFIED"] = 85;
+values[valuesById[86] = "BLUE_MSG_BSP_PREMISE_VERIFIED"] = 86;
+values[valuesById[87] = "BLUE_MSG_BSP_PREMISE_VERIFIED_TO_SELF_PREMISE_UNVERIFIED"] = 87;
+values[valuesById[88] = "BLUE_MSG_CONSUMER_TO_BSP_FB_UNVERIFIED"] = 88;
+values[valuesById[89] = "BLUE_MSG_CONSUMER_TO_BSP_PREMISE_UNVERIFIED"] = 89;
+values[valuesById[90] = "BLUE_MSG_CONSUMER_TO_SELF_FB_UNVERIFIED"] = 90;
+values[valuesById[91] = "BLUE_MSG_CONSUMER_TO_SELF_PREMISE_UNVERIFIED"] = 91;
+values[valuesById[92] = "BLUE_MSG_SELF_FB_TO_BSP_PREMISE"] = 92;
+values[valuesById[93] = "BLUE_MSG_SELF_FB_TO_SELF_PREMISE"] = 93;
+values[valuesById[94] = "BLUE_MSG_SELF_FB_UNVERIFIED"] = 94;
+values[valuesById[95] = "BLUE_MSG_SELF_FB_UNVERIFIED_TO_SELF_PREMISE_VERIFIED"] = 95;
+values[valuesById[96] = "BLUE_MSG_SELF_FB_VERIFIED"] = 96;
+values[valuesById[97] = "BLUE_MSG_SELF_FB_VERIFIED_TO_SELF_PREMISE_UNVERIFIED"] = 97;
+values[valuesById[98] = "BLUE_MSG_SELF_PREMISE_TO_BSP_PREMISE"] = 98;
+values[valuesById[99] = "BLUE_MSG_SELF_PREMISE_UNVERIFIED"] = 99;
+values[valuesById[100] = "BLUE_MSG_SELF_PREMISE_VERIFIED"] = 100;
+values[valuesById[101] = "BLUE_MSG_TO_BSP_FB"] = 101;
+values[valuesById[102] = "BLUE_MSG_TO_CONSUMER"] = 102;
+values[valuesById[103] = "BLUE_MSG_TO_SELF_FB"] = 103;
+values[valuesById[104] = "BLUE_MSG_UNVERIFIED_TO_BSP_FB_VERIFIED"] = 104;
+values[valuesById[105] = "BLUE_MSG_UNVERIFIED_TO_BSP_PREMISE_VERIFIED"] = 105;
+values[valuesById[106] = "BLUE_MSG_UNVERIFIED_TO_SELF_FB_VERIFIED"] = 106;
+values[valuesById[107] = "BLUE_MSG_UNVERIFIED_TO_VERIFIED"] = 107;
+values[valuesById[108] = "BLUE_MSG_VERIFIED_TO_BSP_FB_UNVERIFIED"] = 108;
+values[valuesById[109] = "BLUE_MSG_VERIFIED_TO_BSP_PREMISE_UNVERIFIED"] = 109;
+values[valuesById[110] = "BLUE_MSG_VERIFIED_TO_SELF_FB_UNVERIFIED"] = 110;
+values[valuesById[111] = "BLUE_MSG_VERIFIED_TO_UNVERIFIED"] = 111;
+values[valuesById[112] = "BLUE_MSG_BSP_FB_UNVERIFIED_TO_BSP_PREMISE_VERIFIED"] = 112;
+values[valuesById[113] = "BLUE_MSG_BSP_FB_UNVERIFIED_TO_SELF_FB_VERIFIED"] = 113;
+values[valuesById[114] = "BLUE_MSG_BSP_FB_VERIFIED_TO_BSP_PREMISE_UNVERIFIED"] = 114;
+values[valuesById[115] = "BLUE_MSG_BSP_FB_VERIFIED_TO_SELF_FB_UNVERIFIED"] = 115;
+values[valuesById[116] = "BLUE_MSG_SELF_FB_UNVERIFIED_TO_BSP_PREMISE_VERIFIED"] = 116;
+values[valuesById[117] = "BLUE_MSG_SELF_FB_VERIFIED_TO_BSP_PREMISE_UNVERIFIED"] = 117;
+values[valuesById[118] = "E2E_IDENTITY_UNAVAILABLE"] = 118;
+values[valuesById[119] = "GROUP_CREATING"] = 119;
+values[valuesById[120] = "GROUP_CREATE_FAILED"] = 120;
+values[valuesById[121] = "GROUP_BOUNCED"] = 121;
+values[valuesById[122] = "BLOCK_CONTACT"] = 122;
+values[valuesById[123] = "EPHEMERAL_SETTING_NOT_APPLIED"] = 123;
+values[valuesById[124] = "SYNC_FAILED"] = 124;
+values[valuesById[125] = "SYNCING"] = 125;
+values[valuesById[126] = "BIZ_PRIVACY_MODE_INIT_FB"] = 126;
+values[valuesById[127] = "BIZ_PRIVACY_MODE_INIT_BSP"] = 127;
+values[valuesById[128] = "BIZ_PRIVACY_MODE_TO_FB"] = 128;
+values[valuesById[129] = "BIZ_PRIVACY_MODE_TO_BSP"] = 129;
+values[valuesById[130] = "DISAPPEARING_MODE"] = 130;
+values[valuesById[131] = "E2E_DEVICE_FETCH_FAILED"] = 131;
+values[valuesById[132] = "ADMIN_REVOKE"] = 132;
+values[valuesById[133] = "GROUP_INVITE_LINK_GROWTH_LOCKED"] = 133;
+values[valuesById[134] = "COMMUNITY_LINK_PARENT_GROUP"] = 134;
+values[valuesById[135] = "COMMUNITY_LINK_SIBLING_GROUP"] = 135;
+values[valuesById[136] = "COMMUNITY_LINK_SUB_GROUP"] = 136;
+values[valuesById[137] = "COMMUNITY_UNLINK_PARENT_GROUP"] = 137;
+values[valuesById[138] = "COMMUNITY_UNLINK_SIBLING_GROUP"] = 138;
+values[valuesById[139] = "COMMUNITY_UNLINK_SUB_GROUP"] = 139;
+values[valuesById[140] = "GROUP_PARTICIPANT_ACCEPT"] = 140;
+values[valuesById[141] = "GROUP_PARTICIPANT_LINKED_GROUP_JOIN"] = 141;
+values[valuesById[142] = "COMMUNITY_CREATE"] = 142;
+values[valuesById[143] = "EPHEMERAL_KEEP_IN_CHAT"] = 143;
+values[valuesById[144] = "GROUP_MEMBERSHIP_JOIN_APPROVAL_REQUEST"] = 144;
+values[valuesById[145] = "GROUP_MEMBERSHIP_JOIN_APPROVAL_MODE"] = 145;
+values[valuesById[146] = "INTEGRITY_UNLINK_PARENT_GROUP"] = 146;
+values[valuesById[147] = "COMMUNITY_PARTICIPANT_PROMOTE"] = 147;
+values[valuesById[148] = "COMMUNITY_PARTICIPANT_DEMOTE"] = 148;
+values[valuesById[149] = "COMMUNITY_PARENT_GROUP_DELETED"] = 149;
+values[valuesById[150] = "COMMUNITY_LINK_PARENT_GROUP_MEMBERSHIP_APPROVAL"] = 150;
+values[valuesById[151] = "GROUP_PARTICIPANT_JOINED_GROUP_AND_PARENT_GROUP"] = 151;
+values[valuesById[152] = "MASKED_THREAD_CREATED"] = 152;
+values[valuesById[153] = "MASKED_THREAD_UNMASKED"] = 153;
+values[valuesById[154] = "BIZ_CHAT_ASSIGNMENT"] = 154;
+values[valuesById[155] = "CHAT_PSA"] = 155;
+values[valuesById[156] = "CHAT_POLL_CREATION_MESSAGE"] = 156;
+values[valuesById[157] = "CAG_MASKED_THREAD_CREATED"] = 157;
+values[valuesById[158] = "COMMUNITY_PARENT_GROUP_SUBJECT_CHANGED"] = 158;
+values[valuesById[159] = "CAG_INVITE_AUTO_ADD"] = 159;
+values[valuesById[160] = "BIZ_CHAT_ASSIGNMENT_UNASSIGN"] = 160;
+values[valuesById[161] = "CAG_INVITE_AUTO_JOINED"] = 161;
+values[valuesById[162] = "SCHEDULED_CALL_START_MESSAGE"] = 162;
+values[valuesById[163] = "COMMUNITY_INVITE_RICH"] = 163;
+values[valuesById[164] = "COMMUNITY_INVITE_AUTO_ADD_RICH"] = 164;
+values[valuesById[165] = "SUB_GROUP_INVITE_RICH"] = 165;
+values[valuesById[166] = "SUB_GROUP_PARTICIPANT_ADD_RICH"] = 166;
+values[valuesById[167] = "COMMUNITY_LINK_PARENT_GROUP_RICH"] = 167;
+values[valuesById[168] = "COMMUNITY_PARTICIPANT_ADD_RICH"] = 168;
+values[valuesById[169] = "SILENCED_UNKNOWN_CALLER_AUDIO"] = 169;
+values[valuesById[170] = "SILENCED_UNKNOWN_CALLER_VIDEO"] = 170;
+values[valuesById[171] = "GROUP_MEMBER_ADD_MODE"] = 171;
+values[valuesById[172] = "GROUP_MEMBERSHIP_JOIN_APPROVAL_REQUEST_NON_ADMIN_ADD"] = 172;
+values[valuesById[173] = "COMMUNITY_CHANGE_DESCRIPTION"] = 173;
+values[valuesById[174] = "SENDER_INVITE"] = 174;
+values[valuesById[175] = "RECEIVER_INVITE"] = 175;
+values[valuesById[176] = "COMMUNITY_ALLOW_MEMBER_ADDED_GROUPS"] = 176;
+values[valuesById[177] = "PINNED_MESSAGE_IN_CHAT"] = 177;
+values[valuesById[178] = "PAYMENT_INVITE_SETUP_INVITER"] = 178;
+values[valuesById[179] = "PAYMENT_INVITE_SETUP_INVITEE_RECEIVE_ONLY"] = 179;
+values[valuesById[180] = "PAYMENT_INVITE_SETUP_INVITEE_SEND_AND_RECEIVE"] = 180;
+values[valuesById[181] = "LINKED_GROUP_CALL_START"] = 181;
+values[valuesById[182] = "REPORT_TO_ADMIN_ENABLED_STATUS"] = 182;
+values[valuesById[183] = "EMPTY_SUBGROUP_CREATE"] = 183;
+values[valuesById[184] = "SCHEDULED_CALL_CANCEL"] = 184;
+values[valuesById[185] = "SUBGROUP_ADMIN_TRIGGERED_AUTO_ADD_RICH"] = 185;
+values[valuesById[186] = "GROUP_CHANGE_RECENT_HISTORY_SHARING"] = 186;
+values[valuesById[187] = "PAID_MESSAGE_SERVER_CAMPAIGN_ID"] = 187;
+values[valuesById[188] = "GENERAL_CHAT_CREATE"] = 188;
+values[valuesById[189] = "GENERAL_CHAT_ADD"] = 189;
+values[valuesById[190] = "GENERAL_CHAT_AUTO_ADD_DISABLED"] = 190;
+values[valuesById[191] = "SUGGESTED_SUBGROUP_ANNOUNCE"] = 191;
+values[valuesById[192] = "BIZ_BOT_1P_MESSAGING_ENABLED"] = 192;
+values[valuesById[193] = "CHANGE_USERNAME"] = 193;
+values[valuesById[194] = "BIZ_COEX_PRIVACY_INIT_SELF"] = 194;
+values[valuesById[195] = "BIZ_COEX_PRIVACY_TRANSITION_SELF"] = 195;
+values[valuesById[196] = "SUPPORT_AI_EDUCATION"] = 196;
+values[valuesById[197] = "BIZ_BOT_3P_MESSAGING_ENABLED"] = 197;
+values[valuesById[198] = "REMINDER_SETUP_MESSAGE"] = 198;
+values[valuesById[199] = "REMINDER_SENT_MESSAGE"] = 199;
+values[valuesById[200] = "REMINDER_CANCEL_MESSAGE"] = 200;
+values[valuesById[201] = "BIZ_COEX_PRIVACY_INIT"] = 201;
+values[valuesById[202] = "BIZ_COEX_PRIVACY_TRANSITION"] = 202;
+values[valuesById[203] = "GROUP_DEACTIVATED"] = 203;
+values[valuesById[204] = "COMMUNITY_DEACTIVATE_SIBLING_GROUP"] = 204;
+values[valuesById[205] = "EVENT_UPDATED"] = 205;
+values[valuesById[206] = "EVENT_CANCELED"] = 206;
+values[valuesById[207] = "COMMUNITY_OWNER_UPDATED"] = 207;
+values[valuesById[208] = "COMMUNITY_SUB_GROUP_VISIBILITY_HIDDEN"] = 208;
+values[valuesById[209] = "CAPI_GROUP_NE2EE_SYSTEM_MESSAGE"] = 209;
+values[valuesById[210] = "STATUS_MENTION"] = 210;
+values[valuesById[211] = "USER_CONTROLS_SYSTEM_MESSAGE"] = 211;
+values[valuesById[212] = "SUPPORT_SYSTEM_MESSAGE"] = 212;
+values[valuesById[213] = "CHANGE_LID"] = 213;
+values[valuesById[214] = "BIZ_CUSTOMER_3PD_DATA_SHARING_OPT_IN_MESSAGE"] = 214;
+values[valuesById[215] = "BIZ_CUSTOMER_3PD_DATA_SHARING_OPT_OUT_MESSAGE"] = 215;
+values[valuesById[216] = "CHANGE_LIMIT_SHARING"] = 216;
+values[valuesById[217] = "GROUP_MEMBER_LINK_MODE"] = 217;
+values[valuesById[218] = "BIZ_AUTOMATICALLY_LABELED_CHAT_SYSTEM_MESSAGE"] = 218;
+values[valuesById[219] = "PHONE_NUMBER_HIDING_CHAT_DEPRECATED_MESSAGE"] = 219;
+values[valuesById[220] = "QUARANTINED_MESSAGE"] = 220;
+values[valuesById[221] = "GROUP_MEMBER_SHARE_GROUP_HISTORY_MODE"] = 221;
+values[valuesById[222] = "GROUP_OPEN_BOT_ADDED"] = 222;
+values[valuesById[223] = "GROUP_TEE_BOT_ADDED"] = 223;
+values[valuesById[224] = "CONTACT_INFO"] = 224;
+values[valuesById[225] = "SCHEDULED_MESSAGE_CREATED"] = 225;
+return values;
+});
+return WebMessageInfo;

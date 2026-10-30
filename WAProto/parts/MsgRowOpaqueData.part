@@ -1,0 +1,104 @@
+"use strict";
+function MsgRowOpaqueData(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+MsgRowOpaqueData.prototype.currentMsg = null;
+MsgRowOpaqueData.prototype.quotedMsg = null;
+let $oneOfFields;
+Object.defineProperty(MsgRowOpaqueData.prototype, "_currentMsg", {
+get: $util.oneOfGetter($oneOfFields = ["currentMsg"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MsgRowOpaqueData.prototype, "_quotedMsg", {
+get: $util.oneOfGetter($oneOfFields = ["quotedMsg"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+MsgRowOpaqueData.create = function create(properties) {
+return new MsgRowOpaqueData(properties);
+};
+MsgRowOpaqueData.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.currentMsg != null && Object.hasOwnProperty.call(m, "currentMsg"))
+$root.proto.MsgOpaqueData.encode(m.currentMsg, w.uint32(10).fork()).ldelim();
+if (m.quotedMsg != null && Object.hasOwnProperty.call(m, "quotedMsg"))
+$root.proto.MsgOpaqueData.encode(m.quotedMsg, w.uint32(18).fork()).ldelim();
+return w;
+};
+MsgRowOpaqueData.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.MsgRowOpaqueData();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.currentMsg = $root.proto.MsgOpaqueData.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.quotedMsg = $root.proto.MsgOpaqueData.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+MsgRowOpaqueData.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.MsgRowOpaqueData)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.MsgRowOpaqueData();
+if (d.currentMsg != null) {
+if (typeof d.currentMsg !== "object")
+throw TypeError(".proto.MsgRowOpaqueData.currentMsg: object expected");
+m.currentMsg = $root.proto.MsgOpaqueData.fromObject(d.currentMsg, n + 1);
+}
+if (d.quotedMsg != null) {
+if (typeof d.quotedMsg !== "object")
+throw TypeError(".proto.MsgRowOpaqueData.quotedMsg: object expected");
+m.quotedMsg = $root.proto.MsgOpaqueData.fromObject(d.quotedMsg, n + 1);
+}
+return m;
+};
+MsgRowOpaqueData.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.currentMsg != null && m.hasOwnProperty("currentMsg")) {
+d.currentMsg = $root.proto.MsgOpaqueData.toObject(m.currentMsg, o);
+if (o.oneofs)
+d._currentMsg = "currentMsg";
+}
+if (m.quotedMsg != null && m.hasOwnProperty("quotedMsg")) {
+d.quotedMsg = $root.proto.MsgOpaqueData.toObject(m.quotedMsg, o);
+if (o.oneofs)
+d._quotedMsg = "quotedMsg";
+}
+return d;
+};
+MsgRowOpaqueData.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+MsgRowOpaqueData.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.MsgRowOpaqueData";
+};
+return MsgRowOpaqueData;

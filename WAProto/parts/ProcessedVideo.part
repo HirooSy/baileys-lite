@@ -1,0 +1,266 @@
+"use strict";
+function ProcessedVideo(p) {
+this.capabilities = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ProcessedVideo.prototype.directPath = null;
+ProcessedVideo.prototype.fileSha256 = null;
+ProcessedVideo.prototype.height = null;
+ProcessedVideo.prototype.width = null;
+ProcessedVideo.prototype.fileLength = null;
+ProcessedVideo.prototype.bitrate = null;
+ProcessedVideo.prototype.quality = null;
+ProcessedVideo.prototype.capabilities = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(ProcessedVideo.prototype, "_directPath", {
+get: $util.oneOfGetter($oneOfFields = ["directPath"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ProcessedVideo.prototype, "_fileSha256", {
+get: $util.oneOfGetter($oneOfFields = ["fileSha256"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ProcessedVideo.prototype, "_height", {
+get: $util.oneOfGetter($oneOfFields = ["height"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ProcessedVideo.prototype, "_width", {
+get: $util.oneOfGetter($oneOfFields = ["width"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ProcessedVideo.prototype, "_fileLength", {
+get: $util.oneOfGetter($oneOfFields = ["fileLength"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ProcessedVideo.prototype, "_bitrate", {
+get: $util.oneOfGetter($oneOfFields = ["bitrate"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ProcessedVideo.prototype, "_quality", {
+get: $util.oneOfGetter($oneOfFields = ["quality"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ProcessedVideo.create = function create(properties) {
+return new ProcessedVideo(properties);
+};
+ProcessedVideo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.directPath != null && Object.hasOwnProperty.call(m, "directPath"))
+w.uint32(10).string(m.directPath);
+if (m.fileSha256 != null && Object.hasOwnProperty.call(m, "fileSha256"))
+w.uint32(18).bytes(m.fileSha256);
+if (m.height != null && Object.hasOwnProperty.call(m, "height"))
+w.uint32(24).uint32(m.height);
+if (m.width != null && Object.hasOwnProperty.call(m, "width"))
+w.uint32(32).uint32(m.width);
+if (m.fileLength != null && Object.hasOwnProperty.call(m, "fileLength"))
+w.uint32(40).uint64(m.fileLength);
+if (m.bitrate != null && Object.hasOwnProperty.call(m, "bitrate"))
+w.uint32(48).uint32(m.bitrate);
+if (m.quality != null && Object.hasOwnProperty.call(m, "quality"))
+w.uint32(56).int32(m.quality);
+if (m.capabilities != null && m.capabilities.length) {
+for (var i = 0; i < m.capabilities.length; ++i)
+w.uint32(66).string(m.capabilities[i]);
+}
+return w;
+};
+ProcessedVideo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ProcessedVideo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.directPath = r.string();
+break;
+}
+case 2: {
+m.fileSha256 = r.bytes();
+break;
+}
+case 3: {
+m.height = r.uint32();
+break;
+}
+case 4: {
+m.width = r.uint32();
+break;
+}
+case 5: {
+m.fileLength = r.uint64();
+break;
+}
+case 6: {
+m.bitrate = r.uint32();
+break;
+}
+case 7: {
+m.quality = r.int32();
+break;
+}
+case 8: {
+if (!(m.capabilities && m.capabilities.length))
+m.capabilities = [];
+m.capabilities.push(r.string());
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ProcessedVideo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ProcessedVideo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ProcessedVideo();
+if (d.directPath != null) {
+m.directPath = String(d.directPath);
+}
+if (d.fileSha256 != null) {
+if (typeof d.fileSha256 === "string")
+$util.base64.decode(d.fileSha256, m.fileSha256 = $util.newBuffer($util.base64.length(d.fileSha256)), 0);
+else if (d.fileSha256.length >= 0)
+m.fileSha256 = d.fileSha256;
+}
+if (d.height != null) {
+m.height = d.height >>> 0;
+}
+if (d.width != null) {
+m.width = d.width >>> 0;
+}
+if (d.fileLength != null) {
+if ($util.Long)
+(m.fileLength = $util.Long.fromValue(d.fileLength)).unsigned = true;
+else if (typeof d.fileLength === "string")
+m.fileLength = parseInt(d.fileLength, 10);
+else if (typeof d.fileLength === "number")
+m.fileLength = d.fileLength;
+else if (typeof d.fileLength === "object")
+m.fileLength = new $util.LongBits(d.fileLength.low >>> 0, d.fileLength.high >>> 0).toNumber(true);
+}
+if (d.bitrate != null) {
+m.bitrate = d.bitrate >>> 0;
+}
+switch (d.quality) {
+default:
+if (typeof d.quality === "number") {
+m.quality = d.quality;
+break;
+}
+break;
+case "UNDEFINED":
+case 0:
+m.quality = 0;
+break;
+case "LOW":
+case 1:
+m.quality = 1;
+break;
+case "MID":
+case 2:
+m.quality = 2;
+break;
+case "HIGH":
+case 3:
+m.quality = 3;
+break;
+}
+if (d.capabilities) {
+if (!Array.isArray(d.capabilities))
+throw TypeError(".proto.ProcessedVideo.capabilities: array expected");
+m.capabilities = [];
+for (var i = 0; i < d.capabilities.length; ++i) {
+m.capabilities[i] = String(d.capabilities[i]);
+}
+}
+return m;
+};
+ProcessedVideo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.capabilities = [];
+}
+if (m.directPath != null && m.hasOwnProperty("directPath")) {
+d.directPath = m.directPath;
+if (o.oneofs)
+d._directPath = "directPath";
+}
+if (m.fileSha256 != null && m.hasOwnProperty("fileSha256")) {
+d.fileSha256 = o.bytes === String ? $util.base64.encode(m.fileSha256, 0, m.fileSha256.length) : o.bytes === Array ? Array.prototype.slice.call(m.fileSha256) : m.fileSha256;
+if (o.oneofs)
+d._fileSha256 = "fileSha256";
+}
+if (m.height != null && m.hasOwnProperty("height")) {
+d.height = m.height;
+if (o.oneofs)
+d._height = "height";
+}
+if (m.width != null && m.hasOwnProperty("width")) {
+d.width = m.width;
+if (o.oneofs)
+d._width = "width";
+}
+if (m.fileLength != null && m.hasOwnProperty("fileLength")) {
+if (typeof m.fileLength === "number")
+d.fileLength = o.longs === String ? String(m.fileLength) : m.fileLength;
+else
+d.fileLength = o.longs === String ? longToString(m.fileLength, true) : o.longs === Number ? longToNumber(m.fileLength, true) : m.fileLength;
+if (o.oneofs)
+d._fileLength = "fileLength";
+}
+if (m.bitrate != null && m.hasOwnProperty("bitrate")) {
+d.bitrate = m.bitrate;
+if (o.oneofs)
+d._bitrate = "bitrate";
+}
+if (m.quality != null && m.hasOwnProperty("quality")) {
+d.quality = o.enums === String ? $root.proto.ProcessedVideo.VideoQuality[m.quality] === undefined ? m.quality : $root.proto.ProcessedVideo.VideoQuality[m.quality] : m.quality;
+if (o.oneofs)
+d._quality = "quality";
+}
+if (m.capabilities && m.capabilities.length) {
+d.capabilities = [];
+for (var j = 0; j < m.capabilities.length; ++j) {
+d.capabilities[j] = m.capabilities[j];
+}
+}
+return d;
+};
+ProcessedVideo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ProcessedVideo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ProcessedVideo";
+};
+$lazy(ProcessedVideo, "VideoQuality", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNDEFINED"] = 0;
+values[valuesById[1] = "LOW"] = 1;
+values[valuesById[2] = "MID"] = 2;
+values[valuesById[3] = "HIGH"] = 3;
+return values;
+});
+return ProcessedVideo;

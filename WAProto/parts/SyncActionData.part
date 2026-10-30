@@ -1,0 +1,146 @@
+"use strict";
+function SyncActionData(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SyncActionData.prototype.index = null;
+SyncActionData.prototype.value = null;
+SyncActionData.prototype.padding = null;
+SyncActionData.prototype.version = null;
+let $oneOfFields;
+Object.defineProperty(SyncActionData.prototype, "_index", {
+get: $util.oneOfGetter($oneOfFields = ["index"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SyncActionData.prototype, "_value", {
+get: $util.oneOfGetter($oneOfFields = ["value"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SyncActionData.prototype, "_padding", {
+get: $util.oneOfGetter($oneOfFields = ["padding"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SyncActionData.prototype, "_version", {
+get: $util.oneOfGetter($oneOfFields = ["version"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SyncActionData.create = function create(properties) {
+return new SyncActionData(properties);
+};
+SyncActionData.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.index != null && Object.hasOwnProperty.call(m, "index"))
+w.uint32(10).bytes(m.index);
+if (m.value != null && Object.hasOwnProperty.call(m, "value"))
+$root.proto.SyncActionValue.encode(m.value, w.uint32(18).fork()).ldelim();
+if (m.padding != null && Object.hasOwnProperty.call(m, "padding"))
+w.uint32(26).bytes(m.padding);
+if (m.version != null && Object.hasOwnProperty.call(m, "version"))
+w.uint32(32).int32(m.version);
+return w;
+};
+SyncActionData.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.SyncActionData();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.index = r.bytes();
+break;
+}
+case 2: {
+m.value = $root.proto.SyncActionValue.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 3: {
+m.padding = r.bytes();
+break;
+}
+case 4: {
+m.version = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SyncActionData.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.SyncActionData)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.SyncActionData();
+if (d.index != null) {
+if (typeof d.index === "string")
+$util.base64.decode(d.index, m.index = $util.newBuffer($util.base64.length(d.index)), 0);
+else if (d.index.length >= 0)
+m.index = d.index;
+}
+if (d.value != null) {
+if (typeof d.value !== "object")
+throw TypeError(".proto.SyncActionData.value: object expected");
+m.value = $root.proto.SyncActionValue.fromObject(d.value, n + 1);
+}
+if (d.padding != null) {
+if (typeof d.padding === "string")
+$util.base64.decode(d.padding, m.padding = $util.newBuffer($util.base64.length(d.padding)), 0);
+else if (d.padding.length >= 0)
+m.padding = d.padding;
+}
+if (d.version != null) {
+m.version = d.version | 0;
+}
+return m;
+};
+SyncActionData.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.index != null && m.hasOwnProperty("index")) {
+d.index = o.bytes === String ? $util.base64.encode(m.index, 0, m.index.length) : o.bytes === Array ? Array.prototype.slice.call(m.index) : m.index;
+if (o.oneofs)
+d._index = "index";
+}
+if (m.value != null && m.hasOwnProperty("value")) {
+d.value = $root.proto.SyncActionValue.toObject(m.value, o);
+if (o.oneofs)
+d._value = "value";
+}
+if (m.padding != null && m.hasOwnProperty("padding")) {
+d.padding = o.bytes === String ? $util.base64.encode(m.padding, 0, m.padding.length) : o.bytes === Array ? Array.prototype.slice.call(m.padding) : m.padding;
+if (o.oneofs)
+d._padding = "padding";
+}
+if (m.version != null && m.hasOwnProperty("version")) {
+d.version = m.version;
+if (o.oneofs)
+d._version = "version";
+}
+return d;
+};
+SyncActionData.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SyncActionData.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.SyncActionData";
+};
+return SyncActionData;

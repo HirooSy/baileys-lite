@@ -1,0 +1,235 @@
+"use strict";
+function MessageAssociation(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+MessageAssociation.prototype.associationType = null;
+MessageAssociation.prototype.parentMessageKey = null;
+MessageAssociation.prototype.messageIndex = null;
+let $oneOfFields;
+Object.defineProperty(MessageAssociation.prototype, "_associationType", {
+get: $util.oneOfGetter($oneOfFields = ["associationType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageAssociation.prototype, "_parentMessageKey", {
+get: $util.oneOfGetter($oneOfFields = ["parentMessageKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageAssociation.prototype, "_messageIndex", {
+get: $util.oneOfGetter($oneOfFields = ["messageIndex"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+MessageAssociation.create = function create(properties) {
+return new MessageAssociation(properties);
+};
+MessageAssociation.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.associationType != null && Object.hasOwnProperty.call(m, "associationType"))
+w.uint32(8).int32(m.associationType);
+if (m.parentMessageKey != null && Object.hasOwnProperty.call(m, "parentMessageKey"))
+$root.proto.MessageKey.encode(m.parentMessageKey, w.uint32(18).fork()).ldelim();
+if (m.messageIndex != null && Object.hasOwnProperty.call(m, "messageIndex"))
+w.uint32(24).int32(m.messageIndex);
+return w;
+};
+MessageAssociation.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.MessageAssociation();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.associationType = r.int32();
+break;
+}
+case 2: {
+m.parentMessageKey = $root.proto.MessageKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 3: {
+m.messageIndex = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+MessageAssociation.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.MessageAssociation)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.MessageAssociation();
+switch (d.associationType) {
+default:
+if (typeof d.associationType === "number") {
+m.associationType = d.associationType;
+break;
+}
+break;
+case "UNKNOWN":
+case 0:
+m.associationType = 0;
+break;
+case "MEDIA_ALBUM":
+case 1:
+m.associationType = 1;
+break;
+case "BOT_PLUGIN":
+case 2:
+m.associationType = 2;
+break;
+case "EVENT_COVER_IMAGE":
+case 3:
+m.associationType = 3;
+break;
+case "STATUS_POLL":
+case 4:
+m.associationType = 4;
+break;
+case "HD_VIDEO_DUAL_UPLOAD":
+case 5:
+m.associationType = 5;
+break;
+case "STATUS_EXTERNAL_RESHARE":
+case 6:
+m.associationType = 6;
+break;
+case "MEDIA_POLL":
+case 7:
+m.associationType = 7;
+break;
+case "STATUS_ADD_YOURS":
+case 8:
+m.associationType = 8;
+break;
+case "STATUS_NOTIFICATION":
+case 9:
+m.associationType = 9;
+break;
+case "HD_IMAGE_DUAL_UPLOAD":
+case 10:
+m.associationType = 10;
+break;
+case "STICKER_ANNOTATION":
+case 11:
+m.associationType = 11;
+break;
+case "MOTION_PHOTO":
+case 12:
+m.associationType = 12;
+break;
+case "STATUS_LINK_ACTION":
+case 13:
+m.associationType = 13;
+break;
+case "VIEW_ALL_REPLIES":
+case 14:
+m.associationType = 14;
+break;
+case "STATUS_ADD_YOURS_AI_IMAGINE":
+case 15:
+m.associationType = 15;
+break;
+case "STATUS_QUESTION":
+case 16:
+m.associationType = 16;
+break;
+case "STATUS_ADD_YOURS_DIWALI":
+case 17:
+m.associationType = 17;
+break;
+case "STATUS_REACTION":
+case 18:
+m.associationType = 18;
+break;
+case "HEVC_VIDEO_DUAL_UPLOAD":
+case 19:
+m.associationType = 19;
+break;
+case "POLL_ADD_OPTION":
+case 20:
+m.associationType = 20;
+break;
+}
+if (d.parentMessageKey != null) {
+if (typeof d.parentMessageKey !== "object")
+throw TypeError(".proto.MessageAssociation.parentMessageKey: object expected");
+m.parentMessageKey = $root.proto.MessageKey.fromObject(d.parentMessageKey, n + 1);
+}
+if (d.messageIndex != null) {
+m.messageIndex = d.messageIndex | 0;
+}
+return m;
+};
+MessageAssociation.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.associationType != null && m.hasOwnProperty("associationType")) {
+d.associationType = o.enums === String ? $root.proto.MessageAssociation.AssociationType[m.associationType] === undefined ? m.associationType : $root.proto.MessageAssociation.AssociationType[m.associationType] : m.associationType;
+if (o.oneofs)
+d._associationType = "associationType";
+}
+if (m.parentMessageKey != null && m.hasOwnProperty("parentMessageKey")) {
+d.parentMessageKey = $root.proto.MessageKey.toObject(m.parentMessageKey, o);
+if (o.oneofs)
+d._parentMessageKey = "parentMessageKey";
+}
+if (m.messageIndex != null && m.hasOwnProperty("messageIndex")) {
+d.messageIndex = m.messageIndex;
+if (o.oneofs)
+d._messageIndex = "messageIndex";
+}
+return d;
+};
+MessageAssociation.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+MessageAssociation.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.MessageAssociation";
+};
+$lazy(MessageAssociation, "AssociationType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN"] = 0;
+values[valuesById[1] = "MEDIA_ALBUM"] = 1;
+values[valuesById[2] = "BOT_PLUGIN"] = 2;
+values[valuesById[3] = "EVENT_COVER_IMAGE"] = 3;
+values[valuesById[4] = "STATUS_POLL"] = 4;
+values[valuesById[5] = "HD_VIDEO_DUAL_UPLOAD"] = 5;
+values[valuesById[6] = "STATUS_EXTERNAL_RESHARE"] = 6;
+values[valuesById[7] = "MEDIA_POLL"] = 7;
+values[valuesById[8] = "STATUS_ADD_YOURS"] = 8;
+values[valuesById[9] = "STATUS_NOTIFICATION"] = 9;
+values[valuesById[10] = "HD_IMAGE_DUAL_UPLOAD"] = 10;
+values[valuesById[11] = "STICKER_ANNOTATION"] = 11;
+values[valuesById[12] = "MOTION_PHOTO"] = 12;
+values[valuesById[13] = "STATUS_LINK_ACTION"] = 13;
+values[valuesById[14] = "VIEW_ALL_REPLIES"] = 14;
+values[valuesById[15] = "STATUS_ADD_YOURS_AI_IMAGINE"] = 15;
+values[valuesById[16] = "STATUS_QUESTION"] = 16;
+values[valuesById[17] = "STATUS_ADD_YOURS_DIWALI"] = 17;
+values[valuesById[18] = "STATUS_REACTION"] = 18;
+values[valuesById[19] = "HEVC_VIDEO_DUAL_UPLOAD"] = 19;
+values[valuesById[20] = "POLL_ADD_OPTION"] = 20;
+return values;
+});
+return MessageAssociation;

@@ -1,0 +1,81 @@
+"use strict";
+function BotGroupParticipantMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotGroupParticipantMetadata.prototype.botFbid = null;
+let $oneOfFields;
+Object.defineProperty(BotGroupParticipantMetadata.prototype, "_botFbid", {
+get: $util.oneOfGetter($oneOfFields = ["botFbid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotGroupParticipantMetadata.create = function create(properties) {
+return new BotGroupParticipantMetadata(properties);
+};
+BotGroupParticipantMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.botFbid != null && Object.hasOwnProperty.call(m, "botFbid"))
+w.uint32(10).string(m.botFbid);
+return w;
+};
+BotGroupParticipantMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotGroupParticipantMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.botFbid = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotGroupParticipantMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotGroupParticipantMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotGroupParticipantMetadata();
+if (d.botFbid != null) {
+m.botFbid = String(d.botFbid);
+}
+return m;
+};
+BotGroupParticipantMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.botFbid != null && m.hasOwnProperty("botFbid")) {
+d.botFbid = m.botFbid;
+if (o.oneofs)
+d._botFbid = "botFbid";
+}
+return d;
+};
+BotGroupParticipantMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotGroupParticipantMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotGroupParticipantMetadata";
+};
+return BotGroupParticipantMetadata;

@@ -1,0 +1,210 @@
+"use strict";
+function BizAccountLinkInfo(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BizAccountLinkInfo.prototype.whatsappBizAcctFbid = null;
+BizAccountLinkInfo.prototype.whatsappAcctNumber = null;
+BizAccountLinkInfo.prototype.issueTime = null;
+BizAccountLinkInfo.prototype.hostStorage = null;
+BizAccountLinkInfo.prototype.accountType = null;
+let $oneOfFields;
+Object.defineProperty(BizAccountLinkInfo.prototype, "_whatsappBizAcctFbid", {
+get: $util.oneOfGetter($oneOfFields = ["whatsappBizAcctFbid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BizAccountLinkInfo.prototype, "_whatsappAcctNumber", {
+get: $util.oneOfGetter($oneOfFields = ["whatsappAcctNumber"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BizAccountLinkInfo.prototype, "_issueTime", {
+get: $util.oneOfGetter($oneOfFields = ["issueTime"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BizAccountLinkInfo.prototype, "_hostStorage", {
+get: $util.oneOfGetter($oneOfFields = ["hostStorage"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BizAccountLinkInfo.prototype, "_accountType", {
+get: $util.oneOfGetter($oneOfFields = ["accountType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BizAccountLinkInfo.create = function create(properties) {
+return new BizAccountLinkInfo(properties);
+};
+BizAccountLinkInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.whatsappBizAcctFbid != null && Object.hasOwnProperty.call(m, "whatsappBizAcctFbid"))
+w.uint32(8).uint64(m.whatsappBizAcctFbid);
+if (m.whatsappAcctNumber != null && Object.hasOwnProperty.call(m, "whatsappAcctNumber"))
+w.uint32(18).string(m.whatsappAcctNumber);
+if (m.issueTime != null && Object.hasOwnProperty.call(m, "issueTime"))
+w.uint32(24).uint64(m.issueTime);
+if (m.hostStorage != null && Object.hasOwnProperty.call(m, "hostStorage"))
+w.uint32(32).int32(m.hostStorage);
+if (m.accountType != null && Object.hasOwnProperty.call(m, "accountType"))
+w.uint32(40).int32(m.accountType);
+return w;
+};
+BizAccountLinkInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BizAccountLinkInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.whatsappBizAcctFbid = r.uint64();
+break;
+}
+case 2: {
+m.whatsappAcctNumber = r.string();
+break;
+}
+case 3: {
+m.issueTime = r.uint64();
+break;
+}
+case 4: {
+m.hostStorage = r.int32();
+break;
+}
+case 5: {
+m.accountType = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BizAccountLinkInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BizAccountLinkInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BizAccountLinkInfo();
+if (d.whatsappBizAcctFbid != null) {
+if ($util.Long)
+(m.whatsappBizAcctFbid = $util.Long.fromValue(d.whatsappBizAcctFbid)).unsigned = true;
+else if (typeof d.whatsappBizAcctFbid === "string")
+m.whatsappBizAcctFbid = parseInt(d.whatsappBizAcctFbid, 10);
+else if (typeof d.whatsappBizAcctFbid === "number")
+m.whatsappBizAcctFbid = d.whatsappBizAcctFbid;
+else if (typeof d.whatsappBizAcctFbid === "object")
+m.whatsappBizAcctFbid = new $util.LongBits(d.whatsappBizAcctFbid.low >>> 0, d.whatsappBizAcctFbid.high >>> 0).toNumber(true);
+}
+if (d.whatsappAcctNumber != null) {
+m.whatsappAcctNumber = String(d.whatsappAcctNumber);
+}
+if (d.issueTime != null) {
+if ($util.Long)
+(m.issueTime = $util.Long.fromValue(d.issueTime)).unsigned = true;
+else if (typeof d.issueTime === "string")
+m.issueTime = parseInt(d.issueTime, 10);
+else if (typeof d.issueTime === "number")
+m.issueTime = d.issueTime;
+else if (typeof d.issueTime === "object")
+m.issueTime = new $util.LongBits(d.issueTime.low >>> 0, d.issueTime.high >>> 0).toNumber(true);
+}
+switch (d.hostStorage) {
+default:
+if (typeof d.hostStorage === "number") {
+m.hostStorage = d.hostStorage;
+break;
+}
+break;
+case "ON_PREMISE":
+case 0:
+m.hostStorage = 0;
+break;
+case "FACEBOOK":
+case 1:
+m.hostStorage = 1;
+break;
+}
+switch (d.accountType) {
+default:
+if (typeof d.accountType === "number") {
+m.accountType = d.accountType;
+break;
+}
+break;
+case "ENTERPRISE":
+case 0:
+m.accountType = 0;
+break;
+}
+return m;
+};
+BizAccountLinkInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.whatsappBizAcctFbid != null && m.hasOwnProperty("whatsappBizAcctFbid")) {
+if (typeof m.whatsappBizAcctFbid === "number")
+d.whatsappBizAcctFbid = o.longs === String ? String(m.whatsappBizAcctFbid) : m.whatsappBizAcctFbid;
+else
+d.whatsappBizAcctFbid = o.longs === String ? longToString(m.whatsappBizAcctFbid, true) : o.longs === Number ? longToNumber(m.whatsappBizAcctFbid, true) : m.whatsappBizAcctFbid;
+if (o.oneofs)
+d._whatsappBizAcctFbid = "whatsappBizAcctFbid";
+}
+if (m.whatsappAcctNumber != null && m.hasOwnProperty("whatsappAcctNumber")) {
+d.whatsappAcctNumber = m.whatsappAcctNumber;
+if (o.oneofs)
+d._whatsappAcctNumber = "whatsappAcctNumber";
+}
+if (m.issueTime != null && m.hasOwnProperty("issueTime")) {
+if (typeof m.issueTime === "number")
+d.issueTime = o.longs === String ? String(m.issueTime) : m.issueTime;
+else
+d.issueTime = o.longs === String ? longToString(m.issueTime, true) : o.longs === Number ? longToNumber(m.issueTime, true) : m.issueTime;
+if (o.oneofs)
+d._issueTime = "issueTime";
+}
+if (m.hostStorage != null && m.hasOwnProperty("hostStorage")) {
+d.hostStorage = o.enums === String ? $root.proto.BizAccountLinkInfo.HostStorageType[m.hostStorage] === undefined ? m.hostStorage : $root.proto.BizAccountLinkInfo.HostStorageType[m.hostStorage] : m.hostStorage;
+if (o.oneofs)
+d._hostStorage = "hostStorage";
+}
+if (m.accountType != null && m.hasOwnProperty("accountType")) {
+d.accountType = o.enums === String ? $root.proto.BizAccountLinkInfo.AccountType[m.accountType] === undefined ? m.accountType : $root.proto.BizAccountLinkInfo.AccountType[m.accountType] : m.accountType;
+if (o.oneofs)
+d._accountType = "accountType";
+}
+return d;
+};
+BizAccountLinkInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BizAccountLinkInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BizAccountLinkInfo";
+};
+$lazy(BizAccountLinkInfo, "AccountType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "ENTERPRISE"] = 0;
+return values;
+});
+$lazy(BizAccountLinkInfo, "HostStorageType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "ON_PREMISE"] = 0;
+values[valuesById[1] = "FACEBOOK"] = 1;
+return values;
+});
+return BizAccountLinkInfo;

@@ -1,0 +1,144 @@
+"use strict";
+function SignalMessage(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SignalMessage.prototype.ratchetKey = null;
+SignalMessage.prototype.counter = null;
+SignalMessage.prototype.previousCounter = null;
+SignalMessage.prototype.ciphertext = null;
+let $oneOfFields;
+Object.defineProperty(SignalMessage.prototype, "_ratchetKey", {
+get: $util.oneOfGetter($oneOfFields = ["ratchetKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SignalMessage.prototype, "_counter", {
+get: $util.oneOfGetter($oneOfFields = ["counter"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SignalMessage.prototype, "_previousCounter", {
+get: $util.oneOfGetter($oneOfFields = ["previousCounter"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SignalMessage.prototype, "_ciphertext", {
+get: $util.oneOfGetter($oneOfFields = ["ciphertext"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SignalMessage.create = function create(properties) {
+return new SignalMessage(properties);
+};
+SignalMessage.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.ratchetKey != null && Object.hasOwnProperty.call(m, "ratchetKey"))
+w.uint32(10).bytes(m.ratchetKey);
+if (m.counter != null && Object.hasOwnProperty.call(m, "counter"))
+w.uint32(16).uint32(m.counter);
+if (m.previousCounter != null && Object.hasOwnProperty.call(m, "previousCounter"))
+w.uint32(24).uint32(m.previousCounter);
+if (m.ciphertext != null && Object.hasOwnProperty.call(m, "ciphertext"))
+w.uint32(34).bytes(m.ciphertext);
+return w;
+};
+SignalMessage.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.SignalMessage();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.ratchetKey = r.bytes();
+break;
+}
+case 2: {
+m.counter = r.uint32();
+break;
+}
+case 3: {
+m.previousCounter = r.uint32();
+break;
+}
+case 4: {
+m.ciphertext = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SignalMessage.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.SignalMessage)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.SignalMessage();
+if (d.ratchetKey != null) {
+if (typeof d.ratchetKey === "string")
+$util.base64.decode(d.ratchetKey, m.ratchetKey = $util.newBuffer($util.base64.length(d.ratchetKey)), 0);
+else if (d.ratchetKey.length >= 0)
+m.ratchetKey = d.ratchetKey;
+}
+if (d.counter != null) {
+m.counter = d.counter >>> 0;
+}
+if (d.previousCounter != null) {
+m.previousCounter = d.previousCounter >>> 0;
+}
+if (d.ciphertext != null) {
+if (typeof d.ciphertext === "string")
+$util.base64.decode(d.ciphertext, m.ciphertext = $util.newBuffer($util.base64.length(d.ciphertext)), 0);
+else if (d.ciphertext.length >= 0)
+m.ciphertext = d.ciphertext;
+}
+return m;
+};
+SignalMessage.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.ratchetKey != null && m.hasOwnProperty("ratchetKey")) {
+d.ratchetKey = o.bytes === String ? $util.base64.encode(m.ratchetKey, 0, m.ratchetKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.ratchetKey) : m.ratchetKey;
+if (o.oneofs)
+d._ratchetKey = "ratchetKey";
+}
+if (m.counter != null && m.hasOwnProperty("counter")) {
+d.counter = m.counter;
+if (o.oneofs)
+d._counter = "counter";
+}
+if (m.previousCounter != null && m.hasOwnProperty("previousCounter")) {
+d.previousCounter = m.previousCounter;
+if (o.oneofs)
+d._previousCounter = "previousCounter";
+}
+if (m.ciphertext != null && m.hasOwnProperty("ciphertext")) {
+d.ciphertext = o.bytes === String ? $util.base64.encode(m.ciphertext, 0, m.ciphertext.length) : o.bytes === Array ? Array.prototype.slice.call(m.ciphertext) : m.ciphertext;
+if (o.oneofs)
+d._ciphertext = "ciphertext";
+}
+return d;
+};
+SignalMessage.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SignalMessage.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.SignalMessage";
+};
+return SignalMessage;

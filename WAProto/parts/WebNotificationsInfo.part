@@ -1,0 +1,160 @@
+"use strict";
+function WebNotificationsInfo(p) {
+this.notifyMessages = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+WebNotificationsInfo.prototype.timestamp = null;
+WebNotificationsInfo.prototype.unreadChats = null;
+WebNotificationsInfo.prototype.notifyMessageCount = null;
+WebNotificationsInfo.prototype.notifyMessages = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(WebNotificationsInfo.prototype, "_timestamp", {
+get: $util.oneOfGetter($oneOfFields = ["timestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebNotificationsInfo.prototype, "_unreadChats", {
+get: $util.oneOfGetter($oneOfFields = ["unreadChats"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WebNotificationsInfo.prototype, "_notifyMessageCount", {
+get: $util.oneOfGetter($oneOfFields = ["notifyMessageCount"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+WebNotificationsInfo.create = function create(properties) {
+return new WebNotificationsInfo(properties);
+};
+WebNotificationsInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.timestamp != null && Object.hasOwnProperty.call(m, "timestamp"))
+w.uint32(16).uint64(m.timestamp);
+if (m.unreadChats != null && Object.hasOwnProperty.call(m, "unreadChats"))
+w.uint32(24).uint32(m.unreadChats);
+if (m.notifyMessageCount != null && Object.hasOwnProperty.call(m, "notifyMessageCount"))
+w.uint32(32).uint32(m.notifyMessageCount);
+if (m.notifyMessages != null && m.notifyMessages.length) {
+for (var i = 0; i < m.notifyMessages.length; ++i)
+$root.proto.WebMessageInfo.encode(m.notifyMessages[i], w.uint32(42).fork()).ldelim();
+}
+return w;
+};
+WebNotificationsInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.WebNotificationsInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 2: {
+m.timestamp = r.uint64();
+break;
+}
+case 3: {
+m.unreadChats = r.uint32();
+break;
+}
+case 4: {
+m.notifyMessageCount = r.uint32();
+break;
+}
+case 5: {
+if (!(m.notifyMessages && m.notifyMessages.length))
+m.notifyMessages = [];
+m.notifyMessages.push($root.proto.WebMessageInfo.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+WebNotificationsInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.WebNotificationsInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.WebNotificationsInfo();
+if (d.timestamp != null) {
+if ($util.Long)
+(m.timestamp = $util.Long.fromValue(d.timestamp)).unsigned = true;
+else if (typeof d.timestamp === "string")
+m.timestamp = parseInt(d.timestamp, 10);
+else if (typeof d.timestamp === "number")
+m.timestamp = d.timestamp;
+else if (typeof d.timestamp === "object")
+m.timestamp = new $util.LongBits(d.timestamp.low >>> 0, d.timestamp.high >>> 0).toNumber(true);
+}
+if (d.unreadChats != null) {
+m.unreadChats = d.unreadChats >>> 0;
+}
+if (d.notifyMessageCount != null) {
+m.notifyMessageCount = d.notifyMessageCount >>> 0;
+}
+if (d.notifyMessages) {
+if (!Array.isArray(d.notifyMessages))
+throw TypeError(".proto.WebNotificationsInfo.notifyMessages: array expected");
+m.notifyMessages = [];
+for (var i = 0; i < d.notifyMessages.length; ++i) {
+if (typeof d.notifyMessages[i] !== "object")
+throw TypeError(".proto.WebNotificationsInfo.notifyMessages: object expected");
+m.notifyMessages[i] = $root.proto.WebMessageInfo.fromObject(d.notifyMessages[i], n + 1);
+}
+}
+return m;
+};
+WebNotificationsInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.notifyMessages = [];
+}
+if (m.timestamp != null && m.hasOwnProperty("timestamp")) {
+if (typeof m.timestamp === "number")
+d.timestamp = o.longs === String ? String(m.timestamp) : m.timestamp;
+else
+d.timestamp = o.longs === String ? longToString(m.timestamp, true) : o.longs === Number ? longToNumber(m.timestamp, true) : m.timestamp;
+if (o.oneofs)
+d._timestamp = "timestamp";
+}
+if (m.unreadChats != null && m.hasOwnProperty("unreadChats")) {
+d.unreadChats = m.unreadChats;
+if (o.oneofs)
+d._unreadChats = "unreadChats";
+}
+if (m.notifyMessageCount != null && m.hasOwnProperty("notifyMessageCount")) {
+d.notifyMessageCount = m.notifyMessageCount;
+if (o.oneofs)
+d._notifyMessageCount = "notifyMessageCount";
+}
+if (m.notifyMessages && m.notifyMessages.length) {
+d.notifyMessages = [];
+for (var j = 0; j < m.notifyMessages.length; ++j) {
+d.notifyMessages[j] = $root.proto.WebMessageInfo.toObject(m.notifyMessages[j], o);
+}
+}
+return d;
+};
+WebNotificationsInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+WebNotificationsInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.WebNotificationsInfo";
+};
+return WebNotificationsInfo;

@@ -1,0 +1,449 @@
+"use strict";
+function TemplateButton(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+TemplateButton.prototype.index = null;
+TemplateButton.prototype.quickReplyButton = null;
+TemplateButton.prototype.urlButton = null;
+TemplateButton.prototype.callButton = null;
+let $oneOfFields;
+Object.defineProperty(TemplateButton.prototype, "_index", {
+get: $util.oneOfGetter($oneOfFields = ["index"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(TemplateButton.prototype, "button", {
+get: $util.oneOfGetter($oneOfFields = ["quickReplyButton", "urlButton", "callButton"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+TemplateButton.create = function create(properties) {
+return new TemplateButton(properties);
+};
+TemplateButton.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.quickReplyButton != null && Object.hasOwnProperty.call(m, "quickReplyButton"))
+$root.proto.TemplateButton.QuickReplyButton.encode(m.quickReplyButton, w.uint32(10).fork()).ldelim();
+if (m.urlButton != null && Object.hasOwnProperty.call(m, "urlButton"))
+$root.proto.TemplateButton.URLButton.encode(m.urlButton, w.uint32(18).fork()).ldelim();
+if (m.callButton != null && Object.hasOwnProperty.call(m, "callButton"))
+$root.proto.TemplateButton.CallButton.encode(m.callButton, w.uint32(26).fork()).ldelim();
+if (m.index != null && Object.hasOwnProperty.call(m, "index"))
+w.uint32(32).uint32(m.index);
+return w;
+};
+TemplateButton.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.TemplateButton();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 4: {
+m.index = r.uint32();
+break;
+}
+case 1: {
+m.quickReplyButton = $root.proto.TemplateButton.QuickReplyButton.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.urlButton = $root.proto.TemplateButton.URLButton.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 3: {
+m.callButton = $root.proto.TemplateButton.CallButton.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+TemplateButton.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.TemplateButton)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.TemplateButton();
+if (d.index != null) {
+m.index = d.index >>> 0;
+}
+if (d.quickReplyButton != null) {
+if (typeof d.quickReplyButton !== "object")
+throw TypeError(".proto.TemplateButton.quickReplyButton: object expected");
+m.quickReplyButton = $root.proto.TemplateButton.QuickReplyButton.fromObject(d.quickReplyButton, n + 1);
+}
+if (d.urlButton != null) {
+if (typeof d.urlButton !== "object")
+throw TypeError(".proto.TemplateButton.urlButton: object expected");
+m.urlButton = $root.proto.TemplateButton.URLButton.fromObject(d.urlButton, n + 1);
+}
+if (d.callButton != null) {
+if (typeof d.callButton !== "object")
+throw TypeError(".proto.TemplateButton.callButton: object expected");
+m.callButton = $root.proto.TemplateButton.CallButton.fromObject(d.callButton, n + 1);
+}
+return m;
+};
+TemplateButton.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.quickReplyButton != null && m.hasOwnProperty("quickReplyButton")) {
+d.quickReplyButton = $root.proto.TemplateButton.QuickReplyButton.toObject(m.quickReplyButton, o);
+if (o.oneofs)
+d.button = "quickReplyButton";
+}
+if (m.urlButton != null && m.hasOwnProperty("urlButton")) {
+d.urlButton = $root.proto.TemplateButton.URLButton.toObject(m.urlButton, o);
+if (o.oneofs)
+d.button = "urlButton";
+}
+if (m.callButton != null && m.hasOwnProperty("callButton")) {
+d.callButton = $root.proto.TemplateButton.CallButton.toObject(m.callButton, o);
+if (o.oneofs)
+d.button = "callButton";
+}
+if (m.index != null && m.hasOwnProperty("index")) {
+d.index = m.index;
+if (o.oneofs)
+d._index = "index";
+}
+return d;
+};
+TemplateButton.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+TemplateButton.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.TemplateButton";
+};
+$lazy(TemplateButton, "CallButton", function() {
+function CallButton(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+CallButton.prototype.displayText = null;
+CallButton.prototype.phoneNumber = null;
+let $oneOfFields;
+Object.defineProperty(CallButton.prototype, "_displayText", {
+get: $util.oneOfGetter($oneOfFields = ["displayText"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CallButton.prototype, "_phoneNumber", {
+get: $util.oneOfGetter($oneOfFields = ["phoneNumber"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+CallButton.create = function create(properties) {
+return new CallButton(properties);
+};
+CallButton.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.displayText != null && Object.hasOwnProperty.call(m, "displayText"))
+$root.proto.Message.HighlyStructuredMessage.encode(m.displayText, w.uint32(10).fork()).ldelim();
+if (m.phoneNumber != null && Object.hasOwnProperty.call(m, "phoneNumber"))
+$root.proto.Message.HighlyStructuredMessage.encode(m.phoneNumber, w.uint32(18).fork()).ldelim();
+return w;
+};
+CallButton.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.TemplateButton.CallButton();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.displayText = $root.proto.Message.HighlyStructuredMessage.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.phoneNumber = $root.proto.Message.HighlyStructuredMessage.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+CallButton.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.TemplateButton.CallButton)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.TemplateButton.CallButton();
+if (d.displayText != null) {
+if (typeof d.displayText !== "object")
+throw TypeError(".proto.TemplateButton.CallButton.displayText: object expected");
+m.displayText = $root.proto.Message.HighlyStructuredMessage.fromObject(d.displayText, n + 1);
+}
+if (d.phoneNumber != null) {
+if (typeof d.phoneNumber !== "object")
+throw TypeError(".proto.TemplateButton.CallButton.phoneNumber: object expected");
+m.phoneNumber = $root.proto.Message.HighlyStructuredMessage.fromObject(d.phoneNumber, n + 1);
+}
+return m;
+};
+CallButton.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.displayText != null && m.hasOwnProperty("displayText")) {
+d.displayText = $root.proto.Message.HighlyStructuredMessage.toObject(m.displayText, o);
+if (o.oneofs)
+d._displayText = "displayText";
+}
+if (m.phoneNumber != null && m.hasOwnProperty("phoneNumber")) {
+d.phoneNumber = $root.proto.Message.HighlyStructuredMessage.toObject(m.phoneNumber, o);
+if (o.oneofs)
+d._phoneNumber = "phoneNumber";
+}
+return d;
+};
+CallButton.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+CallButton.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.TemplateButton.CallButton";
+};
+return CallButton;
+});
+$lazy(TemplateButton, "QuickReplyButton", function() {
+function QuickReplyButton(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+QuickReplyButton.prototype.displayText = null;
+QuickReplyButton.prototype.id = null;
+let $oneOfFields;
+Object.defineProperty(QuickReplyButton.prototype, "_displayText", {
+get: $util.oneOfGetter($oneOfFields = ["displayText"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(QuickReplyButton.prototype, "_id", {
+get: $util.oneOfGetter($oneOfFields = ["id"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+QuickReplyButton.create = function create(properties) {
+return new QuickReplyButton(properties);
+};
+QuickReplyButton.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.displayText != null && Object.hasOwnProperty.call(m, "displayText"))
+$root.proto.Message.HighlyStructuredMessage.encode(m.displayText, w.uint32(10).fork()).ldelim();
+if (m.id != null && Object.hasOwnProperty.call(m, "id"))
+w.uint32(18).string(m.id);
+return w;
+};
+QuickReplyButton.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.TemplateButton.QuickReplyButton();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.displayText = $root.proto.Message.HighlyStructuredMessage.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.id = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+QuickReplyButton.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.TemplateButton.QuickReplyButton)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.TemplateButton.QuickReplyButton();
+if (d.displayText != null) {
+if (typeof d.displayText !== "object")
+throw TypeError(".proto.TemplateButton.QuickReplyButton.displayText: object expected");
+m.displayText = $root.proto.Message.HighlyStructuredMessage.fromObject(d.displayText, n + 1);
+}
+if (d.id != null) {
+m.id = String(d.id);
+}
+return m;
+};
+QuickReplyButton.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.displayText != null && m.hasOwnProperty("displayText")) {
+d.displayText = $root.proto.Message.HighlyStructuredMessage.toObject(m.displayText, o);
+if (o.oneofs)
+d._displayText = "displayText";
+}
+if (m.id != null && m.hasOwnProperty("id")) {
+d.id = m.id;
+if (o.oneofs)
+d._id = "id";
+}
+return d;
+};
+QuickReplyButton.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+QuickReplyButton.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.TemplateButton.QuickReplyButton";
+};
+return QuickReplyButton;
+});
+$lazy(TemplateButton, "URLButton", function() {
+function URLButton(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+URLButton.prototype.displayText = null;
+URLButton.prototype.url = null;
+let $oneOfFields;
+Object.defineProperty(URLButton.prototype, "_displayText", {
+get: $util.oneOfGetter($oneOfFields = ["displayText"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(URLButton.prototype, "_url", {
+get: $util.oneOfGetter($oneOfFields = ["url"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+URLButton.create = function create(properties) {
+return new URLButton(properties);
+};
+URLButton.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.displayText != null && Object.hasOwnProperty.call(m, "displayText"))
+$root.proto.Message.HighlyStructuredMessage.encode(m.displayText, w.uint32(10).fork()).ldelim();
+if (m.url != null && Object.hasOwnProperty.call(m, "url"))
+$root.proto.Message.HighlyStructuredMessage.encode(m.url, w.uint32(18).fork()).ldelim();
+return w;
+};
+URLButton.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.TemplateButton.URLButton();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.displayText = $root.proto.Message.HighlyStructuredMessage.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.url = $root.proto.Message.HighlyStructuredMessage.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+URLButton.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.TemplateButton.URLButton)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.TemplateButton.URLButton();
+if (d.displayText != null) {
+if (typeof d.displayText !== "object")
+throw TypeError(".proto.TemplateButton.URLButton.displayText: object expected");
+m.displayText = $root.proto.Message.HighlyStructuredMessage.fromObject(d.displayText, n + 1);
+}
+if (d.url != null) {
+if (typeof d.url !== "object")
+throw TypeError(".proto.TemplateButton.URLButton.url: object expected");
+m.url = $root.proto.Message.HighlyStructuredMessage.fromObject(d.url, n + 1);
+}
+return m;
+};
+URLButton.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.displayText != null && m.hasOwnProperty("displayText")) {
+d.displayText = $root.proto.Message.HighlyStructuredMessage.toObject(m.displayText, o);
+if (o.oneofs)
+d._displayText = "displayText";
+}
+if (m.url != null && m.hasOwnProperty("url")) {
+d.url = $root.proto.Message.HighlyStructuredMessage.toObject(m.url, o);
+if (o.oneofs)
+d._url = "url";
+}
+return d;
+};
+URLButton.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+URLButton.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.TemplateButton.URLButton";
+};
+return URLButton;
+});
+return TemplateButton;

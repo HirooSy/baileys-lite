@@ -1,0 +1,252 @@
+"use strict";
+function AIRichResponseCodeMetadata(p) {
+this.codeBlocks = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIRichResponseCodeMetadata.prototype.codeLanguage = null;
+AIRichResponseCodeMetadata.prototype.codeBlocks = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(AIRichResponseCodeMetadata.prototype, "_codeLanguage", {
+get: $util.oneOfGetter($oneOfFields = ["codeLanguage"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIRichResponseCodeMetadata.create = function create(properties) {
+return new AIRichResponseCodeMetadata(properties);
+};
+AIRichResponseCodeMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.codeLanguage != null && Object.hasOwnProperty.call(m, "codeLanguage"))
+w.uint32(10).string(m.codeLanguage);
+if (m.codeBlocks != null && m.codeBlocks.length) {
+for (var i = 0; i < m.codeBlocks.length; ++i)
+$root.proto.AIRichResponseCodeMetadata.AIRichResponseCodeBlock.encode(m.codeBlocks[i], w.uint32(18).fork()).ldelim();
+}
+return w;
+};
+AIRichResponseCodeMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIRichResponseCodeMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.codeLanguage = r.string();
+break;
+}
+case 2: {
+if (!(m.codeBlocks && m.codeBlocks.length))
+m.codeBlocks = [];
+m.codeBlocks.push($root.proto.AIRichResponseCodeMetadata.AIRichResponseCodeBlock.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIRichResponseCodeMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIRichResponseCodeMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIRichResponseCodeMetadata();
+if (d.codeLanguage != null) {
+m.codeLanguage = String(d.codeLanguage);
+}
+if (d.codeBlocks) {
+if (!Array.isArray(d.codeBlocks))
+throw TypeError(".proto.AIRichResponseCodeMetadata.codeBlocks: array expected");
+m.codeBlocks = [];
+for (var i = 0; i < d.codeBlocks.length; ++i) {
+if (typeof d.codeBlocks[i] !== "object")
+throw TypeError(".proto.AIRichResponseCodeMetadata.codeBlocks: object expected");
+m.codeBlocks[i] = $root.proto.AIRichResponseCodeMetadata.AIRichResponseCodeBlock.fromObject(d.codeBlocks[i], n + 1);
+}
+}
+return m;
+};
+AIRichResponseCodeMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.codeBlocks = [];
+}
+if (m.codeLanguage != null && m.hasOwnProperty("codeLanguage")) {
+d.codeLanguage = m.codeLanguage;
+if (o.oneofs)
+d._codeLanguage = "codeLanguage";
+}
+if (m.codeBlocks && m.codeBlocks.length) {
+d.codeBlocks = [];
+for (var j = 0; j < m.codeBlocks.length; ++j) {
+d.codeBlocks[j] = $root.proto.AIRichResponseCodeMetadata.AIRichResponseCodeBlock.toObject(m.codeBlocks[j], o);
+}
+}
+return d;
+};
+AIRichResponseCodeMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIRichResponseCodeMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIRichResponseCodeMetadata";
+};
+$lazy(AIRichResponseCodeMetadata, "AIRichResponseCodeBlock", function() {
+function AIRichResponseCodeBlock(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIRichResponseCodeBlock.prototype.highlightType = null;
+AIRichResponseCodeBlock.prototype.codeContent = null;
+let $oneOfFields;
+Object.defineProperty(AIRichResponseCodeBlock.prototype, "_highlightType", {
+get: $util.oneOfGetter($oneOfFields = ["highlightType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseCodeBlock.prototype, "_codeContent", {
+get: $util.oneOfGetter($oneOfFields = ["codeContent"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIRichResponseCodeBlock.create = function create(properties) {
+return new AIRichResponseCodeBlock(properties);
+};
+AIRichResponseCodeBlock.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.highlightType != null && Object.hasOwnProperty.call(m, "highlightType"))
+w.uint32(8).int32(m.highlightType);
+if (m.codeContent != null && Object.hasOwnProperty.call(m, "codeContent"))
+w.uint32(18).string(m.codeContent);
+return w;
+};
+AIRichResponseCodeBlock.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIRichResponseCodeMetadata.AIRichResponseCodeBlock();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.highlightType = r.int32();
+break;
+}
+case 2: {
+m.codeContent = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIRichResponseCodeBlock.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIRichResponseCodeMetadata.AIRichResponseCodeBlock)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIRichResponseCodeMetadata.AIRichResponseCodeBlock();
+switch (d.highlightType) {
+default:
+if (typeof d.highlightType === "number") {
+m.highlightType = d.highlightType;
+break;
+}
+break;
+case "AI_RICH_RESPONSE_CODE_HIGHLIGHT_DEFAULT":
+case 0:
+m.highlightType = 0;
+break;
+case "AI_RICH_RESPONSE_CODE_HIGHLIGHT_KEYWORD":
+case 1:
+m.highlightType = 1;
+break;
+case "AI_RICH_RESPONSE_CODE_HIGHLIGHT_METHOD":
+case 2:
+m.highlightType = 2;
+break;
+case "AI_RICH_RESPONSE_CODE_HIGHLIGHT_STRING":
+case 3:
+m.highlightType = 3;
+break;
+case "AI_RICH_RESPONSE_CODE_HIGHLIGHT_NUMBER":
+case 4:
+m.highlightType = 4;
+break;
+case "AI_RICH_RESPONSE_CODE_HIGHLIGHT_COMMENT":
+case 5:
+m.highlightType = 5;
+break;
+}
+if (d.codeContent != null) {
+m.codeContent = String(d.codeContent);
+}
+return m;
+};
+AIRichResponseCodeBlock.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.highlightType != null && m.hasOwnProperty("highlightType")) {
+d.highlightType = o.enums === String ? $root.proto.AIRichResponseCodeMetadata.AIRichResponseCodeHighlightType[m.highlightType] === undefined ? m.highlightType : $root.proto.AIRichResponseCodeMetadata.AIRichResponseCodeHighlightType[m.highlightType] : m.highlightType;
+if (o.oneofs)
+d._highlightType = "highlightType";
+}
+if (m.codeContent != null && m.hasOwnProperty("codeContent")) {
+d.codeContent = m.codeContent;
+if (o.oneofs)
+d._codeContent = "codeContent";
+}
+return d;
+};
+AIRichResponseCodeBlock.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIRichResponseCodeBlock.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIRichResponseCodeMetadata.AIRichResponseCodeBlock";
+};
+return AIRichResponseCodeBlock;
+});
+$lazy(AIRichResponseCodeMetadata, "AIRichResponseCodeHighlightType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "AI_RICH_RESPONSE_CODE_HIGHLIGHT_DEFAULT"] = 0;
+values[valuesById[1] = "AI_RICH_RESPONSE_CODE_HIGHLIGHT_KEYWORD"] = 1;
+values[valuesById[2] = "AI_RICH_RESPONSE_CODE_HIGHLIGHT_METHOD"] = 2;
+values[valuesById[3] = "AI_RICH_RESPONSE_CODE_HIGHLIGHT_STRING"] = 3;
+values[valuesById[4] = "AI_RICH_RESPONSE_CODE_HIGHLIGHT_NUMBER"] = 4;
+values[valuesById[5] = "AI_RICH_RESPONSE_CODE_HIGHLIGHT_COMMENT"] = 5;
+return values;
+});
+return AIRichResponseCodeMetadata;

@@ -1,0 +1,92 @@
+"use strict";
+function BotMemuMetadata(p) {
+this.faceImages = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotMemuMetadata.prototype.faceImages = $util.emptyArray;
+BotMemuMetadata.create = function create(properties) {
+return new BotMemuMetadata(properties);
+};
+BotMemuMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.faceImages != null && m.faceImages.length) {
+for (var i = 0; i < m.faceImages.length; ++i)
+$root.proto.BotMediaMetadata.encode(m.faceImages[i], w.uint32(10).fork()).ldelim();
+}
+return w;
+};
+BotMemuMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotMemuMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+if (!(m.faceImages && m.faceImages.length))
+m.faceImages = [];
+m.faceImages.push($root.proto.BotMediaMetadata.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotMemuMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotMemuMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotMemuMetadata();
+if (d.faceImages) {
+if (!Array.isArray(d.faceImages))
+throw TypeError(".proto.BotMemuMetadata.faceImages: array expected");
+m.faceImages = [];
+for (var i = 0; i < d.faceImages.length; ++i) {
+if (typeof d.faceImages[i] !== "object")
+throw TypeError(".proto.BotMemuMetadata.faceImages: object expected");
+m.faceImages[i] = $root.proto.BotMediaMetadata.fromObject(d.faceImages[i], n + 1);
+}
+}
+return m;
+};
+BotMemuMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.faceImages = [];
+}
+if (m.faceImages && m.faceImages.length) {
+d.faceImages = [];
+for (var j = 0; j < m.faceImages.length; ++j) {
+d.faceImages[j] = $root.proto.BotMediaMetadata.toObject(m.faceImages[j], o);
+}
+}
+return d;
+};
+BotMemuMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotMemuMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotMemuMetadata";
+};
+return BotMemuMetadata;

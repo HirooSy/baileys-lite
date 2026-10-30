@@ -1,0 +1,460 @@
+"use strict";
+function PaymentBackground(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+PaymentBackground.prototype.id = null;
+PaymentBackground.prototype.fileLength = null;
+PaymentBackground.prototype.width = null;
+PaymentBackground.prototype.height = null;
+PaymentBackground.prototype.mimetype = null;
+PaymentBackground.prototype.placeholderArgb = null;
+PaymentBackground.prototype.textArgb = null;
+PaymentBackground.prototype.subtextArgb = null;
+PaymentBackground.prototype.mediaData = null;
+PaymentBackground.prototype.type = null;
+let $oneOfFields;
+Object.defineProperty(PaymentBackground.prototype, "_id", {
+get: $util.oneOfGetter($oneOfFields = ["id"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentBackground.prototype, "_fileLength", {
+get: $util.oneOfGetter($oneOfFields = ["fileLength"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentBackground.prototype, "_width", {
+get: $util.oneOfGetter($oneOfFields = ["width"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentBackground.prototype, "_height", {
+get: $util.oneOfGetter($oneOfFields = ["height"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentBackground.prototype, "_mimetype", {
+get: $util.oneOfGetter($oneOfFields = ["mimetype"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentBackground.prototype, "_placeholderArgb", {
+get: $util.oneOfGetter($oneOfFields = ["placeholderArgb"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentBackground.prototype, "_textArgb", {
+get: $util.oneOfGetter($oneOfFields = ["textArgb"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentBackground.prototype, "_subtextArgb", {
+get: $util.oneOfGetter($oneOfFields = ["subtextArgb"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentBackground.prototype, "_mediaData", {
+get: $util.oneOfGetter($oneOfFields = ["mediaData"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentBackground.prototype, "_type", {
+get: $util.oneOfGetter($oneOfFields = ["type"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+PaymentBackground.create = function create(properties) {
+return new PaymentBackground(properties);
+};
+PaymentBackground.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.id != null && Object.hasOwnProperty.call(m, "id"))
+w.uint32(10).string(m.id);
+if (m.fileLength != null && Object.hasOwnProperty.call(m, "fileLength"))
+w.uint32(16).uint64(m.fileLength);
+if (m.width != null && Object.hasOwnProperty.call(m, "width"))
+w.uint32(24).uint32(m.width);
+if (m.height != null && Object.hasOwnProperty.call(m, "height"))
+w.uint32(32).uint32(m.height);
+if (m.mimetype != null && Object.hasOwnProperty.call(m, "mimetype"))
+w.uint32(42).string(m.mimetype);
+if (m.placeholderArgb != null && Object.hasOwnProperty.call(m, "placeholderArgb"))
+w.uint32(53).fixed32(m.placeholderArgb);
+if (m.textArgb != null && Object.hasOwnProperty.call(m, "textArgb"))
+w.uint32(61).fixed32(m.textArgb);
+if (m.subtextArgb != null && Object.hasOwnProperty.call(m, "subtextArgb"))
+w.uint32(69).fixed32(m.subtextArgb);
+if (m.mediaData != null && Object.hasOwnProperty.call(m, "mediaData"))
+$root.proto.PaymentBackground.MediaData.encode(m.mediaData, w.uint32(74).fork()).ldelim();
+if (m.type != null && Object.hasOwnProperty.call(m, "type"))
+w.uint32(80).int32(m.type);
+return w;
+};
+PaymentBackground.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.PaymentBackground();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.id = r.string();
+break;
+}
+case 2: {
+m.fileLength = r.uint64();
+break;
+}
+case 3: {
+m.width = r.uint32();
+break;
+}
+case 4: {
+m.height = r.uint32();
+break;
+}
+case 5: {
+m.mimetype = r.string();
+break;
+}
+case 6: {
+m.placeholderArgb = r.fixed32();
+break;
+}
+case 7: {
+m.textArgb = r.fixed32();
+break;
+}
+case 8: {
+m.subtextArgb = r.fixed32();
+break;
+}
+case 9: {
+m.mediaData = $root.proto.PaymentBackground.MediaData.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 10: {
+m.type = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+PaymentBackground.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.PaymentBackground)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.PaymentBackground();
+if (d.id != null) {
+m.id = String(d.id);
+}
+if (d.fileLength != null) {
+if ($util.Long)
+(m.fileLength = $util.Long.fromValue(d.fileLength)).unsigned = true;
+else if (typeof d.fileLength === "string")
+m.fileLength = parseInt(d.fileLength, 10);
+else if (typeof d.fileLength === "number")
+m.fileLength = d.fileLength;
+else if (typeof d.fileLength === "object")
+m.fileLength = new $util.LongBits(d.fileLength.low >>> 0, d.fileLength.high >>> 0).toNumber(true);
+}
+if (d.width != null) {
+m.width = d.width >>> 0;
+}
+if (d.height != null) {
+m.height = d.height >>> 0;
+}
+if (d.mimetype != null) {
+m.mimetype = String(d.mimetype);
+}
+if (d.placeholderArgb != null) {
+m.placeholderArgb = d.placeholderArgb >>> 0;
+}
+if (d.textArgb != null) {
+m.textArgb = d.textArgb >>> 0;
+}
+if (d.subtextArgb != null) {
+m.subtextArgb = d.subtextArgb >>> 0;
+}
+if (d.mediaData != null) {
+if (typeof d.mediaData !== "object")
+throw TypeError(".proto.PaymentBackground.mediaData: object expected");
+m.mediaData = $root.proto.PaymentBackground.MediaData.fromObject(d.mediaData, n + 1);
+}
+switch (d.type) {
+default:
+if (typeof d.type === "number") {
+m.type = d.type;
+break;
+}
+break;
+case "UNKNOWN":
+case 0:
+m.type = 0;
+break;
+case "DEFAULT":
+case 1:
+m.type = 1;
+break;
+}
+return m;
+};
+PaymentBackground.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.id != null && m.hasOwnProperty("id")) {
+d.id = m.id;
+if (o.oneofs)
+d._id = "id";
+}
+if (m.fileLength != null && m.hasOwnProperty("fileLength")) {
+if (typeof m.fileLength === "number")
+d.fileLength = o.longs === String ? String(m.fileLength) : m.fileLength;
+else
+d.fileLength = o.longs === String ? longToString(m.fileLength, true) : o.longs === Number ? longToNumber(m.fileLength, true) : m.fileLength;
+if (o.oneofs)
+d._fileLength = "fileLength";
+}
+if (m.width != null && m.hasOwnProperty("width")) {
+d.width = m.width;
+if (o.oneofs)
+d._width = "width";
+}
+if (m.height != null && m.hasOwnProperty("height")) {
+d.height = m.height;
+if (o.oneofs)
+d._height = "height";
+}
+if (m.mimetype != null && m.hasOwnProperty("mimetype")) {
+d.mimetype = m.mimetype;
+if (o.oneofs)
+d._mimetype = "mimetype";
+}
+if (m.placeholderArgb != null && m.hasOwnProperty("placeholderArgb")) {
+d.placeholderArgb = m.placeholderArgb;
+if (o.oneofs)
+d._placeholderArgb = "placeholderArgb";
+}
+if (m.textArgb != null && m.hasOwnProperty("textArgb")) {
+d.textArgb = m.textArgb;
+if (o.oneofs)
+d._textArgb = "textArgb";
+}
+if (m.subtextArgb != null && m.hasOwnProperty("subtextArgb")) {
+d.subtextArgb = m.subtextArgb;
+if (o.oneofs)
+d._subtextArgb = "subtextArgb";
+}
+if (m.mediaData != null && m.hasOwnProperty("mediaData")) {
+d.mediaData = $root.proto.PaymentBackground.MediaData.toObject(m.mediaData, o);
+if (o.oneofs)
+d._mediaData = "mediaData";
+}
+if (m.type != null && m.hasOwnProperty("type")) {
+d.type = o.enums === String ? $root.proto.PaymentBackground.Type[m.type] === undefined ? m.type : $root.proto.PaymentBackground.Type[m.type] : m.type;
+if (o.oneofs)
+d._type = "type";
+}
+return d;
+};
+PaymentBackground.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+PaymentBackground.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.PaymentBackground";
+};
+$lazy(PaymentBackground, "MediaData", function() {
+function MediaData(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+MediaData.prototype.mediaKey = null;
+MediaData.prototype.mediaKeyTimestamp = null;
+MediaData.prototype.fileSha256 = null;
+MediaData.prototype.fileEncSha256 = null;
+MediaData.prototype.directPath = null;
+let $oneOfFields;
+Object.defineProperty(MediaData.prototype, "_mediaKey", {
+get: $util.oneOfGetter($oneOfFields = ["mediaKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MediaData.prototype, "_mediaKeyTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["mediaKeyTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MediaData.prototype, "_fileSha256", {
+get: $util.oneOfGetter($oneOfFields = ["fileSha256"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MediaData.prototype, "_fileEncSha256", {
+get: $util.oneOfGetter($oneOfFields = ["fileEncSha256"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MediaData.prototype, "_directPath", {
+get: $util.oneOfGetter($oneOfFields = ["directPath"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+MediaData.create = function create(properties) {
+return new MediaData(properties);
+};
+MediaData.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.mediaKey != null && Object.hasOwnProperty.call(m, "mediaKey"))
+w.uint32(10).bytes(m.mediaKey);
+if (m.mediaKeyTimestamp != null && Object.hasOwnProperty.call(m, "mediaKeyTimestamp"))
+w.uint32(16).int64(m.mediaKeyTimestamp);
+if (m.fileSha256 != null && Object.hasOwnProperty.call(m, "fileSha256"))
+w.uint32(26).bytes(m.fileSha256);
+if (m.fileEncSha256 != null && Object.hasOwnProperty.call(m, "fileEncSha256"))
+w.uint32(34).bytes(m.fileEncSha256);
+if (m.directPath != null && Object.hasOwnProperty.call(m, "directPath"))
+w.uint32(42).string(m.directPath);
+return w;
+};
+MediaData.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.PaymentBackground.MediaData();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.mediaKey = r.bytes();
+break;
+}
+case 2: {
+m.mediaKeyTimestamp = r.int64();
+break;
+}
+case 3: {
+m.fileSha256 = r.bytes();
+break;
+}
+case 4: {
+m.fileEncSha256 = r.bytes();
+break;
+}
+case 5: {
+m.directPath = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+MediaData.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.PaymentBackground.MediaData)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.PaymentBackground.MediaData();
+if (d.mediaKey != null) {
+if (typeof d.mediaKey === "string")
+$util.base64.decode(d.mediaKey, m.mediaKey = $util.newBuffer($util.base64.length(d.mediaKey)), 0);
+else if (d.mediaKey.length >= 0)
+m.mediaKey = d.mediaKey;
+}
+if (d.mediaKeyTimestamp != null) {
+if ($util.Long)
+(m.mediaKeyTimestamp = $util.Long.fromValue(d.mediaKeyTimestamp)).unsigned = false;
+else if (typeof d.mediaKeyTimestamp === "string")
+m.mediaKeyTimestamp = parseInt(d.mediaKeyTimestamp, 10);
+else if (typeof d.mediaKeyTimestamp === "number")
+m.mediaKeyTimestamp = d.mediaKeyTimestamp;
+else if (typeof d.mediaKeyTimestamp === "object")
+m.mediaKeyTimestamp = new $util.LongBits(d.mediaKeyTimestamp.low >>> 0, d.mediaKeyTimestamp.high >>> 0).toNumber();
+}
+if (d.fileSha256 != null) {
+if (typeof d.fileSha256 === "string")
+$util.base64.decode(d.fileSha256, m.fileSha256 = $util.newBuffer($util.base64.length(d.fileSha256)), 0);
+else if (d.fileSha256.length >= 0)
+m.fileSha256 = d.fileSha256;
+}
+if (d.fileEncSha256 != null) {
+if (typeof d.fileEncSha256 === "string")
+$util.base64.decode(d.fileEncSha256, m.fileEncSha256 = $util.newBuffer($util.base64.length(d.fileEncSha256)), 0);
+else if (d.fileEncSha256.length >= 0)
+m.fileEncSha256 = d.fileEncSha256;
+}
+if (d.directPath != null) {
+m.directPath = String(d.directPath);
+}
+return m;
+};
+MediaData.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.mediaKey != null && m.hasOwnProperty("mediaKey")) {
+d.mediaKey = o.bytes === String ? $util.base64.encode(m.mediaKey, 0, m.mediaKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.mediaKey) : m.mediaKey;
+if (o.oneofs)
+d._mediaKey = "mediaKey";
+}
+if (m.mediaKeyTimestamp != null && m.hasOwnProperty("mediaKeyTimestamp")) {
+if (typeof m.mediaKeyTimestamp === "number")
+d.mediaKeyTimestamp = o.longs === String ? String(m.mediaKeyTimestamp) : m.mediaKeyTimestamp;
+else
+d.mediaKeyTimestamp = o.longs === String ? longToString(m.mediaKeyTimestamp) : o.longs === Number ? longToNumber(m.mediaKeyTimestamp) : m.mediaKeyTimestamp;
+if (o.oneofs)
+d._mediaKeyTimestamp = "mediaKeyTimestamp";
+}
+if (m.fileSha256 != null && m.hasOwnProperty("fileSha256")) {
+d.fileSha256 = o.bytes === String ? $util.base64.encode(m.fileSha256, 0, m.fileSha256.length) : o.bytes === Array ? Array.prototype.slice.call(m.fileSha256) : m.fileSha256;
+if (o.oneofs)
+d._fileSha256 = "fileSha256";
+}
+if (m.fileEncSha256 != null && m.hasOwnProperty("fileEncSha256")) {
+d.fileEncSha256 = o.bytes === String ? $util.base64.encode(m.fileEncSha256, 0, m.fileEncSha256.length) : o.bytes === Array ? Array.prototype.slice.call(m.fileEncSha256) : m.fileEncSha256;
+if (o.oneofs)
+d._fileEncSha256 = "fileEncSha256";
+}
+if (m.directPath != null && m.hasOwnProperty("directPath")) {
+d.directPath = m.directPath;
+if (o.oneofs)
+d._directPath = "directPath";
+}
+return d;
+};
+MediaData.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+MediaData.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.PaymentBackground.MediaData";
+};
+return MediaData;
+});
+$lazy(PaymentBackground, "Type", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN"] = 0;
+values[valuesById[1] = "DEFAULT"] = 1;
+return values;
+});
+return PaymentBackground;

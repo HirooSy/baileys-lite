@@ -1,0 +1,113 @@
+"use strict";
+function MessageAddOnContextInfo(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+MessageAddOnContextInfo.prototype.messageAddOnDurationInSecs = null;
+MessageAddOnContextInfo.prototype.messageAddOnExpiryType = null;
+let $oneOfFields;
+Object.defineProperty(MessageAddOnContextInfo.prototype, "_messageAddOnDurationInSecs", {
+get: $util.oneOfGetter($oneOfFields = ["messageAddOnDurationInSecs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageAddOnContextInfo.prototype, "_messageAddOnExpiryType", {
+get: $util.oneOfGetter($oneOfFields = ["messageAddOnExpiryType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+MessageAddOnContextInfo.create = function create(properties) {
+return new MessageAddOnContextInfo(properties);
+};
+MessageAddOnContextInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.messageAddOnDurationInSecs != null && Object.hasOwnProperty.call(m, "messageAddOnDurationInSecs"))
+w.uint32(8).uint32(m.messageAddOnDurationInSecs);
+if (m.messageAddOnExpiryType != null && Object.hasOwnProperty.call(m, "messageAddOnExpiryType"))
+w.uint32(16).int32(m.messageAddOnExpiryType);
+return w;
+};
+MessageAddOnContextInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.MessageAddOnContextInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.messageAddOnDurationInSecs = r.uint32();
+break;
+}
+case 2: {
+m.messageAddOnExpiryType = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+MessageAddOnContextInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.MessageAddOnContextInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.MessageAddOnContextInfo();
+if (d.messageAddOnDurationInSecs != null) {
+m.messageAddOnDurationInSecs = d.messageAddOnDurationInSecs >>> 0;
+}
+switch (d.messageAddOnExpiryType) {
+default:
+if (typeof d.messageAddOnExpiryType === "number") {
+m.messageAddOnExpiryType = d.messageAddOnExpiryType;
+break;
+}
+break;
+case "STATIC":
+case 1:
+m.messageAddOnExpiryType = 1;
+break;
+case "DEPENDENT_ON_PARENT":
+case 2:
+m.messageAddOnExpiryType = 2;
+break;
+}
+return m;
+};
+MessageAddOnContextInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.messageAddOnDurationInSecs != null && m.hasOwnProperty("messageAddOnDurationInSecs")) {
+d.messageAddOnDurationInSecs = m.messageAddOnDurationInSecs;
+if (o.oneofs)
+d._messageAddOnDurationInSecs = "messageAddOnDurationInSecs";
+}
+if (m.messageAddOnExpiryType != null && m.hasOwnProperty("messageAddOnExpiryType")) {
+d.messageAddOnExpiryType = o.enums === String ? $root.proto.MessageContextInfo.MessageAddonExpiryType[m.messageAddOnExpiryType] === undefined ? m.messageAddOnExpiryType : $root.proto.MessageContextInfo.MessageAddonExpiryType[m.messageAddOnExpiryType] : m.messageAddOnExpiryType;
+if (o.oneofs)
+d._messageAddOnExpiryType = "messageAddOnExpiryType";
+}
+return d;
+};
+MessageAddOnContextInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+MessageAddOnContextInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.MessageAddOnContextInfo";
+};
+return MessageAddOnContextInfo;

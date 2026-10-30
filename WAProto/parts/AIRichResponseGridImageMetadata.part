@@ -1,0 +1,114 @@
+"use strict";
+function AIRichResponseGridImageMetadata(p) {
+this.imageUrls = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIRichResponseGridImageMetadata.prototype.gridImageUrl = null;
+AIRichResponseGridImageMetadata.prototype.imageUrls = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(AIRichResponseGridImageMetadata.prototype, "_gridImageUrl", {
+get: $util.oneOfGetter($oneOfFields = ["gridImageUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIRichResponseGridImageMetadata.create = function create(properties) {
+return new AIRichResponseGridImageMetadata(properties);
+};
+AIRichResponseGridImageMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.gridImageUrl != null && Object.hasOwnProperty.call(m, "gridImageUrl"))
+$root.proto.AIRichResponseImageURL.encode(m.gridImageUrl, w.uint32(10).fork()).ldelim();
+if (m.imageUrls != null && m.imageUrls.length) {
+for (var i = 0; i < m.imageUrls.length; ++i)
+$root.proto.AIRichResponseImageURL.encode(m.imageUrls[i], w.uint32(18).fork()).ldelim();
+}
+return w;
+};
+AIRichResponseGridImageMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIRichResponseGridImageMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.gridImageUrl = $root.proto.AIRichResponseImageURL.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+if (!(m.imageUrls && m.imageUrls.length))
+m.imageUrls = [];
+m.imageUrls.push($root.proto.AIRichResponseImageURL.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIRichResponseGridImageMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIRichResponseGridImageMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIRichResponseGridImageMetadata();
+if (d.gridImageUrl != null) {
+if (typeof d.gridImageUrl !== "object")
+throw TypeError(".proto.AIRichResponseGridImageMetadata.gridImageUrl: object expected");
+m.gridImageUrl = $root.proto.AIRichResponseImageURL.fromObject(d.gridImageUrl, n + 1);
+}
+if (d.imageUrls) {
+if (!Array.isArray(d.imageUrls))
+throw TypeError(".proto.AIRichResponseGridImageMetadata.imageUrls: array expected");
+m.imageUrls = [];
+for (var i = 0; i < d.imageUrls.length; ++i) {
+if (typeof d.imageUrls[i] !== "object")
+throw TypeError(".proto.AIRichResponseGridImageMetadata.imageUrls: object expected");
+m.imageUrls[i] = $root.proto.AIRichResponseImageURL.fromObject(d.imageUrls[i], n + 1);
+}
+}
+return m;
+};
+AIRichResponseGridImageMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.imageUrls = [];
+}
+if (m.gridImageUrl != null && m.hasOwnProperty("gridImageUrl")) {
+d.gridImageUrl = $root.proto.AIRichResponseImageURL.toObject(m.gridImageUrl, o);
+if (o.oneofs)
+d._gridImageUrl = "gridImageUrl";
+}
+if (m.imageUrls && m.imageUrls.length) {
+d.imageUrls = [];
+for (var j = 0; j < m.imageUrls.length; ++j) {
+d.imageUrls[j] = $root.proto.AIRichResponseImageURL.toObject(m.imageUrls[j], o);
+}
+}
+return d;
+};
+AIRichResponseGridImageMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIRichResponseGridImageMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIRichResponseGridImageMetadata";
+};
+return AIRichResponseGridImageMetadata;

@@ -1,0 +1,232 @@
+"use strict";
+function BotReminderMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotReminderMetadata.prototype.requestMessageKey = null;
+BotReminderMetadata.prototype.action = null;
+BotReminderMetadata.prototype.name = null;
+BotReminderMetadata.prototype.nextTriggerTimestamp = null;
+BotReminderMetadata.prototype.frequency = null;
+let $oneOfFields;
+Object.defineProperty(BotReminderMetadata.prototype, "_requestMessageKey", {
+get: $util.oneOfGetter($oneOfFields = ["requestMessageKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotReminderMetadata.prototype, "_action", {
+get: $util.oneOfGetter($oneOfFields = ["action"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotReminderMetadata.prototype, "_name", {
+get: $util.oneOfGetter($oneOfFields = ["name"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotReminderMetadata.prototype, "_nextTriggerTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["nextTriggerTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotReminderMetadata.prototype, "_frequency", {
+get: $util.oneOfGetter($oneOfFields = ["frequency"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotReminderMetadata.create = function create(properties) {
+return new BotReminderMetadata(properties);
+};
+BotReminderMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.requestMessageKey != null && Object.hasOwnProperty.call(m, "requestMessageKey"))
+$root.proto.MessageKey.encode(m.requestMessageKey, w.uint32(10).fork()).ldelim();
+if (m.action != null && Object.hasOwnProperty.call(m, "action"))
+w.uint32(16).int32(m.action);
+if (m.name != null && Object.hasOwnProperty.call(m, "name"))
+w.uint32(26).string(m.name);
+if (m.nextTriggerTimestamp != null && Object.hasOwnProperty.call(m, "nextTriggerTimestamp"))
+w.uint32(32).uint64(m.nextTriggerTimestamp);
+if (m.frequency != null && Object.hasOwnProperty.call(m, "frequency"))
+w.uint32(40).int32(m.frequency);
+return w;
+};
+BotReminderMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotReminderMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.requestMessageKey = $root.proto.MessageKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.action = r.int32();
+break;
+}
+case 3: {
+m.name = r.string();
+break;
+}
+case 4: {
+m.nextTriggerTimestamp = r.uint64();
+break;
+}
+case 5: {
+m.frequency = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotReminderMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotReminderMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotReminderMetadata();
+if (d.requestMessageKey != null) {
+if (typeof d.requestMessageKey !== "object")
+throw TypeError(".proto.BotReminderMetadata.requestMessageKey: object expected");
+m.requestMessageKey = $root.proto.MessageKey.fromObject(d.requestMessageKey, n + 1);
+}
+switch (d.action) {
+default:
+if (typeof d.action === "number") {
+m.action = d.action;
+break;
+}
+break;
+case "NOTIFY":
+case 1:
+m.action = 1;
+break;
+case "CREATE":
+case 2:
+m.action = 2;
+break;
+case "DELETE":
+case 3:
+m.action = 3;
+break;
+case "UPDATE":
+case 4:
+m.action = 4;
+break;
+}
+if (d.name != null) {
+m.name = String(d.name);
+}
+if (d.nextTriggerTimestamp != null) {
+if ($util.Long)
+(m.nextTriggerTimestamp = $util.Long.fromValue(d.nextTriggerTimestamp)).unsigned = true;
+else if (typeof d.nextTriggerTimestamp === "string")
+m.nextTriggerTimestamp = parseInt(d.nextTriggerTimestamp, 10);
+else if (typeof d.nextTriggerTimestamp === "number")
+m.nextTriggerTimestamp = d.nextTriggerTimestamp;
+else if (typeof d.nextTriggerTimestamp === "object")
+m.nextTriggerTimestamp = new $util.LongBits(d.nextTriggerTimestamp.low >>> 0, d.nextTriggerTimestamp.high >>> 0).toNumber(true);
+}
+switch (d.frequency) {
+default:
+if (typeof d.frequency === "number") {
+m.frequency = d.frequency;
+break;
+}
+break;
+case "ONCE":
+case 1:
+m.frequency = 1;
+break;
+case "DAILY":
+case 2:
+m.frequency = 2;
+break;
+case "WEEKLY":
+case 3:
+m.frequency = 3;
+break;
+case "BIWEEKLY":
+case 4:
+m.frequency = 4;
+break;
+case "MONTHLY":
+case 5:
+m.frequency = 5;
+break;
+}
+return m;
+};
+BotReminderMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.requestMessageKey != null && m.hasOwnProperty("requestMessageKey")) {
+d.requestMessageKey = $root.proto.MessageKey.toObject(m.requestMessageKey, o);
+if (o.oneofs)
+d._requestMessageKey = "requestMessageKey";
+}
+if (m.action != null && m.hasOwnProperty("action")) {
+d.action = o.enums === String ? $root.proto.BotReminderMetadata.ReminderAction[m.action] === undefined ? m.action : $root.proto.BotReminderMetadata.ReminderAction[m.action] : m.action;
+if (o.oneofs)
+d._action = "action";
+}
+if (m.name != null && m.hasOwnProperty("name")) {
+d.name = m.name;
+if (o.oneofs)
+d._name = "name";
+}
+if (m.nextTriggerTimestamp != null && m.hasOwnProperty("nextTriggerTimestamp")) {
+if (typeof m.nextTriggerTimestamp === "number")
+d.nextTriggerTimestamp = o.longs === String ? String(m.nextTriggerTimestamp) : m.nextTriggerTimestamp;
+else
+d.nextTriggerTimestamp = o.longs === String ? longToString(m.nextTriggerTimestamp, true) : o.longs === Number ? longToNumber(m.nextTriggerTimestamp, true) : m.nextTriggerTimestamp;
+if (o.oneofs)
+d._nextTriggerTimestamp = "nextTriggerTimestamp";
+}
+if (m.frequency != null && m.hasOwnProperty("frequency")) {
+d.frequency = o.enums === String ? $root.proto.BotReminderMetadata.ReminderFrequency[m.frequency] === undefined ? m.frequency : $root.proto.BotReminderMetadata.ReminderFrequency[m.frequency] : m.frequency;
+if (o.oneofs)
+d._frequency = "frequency";
+}
+return d;
+};
+BotReminderMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotReminderMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotReminderMetadata";
+};
+$lazy(BotReminderMetadata, "ReminderAction", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[1] = "NOTIFY"] = 1;
+values[valuesById[2] = "CREATE"] = 2;
+values[valuesById[3] = "DELETE"] = 3;
+values[valuesById[4] = "UPDATE"] = 4;
+return values;
+});
+$lazy(BotReminderMetadata, "ReminderFrequency", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[1] = "ONCE"] = 1;
+values[valuesById[2] = "DAILY"] = 2;
+values[valuesById[3] = "WEEKLY"] = 3;
+values[valuesById[4] = "BIWEEKLY"] = 4;
+values[valuesById[5] = "MONTHLY"] = 5;
+return values;
+});
+return BotReminderMetadata;

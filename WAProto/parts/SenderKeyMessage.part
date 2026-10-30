@@ -1,0 +1,122 @@
+"use strict";
+function SenderKeyMessage(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SenderKeyMessage.prototype.id = null;
+SenderKeyMessage.prototype.iteration = null;
+SenderKeyMessage.prototype.ciphertext = null;
+let $oneOfFields;
+Object.defineProperty(SenderKeyMessage.prototype, "_id", {
+get: $util.oneOfGetter($oneOfFields = ["id"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SenderKeyMessage.prototype, "_iteration", {
+get: $util.oneOfGetter($oneOfFields = ["iteration"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SenderKeyMessage.prototype, "_ciphertext", {
+get: $util.oneOfGetter($oneOfFields = ["ciphertext"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SenderKeyMessage.create = function create(properties) {
+return new SenderKeyMessage(properties);
+};
+SenderKeyMessage.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.id != null && Object.hasOwnProperty.call(m, "id"))
+w.uint32(8).uint32(m.id);
+if (m.iteration != null && Object.hasOwnProperty.call(m, "iteration"))
+w.uint32(16).uint32(m.iteration);
+if (m.ciphertext != null && Object.hasOwnProperty.call(m, "ciphertext"))
+w.uint32(26).bytes(m.ciphertext);
+return w;
+};
+SenderKeyMessage.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.SenderKeyMessage();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.id = r.uint32();
+break;
+}
+case 2: {
+m.iteration = r.uint32();
+break;
+}
+case 3: {
+m.ciphertext = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SenderKeyMessage.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.SenderKeyMessage)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.SenderKeyMessage();
+if (d.id != null) {
+m.id = d.id >>> 0;
+}
+if (d.iteration != null) {
+m.iteration = d.iteration >>> 0;
+}
+if (d.ciphertext != null) {
+if (typeof d.ciphertext === "string")
+$util.base64.decode(d.ciphertext, m.ciphertext = $util.newBuffer($util.base64.length(d.ciphertext)), 0);
+else if (d.ciphertext.length >= 0)
+m.ciphertext = d.ciphertext;
+}
+return m;
+};
+SenderKeyMessage.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.id != null && m.hasOwnProperty("id")) {
+d.id = m.id;
+if (o.oneofs)
+d._id = "id";
+}
+if (m.iteration != null && m.hasOwnProperty("iteration")) {
+d.iteration = m.iteration;
+if (o.oneofs)
+d._iteration = "iteration";
+}
+if (m.ciphertext != null && m.hasOwnProperty("ciphertext")) {
+d.ciphertext = o.bytes === String ? $util.base64.encode(m.ciphertext, 0, m.ciphertext.length) : o.bytes === Array ? Array.prototype.slice.call(m.ciphertext) : m.ciphertext;
+if (o.oneofs)
+d._ciphertext = "ciphertext";
+}
+return d;
+};
+SenderKeyMessage.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SenderKeyMessage.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.SenderKeyMessage";
+};
+return SenderKeyMessage;

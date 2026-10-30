@@ -1,0 +1,322 @@
+"use strict";
+function BotSourcesMetadata(p) {
+this.sources = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotSourcesMetadata.prototype.sources = $util.emptyArray;
+BotSourcesMetadata.create = function create(properties) {
+return new BotSourcesMetadata(properties);
+};
+BotSourcesMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.sources != null && m.sources.length) {
+for (var i = 0; i < m.sources.length; ++i)
+$root.proto.BotSourcesMetadata.BotSourceItem.encode(m.sources[i], w.uint32(10).fork()).ldelim();
+}
+return w;
+};
+BotSourcesMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotSourcesMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+if (!(m.sources && m.sources.length))
+m.sources = [];
+m.sources.push($root.proto.BotSourcesMetadata.BotSourceItem.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotSourcesMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotSourcesMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotSourcesMetadata();
+if (d.sources) {
+if (!Array.isArray(d.sources))
+throw TypeError(".proto.BotSourcesMetadata.sources: array expected");
+m.sources = [];
+for (var i = 0; i < d.sources.length; ++i) {
+if (typeof d.sources[i] !== "object")
+throw TypeError(".proto.BotSourcesMetadata.sources: object expected");
+m.sources[i] = $root.proto.BotSourcesMetadata.BotSourceItem.fromObject(d.sources[i], n + 1);
+}
+}
+return m;
+};
+BotSourcesMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.sources = [];
+}
+if (m.sources && m.sources.length) {
+d.sources = [];
+for (var j = 0; j < m.sources.length; ++j) {
+d.sources[j] = $root.proto.BotSourcesMetadata.BotSourceItem.toObject(m.sources[j], o);
+}
+}
+return d;
+};
+BotSourcesMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotSourcesMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotSourcesMetadata";
+};
+$lazy(BotSourcesMetadata, "BotSourceItem", function() {
+function BotSourceItem(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotSourceItem.prototype.provider = null;
+BotSourceItem.prototype.thumbnailCdnUrl = null;
+BotSourceItem.prototype.sourceProviderUrl = null;
+BotSourceItem.prototype.sourceQuery = null;
+BotSourceItem.prototype.faviconCdnUrl = null;
+BotSourceItem.prototype.citationNumber = null;
+BotSourceItem.prototype.sourceTitle = null;
+let $oneOfFields;
+Object.defineProperty(BotSourceItem.prototype, "_provider", {
+get: $util.oneOfGetter($oneOfFields = ["provider"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotSourceItem.prototype, "_thumbnailCdnUrl", {
+get: $util.oneOfGetter($oneOfFields = ["thumbnailCdnUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotSourceItem.prototype, "_sourceProviderUrl", {
+get: $util.oneOfGetter($oneOfFields = ["sourceProviderUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotSourceItem.prototype, "_sourceQuery", {
+get: $util.oneOfGetter($oneOfFields = ["sourceQuery"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotSourceItem.prototype, "_faviconCdnUrl", {
+get: $util.oneOfGetter($oneOfFields = ["faviconCdnUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotSourceItem.prototype, "_citationNumber", {
+get: $util.oneOfGetter($oneOfFields = ["citationNumber"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotSourceItem.prototype, "_sourceTitle", {
+get: $util.oneOfGetter($oneOfFields = ["sourceTitle"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotSourceItem.create = function create(properties) {
+return new BotSourceItem(properties);
+};
+BotSourceItem.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.provider != null && Object.hasOwnProperty.call(m, "provider"))
+w.uint32(8).int32(m.provider);
+if (m.thumbnailCdnUrl != null && Object.hasOwnProperty.call(m, "thumbnailCdnUrl"))
+w.uint32(18).string(m.thumbnailCdnUrl);
+if (m.sourceProviderUrl != null && Object.hasOwnProperty.call(m, "sourceProviderUrl"))
+w.uint32(26).string(m.sourceProviderUrl);
+if (m.sourceQuery != null && Object.hasOwnProperty.call(m, "sourceQuery"))
+w.uint32(34).string(m.sourceQuery);
+if (m.faviconCdnUrl != null && Object.hasOwnProperty.call(m, "faviconCdnUrl"))
+w.uint32(42).string(m.faviconCdnUrl);
+if (m.citationNumber != null && Object.hasOwnProperty.call(m, "citationNumber"))
+w.uint32(48).uint32(m.citationNumber);
+if (m.sourceTitle != null && Object.hasOwnProperty.call(m, "sourceTitle"))
+w.uint32(58).string(m.sourceTitle);
+return w;
+};
+BotSourceItem.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotSourcesMetadata.BotSourceItem();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.provider = r.int32();
+break;
+}
+case 2: {
+m.thumbnailCdnUrl = r.string();
+break;
+}
+case 3: {
+m.sourceProviderUrl = r.string();
+break;
+}
+case 4: {
+m.sourceQuery = r.string();
+break;
+}
+case 5: {
+m.faviconCdnUrl = r.string();
+break;
+}
+case 6: {
+m.citationNumber = r.uint32();
+break;
+}
+case 7: {
+m.sourceTitle = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotSourceItem.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotSourcesMetadata.BotSourceItem)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotSourcesMetadata.BotSourceItem();
+switch (d.provider) {
+default:
+if (typeof d.provider === "number") {
+m.provider = d.provider;
+break;
+}
+break;
+case "UNKNOWN":
+case 0:
+m.provider = 0;
+break;
+case "BING":
+case 1:
+m.provider = 1;
+break;
+case "GOOGLE":
+case 2:
+m.provider = 2;
+break;
+case "SUPPORT":
+case 3:
+m.provider = 3;
+break;
+case "OTHER":
+case 4:
+m.provider = 4;
+break;
+}
+if (d.thumbnailCdnUrl != null) {
+m.thumbnailCdnUrl = String(d.thumbnailCdnUrl);
+}
+if (d.sourceProviderUrl != null) {
+m.sourceProviderUrl = String(d.sourceProviderUrl);
+}
+if (d.sourceQuery != null) {
+m.sourceQuery = String(d.sourceQuery);
+}
+if (d.faviconCdnUrl != null) {
+m.faviconCdnUrl = String(d.faviconCdnUrl);
+}
+if (d.citationNumber != null) {
+m.citationNumber = d.citationNumber >>> 0;
+}
+if (d.sourceTitle != null) {
+m.sourceTitle = String(d.sourceTitle);
+}
+return m;
+};
+BotSourceItem.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.provider != null && m.hasOwnProperty("provider")) {
+d.provider = o.enums === String ? $root.proto.BotSourcesMetadata.BotSourceItem.SourceProvider[m.provider] === undefined ? m.provider : $root.proto.BotSourcesMetadata.BotSourceItem.SourceProvider[m.provider] : m.provider;
+if (o.oneofs)
+d._provider = "provider";
+}
+if (m.thumbnailCdnUrl != null && m.hasOwnProperty("thumbnailCdnUrl")) {
+d.thumbnailCdnUrl = m.thumbnailCdnUrl;
+if (o.oneofs)
+d._thumbnailCdnUrl = "thumbnailCdnUrl";
+}
+if (m.sourceProviderUrl != null && m.hasOwnProperty("sourceProviderUrl")) {
+d.sourceProviderUrl = m.sourceProviderUrl;
+if (o.oneofs)
+d._sourceProviderUrl = "sourceProviderUrl";
+}
+if (m.sourceQuery != null && m.hasOwnProperty("sourceQuery")) {
+d.sourceQuery = m.sourceQuery;
+if (o.oneofs)
+d._sourceQuery = "sourceQuery";
+}
+if (m.faviconCdnUrl != null && m.hasOwnProperty("faviconCdnUrl")) {
+d.faviconCdnUrl = m.faviconCdnUrl;
+if (o.oneofs)
+d._faviconCdnUrl = "faviconCdnUrl";
+}
+if (m.citationNumber != null && m.hasOwnProperty("citationNumber")) {
+d.citationNumber = m.citationNumber;
+if (o.oneofs)
+d._citationNumber = "citationNumber";
+}
+if (m.sourceTitle != null && m.hasOwnProperty("sourceTitle")) {
+d.sourceTitle = m.sourceTitle;
+if (o.oneofs)
+d._sourceTitle = "sourceTitle";
+}
+return d;
+};
+BotSourceItem.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotSourceItem.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotSourcesMetadata.BotSourceItem";
+};
+$lazy(BotSourceItem, "SourceProvider", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN"] = 0;
+values[valuesById[1] = "BING"] = 1;
+values[valuesById[2] = "GOOGLE"] = 2;
+values[valuesById[3] = "SUPPORT"] = 3;
+values[valuesById[4] = "OTHER"] = 4;
+return values;
+});
+return BotSourceItem;
+});
+return BotSourcesMetadata;

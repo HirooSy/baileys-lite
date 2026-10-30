@@ -1,0 +1,231 @@
+"use strict";
+function UrlTrackingMap(p) {
+this.urlTrackingMapElements = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+UrlTrackingMap.prototype.urlTrackingMapElements = $util.emptyArray;
+UrlTrackingMap.create = function create(properties) {
+return new UrlTrackingMap(properties);
+};
+UrlTrackingMap.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.urlTrackingMapElements != null && m.urlTrackingMapElements.length) {
+for (var i = 0; i < m.urlTrackingMapElements.length; ++i)
+$root.proto.UrlTrackingMap.UrlTrackingMapElement.encode(m.urlTrackingMapElements[i], w.uint32(10).fork()).ldelim();
+}
+return w;
+};
+UrlTrackingMap.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.UrlTrackingMap();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+if (!(m.urlTrackingMapElements && m.urlTrackingMapElements.length))
+m.urlTrackingMapElements = [];
+m.urlTrackingMapElements.push($root.proto.UrlTrackingMap.UrlTrackingMapElement.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+UrlTrackingMap.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.UrlTrackingMap)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.UrlTrackingMap();
+if (d.urlTrackingMapElements) {
+if (!Array.isArray(d.urlTrackingMapElements))
+throw TypeError(".proto.UrlTrackingMap.urlTrackingMapElements: array expected");
+m.urlTrackingMapElements = [];
+for (var i = 0; i < d.urlTrackingMapElements.length; ++i) {
+if (typeof d.urlTrackingMapElements[i] !== "object")
+throw TypeError(".proto.UrlTrackingMap.urlTrackingMapElements: object expected");
+m.urlTrackingMapElements[i] = $root.proto.UrlTrackingMap.UrlTrackingMapElement.fromObject(d.urlTrackingMapElements[i], n + 1);
+}
+}
+return m;
+};
+UrlTrackingMap.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.urlTrackingMapElements = [];
+}
+if (m.urlTrackingMapElements && m.urlTrackingMapElements.length) {
+d.urlTrackingMapElements = [];
+for (var j = 0; j < m.urlTrackingMapElements.length; ++j) {
+d.urlTrackingMapElements[j] = $root.proto.UrlTrackingMap.UrlTrackingMapElement.toObject(m.urlTrackingMapElements[j], o);
+}
+}
+return d;
+};
+UrlTrackingMap.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+UrlTrackingMap.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.UrlTrackingMap";
+};
+$lazy(UrlTrackingMap, "UrlTrackingMapElement", function() {
+function UrlTrackingMapElement(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+UrlTrackingMapElement.prototype.originalUrl = null;
+UrlTrackingMapElement.prototype.unconsentedUsersUrl = null;
+UrlTrackingMapElement.prototype.consentedUsersUrl = null;
+UrlTrackingMapElement.prototype.cardIndex = null;
+let $oneOfFields;
+Object.defineProperty(UrlTrackingMapElement.prototype, "_originalUrl", {
+get: $util.oneOfGetter($oneOfFields = ["originalUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(UrlTrackingMapElement.prototype, "_unconsentedUsersUrl", {
+get: $util.oneOfGetter($oneOfFields = ["unconsentedUsersUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(UrlTrackingMapElement.prototype, "_consentedUsersUrl", {
+get: $util.oneOfGetter($oneOfFields = ["consentedUsersUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(UrlTrackingMapElement.prototype, "_cardIndex", {
+get: $util.oneOfGetter($oneOfFields = ["cardIndex"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+UrlTrackingMapElement.create = function create(properties) {
+return new UrlTrackingMapElement(properties);
+};
+UrlTrackingMapElement.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.originalUrl != null && Object.hasOwnProperty.call(m, "originalUrl"))
+w.uint32(10).string(m.originalUrl);
+if (m.unconsentedUsersUrl != null && Object.hasOwnProperty.call(m, "unconsentedUsersUrl"))
+w.uint32(18).string(m.unconsentedUsersUrl);
+if (m.consentedUsersUrl != null && Object.hasOwnProperty.call(m, "consentedUsersUrl"))
+w.uint32(26).string(m.consentedUsersUrl);
+if (m.cardIndex != null && Object.hasOwnProperty.call(m, "cardIndex"))
+w.uint32(32).uint32(m.cardIndex);
+return w;
+};
+UrlTrackingMapElement.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.UrlTrackingMap.UrlTrackingMapElement();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.originalUrl = r.string();
+break;
+}
+case 2: {
+m.unconsentedUsersUrl = r.string();
+break;
+}
+case 3: {
+m.consentedUsersUrl = r.string();
+break;
+}
+case 4: {
+m.cardIndex = r.uint32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+UrlTrackingMapElement.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.UrlTrackingMap.UrlTrackingMapElement)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.UrlTrackingMap.UrlTrackingMapElement();
+if (d.originalUrl != null) {
+m.originalUrl = String(d.originalUrl);
+}
+if (d.unconsentedUsersUrl != null) {
+m.unconsentedUsersUrl = String(d.unconsentedUsersUrl);
+}
+if (d.consentedUsersUrl != null) {
+m.consentedUsersUrl = String(d.consentedUsersUrl);
+}
+if (d.cardIndex != null) {
+m.cardIndex = d.cardIndex >>> 0;
+}
+return m;
+};
+UrlTrackingMapElement.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.originalUrl != null && m.hasOwnProperty("originalUrl")) {
+d.originalUrl = m.originalUrl;
+if (o.oneofs)
+d._originalUrl = "originalUrl";
+}
+if (m.unconsentedUsersUrl != null && m.hasOwnProperty("unconsentedUsersUrl")) {
+d.unconsentedUsersUrl = m.unconsentedUsersUrl;
+if (o.oneofs)
+d._unconsentedUsersUrl = "unconsentedUsersUrl";
+}
+if (m.consentedUsersUrl != null && m.hasOwnProperty("consentedUsersUrl")) {
+d.consentedUsersUrl = m.consentedUsersUrl;
+if (o.oneofs)
+d._consentedUsersUrl = "consentedUsersUrl";
+}
+if (m.cardIndex != null && m.hasOwnProperty("cardIndex")) {
+d.cardIndex = m.cardIndex;
+if (o.oneofs)
+d._cardIndex = "cardIndex";
+}
+return d;
+};
+UrlTrackingMapElement.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+UrlTrackingMapElement.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.UrlTrackingMap.UrlTrackingMapElement";
+};
+return UrlTrackingMapElement;
+});
+return UrlTrackingMap;

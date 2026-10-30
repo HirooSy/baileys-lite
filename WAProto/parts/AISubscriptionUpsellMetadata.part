@@ -1,0 +1,102 @@
+"use strict";
+function AISubscriptionUpsellMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AISubscriptionUpsellMetadata.prototype.requestType = null;
+let $oneOfFields;
+Object.defineProperty(AISubscriptionUpsellMetadata.prototype, "_requestType", {
+get: $util.oneOfGetter($oneOfFields = ["requestType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AISubscriptionUpsellMetadata.create = function create(properties) {
+return new AISubscriptionUpsellMetadata(properties);
+};
+AISubscriptionUpsellMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.requestType != null && Object.hasOwnProperty.call(m, "requestType"))
+w.uint32(8).int32(m.requestType);
+return w;
+};
+AISubscriptionUpsellMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AISubscriptionUpsellMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.requestType = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AISubscriptionUpsellMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AISubscriptionUpsellMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AISubscriptionUpsellMetadata();
+switch (d.requestType) {
+default:
+if (typeof d.requestType === "number") {
+m.requestType = d.requestType;
+break;
+}
+break;
+case "UNSPECIFIED":
+case 0:
+m.requestType = 0;
+break;
+case "THINK_HARD":
+case 1:
+m.requestType = 1;
+break;
+case "IMAGE_GEN":
+case 2:
+m.requestType = 2;
+break;
+case "VIDEO_GEN":
+case 3:
+m.requestType = 3;
+break;
+}
+return m;
+};
+AISubscriptionUpsellMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.requestType != null && m.hasOwnProperty("requestType")) {
+d.requestType = o.enums === String ? $root.proto.AISubscriptionRequestType[m.requestType] === undefined ? m.requestType : $root.proto.AISubscriptionRequestType[m.requestType] : m.requestType;
+if (o.oneofs)
+d._requestType = "requestType";
+}
+return d;
+};
+AISubscriptionUpsellMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AISubscriptionUpsellMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AISubscriptionUpsellMetadata";
+};
+return AISubscriptionUpsellMetadata;

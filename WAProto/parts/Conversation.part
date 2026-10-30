@@ -1,0 +1,1472 @@
+"use strict";
+function Conversation(p) {
+this.messages = [];
+this.participant = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+Conversation.prototype.id = "";
+Conversation.prototype.messages = $util.emptyArray;
+Conversation.prototype.newJid = null;
+Conversation.prototype.oldJid = null;
+Conversation.prototype.lastMsgTimestamp = null;
+Conversation.prototype.unreadCount = null;
+Conversation.prototype.readOnly = null;
+Conversation.prototype.endOfHistoryTransfer = null;
+Conversation.prototype.ephemeralExpiration = null;
+Conversation.prototype.ephemeralSettingTimestamp = null;
+Conversation.prototype.endOfHistoryTransferType = null;
+Conversation.prototype.conversationTimestamp = null;
+Conversation.prototype.name = null;
+Conversation.prototype.pHash = null;
+Conversation.prototype.notSpam = null;
+Conversation.prototype.archived = null;
+Conversation.prototype.disappearingMode = null;
+Conversation.prototype.unreadMentionCount = null;
+Conversation.prototype.markedAsUnread = null;
+Conversation.prototype.participant = $util.emptyArray;
+Conversation.prototype.tcToken = null;
+Conversation.prototype.tcTokenTimestamp = null;
+Conversation.prototype.contactPrimaryIdentityKey = null;
+Conversation.prototype.pinned = null;
+Conversation.prototype.muteEndTime = null;
+Conversation.prototype.wallpaper = null;
+Conversation.prototype.mediaVisibility = null;
+Conversation.prototype.tcTokenSenderTimestamp = null;
+Conversation.prototype.suspended = null;
+Conversation.prototype.terminated = null;
+Conversation.prototype.createdAt = null;
+Conversation.prototype.createdBy = null;
+Conversation.prototype.description = null;
+Conversation.prototype.support = null;
+Conversation.prototype.isParentGroup = null;
+Conversation.prototype.parentGroupId = null;
+Conversation.prototype.isDefaultSubgroup = null;
+Conversation.prototype.displayName = null;
+Conversation.prototype.pnJid = null;
+Conversation.prototype.shareOwnPn = null;
+Conversation.prototype.pnhDuplicateLidThread = null;
+Conversation.prototype.lidJid = null;
+Conversation.prototype.username = null;
+Conversation.prototype.lidOriginType = null;
+Conversation.prototype.commentsCount = null;
+Conversation.prototype.locked = null;
+Conversation.prototype.systemMessageToInsert = null;
+Conversation.prototype.capiCreatedGroup = null;
+Conversation.prototype.accountLid = null;
+Conversation.prototype.limitSharing = null;
+Conversation.prototype.limitSharingSettingTimestamp = null;
+Conversation.prototype.limitSharingTrigger = null;
+Conversation.prototype.limitSharingInitiatedByMe = null;
+Conversation.prototype.maibaAiThreadEnabled = null;
+Conversation.prototype.isMarketingMessageThread = null;
+Conversation.prototype.isSenderNewAccount = null;
+Conversation.prototype.afterReadDuration = null;
+Conversation.prototype.isSenderSuspicious = null;
+Conversation.prototype.appealStatus = null;
+Conversation.prototype.appealUpdateTime = null;
+Conversation.prototype.authAgentParentCompanyName = null;
+Conversation.prototype.authAgentObaPhoneNumber = null;
+let $oneOfFields;
+Object.defineProperty(Conversation.prototype, "_newJid", {
+get: $util.oneOfGetter($oneOfFields = ["newJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_oldJid", {
+get: $util.oneOfGetter($oneOfFields = ["oldJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_lastMsgTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["lastMsgTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_unreadCount", {
+get: $util.oneOfGetter($oneOfFields = ["unreadCount"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_readOnly", {
+get: $util.oneOfGetter($oneOfFields = ["readOnly"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_endOfHistoryTransfer", {
+get: $util.oneOfGetter($oneOfFields = ["endOfHistoryTransfer"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_ephemeralExpiration", {
+get: $util.oneOfGetter($oneOfFields = ["ephemeralExpiration"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_ephemeralSettingTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["ephemeralSettingTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_endOfHistoryTransferType", {
+get: $util.oneOfGetter($oneOfFields = ["endOfHistoryTransferType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_conversationTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["conversationTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_name", {
+get: $util.oneOfGetter($oneOfFields = ["name"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_pHash", {
+get: $util.oneOfGetter($oneOfFields = ["pHash"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_notSpam", {
+get: $util.oneOfGetter($oneOfFields = ["notSpam"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_archived", {
+get: $util.oneOfGetter($oneOfFields = ["archived"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_disappearingMode", {
+get: $util.oneOfGetter($oneOfFields = ["disappearingMode"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_unreadMentionCount", {
+get: $util.oneOfGetter($oneOfFields = ["unreadMentionCount"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_markedAsUnread", {
+get: $util.oneOfGetter($oneOfFields = ["markedAsUnread"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_tcToken", {
+get: $util.oneOfGetter($oneOfFields = ["tcToken"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_tcTokenTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["tcTokenTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_contactPrimaryIdentityKey", {
+get: $util.oneOfGetter($oneOfFields = ["contactPrimaryIdentityKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_pinned", {
+get: $util.oneOfGetter($oneOfFields = ["pinned"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_muteEndTime", {
+get: $util.oneOfGetter($oneOfFields = ["muteEndTime"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_wallpaper", {
+get: $util.oneOfGetter($oneOfFields = ["wallpaper"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_mediaVisibility", {
+get: $util.oneOfGetter($oneOfFields = ["mediaVisibility"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_tcTokenSenderTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["tcTokenSenderTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_suspended", {
+get: $util.oneOfGetter($oneOfFields = ["suspended"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_terminated", {
+get: $util.oneOfGetter($oneOfFields = ["terminated"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_createdAt", {
+get: $util.oneOfGetter($oneOfFields = ["createdAt"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_createdBy", {
+get: $util.oneOfGetter($oneOfFields = ["createdBy"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_description", {
+get: $util.oneOfGetter($oneOfFields = ["description"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_support", {
+get: $util.oneOfGetter($oneOfFields = ["support"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_isParentGroup", {
+get: $util.oneOfGetter($oneOfFields = ["isParentGroup"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_parentGroupId", {
+get: $util.oneOfGetter($oneOfFields = ["parentGroupId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_isDefaultSubgroup", {
+get: $util.oneOfGetter($oneOfFields = ["isDefaultSubgroup"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_displayName", {
+get: $util.oneOfGetter($oneOfFields = ["displayName"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_pnJid", {
+get: $util.oneOfGetter($oneOfFields = ["pnJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_shareOwnPn", {
+get: $util.oneOfGetter($oneOfFields = ["shareOwnPn"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_pnhDuplicateLidThread", {
+get: $util.oneOfGetter($oneOfFields = ["pnhDuplicateLidThread"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_lidJid", {
+get: $util.oneOfGetter($oneOfFields = ["lidJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_username", {
+get: $util.oneOfGetter($oneOfFields = ["username"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_lidOriginType", {
+get: $util.oneOfGetter($oneOfFields = ["lidOriginType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_commentsCount", {
+get: $util.oneOfGetter($oneOfFields = ["commentsCount"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_locked", {
+get: $util.oneOfGetter($oneOfFields = ["locked"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_systemMessageToInsert", {
+get: $util.oneOfGetter($oneOfFields = ["systemMessageToInsert"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_capiCreatedGroup", {
+get: $util.oneOfGetter($oneOfFields = ["capiCreatedGroup"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_accountLid", {
+get: $util.oneOfGetter($oneOfFields = ["accountLid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_limitSharing", {
+get: $util.oneOfGetter($oneOfFields = ["limitSharing"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_limitSharingSettingTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["limitSharingSettingTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_limitSharingTrigger", {
+get: $util.oneOfGetter($oneOfFields = ["limitSharingTrigger"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_limitSharingInitiatedByMe", {
+get: $util.oneOfGetter($oneOfFields = ["limitSharingInitiatedByMe"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_maibaAiThreadEnabled", {
+get: $util.oneOfGetter($oneOfFields = ["maibaAiThreadEnabled"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_isMarketingMessageThread", {
+get: $util.oneOfGetter($oneOfFields = ["isMarketingMessageThread"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_isSenderNewAccount", {
+get: $util.oneOfGetter($oneOfFields = ["isSenderNewAccount"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_afterReadDuration", {
+get: $util.oneOfGetter($oneOfFields = ["afterReadDuration"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_isSenderSuspicious", {
+get: $util.oneOfGetter($oneOfFields = ["isSenderSuspicious"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_appealStatus", {
+get: $util.oneOfGetter($oneOfFields = ["appealStatus"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_appealUpdateTime", {
+get: $util.oneOfGetter($oneOfFields = ["appealUpdateTime"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_authAgentParentCompanyName", {
+get: $util.oneOfGetter($oneOfFields = ["authAgentParentCompanyName"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Conversation.prototype, "_authAgentObaPhoneNumber", {
+get: $util.oneOfGetter($oneOfFields = ["authAgentObaPhoneNumber"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Conversation.create = function create(properties) {
+return new Conversation(properties);
+};
+Conversation.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.id != null && Object.hasOwnProperty.call(m, "id"))
+w.uint32(10).string(m.id);
+if (m.messages != null && m.messages.length) {
+for (var i = 0; i < m.messages.length; ++i)
+$root.proto.HistorySyncMsg.encode(m.messages[i], w.uint32(18).fork()).ldelim();
+}
+if (m.newJid != null && Object.hasOwnProperty.call(m, "newJid"))
+w.uint32(26).string(m.newJid);
+if (m.oldJid != null && Object.hasOwnProperty.call(m, "oldJid"))
+w.uint32(34).string(m.oldJid);
+if (m.lastMsgTimestamp != null && Object.hasOwnProperty.call(m, "lastMsgTimestamp"))
+w.uint32(40).uint64(m.lastMsgTimestamp);
+if (m.unreadCount != null && Object.hasOwnProperty.call(m, "unreadCount"))
+w.uint32(48).uint32(m.unreadCount);
+if (m.readOnly != null && Object.hasOwnProperty.call(m, "readOnly"))
+w.uint32(56).bool(m.readOnly);
+if (m.endOfHistoryTransfer != null && Object.hasOwnProperty.call(m, "endOfHistoryTransfer"))
+w.uint32(64).bool(m.endOfHistoryTransfer);
+if (m.ephemeralExpiration != null && Object.hasOwnProperty.call(m, "ephemeralExpiration"))
+w.uint32(72).uint32(m.ephemeralExpiration);
+if (m.ephemeralSettingTimestamp != null && Object.hasOwnProperty.call(m, "ephemeralSettingTimestamp"))
+w.uint32(80).int64(m.ephemeralSettingTimestamp);
+if (m.endOfHistoryTransferType != null && Object.hasOwnProperty.call(m, "endOfHistoryTransferType"))
+w.uint32(88).int32(m.endOfHistoryTransferType);
+if (m.conversationTimestamp != null && Object.hasOwnProperty.call(m, "conversationTimestamp"))
+w.uint32(96).uint64(m.conversationTimestamp);
+if (m.name != null && Object.hasOwnProperty.call(m, "name"))
+w.uint32(106).string(m.name);
+if (m.pHash != null && Object.hasOwnProperty.call(m, "pHash"))
+w.uint32(114).string(m.pHash);
+if (m.notSpam != null && Object.hasOwnProperty.call(m, "notSpam"))
+w.uint32(120).bool(m.notSpam);
+if (m.archived != null && Object.hasOwnProperty.call(m, "archived"))
+w.uint32(128).bool(m.archived);
+if (m.disappearingMode != null && Object.hasOwnProperty.call(m, "disappearingMode"))
+$root.proto.DisappearingMode.encode(m.disappearingMode, w.uint32(138).fork()).ldelim();
+if (m.unreadMentionCount != null && Object.hasOwnProperty.call(m, "unreadMentionCount"))
+w.uint32(144).uint32(m.unreadMentionCount);
+if (m.markedAsUnread != null && Object.hasOwnProperty.call(m, "markedAsUnread"))
+w.uint32(152).bool(m.markedAsUnread);
+if (m.participant != null && m.participant.length) {
+for (var i = 0; i < m.participant.length; ++i)
+$root.proto.GroupParticipant.encode(m.participant[i], w.uint32(162).fork()).ldelim();
+}
+if (m.tcToken != null && Object.hasOwnProperty.call(m, "tcToken"))
+w.uint32(170).bytes(m.tcToken);
+if (m.tcTokenTimestamp != null && Object.hasOwnProperty.call(m, "tcTokenTimestamp"))
+w.uint32(176).uint64(m.tcTokenTimestamp);
+if (m.contactPrimaryIdentityKey != null && Object.hasOwnProperty.call(m, "contactPrimaryIdentityKey"))
+w.uint32(186).bytes(m.contactPrimaryIdentityKey);
+if (m.pinned != null && Object.hasOwnProperty.call(m, "pinned"))
+w.uint32(192).uint32(m.pinned);
+if (m.muteEndTime != null && Object.hasOwnProperty.call(m, "muteEndTime"))
+w.uint32(200).uint64(m.muteEndTime);
+if (m.wallpaper != null && Object.hasOwnProperty.call(m, "wallpaper"))
+$root.proto.WallpaperSettings.encode(m.wallpaper, w.uint32(210).fork()).ldelim();
+if (m.mediaVisibility != null && Object.hasOwnProperty.call(m, "mediaVisibility"))
+w.uint32(216).int32(m.mediaVisibility);
+if (m.tcTokenSenderTimestamp != null && Object.hasOwnProperty.call(m, "tcTokenSenderTimestamp"))
+w.uint32(224).uint64(m.tcTokenSenderTimestamp);
+if (m.suspended != null && Object.hasOwnProperty.call(m, "suspended"))
+w.uint32(232).bool(m.suspended);
+if (m.terminated != null && Object.hasOwnProperty.call(m, "terminated"))
+w.uint32(240).bool(m.terminated);
+if (m.createdAt != null && Object.hasOwnProperty.call(m, "createdAt"))
+w.uint32(248).uint64(m.createdAt);
+if (m.createdBy != null && Object.hasOwnProperty.call(m, "createdBy"))
+w.uint32(258).string(m.createdBy);
+if (m.description != null && Object.hasOwnProperty.call(m, "description"))
+w.uint32(266).string(m.description);
+if (m.support != null && Object.hasOwnProperty.call(m, "support"))
+w.uint32(272).bool(m.support);
+if (m.isParentGroup != null && Object.hasOwnProperty.call(m, "isParentGroup"))
+w.uint32(280).bool(m.isParentGroup);
+if (m.isDefaultSubgroup != null && Object.hasOwnProperty.call(m, "isDefaultSubgroup"))
+w.uint32(288).bool(m.isDefaultSubgroup);
+if (m.parentGroupId != null && Object.hasOwnProperty.call(m, "parentGroupId"))
+w.uint32(298).string(m.parentGroupId);
+if (m.displayName != null && Object.hasOwnProperty.call(m, "displayName"))
+w.uint32(306).string(m.displayName);
+if (m.pnJid != null && Object.hasOwnProperty.call(m, "pnJid"))
+w.uint32(314).string(m.pnJid);
+if (m.shareOwnPn != null && Object.hasOwnProperty.call(m, "shareOwnPn"))
+w.uint32(320).bool(m.shareOwnPn);
+if (m.pnhDuplicateLidThread != null && Object.hasOwnProperty.call(m, "pnhDuplicateLidThread"))
+w.uint32(328).bool(m.pnhDuplicateLidThread);
+if (m.lidJid != null && Object.hasOwnProperty.call(m, "lidJid"))
+w.uint32(338).string(m.lidJid);
+if (m.username != null && Object.hasOwnProperty.call(m, "username"))
+w.uint32(346).string(m.username);
+if (m.lidOriginType != null && Object.hasOwnProperty.call(m, "lidOriginType"))
+w.uint32(354).string(m.lidOriginType);
+if (m.commentsCount != null && Object.hasOwnProperty.call(m, "commentsCount"))
+w.uint32(360).uint32(m.commentsCount);
+if (m.locked != null && Object.hasOwnProperty.call(m, "locked"))
+w.uint32(368).bool(m.locked);
+if (m.systemMessageToInsert != null && Object.hasOwnProperty.call(m, "systemMessageToInsert"))
+w.uint32(376).int32(m.systemMessageToInsert);
+if (m.capiCreatedGroup != null && Object.hasOwnProperty.call(m, "capiCreatedGroup"))
+w.uint32(384).bool(m.capiCreatedGroup);
+if (m.accountLid != null && Object.hasOwnProperty.call(m, "accountLid"))
+w.uint32(394).string(m.accountLid);
+if (m.limitSharing != null && Object.hasOwnProperty.call(m, "limitSharing"))
+w.uint32(400).bool(m.limitSharing);
+if (m.limitSharingSettingTimestamp != null && Object.hasOwnProperty.call(m, "limitSharingSettingTimestamp"))
+w.uint32(408).int64(m.limitSharingSettingTimestamp);
+if (m.limitSharingTrigger != null && Object.hasOwnProperty.call(m, "limitSharingTrigger"))
+w.uint32(416).int32(m.limitSharingTrigger);
+if (m.limitSharingInitiatedByMe != null && Object.hasOwnProperty.call(m, "limitSharingInitiatedByMe"))
+w.uint32(424).bool(m.limitSharingInitiatedByMe);
+if (m.maibaAiThreadEnabled != null && Object.hasOwnProperty.call(m, "maibaAiThreadEnabled"))
+w.uint32(432).bool(m.maibaAiThreadEnabled);
+if (m.isMarketingMessageThread != null && Object.hasOwnProperty.call(m, "isMarketingMessageThread"))
+w.uint32(440).bool(m.isMarketingMessageThread);
+if (m.isSenderNewAccount != null && Object.hasOwnProperty.call(m, "isSenderNewAccount"))
+w.uint32(448).bool(m.isSenderNewAccount);
+if (m.afterReadDuration != null && Object.hasOwnProperty.call(m, "afterReadDuration"))
+w.uint32(456).uint32(m.afterReadDuration);
+if (m.isSenderSuspicious != null && Object.hasOwnProperty.call(m, "isSenderSuspicious"))
+w.uint32(464).bool(m.isSenderSuspicious);
+if (m.appealStatus != null && Object.hasOwnProperty.call(m, "appealStatus"))
+w.uint32(472).int32(m.appealStatus);
+if (m.appealUpdateTime != null && Object.hasOwnProperty.call(m, "appealUpdateTime"))
+w.uint32(480).uint64(m.appealUpdateTime);
+if (m.authAgentParentCompanyName != null && Object.hasOwnProperty.call(m, "authAgentParentCompanyName"))
+w.uint32(490).string(m.authAgentParentCompanyName);
+if (m.authAgentObaPhoneNumber != null && Object.hasOwnProperty.call(m, "authAgentObaPhoneNumber"))
+w.uint32(498).string(m.authAgentObaPhoneNumber);
+return w;
+};
+Conversation.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.Conversation();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.id = r.string();
+break;
+}
+case 2: {
+if (!(m.messages && m.messages.length))
+m.messages = [];
+m.messages.push($root.proto.HistorySyncMsg.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 3: {
+m.newJid = r.string();
+break;
+}
+case 4: {
+m.oldJid = r.string();
+break;
+}
+case 5: {
+m.lastMsgTimestamp = r.uint64();
+break;
+}
+case 6: {
+m.unreadCount = r.uint32();
+break;
+}
+case 7: {
+m.readOnly = r.bool();
+break;
+}
+case 8: {
+m.endOfHistoryTransfer = r.bool();
+break;
+}
+case 9: {
+m.ephemeralExpiration = r.uint32();
+break;
+}
+case 10: {
+m.ephemeralSettingTimestamp = r.int64();
+break;
+}
+case 11: {
+m.endOfHistoryTransferType = r.int32();
+break;
+}
+case 12: {
+m.conversationTimestamp = r.uint64();
+break;
+}
+case 13: {
+m.name = r.string();
+break;
+}
+case 14: {
+m.pHash = r.string();
+break;
+}
+case 15: {
+m.notSpam = r.bool();
+break;
+}
+case 16: {
+m.archived = r.bool();
+break;
+}
+case 17: {
+m.disappearingMode = $root.proto.DisappearingMode.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 18: {
+m.unreadMentionCount = r.uint32();
+break;
+}
+case 19: {
+m.markedAsUnread = r.bool();
+break;
+}
+case 20: {
+if (!(m.participant && m.participant.length))
+m.participant = [];
+m.participant.push($root.proto.GroupParticipant.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 21: {
+m.tcToken = r.bytes();
+break;
+}
+case 22: {
+m.tcTokenTimestamp = r.uint64();
+break;
+}
+case 23: {
+m.contactPrimaryIdentityKey = r.bytes();
+break;
+}
+case 24: {
+m.pinned = r.uint32();
+break;
+}
+case 25: {
+m.muteEndTime = r.uint64();
+break;
+}
+case 26: {
+m.wallpaper = $root.proto.WallpaperSettings.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 27: {
+m.mediaVisibility = r.int32();
+break;
+}
+case 28: {
+m.tcTokenSenderTimestamp = r.uint64();
+break;
+}
+case 29: {
+m.suspended = r.bool();
+break;
+}
+case 30: {
+m.terminated = r.bool();
+break;
+}
+case 31: {
+m.createdAt = r.uint64();
+break;
+}
+case 32: {
+m.createdBy = r.string();
+break;
+}
+case 33: {
+m.description = r.string();
+break;
+}
+case 34: {
+m.support = r.bool();
+break;
+}
+case 35: {
+m.isParentGroup = r.bool();
+break;
+}
+case 37: {
+m.parentGroupId = r.string();
+break;
+}
+case 36: {
+m.isDefaultSubgroup = r.bool();
+break;
+}
+case 38: {
+m.displayName = r.string();
+break;
+}
+case 39: {
+m.pnJid = r.string();
+break;
+}
+case 40: {
+m.shareOwnPn = r.bool();
+break;
+}
+case 41: {
+m.pnhDuplicateLidThread = r.bool();
+break;
+}
+case 42: {
+m.lidJid = r.string();
+break;
+}
+case 43: {
+m.username = r.string();
+break;
+}
+case 44: {
+m.lidOriginType = r.string();
+break;
+}
+case 45: {
+m.commentsCount = r.uint32();
+break;
+}
+case 46: {
+m.locked = r.bool();
+break;
+}
+case 47: {
+m.systemMessageToInsert = r.int32();
+break;
+}
+case 48: {
+m.capiCreatedGroup = r.bool();
+break;
+}
+case 49: {
+m.accountLid = r.string();
+break;
+}
+case 50: {
+m.limitSharing = r.bool();
+break;
+}
+case 51: {
+m.limitSharingSettingTimestamp = r.int64();
+break;
+}
+case 52: {
+m.limitSharingTrigger = r.int32();
+break;
+}
+case 53: {
+m.limitSharingInitiatedByMe = r.bool();
+break;
+}
+case 54: {
+m.maibaAiThreadEnabled = r.bool();
+break;
+}
+case 55: {
+m.isMarketingMessageThread = r.bool();
+break;
+}
+case 56: {
+m.isSenderNewAccount = r.bool();
+break;
+}
+case 57: {
+m.afterReadDuration = r.uint32();
+break;
+}
+case 58: {
+m.isSenderSuspicious = r.bool();
+break;
+}
+case 59: {
+m.appealStatus = r.int32();
+break;
+}
+case 60: {
+m.appealUpdateTime = r.uint64();
+break;
+}
+case 61: {
+m.authAgentParentCompanyName = r.string();
+break;
+}
+case 62: {
+m.authAgentObaPhoneNumber = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+Conversation.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.Conversation)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.Conversation();
+if (d.id != null) {
+m.id = String(d.id);
+}
+if (d.messages) {
+if (!Array.isArray(d.messages))
+throw TypeError(".proto.Conversation.messages: array expected");
+m.messages = [];
+for (var i = 0; i < d.messages.length; ++i) {
+if (typeof d.messages[i] !== "object")
+throw TypeError(".proto.Conversation.messages: object expected");
+m.messages[i] = $root.proto.HistorySyncMsg.fromObject(d.messages[i], n + 1);
+}
+}
+if (d.newJid != null) {
+m.newJid = String(d.newJid);
+}
+if (d.oldJid != null) {
+m.oldJid = String(d.oldJid);
+}
+if (d.lastMsgTimestamp != null) {
+if ($util.Long)
+(m.lastMsgTimestamp = $util.Long.fromValue(d.lastMsgTimestamp)).unsigned = true;
+else if (typeof d.lastMsgTimestamp === "string")
+m.lastMsgTimestamp = parseInt(d.lastMsgTimestamp, 10);
+else if (typeof d.lastMsgTimestamp === "number")
+m.lastMsgTimestamp = d.lastMsgTimestamp;
+else if (typeof d.lastMsgTimestamp === "object")
+m.lastMsgTimestamp = new $util.LongBits(d.lastMsgTimestamp.low >>> 0, d.lastMsgTimestamp.high >>> 0).toNumber(true);
+}
+if (d.unreadCount != null) {
+m.unreadCount = d.unreadCount >>> 0;
+}
+if (d.readOnly != null) {
+m.readOnly = Boolean(d.readOnly);
+}
+if (d.endOfHistoryTransfer != null) {
+m.endOfHistoryTransfer = Boolean(d.endOfHistoryTransfer);
+}
+if (d.ephemeralExpiration != null) {
+m.ephemeralExpiration = d.ephemeralExpiration >>> 0;
+}
+if (d.ephemeralSettingTimestamp != null) {
+if ($util.Long)
+(m.ephemeralSettingTimestamp = $util.Long.fromValue(d.ephemeralSettingTimestamp)).unsigned = false;
+else if (typeof d.ephemeralSettingTimestamp === "string")
+m.ephemeralSettingTimestamp = parseInt(d.ephemeralSettingTimestamp, 10);
+else if (typeof d.ephemeralSettingTimestamp === "number")
+m.ephemeralSettingTimestamp = d.ephemeralSettingTimestamp;
+else if (typeof d.ephemeralSettingTimestamp === "object")
+m.ephemeralSettingTimestamp = new $util.LongBits(d.ephemeralSettingTimestamp.low >>> 0, d.ephemeralSettingTimestamp.high >>> 0).toNumber();
+}
+switch (d.endOfHistoryTransferType) {
+default:
+if (typeof d.endOfHistoryTransferType === "number") {
+m.endOfHistoryTransferType = d.endOfHistoryTransferType;
+break;
+}
+break;
+case "COMPLETE_BUT_MORE_MESSAGES_REMAIN_ON_PRIMARY":
+case 0:
+m.endOfHistoryTransferType = 0;
+break;
+case "COMPLETE_AND_NO_MORE_MESSAGE_REMAIN_ON_PRIMARY":
+case 1:
+m.endOfHistoryTransferType = 1;
+break;
+case "COMPLETE_ON_DEMAND_SYNC_BUT_MORE_MSG_REMAIN_ON_PRIMARY":
+case 2:
+m.endOfHistoryTransferType = 2;
+break;
+case "COMPLETE_ON_DEMAND_SYNC_WITH_MORE_MSG_ON_PRIMARY_BUT_NO_ACCESS":
+case 3:
+m.endOfHistoryTransferType = 3;
+break;
+}
+if (d.conversationTimestamp != null) {
+if ($util.Long)
+(m.conversationTimestamp = $util.Long.fromValue(d.conversationTimestamp)).unsigned = true;
+else if (typeof d.conversationTimestamp === "string")
+m.conversationTimestamp = parseInt(d.conversationTimestamp, 10);
+else if (typeof d.conversationTimestamp === "number")
+m.conversationTimestamp = d.conversationTimestamp;
+else if (typeof d.conversationTimestamp === "object")
+m.conversationTimestamp = new $util.LongBits(d.conversationTimestamp.low >>> 0, d.conversationTimestamp.high >>> 0).toNumber(true);
+}
+if (d.name != null) {
+m.name = String(d.name);
+}
+if (d.pHash != null) {
+m.pHash = String(d.pHash);
+}
+if (d.notSpam != null) {
+m.notSpam = Boolean(d.notSpam);
+}
+if (d.archived != null) {
+m.archived = Boolean(d.archived);
+}
+if (d.disappearingMode != null) {
+if (typeof d.disappearingMode !== "object")
+throw TypeError(".proto.Conversation.disappearingMode: object expected");
+m.disappearingMode = $root.proto.DisappearingMode.fromObject(d.disappearingMode, n + 1);
+}
+if (d.unreadMentionCount != null) {
+m.unreadMentionCount = d.unreadMentionCount >>> 0;
+}
+if (d.markedAsUnread != null) {
+m.markedAsUnread = Boolean(d.markedAsUnread);
+}
+if (d.participant) {
+if (!Array.isArray(d.participant))
+throw TypeError(".proto.Conversation.participant: array expected");
+m.participant = [];
+for (var i = 0; i < d.participant.length; ++i) {
+if (typeof d.participant[i] !== "object")
+throw TypeError(".proto.Conversation.participant: object expected");
+m.participant[i] = $root.proto.GroupParticipant.fromObject(d.participant[i], n + 1);
+}
+}
+if (d.tcToken != null) {
+if (typeof d.tcToken === "string")
+$util.base64.decode(d.tcToken, m.tcToken = $util.newBuffer($util.base64.length(d.tcToken)), 0);
+else if (d.tcToken.length >= 0)
+m.tcToken = d.tcToken;
+}
+if (d.tcTokenTimestamp != null) {
+if ($util.Long)
+(m.tcTokenTimestamp = $util.Long.fromValue(d.tcTokenTimestamp)).unsigned = true;
+else if (typeof d.tcTokenTimestamp === "string")
+m.tcTokenTimestamp = parseInt(d.tcTokenTimestamp, 10);
+else if (typeof d.tcTokenTimestamp === "number")
+m.tcTokenTimestamp = d.tcTokenTimestamp;
+else if (typeof d.tcTokenTimestamp === "object")
+m.tcTokenTimestamp = new $util.LongBits(d.tcTokenTimestamp.low >>> 0, d.tcTokenTimestamp.high >>> 0).toNumber(true);
+}
+if (d.contactPrimaryIdentityKey != null) {
+if (typeof d.contactPrimaryIdentityKey === "string")
+$util.base64.decode(d.contactPrimaryIdentityKey, m.contactPrimaryIdentityKey = $util.newBuffer($util.base64.length(d.contactPrimaryIdentityKey)), 0);
+else if (d.contactPrimaryIdentityKey.length >= 0)
+m.contactPrimaryIdentityKey = d.contactPrimaryIdentityKey;
+}
+if (d.pinned != null) {
+m.pinned = d.pinned >>> 0;
+}
+if (d.muteEndTime != null) {
+if ($util.Long)
+(m.muteEndTime = $util.Long.fromValue(d.muteEndTime)).unsigned = true;
+else if (typeof d.muteEndTime === "string")
+m.muteEndTime = parseInt(d.muteEndTime, 10);
+else if (typeof d.muteEndTime === "number")
+m.muteEndTime = d.muteEndTime;
+else if (typeof d.muteEndTime === "object")
+m.muteEndTime = new $util.LongBits(d.muteEndTime.low >>> 0, d.muteEndTime.high >>> 0).toNumber(true);
+}
+if (d.wallpaper != null) {
+if (typeof d.wallpaper !== "object")
+throw TypeError(".proto.Conversation.wallpaper: object expected");
+m.wallpaper = $root.proto.WallpaperSettings.fromObject(d.wallpaper, n + 1);
+}
+switch (d.mediaVisibility) {
+default:
+if (typeof d.mediaVisibility === "number") {
+m.mediaVisibility = d.mediaVisibility;
+break;
+}
+break;
+case "DEFAULT":
+case 0:
+m.mediaVisibility = 0;
+break;
+case "OFF":
+case 1:
+m.mediaVisibility = 1;
+break;
+case "ON":
+case 2:
+m.mediaVisibility = 2;
+break;
+}
+if (d.tcTokenSenderTimestamp != null) {
+if ($util.Long)
+(m.tcTokenSenderTimestamp = $util.Long.fromValue(d.tcTokenSenderTimestamp)).unsigned = true;
+else if (typeof d.tcTokenSenderTimestamp === "string")
+m.tcTokenSenderTimestamp = parseInt(d.tcTokenSenderTimestamp, 10);
+else if (typeof d.tcTokenSenderTimestamp === "number")
+m.tcTokenSenderTimestamp = d.tcTokenSenderTimestamp;
+else if (typeof d.tcTokenSenderTimestamp === "object")
+m.tcTokenSenderTimestamp = new $util.LongBits(d.tcTokenSenderTimestamp.low >>> 0, d.tcTokenSenderTimestamp.high >>> 0).toNumber(true);
+}
+if (d.suspended != null) {
+m.suspended = Boolean(d.suspended);
+}
+if (d.terminated != null) {
+m.terminated = Boolean(d.terminated);
+}
+if (d.createdAt != null) {
+if ($util.Long)
+(m.createdAt = $util.Long.fromValue(d.createdAt)).unsigned = true;
+else if (typeof d.createdAt === "string")
+m.createdAt = parseInt(d.createdAt, 10);
+else if (typeof d.createdAt === "number")
+m.createdAt = d.createdAt;
+else if (typeof d.createdAt === "object")
+m.createdAt = new $util.LongBits(d.createdAt.low >>> 0, d.createdAt.high >>> 0).toNumber(true);
+}
+if (d.createdBy != null) {
+m.createdBy = String(d.createdBy);
+}
+if (d.description != null) {
+m.description = String(d.description);
+}
+if (d.support != null) {
+m.support = Boolean(d.support);
+}
+if (d.isParentGroup != null) {
+m.isParentGroup = Boolean(d.isParentGroup);
+}
+if (d.parentGroupId != null) {
+m.parentGroupId = String(d.parentGroupId);
+}
+if (d.isDefaultSubgroup != null) {
+m.isDefaultSubgroup = Boolean(d.isDefaultSubgroup);
+}
+if (d.displayName != null) {
+m.displayName = String(d.displayName);
+}
+if (d.pnJid != null) {
+m.pnJid = String(d.pnJid);
+}
+if (d.shareOwnPn != null) {
+m.shareOwnPn = Boolean(d.shareOwnPn);
+}
+if (d.pnhDuplicateLidThread != null) {
+m.pnhDuplicateLidThread = Boolean(d.pnhDuplicateLidThread);
+}
+if (d.lidJid != null) {
+m.lidJid = String(d.lidJid);
+}
+if (d.username != null) {
+m.username = String(d.username);
+}
+if (d.lidOriginType != null) {
+m.lidOriginType = String(d.lidOriginType);
+}
+if (d.commentsCount != null) {
+m.commentsCount = d.commentsCount >>> 0;
+}
+if (d.locked != null) {
+m.locked = Boolean(d.locked);
+}
+switch (d.systemMessageToInsert) {
+default:
+if (typeof d.systemMessageToInsert === "number") {
+m.systemMessageToInsert = d.systemMessageToInsert;
+break;
+}
+break;
+case "E2EE_MSG":
+case 1:
+m.systemMessageToInsert = 1;
+break;
+case "NE2EE_SELF":
+case 2:
+m.systemMessageToInsert = 2;
+break;
+case "NE2EE_OTHER":
+case 3:
+m.systemMessageToInsert = 3;
+break;
+}
+if (d.capiCreatedGroup != null) {
+m.capiCreatedGroup = Boolean(d.capiCreatedGroup);
+}
+if (d.accountLid != null) {
+m.accountLid = String(d.accountLid);
+}
+if (d.limitSharing != null) {
+m.limitSharing = Boolean(d.limitSharing);
+}
+if (d.limitSharingSettingTimestamp != null) {
+if ($util.Long)
+(m.limitSharingSettingTimestamp = $util.Long.fromValue(d.limitSharingSettingTimestamp)).unsigned = false;
+else if (typeof d.limitSharingSettingTimestamp === "string")
+m.limitSharingSettingTimestamp = parseInt(d.limitSharingSettingTimestamp, 10);
+else if (typeof d.limitSharingSettingTimestamp === "number")
+m.limitSharingSettingTimestamp = d.limitSharingSettingTimestamp;
+else if (typeof d.limitSharingSettingTimestamp === "object")
+m.limitSharingSettingTimestamp = new $util.LongBits(d.limitSharingSettingTimestamp.low >>> 0, d.limitSharingSettingTimestamp.high >>> 0).toNumber();
+}
+switch (d.limitSharingTrigger) {
+default:
+if (typeof d.limitSharingTrigger === "number") {
+m.limitSharingTrigger = d.limitSharingTrigger;
+break;
+}
+break;
+case "UNKNOWN":
+case 0:
+m.limitSharingTrigger = 0;
+break;
+case "CHAT_SETTING":
+case 1:
+m.limitSharingTrigger = 1;
+break;
+case "BIZ_SUPPORTS_FB_HOSTING":
+case 2:
+m.limitSharingTrigger = 2;
+break;
+case "UNKNOWN_GROUP":
+case 3:
+m.limitSharingTrigger = 3;
+break;
+}
+if (d.limitSharingInitiatedByMe != null) {
+m.limitSharingInitiatedByMe = Boolean(d.limitSharingInitiatedByMe);
+}
+if (d.maibaAiThreadEnabled != null) {
+m.maibaAiThreadEnabled = Boolean(d.maibaAiThreadEnabled);
+}
+if (d.isMarketingMessageThread != null) {
+m.isMarketingMessageThread = Boolean(d.isMarketingMessageThread);
+}
+if (d.isSenderNewAccount != null) {
+m.isSenderNewAccount = Boolean(d.isSenderNewAccount);
+}
+if (d.afterReadDuration != null) {
+m.afterReadDuration = d.afterReadDuration >>> 0;
+}
+if (d.isSenderSuspicious != null) {
+m.isSenderSuspicious = Boolean(d.isSenderSuspicious);
+}
+switch (d.appealStatus) {
+default:
+if (typeof d.appealStatus === "number") {
+m.appealStatus = d.appealStatus;
+break;
+}
+break;
+case "NO_APPEAL":
+case 0:
+m.appealStatus = 0;
+break;
+case "APPEAL_IN_REVIEW":
+case 1:
+m.appealStatus = 1;
+break;
+case "APPEAL_APPROVED":
+case 2:
+m.appealStatus = 2;
+break;
+case "APPEAL_REJECTED":
+case 3:
+m.appealStatus = 3;
+break;
+}
+if (d.appealUpdateTime != null) {
+if ($util.Long)
+(m.appealUpdateTime = $util.Long.fromValue(d.appealUpdateTime)).unsigned = true;
+else if (typeof d.appealUpdateTime === "string")
+m.appealUpdateTime = parseInt(d.appealUpdateTime, 10);
+else if (typeof d.appealUpdateTime === "number")
+m.appealUpdateTime = d.appealUpdateTime;
+else if (typeof d.appealUpdateTime === "object")
+m.appealUpdateTime = new $util.LongBits(d.appealUpdateTime.low >>> 0, d.appealUpdateTime.high >>> 0).toNumber(true);
+}
+if (d.authAgentParentCompanyName != null) {
+m.authAgentParentCompanyName = String(d.authAgentParentCompanyName);
+}
+if (d.authAgentObaPhoneNumber != null) {
+m.authAgentObaPhoneNumber = String(d.authAgentObaPhoneNumber);
+}
+return m;
+};
+Conversation.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.messages = [];
+d.participant = [];
+}
+if (o.defaults) {
+d.id = "";
+}
+if (m.id != null && m.hasOwnProperty("id")) {
+d.id = m.id;
+}
+if (m.messages && m.messages.length) {
+d.messages = [];
+for (var j = 0; j < m.messages.length; ++j) {
+d.messages[j] = $root.proto.HistorySyncMsg.toObject(m.messages[j], o);
+}
+}
+if (m.newJid != null && m.hasOwnProperty("newJid")) {
+d.newJid = m.newJid;
+if (o.oneofs)
+d._newJid = "newJid";
+}
+if (m.oldJid != null && m.hasOwnProperty("oldJid")) {
+d.oldJid = m.oldJid;
+if (o.oneofs)
+d._oldJid = "oldJid";
+}
+if (m.lastMsgTimestamp != null && m.hasOwnProperty("lastMsgTimestamp")) {
+if (typeof m.lastMsgTimestamp === "number")
+d.lastMsgTimestamp = o.longs === String ? String(m.lastMsgTimestamp) : m.lastMsgTimestamp;
+else
+d.lastMsgTimestamp = o.longs === String ? longToString(m.lastMsgTimestamp, true) : o.longs === Number ? longToNumber(m.lastMsgTimestamp, true) : m.lastMsgTimestamp;
+if (o.oneofs)
+d._lastMsgTimestamp = "lastMsgTimestamp";
+}
+if (m.unreadCount != null && m.hasOwnProperty("unreadCount")) {
+d.unreadCount = m.unreadCount;
+if (o.oneofs)
+d._unreadCount = "unreadCount";
+}
+if (m.readOnly != null && m.hasOwnProperty("readOnly")) {
+d.readOnly = m.readOnly;
+if (o.oneofs)
+d._readOnly = "readOnly";
+}
+if (m.endOfHistoryTransfer != null && m.hasOwnProperty("endOfHistoryTransfer")) {
+d.endOfHistoryTransfer = m.endOfHistoryTransfer;
+if (o.oneofs)
+d._endOfHistoryTransfer = "endOfHistoryTransfer";
+}
+if (m.ephemeralExpiration != null && m.hasOwnProperty("ephemeralExpiration")) {
+d.ephemeralExpiration = m.ephemeralExpiration;
+if (o.oneofs)
+d._ephemeralExpiration = "ephemeralExpiration";
+}
+if (m.ephemeralSettingTimestamp != null && m.hasOwnProperty("ephemeralSettingTimestamp")) {
+if (typeof m.ephemeralSettingTimestamp === "number")
+d.ephemeralSettingTimestamp = o.longs === String ? String(m.ephemeralSettingTimestamp) : m.ephemeralSettingTimestamp;
+else
+d.ephemeralSettingTimestamp = o.longs === String ? longToString(m.ephemeralSettingTimestamp) : o.longs === Number ? longToNumber(m.ephemeralSettingTimestamp) : m.ephemeralSettingTimestamp;
+if (o.oneofs)
+d._ephemeralSettingTimestamp = "ephemeralSettingTimestamp";
+}
+if (m.endOfHistoryTransferType != null && m.hasOwnProperty("endOfHistoryTransferType")) {
+d.endOfHistoryTransferType = o.enums === String ? $root.proto.Conversation.EndOfHistoryTransferType[m.endOfHistoryTransferType] === undefined ? m.endOfHistoryTransferType : $root.proto.Conversation.EndOfHistoryTransferType[m.endOfHistoryTransferType] : m.endOfHistoryTransferType;
+if (o.oneofs)
+d._endOfHistoryTransferType = "endOfHistoryTransferType";
+}
+if (m.conversationTimestamp != null && m.hasOwnProperty("conversationTimestamp")) {
+if (typeof m.conversationTimestamp === "number")
+d.conversationTimestamp = o.longs === String ? String(m.conversationTimestamp) : m.conversationTimestamp;
+else
+d.conversationTimestamp = o.longs === String ? longToString(m.conversationTimestamp, true) : o.longs === Number ? longToNumber(m.conversationTimestamp, true) : m.conversationTimestamp;
+if (o.oneofs)
+d._conversationTimestamp = "conversationTimestamp";
+}
+if (m.name != null && m.hasOwnProperty("name")) {
+d.name = m.name;
+if (o.oneofs)
+d._name = "name";
+}
+if (m.pHash != null && m.hasOwnProperty("pHash")) {
+d.pHash = m.pHash;
+if (o.oneofs)
+d._pHash = "pHash";
+}
+if (m.notSpam != null && m.hasOwnProperty("notSpam")) {
+d.notSpam = m.notSpam;
+if (o.oneofs)
+d._notSpam = "notSpam";
+}
+if (m.archived != null && m.hasOwnProperty("archived")) {
+d.archived = m.archived;
+if (o.oneofs)
+d._archived = "archived";
+}
+if (m.disappearingMode != null && m.hasOwnProperty("disappearingMode")) {
+d.disappearingMode = $root.proto.DisappearingMode.toObject(m.disappearingMode, o);
+if (o.oneofs)
+d._disappearingMode = "disappearingMode";
+}
+if (m.unreadMentionCount != null && m.hasOwnProperty("unreadMentionCount")) {
+d.unreadMentionCount = m.unreadMentionCount;
+if (o.oneofs)
+d._unreadMentionCount = "unreadMentionCount";
+}
+if (m.markedAsUnread != null && m.hasOwnProperty("markedAsUnread")) {
+d.markedAsUnread = m.markedAsUnread;
+if (o.oneofs)
+d._markedAsUnread = "markedAsUnread";
+}
+if (m.participant && m.participant.length) {
+d.participant = [];
+for (var j = 0; j < m.participant.length; ++j) {
+d.participant[j] = $root.proto.GroupParticipant.toObject(m.participant[j], o);
+}
+}
+if (m.tcToken != null && m.hasOwnProperty("tcToken")) {
+d.tcToken = o.bytes === String ? $util.base64.encode(m.tcToken, 0, m.tcToken.length) : o.bytes === Array ? Array.prototype.slice.call(m.tcToken) : m.tcToken;
+if (o.oneofs)
+d._tcToken = "tcToken";
+}
+if (m.tcTokenTimestamp != null && m.hasOwnProperty("tcTokenTimestamp")) {
+if (typeof m.tcTokenTimestamp === "number")
+d.tcTokenTimestamp = o.longs === String ? String(m.tcTokenTimestamp) : m.tcTokenTimestamp;
+else
+d.tcTokenTimestamp = o.longs === String ? longToString(m.tcTokenTimestamp, true) : o.longs === Number ? longToNumber(m.tcTokenTimestamp, true) : m.tcTokenTimestamp;
+if (o.oneofs)
+d._tcTokenTimestamp = "tcTokenTimestamp";
+}
+if (m.contactPrimaryIdentityKey != null && m.hasOwnProperty("contactPrimaryIdentityKey")) {
+d.contactPrimaryIdentityKey = o.bytes === String ? $util.base64.encode(m.contactPrimaryIdentityKey, 0, m.contactPrimaryIdentityKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.contactPrimaryIdentityKey) : m.contactPrimaryIdentityKey;
+if (o.oneofs)
+d._contactPrimaryIdentityKey = "contactPrimaryIdentityKey";
+}
+if (m.pinned != null && m.hasOwnProperty("pinned")) {
+d.pinned = m.pinned;
+if (o.oneofs)
+d._pinned = "pinned";
+}
+if (m.muteEndTime != null && m.hasOwnProperty("muteEndTime")) {
+if (typeof m.muteEndTime === "number")
+d.muteEndTime = o.longs === String ? String(m.muteEndTime) : m.muteEndTime;
+else
+d.muteEndTime = o.longs === String ? longToString(m.muteEndTime, true) : o.longs === Number ? longToNumber(m.muteEndTime, true) : m.muteEndTime;
+if (o.oneofs)
+d._muteEndTime = "muteEndTime";
+}
+if (m.wallpaper != null && m.hasOwnProperty("wallpaper")) {
+d.wallpaper = $root.proto.WallpaperSettings.toObject(m.wallpaper, o);
+if (o.oneofs)
+d._wallpaper = "wallpaper";
+}
+if (m.mediaVisibility != null && m.hasOwnProperty("mediaVisibility")) {
+d.mediaVisibility = o.enums === String ? $root.proto.MediaVisibility[m.mediaVisibility] === undefined ? m.mediaVisibility : $root.proto.MediaVisibility[m.mediaVisibility] : m.mediaVisibility;
+if (o.oneofs)
+d._mediaVisibility = "mediaVisibility";
+}
+if (m.tcTokenSenderTimestamp != null && m.hasOwnProperty("tcTokenSenderTimestamp")) {
+if (typeof m.tcTokenSenderTimestamp === "number")
+d.tcTokenSenderTimestamp = o.longs === String ? String(m.tcTokenSenderTimestamp) : m.tcTokenSenderTimestamp;
+else
+d.tcTokenSenderTimestamp = o.longs === String ? longToString(m.tcTokenSenderTimestamp, true) : o.longs === Number ? longToNumber(m.tcTokenSenderTimestamp, true) : m.tcTokenSenderTimestamp;
+if (o.oneofs)
+d._tcTokenSenderTimestamp = "tcTokenSenderTimestamp";
+}
+if (m.suspended != null && m.hasOwnProperty("suspended")) {
+d.suspended = m.suspended;
+if (o.oneofs)
+d._suspended = "suspended";
+}
+if (m.terminated != null && m.hasOwnProperty("terminated")) {
+d.terminated = m.terminated;
+if (o.oneofs)
+d._terminated = "terminated";
+}
+if (m.createdAt != null && m.hasOwnProperty("createdAt")) {
+if (typeof m.createdAt === "number")
+d.createdAt = o.longs === String ? String(m.createdAt) : m.createdAt;
+else
+d.createdAt = o.longs === String ? longToString(m.createdAt, true) : o.longs === Number ? longToNumber(m.createdAt, true) : m.createdAt;
+if (o.oneofs)
+d._createdAt = "createdAt";
+}
+if (m.createdBy != null && m.hasOwnProperty("createdBy")) {
+d.createdBy = m.createdBy;
+if (o.oneofs)
+d._createdBy = "createdBy";
+}
+if (m.description != null && m.hasOwnProperty("description")) {
+d.description = m.description;
+if (o.oneofs)
+d._description = "description";
+}
+if (m.support != null && m.hasOwnProperty("support")) {
+d.support = m.support;
+if (o.oneofs)
+d._support = "support";
+}
+if (m.isParentGroup != null && m.hasOwnProperty("isParentGroup")) {
+d.isParentGroup = m.isParentGroup;
+if (o.oneofs)
+d._isParentGroup = "isParentGroup";
+}
+if (m.isDefaultSubgroup != null && m.hasOwnProperty("isDefaultSubgroup")) {
+d.isDefaultSubgroup = m.isDefaultSubgroup;
+if (o.oneofs)
+d._isDefaultSubgroup = "isDefaultSubgroup";
+}
+if (m.parentGroupId != null && m.hasOwnProperty("parentGroupId")) {
+d.parentGroupId = m.parentGroupId;
+if (o.oneofs)
+d._parentGroupId = "parentGroupId";
+}
+if (m.displayName != null && m.hasOwnProperty("displayName")) {
+d.displayName = m.displayName;
+if (o.oneofs)
+d._displayName = "displayName";
+}
+if (m.pnJid != null && m.hasOwnProperty("pnJid")) {
+d.pnJid = m.pnJid;
+if (o.oneofs)
+d._pnJid = "pnJid";
+}
+if (m.shareOwnPn != null && m.hasOwnProperty("shareOwnPn")) {
+d.shareOwnPn = m.shareOwnPn;
+if (o.oneofs)
+d._shareOwnPn = "shareOwnPn";
+}
+if (m.pnhDuplicateLidThread != null && m.hasOwnProperty("pnhDuplicateLidThread")) {
+d.pnhDuplicateLidThread = m.pnhDuplicateLidThread;
+if (o.oneofs)
+d._pnhDuplicateLidThread = "pnhDuplicateLidThread";
+}
+if (m.lidJid != null && m.hasOwnProperty("lidJid")) {
+d.lidJid = m.lidJid;
+if (o.oneofs)
+d._lidJid = "lidJid";
+}
+if (m.username != null && m.hasOwnProperty("username")) {
+d.username = m.username;
+if (o.oneofs)
+d._username = "username";
+}
+if (m.lidOriginType != null && m.hasOwnProperty("lidOriginType")) {
+d.lidOriginType = m.lidOriginType;
+if (o.oneofs)
+d._lidOriginType = "lidOriginType";
+}
+if (m.commentsCount != null && m.hasOwnProperty("commentsCount")) {
+d.commentsCount = m.commentsCount;
+if (o.oneofs)
+d._commentsCount = "commentsCount";
+}
+if (m.locked != null && m.hasOwnProperty("locked")) {
+d.locked = m.locked;
+if (o.oneofs)
+d._locked = "locked";
+}
+if (m.systemMessageToInsert != null && m.hasOwnProperty("systemMessageToInsert")) {
+d.systemMessageToInsert = o.enums === String ? $root.proto.PrivacySystemMessage[m.systemMessageToInsert] === undefined ? m.systemMessageToInsert : $root.proto.PrivacySystemMessage[m.systemMessageToInsert] : m.systemMessageToInsert;
+if (o.oneofs)
+d._systemMessageToInsert = "systemMessageToInsert";
+}
+if (m.capiCreatedGroup != null && m.hasOwnProperty("capiCreatedGroup")) {
+d.capiCreatedGroup = m.capiCreatedGroup;
+if (o.oneofs)
+d._capiCreatedGroup = "capiCreatedGroup";
+}
+if (m.accountLid != null && m.hasOwnProperty("accountLid")) {
+d.accountLid = m.accountLid;
+if (o.oneofs)
+d._accountLid = "accountLid";
+}
+if (m.limitSharing != null && m.hasOwnProperty("limitSharing")) {
+d.limitSharing = m.limitSharing;
+if (o.oneofs)
+d._limitSharing = "limitSharing";
+}
+if (m.limitSharingSettingTimestamp != null && m.hasOwnProperty("limitSharingSettingTimestamp")) {
+if (typeof m.limitSharingSettingTimestamp === "number")
+d.limitSharingSettingTimestamp = o.longs === String ? String(m.limitSharingSettingTimestamp) : m.limitSharingSettingTimestamp;
+else
+d.limitSharingSettingTimestamp = o.longs === String ? longToString(m.limitSharingSettingTimestamp) : o.longs === Number ? longToNumber(m.limitSharingSettingTimestamp) : m.limitSharingSettingTimestamp;
+if (o.oneofs)
+d._limitSharingSettingTimestamp = "limitSharingSettingTimestamp";
+}
+if (m.limitSharingTrigger != null && m.hasOwnProperty("limitSharingTrigger")) {
+d.limitSharingTrigger = o.enums === String ? $root.proto.LimitSharing.TriggerType[m.limitSharingTrigger] === undefined ? m.limitSharingTrigger : $root.proto.LimitSharing.TriggerType[m.limitSharingTrigger] : m.limitSharingTrigger;
+if (o.oneofs)
+d._limitSharingTrigger = "limitSharingTrigger";
+}
+if (m.limitSharingInitiatedByMe != null && m.hasOwnProperty("limitSharingInitiatedByMe")) {
+d.limitSharingInitiatedByMe = m.limitSharingInitiatedByMe;
+if (o.oneofs)
+d._limitSharingInitiatedByMe = "limitSharingInitiatedByMe";
+}
+if (m.maibaAiThreadEnabled != null && m.hasOwnProperty("maibaAiThreadEnabled")) {
+d.maibaAiThreadEnabled = m.maibaAiThreadEnabled;
+if (o.oneofs)
+d._maibaAiThreadEnabled = "maibaAiThreadEnabled";
+}
+if (m.isMarketingMessageThread != null && m.hasOwnProperty("isMarketingMessageThread")) {
+d.isMarketingMessageThread = m.isMarketingMessageThread;
+if (o.oneofs)
+d._isMarketingMessageThread = "isMarketingMessageThread";
+}
+if (m.isSenderNewAccount != null && m.hasOwnProperty("isSenderNewAccount")) {
+d.isSenderNewAccount = m.isSenderNewAccount;
+if (o.oneofs)
+d._isSenderNewAccount = "isSenderNewAccount";
+}
+if (m.afterReadDuration != null && m.hasOwnProperty("afterReadDuration")) {
+d.afterReadDuration = m.afterReadDuration;
+if (o.oneofs)
+d._afterReadDuration = "afterReadDuration";
+}
+if (m.isSenderSuspicious != null && m.hasOwnProperty("isSenderSuspicious")) {
+d.isSenderSuspicious = m.isSenderSuspicious;
+if (o.oneofs)
+d._isSenderSuspicious = "isSenderSuspicious";
+}
+if (m.appealStatus != null && m.hasOwnProperty("appealStatus")) {
+d.appealStatus = o.enums === String ? $root.proto.Conversation.GroupAppealStatus[m.appealStatus] === undefined ? m.appealStatus : $root.proto.Conversation.GroupAppealStatus[m.appealStatus] : m.appealStatus;
+if (o.oneofs)
+d._appealStatus = "appealStatus";
+}
+if (m.appealUpdateTime != null && m.hasOwnProperty("appealUpdateTime")) {
+if (typeof m.appealUpdateTime === "number")
+d.appealUpdateTime = o.longs === String ? String(m.appealUpdateTime) : m.appealUpdateTime;
+else
+d.appealUpdateTime = o.longs === String ? longToString(m.appealUpdateTime, true) : o.longs === Number ? longToNumber(m.appealUpdateTime, true) : m.appealUpdateTime;
+if (o.oneofs)
+d._appealUpdateTime = "appealUpdateTime";
+}
+if (m.authAgentParentCompanyName != null && m.hasOwnProperty("authAgentParentCompanyName")) {
+d.authAgentParentCompanyName = m.authAgentParentCompanyName;
+if (o.oneofs)
+d._authAgentParentCompanyName = "authAgentParentCompanyName";
+}
+if (m.authAgentObaPhoneNumber != null && m.hasOwnProperty("authAgentObaPhoneNumber")) {
+d.authAgentObaPhoneNumber = m.authAgentObaPhoneNumber;
+if (o.oneofs)
+d._authAgentObaPhoneNumber = "authAgentObaPhoneNumber";
+}
+return d;
+};
+Conversation.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+Conversation.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.Conversation";
+};
+$lazy(Conversation, "EndOfHistoryTransferType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "COMPLETE_BUT_MORE_MESSAGES_REMAIN_ON_PRIMARY"] = 0;
+values[valuesById[1] = "COMPLETE_AND_NO_MORE_MESSAGE_REMAIN_ON_PRIMARY"] = 1;
+values[valuesById[2] = "COMPLETE_ON_DEMAND_SYNC_BUT_MORE_MSG_REMAIN_ON_PRIMARY"] = 2;
+values[valuesById[3] = "COMPLETE_ON_DEMAND_SYNC_WITH_MORE_MSG_ON_PRIMARY_BUT_NO_ACCESS"] = 3;
+return values;
+});
+$lazy(Conversation, "GroupAppealStatus", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "NO_APPEAL"] = 0;
+values[valuesById[1] = "APPEAL_IN_REVIEW"] = 1;
+values[valuesById[2] = "APPEAL_APPROVED"] = 2;
+values[valuesById[3] = "APPEAL_REJECTED"] = 3;
+return values;
+});
+return Conversation;

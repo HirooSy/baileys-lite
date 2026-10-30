@@ -1,0 +1,451 @@
+"use strict";
+function MessageContextInfo(p) {
+this.threadId = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+MessageContextInfo.prototype.deviceListMetadata = null;
+MessageContextInfo.prototype.deviceListMetadataVersion = null;
+MessageContextInfo.prototype.messageSecret = null;
+MessageContextInfo.prototype.paddingBytes = null;
+MessageContextInfo.prototype.messageAddOnDurationInSecs = null;
+MessageContextInfo.prototype.botMessageSecret = null;
+MessageContextInfo.prototype.botMetadata = null;
+MessageContextInfo.prototype.reportingTokenVersion = null;
+MessageContextInfo.prototype.messageAddOnExpiryType = null;
+MessageContextInfo.prototype.messageAssociation = null;
+MessageContextInfo.prototype.capiCreatedGroup = null;
+MessageContextInfo.prototype.supportPayload = null;
+MessageContextInfo.prototype.limitSharing = null;
+MessageContextInfo.prototype.limitSharingV2 = null;
+MessageContextInfo.prototype.threadId = $util.emptyArray;
+MessageContextInfo.prototype.weblinkRenderConfig = null;
+MessageContextInfo.prototype.teeBotMetadata = null;
+let $oneOfFields;
+Object.defineProperty(MessageContextInfo.prototype, "_deviceListMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["deviceListMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageContextInfo.prototype, "_deviceListMetadataVersion", {
+get: $util.oneOfGetter($oneOfFields = ["deviceListMetadataVersion"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageContextInfo.prototype, "_messageSecret", {
+get: $util.oneOfGetter($oneOfFields = ["messageSecret"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageContextInfo.prototype, "_paddingBytes", {
+get: $util.oneOfGetter($oneOfFields = ["paddingBytes"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageContextInfo.prototype, "_messageAddOnDurationInSecs", {
+get: $util.oneOfGetter($oneOfFields = ["messageAddOnDurationInSecs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageContextInfo.prototype, "_botMessageSecret", {
+get: $util.oneOfGetter($oneOfFields = ["botMessageSecret"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageContextInfo.prototype, "_botMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["botMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageContextInfo.prototype, "_reportingTokenVersion", {
+get: $util.oneOfGetter($oneOfFields = ["reportingTokenVersion"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageContextInfo.prototype, "_messageAddOnExpiryType", {
+get: $util.oneOfGetter($oneOfFields = ["messageAddOnExpiryType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageContextInfo.prototype, "_messageAssociation", {
+get: $util.oneOfGetter($oneOfFields = ["messageAssociation"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageContextInfo.prototype, "_capiCreatedGroup", {
+get: $util.oneOfGetter($oneOfFields = ["capiCreatedGroup"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageContextInfo.prototype, "_supportPayload", {
+get: $util.oneOfGetter($oneOfFields = ["supportPayload"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageContextInfo.prototype, "_limitSharing", {
+get: $util.oneOfGetter($oneOfFields = ["limitSharing"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageContextInfo.prototype, "_limitSharingV2", {
+get: $util.oneOfGetter($oneOfFields = ["limitSharingV2"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageContextInfo.prototype, "_weblinkRenderConfig", {
+get: $util.oneOfGetter($oneOfFields = ["weblinkRenderConfig"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageContextInfo.prototype, "_teeBotMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["teeBotMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+MessageContextInfo.create = function create(properties) {
+return new MessageContextInfo(properties);
+};
+MessageContextInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.deviceListMetadata != null && Object.hasOwnProperty.call(m, "deviceListMetadata"))
+$root.proto.DeviceListMetadata.encode(m.deviceListMetadata, w.uint32(10).fork()).ldelim();
+if (m.deviceListMetadataVersion != null && Object.hasOwnProperty.call(m, "deviceListMetadataVersion"))
+w.uint32(16).int32(m.deviceListMetadataVersion);
+if (m.messageSecret != null && Object.hasOwnProperty.call(m, "messageSecret"))
+w.uint32(26).bytes(m.messageSecret);
+if (m.paddingBytes != null && Object.hasOwnProperty.call(m, "paddingBytes"))
+w.uint32(34).bytes(m.paddingBytes);
+if (m.messageAddOnDurationInSecs != null && Object.hasOwnProperty.call(m, "messageAddOnDurationInSecs"))
+w.uint32(40).uint32(m.messageAddOnDurationInSecs);
+if (m.botMessageSecret != null && Object.hasOwnProperty.call(m, "botMessageSecret"))
+w.uint32(50).bytes(m.botMessageSecret);
+if (m.botMetadata != null && Object.hasOwnProperty.call(m, "botMetadata"))
+$root.proto.BotMetadata.encode(m.botMetadata, w.uint32(58).fork()).ldelim();
+if (m.reportingTokenVersion != null && Object.hasOwnProperty.call(m, "reportingTokenVersion"))
+w.uint32(64).int32(m.reportingTokenVersion);
+if (m.messageAddOnExpiryType != null && Object.hasOwnProperty.call(m, "messageAddOnExpiryType"))
+w.uint32(72).int32(m.messageAddOnExpiryType);
+if (m.messageAssociation != null && Object.hasOwnProperty.call(m, "messageAssociation"))
+$root.proto.MessageAssociation.encode(m.messageAssociation, w.uint32(82).fork()).ldelim();
+if (m.capiCreatedGroup != null && Object.hasOwnProperty.call(m, "capiCreatedGroup"))
+w.uint32(88).bool(m.capiCreatedGroup);
+if (m.supportPayload != null && Object.hasOwnProperty.call(m, "supportPayload"))
+w.uint32(98).string(m.supportPayload);
+if (m.limitSharing != null && Object.hasOwnProperty.call(m, "limitSharing"))
+$root.proto.LimitSharing.encode(m.limitSharing, w.uint32(106).fork()).ldelim();
+if (m.limitSharingV2 != null && Object.hasOwnProperty.call(m, "limitSharingV2"))
+$root.proto.LimitSharing.encode(m.limitSharingV2, w.uint32(114).fork()).ldelim();
+if (m.threadId != null && m.threadId.length) {
+for (var i = 0; i < m.threadId.length; ++i)
+$root.proto.ThreadID.encode(m.threadId[i], w.uint32(122).fork()).ldelim();
+}
+if (m.weblinkRenderConfig != null && Object.hasOwnProperty.call(m, "weblinkRenderConfig"))
+w.uint32(128).int32(m.weblinkRenderConfig);
+if (m.teeBotMetadata != null && Object.hasOwnProperty.call(m, "teeBotMetadata"))
+w.uint32(138).bytes(m.teeBotMetadata);
+return w;
+};
+MessageContextInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.MessageContextInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.deviceListMetadata = $root.proto.DeviceListMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.deviceListMetadataVersion = r.int32();
+break;
+}
+case 3: {
+m.messageSecret = r.bytes();
+break;
+}
+case 4: {
+m.paddingBytes = r.bytes();
+break;
+}
+case 5: {
+m.messageAddOnDurationInSecs = r.uint32();
+break;
+}
+case 6: {
+m.botMessageSecret = r.bytes();
+break;
+}
+case 7: {
+m.botMetadata = $root.proto.BotMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 8: {
+m.reportingTokenVersion = r.int32();
+break;
+}
+case 9: {
+m.messageAddOnExpiryType = r.int32();
+break;
+}
+case 10: {
+m.messageAssociation = $root.proto.MessageAssociation.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 11: {
+m.capiCreatedGroup = r.bool();
+break;
+}
+case 12: {
+m.supportPayload = r.string();
+break;
+}
+case 13: {
+m.limitSharing = $root.proto.LimitSharing.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 14: {
+m.limitSharingV2 = $root.proto.LimitSharing.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 15: {
+if (!(m.threadId && m.threadId.length))
+m.threadId = [];
+m.threadId.push($root.proto.ThreadID.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 16: {
+m.weblinkRenderConfig = r.int32();
+break;
+}
+case 17: {
+m.teeBotMetadata = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+MessageContextInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.MessageContextInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.MessageContextInfo();
+if (d.deviceListMetadata != null) {
+if (typeof d.deviceListMetadata !== "object")
+throw TypeError(".proto.MessageContextInfo.deviceListMetadata: object expected");
+m.deviceListMetadata = $root.proto.DeviceListMetadata.fromObject(d.deviceListMetadata, n + 1);
+}
+if (d.deviceListMetadataVersion != null) {
+m.deviceListMetadataVersion = d.deviceListMetadataVersion | 0;
+}
+if (d.messageSecret != null) {
+if (typeof d.messageSecret === "string")
+$util.base64.decode(d.messageSecret, m.messageSecret = $util.newBuffer($util.base64.length(d.messageSecret)), 0);
+else if (d.messageSecret.length >= 0)
+m.messageSecret = d.messageSecret;
+}
+if (d.paddingBytes != null) {
+if (typeof d.paddingBytes === "string")
+$util.base64.decode(d.paddingBytes, m.paddingBytes = $util.newBuffer($util.base64.length(d.paddingBytes)), 0);
+else if (d.paddingBytes.length >= 0)
+m.paddingBytes = d.paddingBytes;
+}
+if (d.messageAddOnDurationInSecs != null) {
+m.messageAddOnDurationInSecs = d.messageAddOnDurationInSecs >>> 0;
+}
+if (d.botMessageSecret != null) {
+if (typeof d.botMessageSecret === "string")
+$util.base64.decode(d.botMessageSecret, m.botMessageSecret = $util.newBuffer($util.base64.length(d.botMessageSecret)), 0);
+else if (d.botMessageSecret.length >= 0)
+m.botMessageSecret = d.botMessageSecret;
+}
+if (d.botMetadata != null) {
+if (typeof d.botMetadata !== "object")
+throw TypeError(".proto.MessageContextInfo.botMetadata: object expected");
+m.botMetadata = $root.proto.BotMetadata.fromObject(d.botMetadata, n + 1);
+}
+if (d.reportingTokenVersion != null) {
+m.reportingTokenVersion = d.reportingTokenVersion | 0;
+}
+switch (d.messageAddOnExpiryType) {
+default:
+if (typeof d.messageAddOnExpiryType === "number") {
+m.messageAddOnExpiryType = d.messageAddOnExpiryType;
+break;
+}
+break;
+case "STATIC":
+case 1:
+m.messageAddOnExpiryType = 1;
+break;
+case "DEPENDENT_ON_PARENT":
+case 2:
+m.messageAddOnExpiryType = 2;
+break;
+}
+if (d.messageAssociation != null) {
+if (typeof d.messageAssociation !== "object")
+throw TypeError(".proto.MessageContextInfo.messageAssociation: object expected");
+m.messageAssociation = $root.proto.MessageAssociation.fromObject(d.messageAssociation, n + 1);
+}
+if (d.capiCreatedGroup != null) {
+m.capiCreatedGroup = Boolean(d.capiCreatedGroup);
+}
+if (d.supportPayload != null) {
+m.supportPayload = String(d.supportPayload);
+}
+if (d.limitSharing != null) {
+if (typeof d.limitSharing !== "object")
+throw TypeError(".proto.MessageContextInfo.limitSharing: object expected");
+m.limitSharing = $root.proto.LimitSharing.fromObject(d.limitSharing, n + 1);
+}
+if (d.limitSharingV2 != null) {
+if (typeof d.limitSharingV2 !== "object")
+throw TypeError(".proto.MessageContextInfo.limitSharingV2: object expected");
+m.limitSharingV2 = $root.proto.LimitSharing.fromObject(d.limitSharingV2, n + 1);
+}
+if (d.threadId) {
+if (!Array.isArray(d.threadId))
+throw TypeError(".proto.MessageContextInfo.threadId: array expected");
+m.threadId = [];
+for (var i = 0; i < d.threadId.length; ++i) {
+if (typeof d.threadId[i] !== "object")
+throw TypeError(".proto.MessageContextInfo.threadId: object expected");
+m.threadId[i] = $root.proto.ThreadID.fromObject(d.threadId[i], n + 1);
+}
+}
+switch (d.weblinkRenderConfig) {
+default:
+if (typeof d.weblinkRenderConfig === "number") {
+m.weblinkRenderConfig = d.weblinkRenderConfig;
+break;
+}
+break;
+case "WEBVIEW":
+case 0:
+m.weblinkRenderConfig = 0;
+break;
+case "SYSTEM":
+case 1:
+m.weblinkRenderConfig = 1;
+break;
+}
+if (d.teeBotMetadata != null) {
+if (typeof d.teeBotMetadata === "string")
+$util.base64.decode(d.teeBotMetadata, m.teeBotMetadata = $util.newBuffer($util.base64.length(d.teeBotMetadata)), 0);
+else if (d.teeBotMetadata.length >= 0)
+m.teeBotMetadata = d.teeBotMetadata;
+}
+return m;
+};
+MessageContextInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.threadId = [];
+}
+if (m.deviceListMetadata != null && m.hasOwnProperty("deviceListMetadata")) {
+d.deviceListMetadata = $root.proto.DeviceListMetadata.toObject(m.deviceListMetadata, o);
+if (o.oneofs)
+d._deviceListMetadata = "deviceListMetadata";
+}
+if (m.deviceListMetadataVersion != null && m.hasOwnProperty("deviceListMetadataVersion")) {
+d.deviceListMetadataVersion = m.deviceListMetadataVersion;
+if (o.oneofs)
+d._deviceListMetadataVersion = "deviceListMetadataVersion";
+}
+if (m.messageSecret != null && m.hasOwnProperty("messageSecret")) {
+d.messageSecret = o.bytes === String ? $util.base64.encode(m.messageSecret, 0, m.messageSecret.length) : o.bytes === Array ? Array.prototype.slice.call(m.messageSecret) : m.messageSecret;
+if (o.oneofs)
+d._messageSecret = "messageSecret";
+}
+if (m.paddingBytes != null && m.hasOwnProperty("paddingBytes")) {
+d.paddingBytes = o.bytes === String ? $util.base64.encode(m.paddingBytes, 0, m.paddingBytes.length) : o.bytes === Array ? Array.prototype.slice.call(m.paddingBytes) : m.paddingBytes;
+if (o.oneofs)
+d._paddingBytes = "paddingBytes";
+}
+if (m.messageAddOnDurationInSecs != null && m.hasOwnProperty("messageAddOnDurationInSecs")) {
+d.messageAddOnDurationInSecs = m.messageAddOnDurationInSecs;
+if (o.oneofs)
+d._messageAddOnDurationInSecs = "messageAddOnDurationInSecs";
+}
+if (m.botMessageSecret != null && m.hasOwnProperty("botMessageSecret")) {
+d.botMessageSecret = o.bytes === String ? $util.base64.encode(m.botMessageSecret, 0, m.botMessageSecret.length) : o.bytes === Array ? Array.prototype.slice.call(m.botMessageSecret) : m.botMessageSecret;
+if (o.oneofs)
+d._botMessageSecret = "botMessageSecret";
+}
+if (m.botMetadata != null && m.hasOwnProperty("botMetadata")) {
+d.botMetadata = $root.proto.BotMetadata.toObject(m.botMetadata, o);
+if (o.oneofs)
+d._botMetadata = "botMetadata";
+}
+if (m.reportingTokenVersion != null && m.hasOwnProperty("reportingTokenVersion")) {
+d.reportingTokenVersion = m.reportingTokenVersion;
+if (o.oneofs)
+d._reportingTokenVersion = "reportingTokenVersion";
+}
+if (m.messageAddOnExpiryType != null && m.hasOwnProperty("messageAddOnExpiryType")) {
+d.messageAddOnExpiryType = o.enums === String ? $root.proto.MessageContextInfo.MessageAddonExpiryType[m.messageAddOnExpiryType] === undefined ? m.messageAddOnExpiryType : $root.proto.MessageContextInfo.MessageAddonExpiryType[m.messageAddOnExpiryType] : m.messageAddOnExpiryType;
+if (o.oneofs)
+d._messageAddOnExpiryType = "messageAddOnExpiryType";
+}
+if (m.messageAssociation != null && m.hasOwnProperty("messageAssociation")) {
+d.messageAssociation = $root.proto.MessageAssociation.toObject(m.messageAssociation, o);
+if (o.oneofs)
+d._messageAssociation = "messageAssociation";
+}
+if (m.capiCreatedGroup != null && m.hasOwnProperty("capiCreatedGroup")) {
+d.capiCreatedGroup = m.capiCreatedGroup;
+if (o.oneofs)
+d._capiCreatedGroup = "capiCreatedGroup";
+}
+if (m.supportPayload != null && m.hasOwnProperty("supportPayload")) {
+d.supportPayload = m.supportPayload;
+if (o.oneofs)
+d._supportPayload = "supportPayload";
+}
+if (m.limitSharing != null && m.hasOwnProperty("limitSharing")) {
+d.limitSharing = $root.proto.LimitSharing.toObject(m.limitSharing, o);
+if (o.oneofs)
+d._limitSharing = "limitSharing";
+}
+if (m.limitSharingV2 != null && m.hasOwnProperty("limitSharingV2")) {
+d.limitSharingV2 = $root.proto.LimitSharing.toObject(m.limitSharingV2, o);
+if (o.oneofs)
+d._limitSharingV2 = "limitSharingV2";
+}
+if (m.threadId && m.threadId.length) {
+d.threadId = [];
+for (var j = 0; j < m.threadId.length; ++j) {
+d.threadId[j] = $root.proto.ThreadID.toObject(m.threadId[j], o);
+}
+}
+if (m.weblinkRenderConfig != null && m.hasOwnProperty("weblinkRenderConfig")) {
+d.weblinkRenderConfig = o.enums === String ? $root.proto.WebLinkRenderConfig[m.weblinkRenderConfig] === undefined ? m.weblinkRenderConfig : $root.proto.WebLinkRenderConfig[m.weblinkRenderConfig] : m.weblinkRenderConfig;
+if (o.oneofs)
+d._weblinkRenderConfig = "weblinkRenderConfig";
+}
+if (m.teeBotMetadata != null && m.hasOwnProperty("teeBotMetadata")) {
+d.teeBotMetadata = o.bytes === String ? $util.base64.encode(m.teeBotMetadata, 0, m.teeBotMetadata.length) : o.bytes === Array ? Array.prototype.slice.call(m.teeBotMetadata) : m.teeBotMetadata;
+if (o.oneofs)
+d._teeBotMetadata = "teeBotMetadata";
+}
+return d;
+};
+MessageContextInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+MessageContextInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.MessageContextInfo";
+};
+$lazy(MessageContextInfo, "MessageAddonExpiryType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[1] = "STATIC"] = 1;
+values[valuesById[2] = "DEPENDENT_ON_PARENT"] = 2;
+return values;
+});
+return MessageContextInfo;

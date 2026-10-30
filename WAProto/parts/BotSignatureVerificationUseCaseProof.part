@@ -1,0 +1,183 @@
+"use strict";
+function BotSignatureVerificationUseCaseProof(p) {
+this.certificateChain = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotSignatureVerificationUseCaseProof.prototype.version = null;
+BotSignatureVerificationUseCaseProof.prototype.useCase = null;
+BotSignatureVerificationUseCaseProof.prototype.signature = null;
+BotSignatureVerificationUseCaseProof.prototype.certificateChain = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(BotSignatureVerificationUseCaseProof.prototype, "_version", {
+get: $util.oneOfGetter($oneOfFields = ["version"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotSignatureVerificationUseCaseProof.prototype, "_useCase", {
+get: $util.oneOfGetter($oneOfFields = ["useCase"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotSignatureVerificationUseCaseProof.prototype, "_signature", {
+get: $util.oneOfGetter($oneOfFields = ["signature"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotSignatureVerificationUseCaseProof.create = function create(properties) {
+return new BotSignatureVerificationUseCaseProof(properties);
+};
+BotSignatureVerificationUseCaseProof.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.version != null && Object.hasOwnProperty.call(m, "version"))
+w.uint32(8).int32(m.version);
+if (m.useCase != null && Object.hasOwnProperty.call(m, "useCase"))
+w.uint32(16).int32(m.useCase);
+if (m.signature != null && Object.hasOwnProperty.call(m, "signature"))
+w.uint32(26).bytes(m.signature);
+if (m.certificateChain != null && m.certificateChain.length) {
+for (var i = 0; i < m.certificateChain.length; ++i)
+w.uint32(34).bytes(m.certificateChain[i]);
+}
+return w;
+};
+BotSignatureVerificationUseCaseProof.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotSignatureVerificationUseCaseProof();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.version = r.int32();
+break;
+}
+case 2: {
+m.useCase = r.int32();
+break;
+}
+case 3: {
+m.signature = r.bytes();
+break;
+}
+case 4: {
+if (!(m.certificateChain && m.certificateChain.length))
+m.certificateChain = [];
+m.certificateChain.push(r.bytes());
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotSignatureVerificationUseCaseProof.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotSignatureVerificationUseCaseProof)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotSignatureVerificationUseCaseProof();
+if (d.version != null) {
+m.version = d.version | 0;
+}
+switch (d.useCase) {
+default:
+if (typeof d.useCase === "number") {
+m.useCase = d.useCase;
+break;
+}
+break;
+case "UNSPECIFIED":
+case 0:
+m.useCase = 0;
+break;
+case "WA_BOT_MSG":
+case 1:
+m.useCase = 1;
+break;
+case "WA_TEE_BOT_MSG":
+case 2:
+m.useCase = 2;
+break;
+case "P2P_PILLS":
+case 3:
+m.useCase = 3;
+break;
+}
+if (d.signature != null) {
+if (typeof d.signature === "string")
+$util.base64.decode(d.signature, m.signature = $util.newBuffer($util.base64.length(d.signature)), 0);
+else if (d.signature.length >= 0)
+m.signature = d.signature;
+}
+if (d.certificateChain) {
+if (!Array.isArray(d.certificateChain))
+throw TypeError(".proto.BotSignatureVerificationUseCaseProof.certificateChain: array expected");
+m.certificateChain = [];
+for (var i = 0; i < d.certificateChain.length; ++i) {
+if (typeof d.certificateChain[i] === "string")
+$util.base64.decode(d.certificateChain[i], m.certificateChain[i] = $util.newBuffer($util.base64.length(d.certificateChain[i])), 0);
+else if (d.certificateChain[i].length >= 0)
+m.certificateChain[i] = d.certificateChain[i];
+}
+}
+return m;
+};
+BotSignatureVerificationUseCaseProof.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.certificateChain = [];
+}
+if (m.version != null && m.hasOwnProperty("version")) {
+d.version = m.version;
+if (o.oneofs)
+d._version = "version";
+}
+if (m.useCase != null && m.hasOwnProperty("useCase")) {
+d.useCase = o.enums === String ? $root.proto.BotSignatureVerificationUseCaseProof.BotSignatureUseCase[m.useCase] === undefined ? m.useCase : $root.proto.BotSignatureVerificationUseCaseProof.BotSignatureUseCase[m.useCase] : m.useCase;
+if (o.oneofs)
+d._useCase = "useCase";
+}
+if (m.signature != null && m.hasOwnProperty("signature")) {
+d.signature = o.bytes === String ? $util.base64.encode(m.signature, 0, m.signature.length) : o.bytes === Array ? Array.prototype.slice.call(m.signature) : m.signature;
+if (o.oneofs)
+d._signature = "signature";
+}
+if (m.certificateChain && m.certificateChain.length) {
+d.certificateChain = [];
+for (var j = 0; j < m.certificateChain.length; ++j) {
+d.certificateChain[j] = o.bytes === String ? $util.base64.encode(m.certificateChain[j], 0, m.certificateChain[j].length) : o.bytes === Array ? Array.prototype.slice.call(m.certificateChain[j]) : m.certificateChain[j];
+}
+}
+return d;
+};
+BotSignatureVerificationUseCaseProof.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotSignatureVerificationUseCaseProof.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotSignatureVerificationUseCaseProof";
+};
+$lazy(BotSignatureVerificationUseCaseProof, "BotSignatureUseCase", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNSPECIFIED"] = 0;
+values[valuesById[1] = "WA_BOT_MSG"] = 1;
+values[valuesById[2] = "WA_TEE_BOT_MSG"] = 2;
+values[valuesById[3] = "P2P_PILLS"] = 3;
+return values;
+});
+return BotSignatureVerificationUseCaseProof;

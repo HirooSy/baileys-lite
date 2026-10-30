@@ -1,0 +1,779 @@
+"use strict";
+function InThreadSurveyMetadata(p) {
+this.questions = [];
+this.privacyStatementParts = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+InThreadSurveyMetadata.prototype.tessaSessionId = null;
+InThreadSurveyMetadata.prototype.simonSessionId = null;
+InThreadSurveyMetadata.prototype.simonSurveyId = null;
+InThreadSurveyMetadata.prototype.tessaRootId = null;
+InThreadSurveyMetadata.prototype.requestId = null;
+InThreadSurveyMetadata.prototype.tessaEvent = null;
+InThreadSurveyMetadata.prototype.invitationHeaderText = null;
+InThreadSurveyMetadata.prototype.invitationBodyText = null;
+InThreadSurveyMetadata.prototype.invitationCtaText = null;
+InThreadSurveyMetadata.prototype.invitationCtaUrl = null;
+InThreadSurveyMetadata.prototype.surveyTitle = null;
+InThreadSurveyMetadata.prototype.questions = $util.emptyArray;
+InThreadSurveyMetadata.prototype.surveyContinueButtonText = null;
+InThreadSurveyMetadata.prototype.surveySubmitButtonText = null;
+InThreadSurveyMetadata.prototype.privacyStatementFull = null;
+InThreadSurveyMetadata.prototype.privacyStatementParts = $util.emptyArray;
+InThreadSurveyMetadata.prototype.feedbackToastText = null;
+InThreadSurveyMetadata.prototype.startQuestionIndex = null;
+let $oneOfFields;
+Object.defineProperty(InThreadSurveyMetadata.prototype, "_tessaSessionId", {
+get: $util.oneOfGetter($oneOfFields = ["tessaSessionId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyMetadata.prototype, "_simonSessionId", {
+get: $util.oneOfGetter($oneOfFields = ["simonSessionId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyMetadata.prototype, "_simonSurveyId", {
+get: $util.oneOfGetter($oneOfFields = ["simonSurveyId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyMetadata.prototype, "_tessaRootId", {
+get: $util.oneOfGetter($oneOfFields = ["tessaRootId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyMetadata.prototype, "_requestId", {
+get: $util.oneOfGetter($oneOfFields = ["requestId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyMetadata.prototype, "_tessaEvent", {
+get: $util.oneOfGetter($oneOfFields = ["tessaEvent"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyMetadata.prototype, "_invitationHeaderText", {
+get: $util.oneOfGetter($oneOfFields = ["invitationHeaderText"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyMetadata.prototype, "_invitationBodyText", {
+get: $util.oneOfGetter($oneOfFields = ["invitationBodyText"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyMetadata.prototype, "_invitationCtaText", {
+get: $util.oneOfGetter($oneOfFields = ["invitationCtaText"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyMetadata.prototype, "_invitationCtaUrl", {
+get: $util.oneOfGetter($oneOfFields = ["invitationCtaUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyMetadata.prototype, "_surveyTitle", {
+get: $util.oneOfGetter($oneOfFields = ["surveyTitle"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyMetadata.prototype, "_surveyContinueButtonText", {
+get: $util.oneOfGetter($oneOfFields = ["surveyContinueButtonText"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyMetadata.prototype, "_surveySubmitButtonText", {
+get: $util.oneOfGetter($oneOfFields = ["surveySubmitButtonText"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyMetadata.prototype, "_privacyStatementFull", {
+get: $util.oneOfGetter($oneOfFields = ["privacyStatementFull"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyMetadata.prototype, "_feedbackToastText", {
+get: $util.oneOfGetter($oneOfFields = ["feedbackToastText"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyMetadata.prototype, "_startQuestionIndex", {
+get: $util.oneOfGetter($oneOfFields = ["startQuestionIndex"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+InThreadSurveyMetadata.create = function create(properties) {
+return new InThreadSurveyMetadata(properties);
+};
+InThreadSurveyMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.tessaSessionId != null && Object.hasOwnProperty.call(m, "tessaSessionId"))
+w.uint32(10).string(m.tessaSessionId);
+if (m.simonSessionId != null && Object.hasOwnProperty.call(m, "simonSessionId"))
+w.uint32(18).string(m.simonSessionId);
+if (m.simonSurveyId != null && Object.hasOwnProperty.call(m, "simonSurveyId"))
+w.uint32(26).string(m.simonSurveyId);
+if (m.tessaRootId != null && Object.hasOwnProperty.call(m, "tessaRootId"))
+w.uint32(34).string(m.tessaRootId);
+if (m.requestId != null && Object.hasOwnProperty.call(m, "requestId"))
+w.uint32(42).string(m.requestId);
+if (m.tessaEvent != null && Object.hasOwnProperty.call(m, "tessaEvent"))
+w.uint32(50).string(m.tessaEvent);
+if (m.invitationHeaderText != null && Object.hasOwnProperty.call(m, "invitationHeaderText"))
+w.uint32(58).string(m.invitationHeaderText);
+if (m.invitationBodyText != null && Object.hasOwnProperty.call(m, "invitationBodyText"))
+w.uint32(66).string(m.invitationBodyText);
+if (m.invitationCtaText != null && Object.hasOwnProperty.call(m, "invitationCtaText"))
+w.uint32(74).string(m.invitationCtaText);
+if (m.invitationCtaUrl != null && Object.hasOwnProperty.call(m, "invitationCtaUrl"))
+w.uint32(82).string(m.invitationCtaUrl);
+if (m.surveyTitle != null && Object.hasOwnProperty.call(m, "surveyTitle"))
+w.uint32(90).string(m.surveyTitle);
+if (m.questions != null && m.questions.length) {
+for (var i = 0; i < m.questions.length; ++i)
+$root.proto.InThreadSurveyMetadata.InThreadSurveyQuestion.encode(m.questions[i], w.uint32(98).fork()).ldelim();
+}
+if (m.surveyContinueButtonText != null && Object.hasOwnProperty.call(m, "surveyContinueButtonText"))
+w.uint32(106).string(m.surveyContinueButtonText);
+if (m.surveySubmitButtonText != null && Object.hasOwnProperty.call(m, "surveySubmitButtonText"))
+w.uint32(114).string(m.surveySubmitButtonText);
+if (m.privacyStatementFull != null && Object.hasOwnProperty.call(m, "privacyStatementFull"))
+w.uint32(122).string(m.privacyStatementFull);
+if (m.privacyStatementParts != null && m.privacyStatementParts.length) {
+for (var i = 0; i < m.privacyStatementParts.length; ++i)
+$root.proto.InThreadSurveyMetadata.InThreadSurveyPrivacyStatementPart.encode(m.privacyStatementParts[i], w.uint32(130).fork()).ldelim();
+}
+if (m.feedbackToastText != null && Object.hasOwnProperty.call(m, "feedbackToastText"))
+w.uint32(138).string(m.feedbackToastText);
+if (m.startQuestionIndex != null && Object.hasOwnProperty.call(m, "startQuestionIndex"))
+w.uint32(144).int32(m.startQuestionIndex);
+return w;
+};
+InThreadSurveyMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.InThreadSurveyMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.tessaSessionId = r.string();
+break;
+}
+case 2: {
+m.simonSessionId = r.string();
+break;
+}
+case 3: {
+m.simonSurveyId = r.string();
+break;
+}
+case 4: {
+m.tessaRootId = r.string();
+break;
+}
+case 5: {
+m.requestId = r.string();
+break;
+}
+case 6: {
+m.tessaEvent = r.string();
+break;
+}
+case 7: {
+m.invitationHeaderText = r.string();
+break;
+}
+case 8: {
+m.invitationBodyText = r.string();
+break;
+}
+case 9: {
+m.invitationCtaText = r.string();
+break;
+}
+case 10: {
+m.invitationCtaUrl = r.string();
+break;
+}
+case 11: {
+m.surveyTitle = r.string();
+break;
+}
+case 12: {
+if (!(m.questions && m.questions.length))
+m.questions = [];
+m.questions.push($root.proto.InThreadSurveyMetadata.InThreadSurveyQuestion.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 13: {
+m.surveyContinueButtonText = r.string();
+break;
+}
+case 14: {
+m.surveySubmitButtonText = r.string();
+break;
+}
+case 15: {
+m.privacyStatementFull = r.string();
+break;
+}
+case 16: {
+if (!(m.privacyStatementParts && m.privacyStatementParts.length))
+m.privacyStatementParts = [];
+m.privacyStatementParts.push($root.proto.InThreadSurveyMetadata.InThreadSurveyPrivacyStatementPart.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 17: {
+m.feedbackToastText = r.string();
+break;
+}
+case 18: {
+m.startQuestionIndex = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+InThreadSurveyMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.InThreadSurveyMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.InThreadSurveyMetadata();
+if (d.tessaSessionId != null) {
+m.tessaSessionId = String(d.tessaSessionId);
+}
+if (d.simonSessionId != null) {
+m.simonSessionId = String(d.simonSessionId);
+}
+if (d.simonSurveyId != null) {
+m.simonSurveyId = String(d.simonSurveyId);
+}
+if (d.tessaRootId != null) {
+m.tessaRootId = String(d.tessaRootId);
+}
+if (d.requestId != null) {
+m.requestId = String(d.requestId);
+}
+if (d.tessaEvent != null) {
+m.tessaEvent = String(d.tessaEvent);
+}
+if (d.invitationHeaderText != null) {
+m.invitationHeaderText = String(d.invitationHeaderText);
+}
+if (d.invitationBodyText != null) {
+m.invitationBodyText = String(d.invitationBodyText);
+}
+if (d.invitationCtaText != null) {
+m.invitationCtaText = String(d.invitationCtaText);
+}
+if (d.invitationCtaUrl != null) {
+m.invitationCtaUrl = String(d.invitationCtaUrl);
+}
+if (d.surveyTitle != null) {
+m.surveyTitle = String(d.surveyTitle);
+}
+if (d.questions) {
+if (!Array.isArray(d.questions))
+throw TypeError(".proto.InThreadSurveyMetadata.questions: array expected");
+m.questions = [];
+for (var i = 0; i < d.questions.length; ++i) {
+if (typeof d.questions[i] !== "object")
+throw TypeError(".proto.InThreadSurveyMetadata.questions: object expected");
+m.questions[i] = $root.proto.InThreadSurveyMetadata.InThreadSurveyQuestion.fromObject(d.questions[i], n + 1);
+}
+}
+if (d.surveyContinueButtonText != null) {
+m.surveyContinueButtonText = String(d.surveyContinueButtonText);
+}
+if (d.surveySubmitButtonText != null) {
+m.surveySubmitButtonText = String(d.surveySubmitButtonText);
+}
+if (d.privacyStatementFull != null) {
+m.privacyStatementFull = String(d.privacyStatementFull);
+}
+if (d.privacyStatementParts) {
+if (!Array.isArray(d.privacyStatementParts))
+throw TypeError(".proto.InThreadSurveyMetadata.privacyStatementParts: array expected");
+m.privacyStatementParts = [];
+for (var i = 0; i < d.privacyStatementParts.length; ++i) {
+if (typeof d.privacyStatementParts[i] !== "object")
+throw TypeError(".proto.InThreadSurveyMetadata.privacyStatementParts: object expected");
+m.privacyStatementParts[i] = $root.proto.InThreadSurveyMetadata.InThreadSurveyPrivacyStatementPart.fromObject(d.privacyStatementParts[i], n + 1);
+}
+}
+if (d.feedbackToastText != null) {
+m.feedbackToastText = String(d.feedbackToastText);
+}
+if (d.startQuestionIndex != null) {
+m.startQuestionIndex = d.startQuestionIndex | 0;
+}
+return m;
+};
+InThreadSurveyMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.questions = [];
+d.privacyStatementParts = [];
+}
+if (m.tessaSessionId != null && m.hasOwnProperty("tessaSessionId")) {
+d.tessaSessionId = m.tessaSessionId;
+if (o.oneofs)
+d._tessaSessionId = "tessaSessionId";
+}
+if (m.simonSessionId != null && m.hasOwnProperty("simonSessionId")) {
+d.simonSessionId = m.simonSessionId;
+if (o.oneofs)
+d._simonSessionId = "simonSessionId";
+}
+if (m.simonSurveyId != null && m.hasOwnProperty("simonSurveyId")) {
+d.simonSurveyId = m.simonSurveyId;
+if (o.oneofs)
+d._simonSurveyId = "simonSurveyId";
+}
+if (m.tessaRootId != null && m.hasOwnProperty("tessaRootId")) {
+d.tessaRootId = m.tessaRootId;
+if (o.oneofs)
+d._tessaRootId = "tessaRootId";
+}
+if (m.requestId != null && m.hasOwnProperty("requestId")) {
+d.requestId = m.requestId;
+if (o.oneofs)
+d._requestId = "requestId";
+}
+if (m.tessaEvent != null && m.hasOwnProperty("tessaEvent")) {
+d.tessaEvent = m.tessaEvent;
+if (o.oneofs)
+d._tessaEvent = "tessaEvent";
+}
+if (m.invitationHeaderText != null && m.hasOwnProperty("invitationHeaderText")) {
+d.invitationHeaderText = m.invitationHeaderText;
+if (o.oneofs)
+d._invitationHeaderText = "invitationHeaderText";
+}
+if (m.invitationBodyText != null && m.hasOwnProperty("invitationBodyText")) {
+d.invitationBodyText = m.invitationBodyText;
+if (o.oneofs)
+d._invitationBodyText = "invitationBodyText";
+}
+if (m.invitationCtaText != null && m.hasOwnProperty("invitationCtaText")) {
+d.invitationCtaText = m.invitationCtaText;
+if (o.oneofs)
+d._invitationCtaText = "invitationCtaText";
+}
+if (m.invitationCtaUrl != null && m.hasOwnProperty("invitationCtaUrl")) {
+d.invitationCtaUrl = m.invitationCtaUrl;
+if (o.oneofs)
+d._invitationCtaUrl = "invitationCtaUrl";
+}
+if (m.surveyTitle != null && m.hasOwnProperty("surveyTitle")) {
+d.surveyTitle = m.surveyTitle;
+if (o.oneofs)
+d._surveyTitle = "surveyTitle";
+}
+if (m.questions && m.questions.length) {
+d.questions = [];
+for (var j = 0; j < m.questions.length; ++j) {
+d.questions[j] = $root.proto.InThreadSurveyMetadata.InThreadSurveyQuestion.toObject(m.questions[j], o);
+}
+}
+if (m.surveyContinueButtonText != null && m.hasOwnProperty("surveyContinueButtonText")) {
+d.surveyContinueButtonText = m.surveyContinueButtonText;
+if (o.oneofs)
+d._surveyContinueButtonText = "surveyContinueButtonText";
+}
+if (m.surveySubmitButtonText != null && m.hasOwnProperty("surveySubmitButtonText")) {
+d.surveySubmitButtonText = m.surveySubmitButtonText;
+if (o.oneofs)
+d._surveySubmitButtonText = "surveySubmitButtonText";
+}
+if (m.privacyStatementFull != null && m.hasOwnProperty("privacyStatementFull")) {
+d.privacyStatementFull = m.privacyStatementFull;
+if (o.oneofs)
+d._privacyStatementFull = "privacyStatementFull";
+}
+if (m.privacyStatementParts && m.privacyStatementParts.length) {
+d.privacyStatementParts = [];
+for (var j = 0; j < m.privacyStatementParts.length; ++j) {
+d.privacyStatementParts[j] = $root.proto.InThreadSurveyMetadata.InThreadSurveyPrivacyStatementPart.toObject(m.privacyStatementParts[j], o);
+}
+}
+if (m.feedbackToastText != null && m.hasOwnProperty("feedbackToastText")) {
+d.feedbackToastText = m.feedbackToastText;
+if (o.oneofs)
+d._feedbackToastText = "feedbackToastText";
+}
+if (m.startQuestionIndex != null && m.hasOwnProperty("startQuestionIndex")) {
+d.startQuestionIndex = m.startQuestionIndex;
+if (o.oneofs)
+d._startQuestionIndex = "startQuestionIndex";
+}
+return d;
+};
+InThreadSurveyMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+InThreadSurveyMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.InThreadSurveyMetadata";
+};
+$lazy(InThreadSurveyMetadata, "InThreadSurveyOption", function() {
+function InThreadSurveyOption(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+InThreadSurveyOption.prototype.stringValue = null;
+InThreadSurveyOption.prototype.numericValue = null;
+InThreadSurveyOption.prototype.textTranslated = null;
+let $oneOfFields;
+Object.defineProperty(InThreadSurveyOption.prototype, "_stringValue", {
+get: $util.oneOfGetter($oneOfFields = ["stringValue"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyOption.prototype, "_numericValue", {
+get: $util.oneOfGetter($oneOfFields = ["numericValue"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyOption.prototype, "_textTranslated", {
+get: $util.oneOfGetter($oneOfFields = ["textTranslated"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+InThreadSurveyOption.create = function create(properties) {
+return new InThreadSurveyOption(properties);
+};
+InThreadSurveyOption.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.stringValue != null && Object.hasOwnProperty.call(m, "stringValue"))
+w.uint32(10).string(m.stringValue);
+if (m.numericValue != null && Object.hasOwnProperty.call(m, "numericValue"))
+w.uint32(16).uint32(m.numericValue);
+if (m.textTranslated != null && Object.hasOwnProperty.call(m, "textTranslated"))
+w.uint32(26).string(m.textTranslated);
+return w;
+};
+InThreadSurveyOption.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.InThreadSurveyMetadata.InThreadSurveyOption();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.stringValue = r.string();
+break;
+}
+case 2: {
+m.numericValue = r.uint32();
+break;
+}
+case 3: {
+m.textTranslated = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+InThreadSurveyOption.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.InThreadSurveyMetadata.InThreadSurveyOption)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.InThreadSurveyMetadata.InThreadSurveyOption();
+if (d.stringValue != null) {
+m.stringValue = String(d.stringValue);
+}
+if (d.numericValue != null) {
+m.numericValue = d.numericValue >>> 0;
+}
+if (d.textTranslated != null) {
+m.textTranslated = String(d.textTranslated);
+}
+return m;
+};
+InThreadSurveyOption.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.stringValue != null && m.hasOwnProperty("stringValue")) {
+d.stringValue = m.stringValue;
+if (o.oneofs)
+d._stringValue = "stringValue";
+}
+if (m.numericValue != null && m.hasOwnProperty("numericValue")) {
+d.numericValue = m.numericValue;
+if (o.oneofs)
+d._numericValue = "numericValue";
+}
+if (m.textTranslated != null && m.hasOwnProperty("textTranslated")) {
+d.textTranslated = m.textTranslated;
+if (o.oneofs)
+d._textTranslated = "textTranslated";
+}
+return d;
+};
+InThreadSurveyOption.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+InThreadSurveyOption.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.InThreadSurveyMetadata.InThreadSurveyOption";
+};
+return InThreadSurveyOption;
+});
+$lazy(InThreadSurveyMetadata, "InThreadSurveyPrivacyStatementPart", function() {
+function InThreadSurveyPrivacyStatementPart(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+InThreadSurveyPrivacyStatementPart.prototype.text = null;
+InThreadSurveyPrivacyStatementPart.prototype.url = null;
+let $oneOfFields;
+Object.defineProperty(InThreadSurveyPrivacyStatementPart.prototype, "_text", {
+get: $util.oneOfGetter($oneOfFields = ["text"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyPrivacyStatementPart.prototype, "_url", {
+get: $util.oneOfGetter($oneOfFields = ["url"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+InThreadSurveyPrivacyStatementPart.create = function create(properties) {
+return new InThreadSurveyPrivacyStatementPart(properties);
+};
+InThreadSurveyPrivacyStatementPart.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.text != null && Object.hasOwnProperty.call(m, "text"))
+w.uint32(10).string(m.text);
+if (m.url != null && Object.hasOwnProperty.call(m, "url"))
+w.uint32(18).string(m.url);
+return w;
+};
+InThreadSurveyPrivacyStatementPart.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.InThreadSurveyMetadata.InThreadSurveyPrivacyStatementPart();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.text = r.string();
+break;
+}
+case 2: {
+m.url = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+InThreadSurveyPrivacyStatementPart.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.InThreadSurveyMetadata.InThreadSurveyPrivacyStatementPart)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.InThreadSurveyMetadata.InThreadSurveyPrivacyStatementPart();
+if (d.text != null) {
+m.text = String(d.text);
+}
+if (d.url != null) {
+m.url = String(d.url);
+}
+return m;
+};
+InThreadSurveyPrivacyStatementPart.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.text != null && m.hasOwnProperty("text")) {
+d.text = m.text;
+if (o.oneofs)
+d._text = "text";
+}
+if (m.url != null && m.hasOwnProperty("url")) {
+d.url = m.url;
+if (o.oneofs)
+d._url = "url";
+}
+return d;
+};
+InThreadSurveyPrivacyStatementPart.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+InThreadSurveyPrivacyStatementPart.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.InThreadSurveyMetadata.InThreadSurveyPrivacyStatementPart";
+};
+return InThreadSurveyPrivacyStatementPart;
+});
+$lazy(InThreadSurveyMetadata, "InThreadSurveyQuestion", function() {
+function InThreadSurveyQuestion(p) {
+this.questionOptions = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+InThreadSurveyQuestion.prototype.questionText = null;
+InThreadSurveyQuestion.prototype.questionId = null;
+InThreadSurveyQuestion.prototype.questionOptions = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(InThreadSurveyQuestion.prototype, "_questionText", {
+get: $util.oneOfGetter($oneOfFields = ["questionText"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InThreadSurveyQuestion.prototype, "_questionId", {
+get: $util.oneOfGetter($oneOfFields = ["questionId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+InThreadSurveyQuestion.create = function create(properties) {
+return new InThreadSurveyQuestion(properties);
+};
+InThreadSurveyQuestion.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.questionText != null && Object.hasOwnProperty.call(m, "questionText"))
+w.uint32(10).string(m.questionText);
+if (m.questionId != null && Object.hasOwnProperty.call(m, "questionId"))
+w.uint32(18).string(m.questionId);
+if (m.questionOptions != null && m.questionOptions.length) {
+for (var i = 0; i < m.questionOptions.length; ++i)
+$root.proto.InThreadSurveyMetadata.InThreadSurveyOption.encode(m.questionOptions[i], w.uint32(26).fork()).ldelim();
+}
+return w;
+};
+InThreadSurveyQuestion.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.InThreadSurveyMetadata.InThreadSurveyQuestion();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.questionText = r.string();
+break;
+}
+case 2: {
+m.questionId = r.string();
+break;
+}
+case 3: {
+if (!(m.questionOptions && m.questionOptions.length))
+m.questionOptions = [];
+m.questionOptions.push($root.proto.InThreadSurveyMetadata.InThreadSurveyOption.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+InThreadSurveyQuestion.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.InThreadSurveyMetadata.InThreadSurveyQuestion)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.InThreadSurveyMetadata.InThreadSurveyQuestion();
+if (d.questionText != null) {
+m.questionText = String(d.questionText);
+}
+if (d.questionId != null) {
+m.questionId = String(d.questionId);
+}
+if (d.questionOptions) {
+if (!Array.isArray(d.questionOptions))
+throw TypeError(".proto.InThreadSurveyMetadata.InThreadSurveyQuestion.questionOptions: array expected");
+m.questionOptions = [];
+for (var i = 0; i < d.questionOptions.length; ++i) {
+if (typeof d.questionOptions[i] !== "object")
+throw TypeError(".proto.InThreadSurveyMetadata.InThreadSurveyQuestion.questionOptions: object expected");
+m.questionOptions[i] = $root.proto.InThreadSurveyMetadata.InThreadSurveyOption.fromObject(d.questionOptions[i], n + 1);
+}
+}
+return m;
+};
+InThreadSurveyQuestion.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.questionOptions = [];
+}
+if (m.questionText != null && m.hasOwnProperty("questionText")) {
+d.questionText = m.questionText;
+if (o.oneofs)
+d._questionText = "questionText";
+}
+if (m.questionId != null && m.hasOwnProperty("questionId")) {
+d.questionId = m.questionId;
+if (o.oneofs)
+d._questionId = "questionId";
+}
+if (m.questionOptions && m.questionOptions.length) {
+d.questionOptions = [];
+for (var j = 0; j < m.questionOptions.length; ++j) {
+d.questionOptions[j] = $root.proto.InThreadSurveyMetadata.InThreadSurveyOption.toObject(m.questionOptions[j], o);
+}
+}
+return d;
+};
+InThreadSurveyQuestion.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+InThreadSurveyQuestion.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.InThreadSurveyMetadata.InThreadSurveyQuestion";
+};
+return InThreadSurveyQuestion;
+});
+return InThreadSurveyMetadata;

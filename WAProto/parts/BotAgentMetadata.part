@@ -1,0 +1,83 @@
+"use strict";
+function BotAgentMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotAgentMetadata.prototype.deepLinkMetadata = null;
+let $oneOfFields;
+Object.defineProperty(BotAgentMetadata.prototype, "_deepLinkMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["deepLinkMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotAgentMetadata.create = function create(properties) {
+return new BotAgentMetadata(properties);
+};
+BotAgentMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.deepLinkMetadata != null && Object.hasOwnProperty.call(m, "deepLinkMetadata"))
+$root.proto.BotAgentDeepLinkMetadata.encode(m.deepLinkMetadata, w.uint32(10).fork()).ldelim();
+return w;
+};
+BotAgentMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotAgentMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.deepLinkMetadata = $root.proto.BotAgentDeepLinkMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotAgentMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotAgentMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotAgentMetadata();
+if (d.deepLinkMetadata != null) {
+if (typeof d.deepLinkMetadata !== "object")
+throw TypeError(".proto.BotAgentMetadata.deepLinkMetadata: object expected");
+m.deepLinkMetadata = $root.proto.BotAgentDeepLinkMetadata.fromObject(d.deepLinkMetadata, n + 1);
+}
+return m;
+};
+BotAgentMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.deepLinkMetadata != null && m.hasOwnProperty("deepLinkMetadata")) {
+d.deepLinkMetadata = $root.proto.BotAgentDeepLinkMetadata.toObject(m.deepLinkMetadata, o);
+if (o.oneofs)
+d._deepLinkMetadata = "deepLinkMetadata";
+}
+return d;
+};
+BotAgentMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotAgentMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotAgentMetadata";
+};
+return BotAgentMetadata;

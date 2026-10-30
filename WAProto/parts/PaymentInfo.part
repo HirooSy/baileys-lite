@@ -1,0 +1,602 @@
+"use strict";
+function PaymentInfo(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+PaymentInfo.prototype.currencyDeprecated = null;
+PaymentInfo.prototype.amount1000 = null;
+PaymentInfo.prototype.receiverJid = null;
+PaymentInfo.prototype.status = null;
+PaymentInfo.prototype.transactionTimestamp = null;
+PaymentInfo.prototype.requestMessageKey = null;
+PaymentInfo.prototype.expiryTimestamp = null;
+PaymentInfo.prototype.futureproofed = null;
+PaymentInfo.prototype.currency = null;
+PaymentInfo.prototype.txnStatus = null;
+PaymentInfo.prototype.useNoviFiatFormat = null;
+PaymentInfo.prototype.primaryAmount = null;
+PaymentInfo.prototype.exchangeAmount = null;
+let $oneOfFields;
+Object.defineProperty(PaymentInfo.prototype, "_currencyDeprecated", {
+get: $util.oneOfGetter($oneOfFields = ["currencyDeprecated"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentInfo.prototype, "_amount1000", {
+get: $util.oneOfGetter($oneOfFields = ["amount1000"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentInfo.prototype, "_receiverJid", {
+get: $util.oneOfGetter($oneOfFields = ["receiverJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentInfo.prototype, "_status", {
+get: $util.oneOfGetter($oneOfFields = ["status"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentInfo.prototype, "_transactionTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["transactionTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentInfo.prototype, "_requestMessageKey", {
+get: $util.oneOfGetter($oneOfFields = ["requestMessageKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentInfo.prototype, "_expiryTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["expiryTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentInfo.prototype, "_futureproofed", {
+get: $util.oneOfGetter($oneOfFields = ["futureproofed"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentInfo.prototype, "_currency", {
+get: $util.oneOfGetter($oneOfFields = ["currency"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentInfo.prototype, "_txnStatus", {
+get: $util.oneOfGetter($oneOfFields = ["txnStatus"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentInfo.prototype, "_useNoviFiatFormat", {
+get: $util.oneOfGetter($oneOfFields = ["useNoviFiatFormat"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentInfo.prototype, "_primaryAmount", {
+get: $util.oneOfGetter($oneOfFields = ["primaryAmount"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PaymentInfo.prototype, "_exchangeAmount", {
+get: $util.oneOfGetter($oneOfFields = ["exchangeAmount"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+PaymentInfo.create = function create(properties) {
+return new PaymentInfo(properties);
+};
+PaymentInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.currencyDeprecated != null && Object.hasOwnProperty.call(m, "currencyDeprecated"))
+w.uint32(8).int32(m.currencyDeprecated);
+if (m.amount1000 != null && Object.hasOwnProperty.call(m, "amount1000"))
+w.uint32(16).uint64(m.amount1000);
+if (m.receiverJid != null && Object.hasOwnProperty.call(m, "receiverJid"))
+w.uint32(26).string(m.receiverJid);
+if (m.status != null && Object.hasOwnProperty.call(m, "status"))
+w.uint32(32).int32(m.status);
+if (m.transactionTimestamp != null && Object.hasOwnProperty.call(m, "transactionTimestamp"))
+w.uint32(40).uint64(m.transactionTimestamp);
+if (m.requestMessageKey != null && Object.hasOwnProperty.call(m, "requestMessageKey"))
+$root.proto.MessageKey.encode(m.requestMessageKey, w.uint32(50).fork()).ldelim();
+if (m.expiryTimestamp != null && Object.hasOwnProperty.call(m, "expiryTimestamp"))
+w.uint32(56).uint64(m.expiryTimestamp);
+if (m.futureproofed != null && Object.hasOwnProperty.call(m, "futureproofed"))
+w.uint32(64).bool(m.futureproofed);
+if (m.currency != null && Object.hasOwnProperty.call(m, "currency"))
+w.uint32(74).string(m.currency);
+if (m.txnStatus != null && Object.hasOwnProperty.call(m, "txnStatus"))
+w.uint32(80).int32(m.txnStatus);
+if (m.useNoviFiatFormat != null && Object.hasOwnProperty.call(m, "useNoviFiatFormat"))
+w.uint32(88).bool(m.useNoviFiatFormat);
+if (m.primaryAmount != null && Object.hasOwnProperty.call(m, "primaryAmount"))
+$root.proto.Money.encode(m.primaryAmount, w.uint32(98).fork()).ldelim();
+if (m.exchangeAmount != null && Object.hasOwnProperty.call(m, "exchangeAmount"))
+$root.proto.Money.encode(m.exchangeAmount, w.uint32(106).fork()).ldelim();
+return w;
+};
+PaymentInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.PaymentInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.currencyDeprecated = r.int32();
+break;
+}
+case 2: {
+m.amount1000 = r.uint64();
+break;
+}
+case 3: {
+m.receiverJid = r.string();
+break;
+}
+case 4: {
+m.status = r.int32();
+break;
+}
+case 5: {
+m.transactionTimestamp = r.uint64();
+break;
+}
+case 6: {
+m.requestMessageKey = $root.proto.MessageKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 7: {
+m.expiryTimestamp = r.uint64();
+break;
+}
+case 8: {
+m.futureproofed = r.bool();
+break;
+}
+case 9: {
+m.currency = r.string();
+break;
+}
+case 10: {
+m.txnStatus = r.int32();
+break;
+}
+case 11: {
+m.useNoviFiatFormat = r.bool();
+break;
+}
+case 12: {
+m.primaryAmount = $root.proto.Money.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 13: {
+m.exchangeAmount = $root.proto.Money.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+PaymentInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.PaymentInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.PaymentInfo();
+switch (d.currencyDeprecated) {
+default:
+if (typeof d.currencyDeprecated === "number") {
+m.currencyDeprecated = d.currencyDeprecated;
+break;
+}
+break;
+case "UNKNOWN_CURRENCY":
+case 0:
+m.currencyDeprecated = 0;
+break;
+case "INR":
+case 1:
+m.currencyDeprecated = 1;
+break;
+}
+if (d.amount1000 != null) {
+if ($util.Long)
+(m.amount1000 = $util.Long.fromValue(d.amount1000)).unsigned = true;
+else if (typeof d.amount1000 === "string")
+m.amount1000 = parseInt(d.amount1000, 10);
+else if (typeof d.amount1000 === "number")
+m.amount1000 = d.amount1000;
+else if (typeof d.amount1000 === "object")
+m.amount1000 = new $util.LongBits(d.amount1000.low >>> 0, d.amount1000.high >>> 0).toNumber(true);
+}
+if (d.receiverJid != null) {
+m.receiverJid = String(d.receiverJid);
+}
+switch (d.status) {
+default:
+if (typeof d.status === "number") {
+m.status = d.status;
+break;
+}
+break;
+case "UNKNOWN_STATUS":
+case 0:
+m.status = 0;
+break;
+case "PROCESSING":
+case 1:
+m.status = 1;
+break;
+case "SENT":
+case 2:
+m.status = 2;
+break;
+case "NEED_TO_ACCEPT":
+case 3:
+m.status = 3;
+break;
+case "COMPLETE":
+case 4:
+m.status = 4;
+break;
+case "COULD_NOT_COMPLETE":
+case 5:
+m.status = 5;
+break;
+case "REFUNDED":
+case 6:
+m.status = 6;
+break;
+case "EXPIRED":
+case 7:
+m.status = 7;
+break;
+case "REJECTED":
+case 8:
+m.status = 8;
+break;
+case "CANCELLED":
+case 9:
+m.status = 9;
+break;
+case "WAITING_FOR_PAYER":
+case 10:
+m.status = 10;
+break;
+case "WAITING":
+case 11:
+m.status = 11;
+break;
+}
+if (d.transactionTimestamp != null) {
+if ($util.Long)
+(m.transactionTimestamp = $util.Long.fromValue(d.transactionTimestamp)).unsigned = true;
+else if (typeof d.transactionTimestamp === "string")
+m.transactionTimestamp = parseInt(d.transactionTimestamp, 10);
+else if (typeof d.transactionTimestamp === "number")
+m.transactionTimestamp = d.transactionTimestamp;
+else if (typeof d.transactionTimestamp === "object")
+m.transactionTimestamp = new $util.LongBits(d.transactionTimestamp.low >>> 0, d.transactionTimestamp.high >>> 0).toNumber(true);
+}
+if (d.requestMessageKey != null) {
+if (typeof d.requestMessageKey !== "object")
+throw TypeError(".proto.PaymentInfo.requestMessageKey: object expected");
+m.requestMessageKey = $root.proto.MessageKey.fromObject(d.requestMessageKey, n + 1);
+}
+if (d.expiryTimestamp != null) {
+if ($util.Long)
+(m.expiryTimestamp = $util.Long.fromValue(d.expiryTimestamp)).unsigned = true;
+else if (typeof d.expiryTimestamp === "string")
+m.expiryTimestamp = parseInt(d.expiryTimestamp, 10);
+else if (typeof d.expiryTimestamp === "number")
+m.expiryTimestamp = d.expiryTimestamp;
+else if (typeof d.expiryTimestamp === "object")
+m.expiryTimestamp = new $util.LongBits(d.expiryTimestamp.low >>> 0, d.expiryTimestamp.high >>> 0).toNumber(true);
+}
+if (d.futureproofed != null) {
+m.futureproofed = Boolean(d.futureproofed);
+}
+if (d.currency != null) {
+m.currency = String(d.currency);
+}
+switch (d.txnStatus) {
+default:
+if (typeof d.txnStatus === "number") {
+m.txnStatus = d.txnStatus;
+break;
+}
+break;
+case "UNKNOWN":
+case 0:
+m.txnStatus = 0;
+break;
+case "PENDING_SETUP":
+case 1:
+m.txnStatus = 1;
+break;
+case "PENDING_RECEIVER_SETUP":
+case 2:
+m.txnStatus = 2;
+break;
+case "INIT":
+case 3:
+m.txnStatus = 3;
+break;
+case "SUCCESS":
+case 4:
+m.txnStatus = 4;
+break;
+case "COMPLETED":
+case 5:
+m.txnStatus = 5;
+break;
+case "FAILED":
+case 6:
+m.txnStatus = 6;
+break;
+case "FAILED_RISK":
+case 7:
+m.txnStatus = 7;
+break;
+case "FAILED_PROCESSING":
+case 8:
+m.txnStatus = 8;
+break;
+case "FAILED_RECEIVER_PROCESSING":
+case 9:
+m.txnStatus = 9;
+break;
+case "FAILED_DA":
+case 10:
+m.txnStatus = 10;
+break;
+case "FAILED_DA_FINAL":
+case 11:
+m.txnStatus = 11;
+break;
+case "REFUNDED_TXN":
+case 12:
+m.txnStatus = 12;
+break;
+case "REFUND_FAILED":
+case 13:
+m.txnStatus = 13;
+break;
+case "REFUND_FAILED_PROCESSING":
+case 14:
+m.txnStatus = 14;
+break;
+case "REFUND_FAILED_DA":
+case 15:
+m.txnStatus = 15;
+break;
+case "EXPIRED_TXN":
+case 16:
+m.txnStatus = 16;
+break;
+case "AUTH_CANCELED":
+case 17:
+m.txnStatus = 17;
+break;
+case "AUTH_CANCEL_FAILED_PROCESSING":
+case 18:
+m.txnStatus = 18;
+break;
+case "AUTH_CANCEL_FAILED":
+case 19:
+m.txnStatus = 19;
+break;
+case "COLLECT_INIT":
+case 20:
+m.txnStatus = 20;
+break;
+case "COLLECT_SUCCESS":
+case 21:
+m.txnStatus = 21;
+break;
+case "COLLECT_FAILED":
+case 22:
+m.txnStatus = 22;
+break;
+case "COLLECT_FAILED_RISK":
+case 23:
+m.txnStatus = 23;
+break;
+case "COLLECT_REJECTED":
+case 24:
+m.txnStatus = 24;
+break;
+case "COLLECT_EXPIRED":
+case 25:
+m.txnStatus = 25;
+break;
+case "COLLECT_CANCELED":
+case 26:
+m.txnStatus = 26;
+break;
+case "COLLECT_CANCELLING":
+case 27:
+m.txnStatus = 27;
+break;
+case "IN_REVIEW":
+case 28:
+m.txnStatus = 28;
+break;
+case "REVERSAL_SUCCESS":
+case 29:
+m.txnStatus = 29;
+break;
+case "REVERSAL_PENDING":
+case 30:
+m.txnStatus = 30;
+break;
+case "REFUND_PENDING":
+case 31:
+m.txnStatus = 31;
+break;
+}
+if (d.useNoviFiatFormat != null) {
+m.useNoviFiatFormat = Boolean(d.useNoviFiatFormat);
+}
+if (d.primaryAmount != null) {
+if (typeof d.primaryAmount !== "object")
+throw TypeError(".proto.PaymentInfo.primaryAmount: object expected");
+m.primaryAmount = $root.proto.Money.fromObject(d.primaryAmount, n + 1);
+}
+if (d.exchangeAmount != null) {
+if (typeof d.exchangeAmount !== "object")
+throw TypeError(".proto.PaymentInfo.exchangeAmount: object expected");
+m.exchangeAmount = $root.proto.Money.fromObject(d.exchangeAmount, n + 1);
+}
+return m;
+};
+PaymentInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.currencyDeprecated != null && m.hasOwnProperty("currencyDeprecated")) {
+d.currencyDeprecated = o.enums === String ? $root.proto.PaymentInfo.Currency[m.currencyDeprecated] === undefined ? m.currencyDeprecated : $root.proto.PaymentInfo.Currency[m.currencyDeprecated] : m.currencyDeprecated;
+if (o.oneofs)
+d._currencyDeprecated = "currencyDeprecated";
+}
+if (m.amount1000 != null && m.hasOwnProperty("amount1000")) {
+if (typeof m.amount1000 === "number")
+d.amount1000 = o.longs === String ? String(m.amount1000) : m.amount1000;
+else
+d.amount1000 = o.longs === String ? longToString(m.amount1000, true) : o.longs === Number ? longToNumber(m.amount1000, true) : m.amount1000;
+if (o.oneofs)
+d._amount1000 = "amount1000";
+}
+if (m.receiverJid != null && m.hasOwnProperty("receiverJid")) {
+d.receiverJid = m.receiverJid;
+if (o.oneofs)
+d._receiverJid = "receiverJid";
+}
+if (m.status != null && m.hasOwnProperty("status")) {
+d.status = o.enums === String ? $root.proto.PaymentInfo.Status[m.status] === undefined ? m.status : $root.proto.PaymentInfo.Status[m.status] : m.status;
+if (o.oneofs)
+d._status = "status";
+}
+if (m.transactionTimestamp != null && m.hasOwnProperty("transactionTimestamp")) {
+if (typeof m.transactionTimestamp === "number")
+d.transactionTimestamp = o.longs === String ? String(m.transactionTimestamp) : m.transactionTimestamp;
+else
+d.transactionTimestamp = o.longs === String ? longToString(m.transactionTimestamp, true) : o.longs === Number ? longToNumber(m.transactionTimestamp, true) : m.transactionTimestamp;
+if (o.oneofs)
+d._transactionTimestamp = "transactionTimestamp";
+}
+if (m.requestMessageKey != null && m.hasOwnProperty("requestMessageKey")) {
+d.requestMessageKey = $root.proto.MessageKey.toObject(m.requestMessageKey, o);
+if (o.oneofs)
+d._requestMessageKey = "requestMessageKey";
+}
+if (m.expiryTimestamp != null && m.hasOwnProperty("expiryTimestamp")) {
+if (typeof m.expiryTimestamp === "number")
+d.expiryTimestamp = o.longs === String ? String(m.expiryTimestamp) : m.expiryTimestamp;
+else
+d.expiryTimestamp = o.longs === String ? longToString(m.expiryTimestamp, true) : o.longs === Number ? longToNumber(m.expiryTimestamp, true) : m.expiryTimestamp;
+if (o.oneofs)
+d._expiryTimestamp = "expiryTimestamp";
+}
+if (m.futureproofed != null && m.hasOwnProperty("futureproofed")) {
+d.futureproofed = m.futureproofed;
+if (o.oneofs)
+d._futureproofed = "futureproofed";
+}
+if (m.currency != null && m.hasOwnProperty("currency")) {
+d.currency = m.currency;
+if (o.oneofs)
+d._currency = "currency";
+}
+if (m.txnStatus != null && m.hasOwnProperty("txnStatus")) {
+d.txnStatus = o.enums === String ? $root.proto.PaymentInfo.TxnStatus[m.txnStatus] === undefined ? m.txnStatus : $root.proto.PaymentInfo.TxnStatus[m.txnStatus] : m.txnStatus;
+if (o.oneofs)
+d._txnStatus = "txnStatus";
+}
+if (m.useNoviFiatFormat != null && m.hasOwnProperty("useNoviFiatFormat")) {
+d.useNoviFiatFormat = m.useNoviFiatFormat;
+if (o.oneofs)
+d._useNoviFiatFormat = "useNoviFiatFormat";
+}
+if (m.primaryAmount != null && m.hasOwnProperty("primaryAmount")) {
+d.primaryAmount = $root.proto.Money.toObject(m.primaryAmount, o);
+if (o.oneofs)
+d._primaryAmount = "primaryAmount";
+}
+if (m.exchangeAmount != null && m.hasOwnProperty("exchangeAmount")) {
+d.exchangeAmount = $root.proto.Money.toObject(m.exchangeAmount, o);
+if (o.oneofs)
+d._exchangeAmount = "exchangeAmount";
+}
+return d;
+};
+PaymentInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+PaymentInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.PaymentInfo";
+};
+$lazy(PaymentInfo, "Currency", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN_CURRENCY"] = 0;
+values[valuesById[1] = "INR"] = 1;
+return values;
+});
+$lazy(PaymentInfo, "Status", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN_STATUS"] = 0;
+values[valuesById[1] = "PROCESSING"] = 1;
+values[valuesById[2] = "SENT"] = 2;
+values[valuesById[3] = "NEED_TO_ACCEPT"] = 3;
+values[valuesById[4] = "COMPLETE"] = 4;
+values[valuesById[5] = "COULD_NOT_COMPLETE"] = 5;
+values[valuesById[6] = "REFUNDED"] = 6;
+values[valuesById[7] = "EXPIRED"] = 7;
+values[valuesById[8] = "REJECTED"] = 8;
+values[valuesById[9] = "CANCELLED"] = 9;
+values[valuesById[10] = "WAITING_FOR_PAYER"] = 10;
+values[valuesById[11] = "WAITING"] = 11;
+return values;
+});
+$lazy(PaymentInfo, "TxnStatus", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN"] = 0;
+values[valuesById[1] = "PENDING_SETUP"] = 1;
+values[valuesById[2] = "PENDING_RECEIVER_SETUP"] = 2;
+values[valuesById[3] = "INIT"] = 3;
+values[valuesById[4] = "SUCCESS"] = 4;
+values[valuesById[5] = "COMPLETED"] = 5;
+values[valuesById[6] = "FAILED"] = 6;
+values[valuesById[7] = "FAILED_RISK"] = 7;
+values[valuesById[8] = "FAILED_PROCESSING"] = 8;
+values[valuesById[9] = "FAILED_RECEIVER_PROCESSING"] = 9;
+values[valuesById[10] = "FAILED_DA"] = 10;
+values[valuesById[11] = "FAILED_DA_FINAL"] = 11;
+values[valuesById[12] = "REFUNDED_TXN"] = 12;
+values[valuesById[13] = "REFUND_FAILED"] = 13;
+values[valuesById[14] = "REFUND_FAILED_PROCESSING"] = 14;
+values[valuesById[15] = "REFUND_FAILED_DA"] = 15;
+values[valuesById[16] = "EXPIRED_TXN"] = 16;
+values[valuesById[17] = "AUTH_CANCELED"] = 17;
+values[valuesById[18] = "AUTH_CANCEL_FAILED_PROCESSING"] = 18;
+values[valuesById[19] = "AUTH_CANCEL_FAILED"] = 19;
+values[valuesById[20] = "COLLECT_INIT"] = 20;
+values[valuesById[21] = "COLLECT_SUCCESS"] = 21;
+values[valuesById[22] = "COLLECT_FAILED"] = 22;
+values[valuesById[23] = "COLLECT_FAILED_RISK"] = 23;
+values[valuesById[24] = "COLLECT_REJECTED"] = 24;
+values[valuesById[25] = "COLLECT_EXPIRED"] = 25;
+values[valuesById[26] = "COLLECT_CANCELED"] = 26;
+values[valuesById[27] = "COLLECT_CANCELLING"] = 27;
+values[valuesById[28] = "IN_REVIEW"] = 28;
+values[valuesById[29] = "REVERSAL_SUCCESS"] = 29;
+values[valuesById[30] = "REVERSAL_PENDING"] = 30;
+values[valuesById[31] = "REFUND_PENDING"] = 31;
+return values;
+});
+return PaymentInfo;

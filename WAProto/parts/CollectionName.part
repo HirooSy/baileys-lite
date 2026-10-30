@@ -1,0 +1,9 @@
+"use strict";
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "COLLECTION_NAME_UNKNOWN"] = 0;
+values[valuesById[1] = "REGULAR"] = 1;
+values[valuesById[2] = "REGULAR_LOW"] = 2;
+values[valuesById[3] = "REGULAR_HIGH"] = 3;
+values[valuesById[4] = "CRITICAL_BLOCK"] = 4;
+values[valuesById[5] = "CRITICAL_UNBLOCK_LOW"] = 5;
+return values;

@@ -1,0 +1,119 @@
+"use strict";
+function AIRichResponseImageURL(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIRichResponseImageURL.prototype.imagePreviewUrl = null;
+AIRichResponseImageURL.prototype.imageHighResUrl = null;
+AIRichResponseImageURL.prototype.sourceUrl = null;
+let $oneOfFields;
+Object.defineProperty(AIRichResponseImageURL.prototype, "_imagePreviewUrl", {
+get: $util.oneOfGetter($oneOfFields = ["imagePreviewUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseImageURL.prototype, "_imageHighResUrl", {
+get: $util.oneOfGetter($oneOfFields = ["imageHighResUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseImageURL.prototype, "_sourceUrl", {
+get: $util.oneOfGetter($oneOfFields = ["sourceUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIRichResponseImageURL.create = function create(properties) {
+return new AIRichResponseImageURL(properties);
+};
+AIRichResponseImageURL.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.imagePreviewUrl != null && Object.hasOwnProperty.call(m, "imagePreviewUrl"))
+w.uint32(10).string(m.imagePreviewUrl);
+if (m.imageHighResUrl != null && Object.hasOwnProperty.call(m, "imageHighResUrl"))
+w.uint32(18).string(m.imageHighResUrl);
+if (m.sourceUrl != null && Object.hasOwnProperty.call(m, "sourceUrl"))
+w.uint32(26).string(m.sourceUrl);
+return w;
+};
+AIRichResponseImageURL.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIRichResponseImageURL();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.imagePreviewUrl = r.string();
+break;
+}
+case 2: {
+m.imageHighResUrl = r.string();
+break;
+}
+case 3: {
+m.sourceUrl = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIRichResponseImageURL.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIRichResponseImageURL)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIRichResponseImageURL();
+if (d.imagePreviewUrl != null) {
+m.imagePreviewUrl = String(d.imagePreviewUrl);
+}
+if (d.imageHighResUrl != null) {
+m.imageHighResUrl = String(d.imageHighResUrl);
+}
+if (d.sourceUrl != null) {
+m.sourceUrl = String(d.sourceUrl);
+}
+return m;
+};
+AIRichResponseImageURL.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.imagePreviewUrl != null && m.hasOwnProperty("imagePreviewUrl")) {
+d.imagePreviewUrl = m.imagePreviewUrl;
+if (o.oneofs)
+d._imagePreviewUrl = "imagePreviewUrl";
+}
+if (m.imageHighResUrl != null && m.hasOwnProperty("imageHighResUrl")) {
+d.imageHighResUrl = m.imageHighResUrl;
+if (o.oneofs)
+d._imageHighResUrl = "imageHighResUrl";
+}
+if (m.sourceUrl != null && m.hasOwnProperty("sourceUrl")) {
+d.sourceUrl = m.sourceUrl;
+if (o.oneofs)
+d._sourceUrl = "sourceUrl";
+}
+return d;
+};
+AIRichResponseImageURL.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIRichResponseImageURL.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIRichResponseImageURL";
+};
+return AIRichResponseImageURL;

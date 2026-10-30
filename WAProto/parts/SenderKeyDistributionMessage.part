@@ -1,0 +1,144 @@
+"use strict";
+function SenderKeyDistributionMessage(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SenderKeyDistributionMessage.prototype.id = null;
+SenderKeyDistributionMessage.prototype.iteration = null;
+SenderKeyDistributionMessage.prototype.chainKey = null;
+SenderKeyDistributionMessage.prototype.signingKey = null;
+let $oneOfFields;
+Object.defineProperty(SenderKeyDistributionMessage.prototype, "_id", {
+get: $util.oneOfGetter($oneOfFields = ["id"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SenderKeyDistributionMessage.prototype, "_iteration", {
+get: $util.oneOfGetter($oneOfFields = ["iteration"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SenderKeyDistributionMessage.prototype, "_chainKey", {
+get: $util.oneOfGetter($oneOfFields = ["chainKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SenderKeyDistributionMessage.prototype, "_signingKey", {
+get: $util.oneOfGetter($oneOfFields = ["signingKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SenderKeyDistributionMessage.create = function create(properties) {
+return new SenderKeyDistributionMessage(properties);
+};
+SenderKeyDistributionMessage.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.id != null && Object.hasOwnProperty.call(m, "id"))
+w.uint32(8).uint32(m.id);
+if (m.iteration != null && Object.hasOwnProperty.call(m, "iteration"))
+w.uint32(16).uint32(m.iteration);
+if (m.chainKey != null && Object.hasOwnProperty.call(m, "chainKey"))
+w.uint32(26).bytes(m.chainKey);
+if (m.signingKey != null && Object.hasOwnProperty.call(m, "signingKey"))
+w.uint32(34).bytes(m.signingKey);
+return w;
+};
+SenderKeyDistributionMessage.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.SenderKeyDistributionMessage();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.id = r.uint32();
+break;
+}
+case 2: {
+m.iteration = r.uint32();
+break;
+}
+case 3: {
+m.chainKey = r.bytes();
+break;
+}
+case 4: {
+m.signingKey = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SenderKeyDistributionMessage.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.SenderKeyDistributionMessage)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.SenderKeyDistributionMessage();
+if (d.id != null) {
+m.id = d.id >>> 0;
+}
+if (d.iteration != null) {
+m.iteration = d.iteration >>> 0;
+}
+if (d.chainKey != null) {
+if (typeof d.chainKey === "string")
+$util.base64.decode(d.chainKey, m.chainKey = $util.newBuffer($util.base64.length(d.chainKey)), 0);
+else if (d.chainKey.length >= 0)
+m.chainKey = d.chainKey;
+}
+if (d.signingKey != null) {
+if (typeof d.signingKey === "string")
+$util.base64.decode(d.signingKey, m.signingKey = $util.newBuffer($util.base64.length(d.signingKey)), 0);
+else if (d.signingKey.length >= 0)
+m.signingKey = d.signingKey;
+}
+return m;
+};
+SenderKeyDistributionMessage.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.id != null && m.hasOwnProperty("id")) {
+d.id = m.id;
+if (o.oneofs)
+d._id = "id";
+}
+if (m.iteration != null && m.hasOwnProperty("iteration")) {
+d.iteration = m.iteration;
+if (o.oneofs)
+d._iteration = "iteration";
+}
+if (m.chainKey != null && m.hasOwnProperty("chainKey")) {
+d.chainKey = o.bytes === String ? $util.base64.encode(m.chainKey, 0, m.chainKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.chainKey) : m.chainKey;
+if (o.oneofs)
+d._chainKey = "chainKey";
+}
+if (m.signingKey != null && m.hasOwnProperty("signingKey")) {
+d.signingKey = o.bytes === String ? $util.base64.encode(m.signingKey, 0, m.signingKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.signingKey) : m.signingKey;
+if (o.oneofs)
+d._signingKey = "signingKey";
+}
+return d;
+};
+SenderKeyDistributionMessage.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SenderKeyDistributionMessage.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.SenderKeyDistributionMessage";
+};
+return SenderKeyDistributionMessage;

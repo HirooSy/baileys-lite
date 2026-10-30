@@ -1,0 +1,119 @@
+"use strict";
+function Citation(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+Citation.prototype.title = "";
+Citation.prototype.subtitle = "";
+Citation.prototype.cmsId = "";
+Citation.prototype.imageUrl = "";
+Citation.create = function create(properties) {
+return new Citation(properties);
+};
+Citation.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.title != null && Object.hasOwnProperty.call(m, "title"))
+w.uint32(10).string(m.title);
+if (m.subtitle != null && Object.hasOwnProperty.call(m, "subtitle"))
+w.uint32(18).string(m.subtitle);
+if (m.cmsId != null && Object.hasOwnProperty.call(m, "cmsId"))
+w.uint32(26).string(m.cmsId);
+if (m.imageUrl != null && Object.hasOwnProperty.call(m, "imageUrl"))
+w.uint32(34).string(m.imageUrl);
+return w;
+};
+Citation.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.Citation();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.title = r.string();
+break;
+}
+case 2: {
+m.subtitle = r.string();
+break;
+}
+case 3: {
+m.cmsId = r.string();
+break;
+}
+case 4: {
+m.imageUrl = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+Citation.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.Citation)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.Citation();
+if (d.title != null) {
+m.title = String(d.title);
+}
+if (d.subtitle != null) {
+m.subtitle = String(d.subtitle);
+}
+if (d.cmsId != null) {
+m.cmsId = String(d.cmsId);
+}
+if (d.imageUrl != null) {
+m.imageUrl = String(d.imageUrl);
+}
+return m;
+};
+Citation.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.defaults) {
+d.title = "";
+d.subtitle = "";
+d.cmsId = "";
+d.imageUrl = "";
+}
+if (m.title != null && m.hasOwnProperty("title")) {
+d.title = m.title;
+}
+if (m.subtitle != null && m.hasOwnProperty("subtitle")) {
+d.subtitle = m.subtitle;
+}
+if (m.cmsId != null && m.hasOwnProperty("cmsId")) {
+d.cmsId = m.cmsId;
+}
+if (m.imageUrl != null && m.hasOwnProperty("imageUrl")) {
+d.imageUrl = m.imageUrl;
+}
+return d;
+};
+Citation.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+Citation.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.Citation";
+};
+return Citation;

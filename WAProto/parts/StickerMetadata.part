@@ -1,0 +1,357 @@
+"use strict";
+function StickerMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+StickerMetadata.prototype.url = null;
+StickerMetadata.prototype.fileSha256 = null;
+StickerMetadata.prototype.fileEncSha256 = null;
+StickerMetadata.prototype.mediaKey = null;
+StickerMetadata.prototype.mimetype = null;
+StickerMetadata.prototype.height = null;
+StickerMetadata.prototype.width = null;
+StickerMetadata.prototype.directPath = null;
+StickerMetadata.prototype.fileLength = null;
+StickerMetadata.prototype.weight = null;
+StickerMetadata.prototype.lastStickerSentTs = null;
+StickerMetadata.prototype.isLottie = null;
+StickerMetadata.prototype.imageHash = null;
+StickerMetadata.prototype.isAvatarSticker = null;
+let $oneOfFields;
+Object.defineProperty(StickerMetadata.prototype, "_url", {
+get: $util.oneOfGetter($oneOfFields = ["url"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(StickerMetadata.prototype, "_fileSha256", {
+get: $util.oneOfGetter($oneOfFields = ["fileSha256"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(StickerMetadata.prototype, "_fileEncSha256", {
+get: $util.oneOfGetter($oneOfFields = ["fileEncSha256"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(StickerMetadata.prototype, "_mediaKey", {
+get: $util.oneOfGetter($oneOfFields = ["mediaKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(StickerMetadata.prototype, "_mimetype", {
+get: $util.oneOfGetter($oneOfFields = ["mimetype"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(StickerMetadata.prototype, "_height", {
+get: $util.oneOfGetter($oneOfFields = ["height"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(StickerMetadata.prototype, "_width", {
+get: $util.oneOfGetter($oneOfFields = ["width"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(StickerMetadata.prototype, "_directPath", {
+get: $util.oneOfGetter($oneOfFields = ["directPath"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(StickerMetadata.prototype, "_fileLength", {
+get: $util.oneOfGetter($oneOfFields = ["fileLength"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(StickerMetadata.prototype, "_weight", {
+get: $util.oneOfGetter($oneOfFields = ["weight"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(StickerMetadata.prototype, "_lastStickerSentTs", {
+get: $util.oneOfGetter($oneOfFields = ["lastStickerSentTs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(StickerMetadata.prototype, "_isLottie", {
+get: $util.oneOfGetter($oneOfFields = ["isLottie"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(StickerMetadata.prototype, "_imageHash", {
+get: $util.oneOfGetter($oneOfFields = ["imageHash"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(StickerMetadata.prototype, "_isAvatarSticker", {
+get: $util.oneOfGetter($oneOfFields = ["isAvatarSticker"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+StickerMetadata.create = function create(properties) {
+return new StickerMetadata(properties);
+};
+StickerMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.url != null && Object.hasOwnProperty.call(m, "url"))
+w.uint32(10).string(m.url);
+if (m.fileSha256 != null && Object.hasOwnProperty.call(m, "fileSha256"))
+w.uint32(18).bytes(m.fileSha256);
+if (m.fileEncSha256 != null && Object.hasOwnProperty.call(m, "fileEncSha256"))
+w.uint32(26).bytes(m.fileEncSha256);
+if (m.mediaKey != null && Object.hasOwnProperty.call(m, "mediaKey"))
+w.uint32(34).bytes(m.mediaKey);
+if (m.mimetype != null && Object.hasOwnProperty.call(m, "mimetype"))
+w.uint32(42).string(m.mimetype);
+if (m.height != null && Object.hasOwnProperty.call(m, "height"))
+w.uint32(48).uint32(m.height);
+if (m.width != null && Object.hasOwnProperty.call(m, "width"))
+w.uint32(56).uint32(m.width);
+if (m.directPath != null && Object.hasOwnProperty.call(m, "directPath"))
+w.uint32(66).string(m.directPath);
+if (m.fileLength != null && Object.hasOwnProperty.call(m, "fileLength"))
+w.uint32(72).uint64(m.fileLength);
+if (m.weight != null && Object.hasOwnProperty.call(m, "weight"))
+w.uint32(85).float(m.weight);
+if (m.lastStickerSentTs != null && Object.hasOwnProperty.call(m, "lastStickerSentTs"))
+w.uint32(88).int64(m.lastStickerSentTs);
+if (m.isLottie != null && Object.hasOwnProperty.call(m, "isLottie"))
+w.uint32(96).bool(m.isLottie);
+if (m.imageHash != null && Object.hasOwnProperty.call(m, "imageHash"))
+w.uint32(106).string(m.imageHash);
+if (m.isAvatarSticker != null && Object.hasOwnProperty.call(m, "isAvatarSticker"))
+w.uint32(112).bool(m.isAvatarSticker);
+return w;
+};
+StickerMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.StickerMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.url = r.string();
+break;
+}
+case 2: {
+m.fileSha256 = r.bytes();
+break;
+}
+case 3: {
+m.fileEncSha256 = r.bytes();
+break;
+}
+case 4: {
+m.mediaKey = r.bytes();
+break;
+}
+case 5: {
+m.mimetype = r.string();
+break;
+}
+case 6: {
+m.height = r.uint32();
+break;
+}
+case 7: {
+m.width = r.uint32();
+break;
+}
+case 8: {
+m.directPath = r.string();
+break;
+}
+case 9: {
+m.fileLength = r.uint64();
+break;
+}
+case 10: {
+m.weight = r.float();
+break;
+}
+case 11: {
+m.lastStickerSentTs = r.int64();
+break;
+}
+case 12: {
+m.isLottie = r.bool();
+break;
+}
+case 13: {
+m.imageHash = r.string();
+break;
+}
+case 14: {
+m.isAvatarSticker = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+StickerMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.StickerMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.StickerMetadata();
+if (d.url != null) {
+m.url = String(d.url);
+}
+if (d.fileSha256 != null) {
+if (typeof d.fileSha256 === "string")
+$util.base64.decode(d.fileSha256, m.fileSha256 = $util.newBuffer($util.base64.length(d.fileSha256)), 0);
+else if (d.fileSha256.length >= 0)
+m.fileSha256 = d.fileSha256;
+}
+if (d.fileEncSha256 != null) {
+if (typeof d.fileEncSha256 === "string")
+$util.base64.decode(d.fileEncSha256, m.fileEncSha256 = $util.newBuffer($util.base64.length(d.fileEncSha256)), 0);
+else if (d.fileEncSha256.length >= 0)
+m.fileEncSha256 = d.fileEncSha256;
+}
+if (d.mediaKey != null) {
+if (typeof d.mediaKey === "string")
+$util.base64.decode(d.mediaKey, m.mediaKey = $util.newBuffer($util.base64.length(d.mediaKey)), 0);
+else if (d.mediaKey.length >= 0)
+m.mediaKey = d.mediaKey;
+}
+if (d.mimetype != null) {
+m.mimetype = String(d.mimetype);
+}
+if (d.height != null) {
+m.height = d.height >>> 0;
+}
+if (d.width != null) {
+m.width = d.width >>> 0;
+}
+if (d.directPath != null) {
+m.directPath = String(d.directPath);
+}
+if (d.fileLength != null) {
+if ($util.Long)
+(m.fileLength = $util.Long.fromValue(d.fileLength)).unsigned = true;
+else if (typeof d.fileLength === "string")
+m.fileLength = parseInt(d.fileLength, 10);
+else if (typeof d.fileLength === "number")
+m.fileLength = d.fileLength;
+else if (typeof d.fileLength === "object")
+m.fileLength = new $util.LongBits(d.fileLength.low >>> 0, d.fileLength.high >>> 0).toNumber(true);
+}
+if (d.weight != null) {
+m.weight = Number(d.weight);
+}
+if (d.lastStickerSentTs != null) {
+if ($util.Long)
+(m.lastStickerSentTs = $util.Long.fromValue(d.lastStickerSentTs)).unsigned = false;
+else if (typeof d.lastStickerSentTs === "string")
+m.lastStickerSentTs = parseInt(d.lastStickerSentTs, 10);
+else if (typeof d.lastStickerSentTs === "number")
+m.lastStickerSentTs = d.lastStickerSentTs;
+else if (typeof d.lastStickerSentTs === "object")
+m.lastStickerSentTs = new $util.LongBits(d.lastStickerSentTs.low >>> 0, d.lastStickerSentTs.high >>> 0).toNumber();
+}
+if (d.isLottie != null) {
+m.isLottie = Boolean(d.isLottie);
+}
+if (d.imageHash != null) {
+m.imageHash = String(d.imageHash);
+}
+if (d.isAvatarSticker != null) {
+m.isAvatarSticker = Boolean(d.isAvatarSticker);
+}
+return m;
+};
+StickerMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.url != null && m.hasOwnProperty("url")) {
+d.url = m.url;
+if (o.oneofs)
+d._url = "url";
+}
+if (m.fileSha256 != null && m.hasOwnProperty("fileSha256")) {
+d.fileSha256 = o.bytes === String ? $util.base64.encode(m.fileSha256, 0, m.fileSha256.length) : o.bytes === Array ? Array.prototype.slice.call(m.fileSha256) : m.fileSha256;
+if (o.oneofs)
+d._fileSha256 = "fileSha256";
+}
+if (m.fileEncSha256 != null && m.hasOwnProperty("fileEncSha256")) {
+d.fileEncSha256 = o.bytes === String ? $util.base64.encode(m.fileEncSha256, 0, m.fileEncSha256.length) : o.bytes === Array ? Array.prototype.slice.call(m.fileEncSha256) : m.fileEncSha256;
+if (o.oneofs)
+d._fileEncSha256 = "fileEncSha256";
+}
+if (m.mediaKey != null && m.hasOwnProperty("mediaKey")) {
+d.mediaKey = o.bytes === String ? $util.base64.encode(m.mediaKey, 0, m.mediaKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.mediaKey) : m.mediaKey;
+if (o.oneofs)
+d._mediaKey = "mediaKey";
+}
+if (m.mimetype != null && m.hasOwnProperty("mimetype")) {
+d.mimetype = m.mimetype;
+if (o.oneofs)
+d._mimetype = "mimetype";
+}
+if (m.height != null && m.hasOwnProperty("height")) {
+d.height = m.height;
+if (o.oneofs)
+d._height = "height";
+}
+if (m.width != null && m.hasOwnProperty("width")) {
+d.width = m.width;
+if (o.oneofs)
+d._width = "width";
+}
+if (m.directPath != null && m.hasOwnProperty("directPath")) {
+d.directPath = m.directPath;
+if (o.oneofs)
+d._directPath = "directPath";
+}
+if (m.fileLength != null && m.hasOwnProperty("fileLength")) {
+if (typeof m.fileLength === "number")
+d.fileLength = o.longs === String ? String(m.fileLength) : m.fileLength;
+else
+d.fileLength = o.longs === String ? longToString(m.fileLength, true) : o.longs === Number ? longToNumber(m.fileLength, true) : m.fileLength;
+if (o.oneofs)
+d._fileLength = "fileLength";
+}
+if (m.weight != null && m.hasOwnProperty("weight")) {
+d.weight = o.json && !isFinite(m.weight) ? String(m.weight) : m.weight;
+if (o.oneofs)
+d._weight = "weight";
+}
+if (m.lastStickerSentTs != null && m.hasOwnProperty("lastStickerSentTs")) {
+if (typeof m.lastStickerSentTs === "number")
+d.lastStickerSentTs = o.longs === String ? String(m.lastStickerSentTs) : m.lastStickerSentTs;
+else
+d.lastStickerSentTs = o.longs === String ? longToString(m.lastStickerSentTs) : o.longs === Number ? longToNumber(m.lastStickerSentTs) : m.lastStickerSentTs;
+if (o.oneofs)
+d._lastStickerSentTs = "lastStickerSentTs";
+}
+if (m.isLottie != null && m.hasOwnProperty("isLottie")) {
+d.isLottie = m.isLottie;
+if (o.oneofs)
+d._isLottie = "isLottie";
+}
+if (m.imageHash != null && m.hasOwnProperty("imageHash")) {
+d.imageHash = m.imageHash;
+if (o.oneofs)
+d._imageHash = "imageHash";
+}
+if (m.isAvatarSticker != null && m.hasOwnProperty("isAvatarSticker")) {
+d.isAvatarSticker = m.isAvatarSticker;
+if (o.oneofs)
+d._isAvatarSticker = "isAvatarSticker";
+}
+return d;
+};
+StickerMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+StickerMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.StickerMetadata";
+};
+return StickerMetadata;

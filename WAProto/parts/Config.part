@@ -1,0 +1,136 @@
+"use strict";
+function Config(p) {
+this.field = {};
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+Config.prototype.field = $util.emptyObject;
+Config.prototype.version = null;
+let $oneOfFields;
+Object.defineProperty(Config.prototype, "_version", {
+get: $util.oneOfGetter($oneOfFields = ["version"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Config.create = function create(properties) {
+return new Config(properties);
+};
+Config.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.field != null && Object.hasOwnProperty.call(m, "field")) {
+for (var ks = Object.keys(m.field), i = 0; i < ks.length; ++i) {
+w.uint32(10).fork().uint32(8).uint32(ks[i]);
+$root.proto.Field.encode(m.field[ks[i]], w.uint32(18).fork()).ldelim().ldelim();
+}
+}
+if (m.version != null && Object.hasOwnProperty.call(m, "version"))
+w.uint32(16).uint32(m.version);
+return w;
+};
+Config.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.Config(), k, value;
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+if (m.field === $util.emptyObject)
+m.field = {};
+var c2 = r.uint32() + r.pos;
+k = 0;
+value = null;
+while (r.pos < c2) {
+var tag2 = r.uint32();
+switch (tag2 >>> 3) {
+case 1:
+k = r.uint32();
+break;
+case 2:
+value = $root.proto.Field.decode(r, r.uint32(), undefined, n + 1);
+break;
+default:
+r.skipType(tag2 & 7, n);
+break;
+}
+}
+m.field[k] = value;
+break;
+}
+case 2: {
+m.version = r.uint32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+Config.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.Config)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.Config();
+if (d.field) {
+if (typeof d.field !== "object")
+throw TypeError(".proto.Config.field: object expected");
+m.field = {};
+for (var ks = Object.keys(d.field), i = 0; i < ks.length; ++i) {
+if (ks[i] === "__proto__")
+$util.makeProp(m.field, ks[i]);
+if (typeof d.field[ks[i]] !== "object")
+throw TypeError(".proto.Config.field: object expected");
+m.field[ks[i]] = $root.proto.Field.fromObject(d.field[ks[i]], n + 1);
+}
+}
+if (d.version != null) {
+m.version = d.version >>> 0;
+}
+return m;
+};
+Config.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.objects || o.defaults) {
+d.field = {};
+}
+var ks2;
+if (m.field && (ks2 = Object.keys(m.field)).length) {
+d.field = {};
+for (var j = 0; j < ks2.length; ++j) {
+if (ks2[j] === "__proto__")
+$util.makeProp(d.field, ks2[j]);
+d.field[ks2[j]] = $root.proto.Field.toObject(m.field[ks2[j]], o);
+}
+}
+if (m.version != null && m.hasOwnProperty("version")) {
+d.version = m.version;
+if (o.oneofs)
+d._version = "version";
+}
+return d;
+};
+Config.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+Config.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.Config";
+};
+return Config;

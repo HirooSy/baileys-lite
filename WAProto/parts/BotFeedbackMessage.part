@@ -1,0 +1,1366 @@
+"use strict";
+function BotFeedbackMessage(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotFeedbackMessage.prototype.messageKey = null;
+BotFeedbackMessage.prototype.kind = null;
+BotFeedbackMessage.prototype.text = null;
+BotFeedbackMessage.prototype.kindNegative = null;
+BotFeedbackMessage.prototype.kindPositive = null;
+BotFeedbackMessage.prototype.kindReport = null;
+BotFeedbackMessage.prototype.sideBySideSurveyMetadata = null;
+let $oneOfFields;
+Object.defineProperty(BotFeedbackMessage.prototype, "_messageKey", {
+get: $util.oneOfGetter($oneOfFields = ["messageKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotFeedbackMessage.prototype, "_kind", {
+get: $util.oneOfGetter($oneOfFields = ["kind"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotFeedbackMessage.prototype, "_text", {
+get: $util.oneOfGetter($oneOfFields = ["text"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotFeedbackMessage.prototype, "_kindNegative", {
+get: $util.oneOfGetter($oneOfFields = ["kindNegative"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotFeedbackMessage.prototype, "_kindPositive", {
+get: $util.oneOfGetter($oneOfFields = ["kindPositive"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotFeedbackMessage.prototype, "_kindReport", {
+get: $util.oneOfGetter($oneOfFields = ["kindReport"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotFeedbackMessage.prototype, "_sideBySideSurveyMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["sideBySideSurveyMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotFeedbackMessage.create = function create(properties) {
+return new BotFeedbackMessage(properties);
+};
+BotFeedbackMessage.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.messageKey != null && Object.hasOwnProperty.call(m, "messageKey"))
+$root.proto.MessageKey.encode(m.messageKey, w.uint32(10).fork()).ldelim();
+if (m.kind != null && Object.hasOwnProperty.call(m, "kind"))
+w.uint32(16).int32(m.kind);
+if (m.text != null && Object.hasOwnProperty.call(m, "text"))
+w.uint32(26).string(m.text);
+if (m.kindNegative != null && Object.hasOwnProperty.call(m, "kindNegative"))
+w.uint32(32).uint64(m.kindNegative);
+if (m.kindPositive != null && Object.hasOwnProperty.call(m, "kindPositive"))
+w.uint32(40).uint64(m.kindPositive);
+if (m.kindReport != null && Object.hasOwnProperty.call(m, "kindReport"))
+w.uint32(48).int32(m.kindReport);
+if (m.sideBySideSurveyMetadata != null && Object.hasOwnProperty.call(m, "sideBySideSurveyMetadata"))
+$root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.encode(m.sideBySideSurveyMetadata, w.uint32(58).fork()).ldelim();
+return w;
+};
+BotFeedbackMessage.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotFeedbackMessage();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.messageKey = $root.proto.MessageKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.kind = r.int32();
+break;
+}
+case 3: {
+m.text = r.string();
+break;
+}
+case 4: {
+m.kindNegative = r.uint64();
+break;
+}
+case 5: {
+m.kindPositive = r.uint64();
+break;
+}
+case 6: {
+m.kindReport = r.int32();
+break;
+}
+case 7: {
+m.sideBySideSurveyMetadata = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotFeedbackMessage.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotFeedbackMessage)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotFeedbackMessage();
+if (d.messageKey != null) {
+if (typeof d.messageKey !== "object")
+throw TypeError(".proto.BotFeedbackMessage.messageKey: object expected");
+m.messageKey = $root.proto.MessageKey.fromObject(d.messageKey, n + 1);
+}
+switch (d.kind) {
+default:
+if (typeof d.kind === "number") {
+m.kind = d.kind;
+break;
+}
+break;
+case "BOT_FEEDBACK_POSITIVE":
+case 0:
+m.kind = 0;
+break;
+case "BOT_FEEDBACK_NEGATIVE_GENERIC":
+case 1:
+m.kind = 1;
+break;
+case "BOT_FEEDBACK_NEGATIVE_HELPFUL":
+case 2:
+m.kind = 2;
+break;
+case "BOT_FEEDBACK_NEGATIVE_INTERESTING":
+case 3:
+m.kind = 3;
+break;
+case "BOT_FEEDBACK_NEGATIVE_ACCURATE":
+case 4:
+m.kind = 4;
+break;
+case "BOT_FEEDBACK_NEGATIVE_SAFE":
+case 5:
+m.kind = 5;
+break;
+case "BOT_FEEDBACK_NEGATIVE_OTHER":
+case 6:
+m.kind = 6;
+break;
+case "BOT_FEEDBACK_NEGATIVE_REFUSED":
+case 7:
+m.kind = 7;
+break;
+case "BOT_FEEDBACK_NEGATIVE_NOT_VISUALLY_APPEALING":
+case 8:
+m.kind = 8;
+break;
+case "BOT_FEEDBACK_NEGATIVE_NOT_RELEVANT_TO_TEXT":
+case 9:
+m.kind = 9;
+break;
+case "BOT_FEEDBACK_NEGATIVE_PERSONALIZED":
+case 10:
+m.kind = 10;
+break;
+case "BOT_FEEDBACK_NEGATIVE_CLARITY":
+case 11:
+m.kind = 11;
+break;
+case "BOT_FEEDBACK_NEGATIVE_DOESNT_LOOK_LIKE_THE_PERSON":
+case 12:
+m.kind = 12;
+break;
+case "BOT_FEEDBACK_NEGATIVE_HALLUCINATION_INTERNAL_ONLY":
+case 13:
+m.kind = 13;
+break;
+case "BOT_FEEDBACK_NEGATIVE":
+case 14:
+m.kind = 14;
+break;
+}
+if (d.text != null) {
+m.text = String(d.text);
+}
+if (d.kindNegative != null) {
+if ($util.Long)
+(m.kindNegative = $util.Long.fromValue(d.kindNegative)).unsigned = true;
+else if (typeof d.kindNegative === "string")
+m.kindNegative = parseInt(d.kindNegative, 10);
+else if (typeof d.kindNegative === "number")
+m.kindNegative = d.kindNegative;
+else if (typeof d.kindNegative === "object")
+m.kindNegative = new $util.LongBits(d.kindNegative.low >>> 0, d.kindNegative.high >>> 0).toNumber(true);
+}
+if (d.kindPositive != null) {
+if ($util.Long)
+(m.kindPositive = $util.Long.fromValue(d.kindPositive)).unsigned = true;
+else if (typeof d.kindPositive === "string")
+m.kindPositive = parseInt(d.kindPositive, 10);
+else if (typeof d.kindPositive === "number")
+m.kindPositive = d.kindPositive;
+else if (typeof d.kindPositive === "object")
+m.kindPositive = new $util.LongBits(d.kindPositive.low >>> 0, d.kindPositive.high >>> 0).toNumber(true);
+}
+switch (d.kindReport) {
+default:
+if (typeof d.kindReport === "number") {
+m.kindReport = d.kindReport;
+break;
+}
+break;
+case "NONE":
+case 0:
+m.kindReport = 0;
+break;
+case "GENERIC":
+case 1:
+m.kindReport = 1;
+break;
+}
+if (d.sideBySideSurveyMetadata != null) {
+if (typeof d.sideBySideSurveyMetadata !== "object")
+throw TypeError(".proto.BotFeedbackMessage.sideBySideSurveyMetadata: object expected");
+m.sideBySideSurveyMetadata = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.fromObject(d.sideBySideSurveyMetadata, n + 1);
+}
+return m;
+};
+BotFeedbackMessage.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.messageKey != null && m.hasOwnProperty("messageKey")) {
+d.messageKey = $root.proto.MessageKey.toObject(m.messageKey, o);
+if (o.oneofs)
+d._messageKey = "messageKey";
+}
+if (m.kind != null && m.hasOwnProperty("kind")) {
+d.kind = o.enums === String ? $root.proto.BotFeedbackMessage.BotFeedbackKind[m.kind] === undefined ? m.kind : $root.proto.BotFeedbackMessage.BotFeedbackKind[m.kind] : m.kind;
+if (o.oneofs)
+d._kind = "kind";
+}
+if (m.text != null && m.hasOwnProperty("text")) {
+d.text = m.text;
+if (o.oneofs)
+d._text = "text";
+}
+if (m.kindNegative != null && m.hasOwnProperty("kindNegative")) {
+if (typeof m.kindNegative === "number")
+d.kindNegative = o.longs === String ? String(m.kindNegative) : m.kindNegative;
+else
+d.kindNegative = o.longs === String ? longToString(m.kindNegative, true) : o.longs === Number ? longToNumber(m.kindNegative, true) : m.kindNegative;
+if (o.oneofs)
+d._kindNegative = "kindNegative";
+}
+if (m.kindPositive != null && m.hasOwnProperty("kindPositive")) {
+if (typeof m.kindPositive === "number")
+d.kindPositive = o.longs === String ? String(m.kindPositive) : m.kindPositive;
+else
+d.kindPositive = o.longs === String ? longToString(m.kindPositive, true) : o.longs === Number ? longToNumber(m.kindPositive, true) : m.kindPositive;
+if (o.oneofs)
+d._kindPositive = "kindPositive";
+}
+if (m.kindReport != null && m.hasOwnProperty("kindReport")) {
+d.kindReport = o.enums === String ? $root.proto.BotFeedbackMessage.ReportKind[m.kindReport] === undefined ? m.kindReport : $root.proto.BotFeedbackMessage.ReportKind[m.kindReport] : m.kindReport;
+if (o.oneofs)
+d._kindReport = "kindReport";
+}
+if (m.sideBySideSurveyMetadata != null && m.hasOwnProperty("sideBySideSurveyMetadata")) {
+d.sideBySideSurveyMetadata = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.toObject(m.sideBySideSurveyMetadata, o);
+if (o.oneofs)
+d._sideBySideSurveyMetadata = "sideBySideSurveyMetadata";
+}
+return d;
+};
+BotFeedbackMessage.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotFeedbackMessage.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotFeedbackMessage";
+};
+$lazy(BotFeedbackMessage, "BotFeedbackKind", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "BOT_FEEDBACK_POSITIVE"] = 0;
+values[valuesById[1] = "BOT_FEEDBACK_NEGATIVE_GENERIC"] = 1;
+values[valuesById[2] = "BOT_FEEDBACK_NEGATIVE_HELPFUL"] = 2;
+values[valuesById[3] = "BOT_FEEDBACK_NEGATIVE_INTERESTING"] = 3;
+values[valuesById[4] = "BOT_FEEDBACK_NEGATIVE_ACCURATE"] = 4;
+values[valuesById[5] = "BOT_FEEDBACK_NEGATIVE_SAFE"] = 5;
+values[valuesById[6] = "BOT_FEEDBACK_NEGATIVE_OTHER"] = 6;
+values[valuesById[7] = "BOT_FEEDBACK_NEGATIVE_REFUSED"] = 7;
+values[valuesById[8] = "BOT_FEEDBACK_NEGATIVE_NOT_VISUALLY_APPEALING"] = 8;
+values[valuesById[9] = "BOT_FEEDBACK_NEGATIVE_NOT_RELEVANT_TO_TEXT"] = 9;
+values[valuesById[10] = "BOT_FEEDBACK_NEGATIVE_PERSONALIZED"] = 10;
+values[valuesById[11] = "BOT_FEEDBACK_NEGATIVE_CLARITY"] = 11;
+values[valuesById[12] = "BOT_FEEDBACK_NEGATIVE_DOESNT_LOOK_LIKE_THE_PERSON"] = 12;
+values[valuesById[13] = "BOT_FEEDBACK_NEGATIVE_HALLUCINATION_INTERNAL_ONLY"] = 13;
+values[valuesById[14] = "BOT_FEEDBACK_NEGATIVE"] = 14;
+return values;
+});
+$lazy(BotFeedbackMessage, "BotFeedbackKindMultipleNegative", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[1] = "BOT_FEEDBACK_MULTIPLE_NEGATIVE_GENERIC"] = 1;
+values[valuesById[2] = "BOT_FEEDBACK_MULTIPLE_NEGATIVE_HELPFUL"] = 2;
+values[valuesById[4] = "BOT_FEEDBACK_MULTIPLE_NEGATIVE_INTERESTING"] = 4;
+values[valuesById[8] = "BOT_FEEDBACK_MULTIPLE_NEGATIVE_ACCURATE"] = 8;
+values[valuesById[16] = "BOT_FEEDBACK_MULTIPLE_NEGATIVE_SAFE"] = 16;
+values[valuesById[32] = "BOT_FEEDBACK_MULTIPLE_NEGATIVE_OTHER"] = 32;
+values[valuesById[64] = "BOT_FEEDBACK_MULTIPLE_NEGATIVE_REFUSED"] = 64;
+values[valuesById[128] = "BOT_FEEDBACK_MULTIPLE_NEGATIVE_NOT_VISUALLY_APPEALING"] = 128;
+values[valuesById[256] = "BOT_FEEDBACK_MULTIPLE_NEGATIVE_NOT_RELEVANT_TO_TEXT"] = 256;
+return values;
+});
+$lazy(BotFeedbackMessage, "BotFeedbackKindMultiplePositive", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[1] = "BOT_FEEDBACK_MULTIPLE_POSITIVE_GENERIC"] = 1;
+return values;
+});
+$lazy(BotFeedbackMessage, "ReportKind", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "NONE"] = 0;
+values[valuesById[1] = "GENERIC"] = 1;
+return values;
+});
+$lazy(BotFeedbackMessage, "SideBySideSurveyMetadata", function() {
+function SideBySideSurveyMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SideBySideSurveyMetadata.prototype.selectedRequestId = null;
+SideBySideSurveyMetadata.prototype.surveyId = null;
+SideBySideSurveyMetadata.prototype.simonSessionFbid = null;
+SideBySideSurveyMetadata.prototype.responseOtid = null;
+SideBySideSurveyMetadata.prototype.responseTimestampMsString = null;
+SideBySideSurveyMetadata.prototype.isSelectedResponsePrimary = null;
+SideBySideSurveyMetadata.prototype.messageIdToEdit = null;
+SideBySideSurveyMetadata.prototype.analyticsData = null;
+SideBySideSurveyMetadata.prototype.metaAiAnalyticsData = null;
+let $oneOfFields;
+Object.defineProperty(SideBySideSurveyMetadata.prototype, "_selectedRequestId", {
+get: $util.oneOfGetter($oneOfFields = ["selectedRequestId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SideBySideSurveyMetadata.prototype, "_surveyId", {
+get: $util.oneOfGetter($oneOfFields = ["surveyId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SideBySideSurveyMetadata.prototype, "_simonSessionFbid", {
+get: $util.oneOfGetter($oneOfFields = ["simonSessionFbid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SideBySideSurveyMetadata.prototype, "_responseOtid", {
+get: $util.oneOfGetter($oneOfFields = ["responseOtid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SideBySideSurveyMetadata.prototype, "_responseTimestampMsString", {
+get: $util.oneOfGetter($oneOfFields = ["responseTimestampMsString"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SideBySideSurveyMetadata.prototype, "_isSelectedResponsePrimary", {
+get: $util.oneOfGetter($oneOfFields = ["isSelectedResponsePrimary"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SideBySideSurveyMetadata.prototype, "_messageIdToEdit", {
+get: $util.oneOfGetter($oneOfFields = ["messageIdToEdit"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SideBySideSurveyMetadata.prototype, "_analyticsData", {
+get: $util.oneOfGetter($oneOfFields = ["analyticsData"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SideBySideSurveyMetadata.prototype, "_metaAiAnalyticsData", {
+get: $util.oneOfGetter($oneOfFields = ["metaAiAnalyticsData"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SideBySideSurveyMetadata.create = function create(properties) {
+return new SideBySideSurveyMetadata(properties);
+};
+SideBySideSurveyMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.selectedRequestId != null && Object.hasOwnProperty.call(m, "selectedRequestId"))
+w.uint32(10).string(m.selectedRequestId);
+if (m.surveyId != null && Object.hasOwnProperty.call(m, "surveyId"))
+w.uint32(16).uint32(m.surveyId);
+if (m.simonSessionFbid != null && Object.hasOwnProperty.call(m, "simonSessionFbid"))
+w.uint32(26).string(m.simonSessionFbid);
+if (m.responseOtid != null && Object.hasOwnProperty.call(m, "responseOtid"))
+w.uint32(34).string(m.responseOtid);
+if (m.responseTimestampMsString != null && Object.hasOwnProperty.call(m, "responseTimestampMsString"))
+w.uint32(42).string(m.responseTimestampMsString);
+if (m.isSelectedResponsePrimary != null && Object.hasOwnProperty.call(m, "isSelectedResponsePrimary"))
+w.uint32(48).bool(m.isSelectedResponsePrimary);
+if (m.messageIdToEdit != null && Object.hasOwnProperty.call(m, "messageIdToEdit"))
+w.uint32(58).string(m.messageIdToEdit);
+if (m.analyticsData != null && Object.hasOwnProperty.call(m, "analyticsData"))
+$root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SideBySideSurveyAnalyticsData.encode(m.analyticsData, w.uint32(66).fork()).ldelim();
+if (m.metaAiAnalyticsData != null && Object.hasOwnProperty.call(m, "metaAiAnalyticsData"))
+$root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.encode(m.metaAiAnalyticsData, w.uint32(74).fork()).ldelim();
+return w;
+};
+SideBySideSurveyMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.selectedRequestId = r.string();
+break;
+}
+case 2: {
+m.surveyId = r.uint32();
+break;
+}
+case 3: {
+m.simonSessionFbid = r.string();
+break;
+}
+case 4: {
+m.responseOtid = r.string();
+break;
+}
+case 5: {
+m.responseTimestampMsString = r.string();
+break;
+}
+case 6: {
+m.isSelectedResponsePrimary = r.bool();
+break;
+}
+case 7: {
+m.messageIdToEdit = r.string();
+break;
+}
+case 8: {
+m.analyticsData = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SideBySideSurveyAnalyticsData.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 9: {
+m.metaAiAnalyticsData = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SideBySideSurveyMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata();
+if (d.selectedRequestId != null) {
+m.selectedRequestId = String(d.selectedRequestId);
+}
+if (d.surveyId != null) {
+m.surveyId = d.surveyId >>> 0;
+}
+if (d.simonSessionFbid != null) {
+m.simonSessionFbid = String(d.simonSessionFbid);
+}
+if (d.responseOtid != null) {
+m.responseOtid = String(d.responseOtid);
+}
+if (d.responseTimestampMsString != null) {
+m.responseTimestampMsString = String(d.responseTimestampMsString);
+}
+if (d.isSelectedResponsePrimary != null) {
+m.isSelectedResponsePrimary = Boolean(d.isSelectedResponsePrimary);
+}
+if (d.messageIdToEdit != null) {
+m.messageIdToEdit = String(d.messageIdToEdit);
+}
+if (d.analyticsData != null) {
+if (typeof d.analyticsData !== "object")
+throw TypeError(".proto.BotFeedbackMessage.SideBySideSurveyMetadata.analyticsData: object expected");
+m.analyticsData = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SideBySideSurveyAnalyticsData.fromObject(d.analyticsData, n + 1);
+}
+if (d.metaAiAnalyticsData != null) {
+if (typeof d.metaAiAnalyticsData !== "object")
+throw TypeError(".proto.BotFeedbackMessage.SideBySideSurveyMetadata.metaAiAnalyticsData: object expected");
+m.metaAiAnalyticsData = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.fromObject(d.metaAiAnalyticsData, n + 1);
+}
+return m;
+};
+SideBySideSurveyMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.selectedRequestId != null && m.hasOwnProperty("selectedRequestId")) {
+d.selectedRequestId = m.selectedRequestId;
+if (o.oneofs)
+d._selectedRequestId = "selectedRequestId";
+}
+if (m.surveyId != null && m.hasOwnProperty("surveyId")) {
+d.surveyId = m.surveyId;
+if (o.oneofs)
+d._surveyId = "surveyId";
+}
+if (m.simonSessionFbid != null && m.hasOwnProperty("simonSessionFbid")) {
+d.simonSessionFbid = m.simonSessionFbid;
+if (o.oneofs)
+d._simonSessionFbid = "simonSessionFbid";
+}
+if (m.responseOtid != null && m.hasOwnProperty("responseOtid")) {
+d.responseOtid = m.responseOtid;
+if (o.oneofs)
+d._responseOtid = "responseOtid";
+}
+if (m.responseTimestampMsString != null && m.hasOwnProperty("responseTimestampMsString")) {
+d.responseTimestampMsString = m.responseTimestampMsString;
+if (o.oneofs)
+d._responseTimestampMsString = "responseTimestampMsString";
+}
+if (m.isSelectedResponsePrimary != null && m.hasOwnProperty("isSelectedResponsePrimary")) {
+d.isSelectedResponsePrimary = m.isSelectedResponsePrimary;
+if (o.oneofs)
+d._isSelectedResponsePrimary = "isSelectedResponsePrimary";
+}
+if (m.messageIdToEdit != null && m.hasOwnProperty("messageIdToEdit")) {
+d.messageIdToEdit = m.messageIdToEdit;
+if (o.oneofs)
+d._messageIdToEdit = "messageIdToEdit";
+}
+if (m.analyticsData != null && m.hasOwnProperty("analyticsData")) {
+d.analyticsData = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SideBySideSurveyAnalyticsData.toObject(m.analyticsData, o);
+if (o.oneofs)
+d._analyticsData = "analyticsData";
+}
+if (m.metaAiAnalyticsData != null && m.hasOwnProperty("metaAiAnalyticsData")) {
+d.metaAiAnalyticsData = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.toObject(m.metaAiAnalyticsData, o);
+if (o.oneofs)
+d._metaAiAnalyticsData = "metaAiAnalyticsData";
+}
+return d;
+};
+SideBySideSurveyMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SideBySideSurveyMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotFeedbackMessage.SideBySideSurveyMetadata";
+};
+$lazy(SideBySideSurveyMetadata, "SideBySideSurveyAnalyticsData", function() {
+function SideBySideSurveyAnalyticsData(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SideBySideSurveyAnalyticsData.prototype.tessaEvent = null;
+SideBySideSurveyAnalyticsData.prototype.tessaSessionFbid = null;
+SideBySideSurveyAnalyticsData.prototype.simonSessionFbid = null;
+let $oneOfFields;
+Object.defineProperty(SideBySideSurveyAnalyticsData.prototype, "_tessaEvent", {
+get: $util.oneOfGetter($oneOfFields = ["tessaEvent"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SideBySideSurveyAnalyticsData.prototype, "_tessaSessionFbid", {
+get: $util.oneOfGetter($oneOfFields = ["tessaSessionFbid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SideBySideSurveyAnalyticsData.prototype, "_simonSessionFbid", {
+get: $util.oneOfGetter($oneOfFields = ["simonSessionFbid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SideBySideSurveyAnalyticsData.create = function create(properties) {
+return new SideBySideSurveyAnalyticsData(properties);
+};
+SideBySideSurveyAnalyticsData.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.tessaEvent != null && Object.hasOwnProperty.call(m, "tessaEvent"))
+w.uint32(10).string(m.tessaEvent);
+if (m.tessaSessionFbid != null && Object.hasOwnProperty.call(m, "tessaSessionFbid"))
+w.uint32(18).string(m.tessaSessionFbid);
+if (m.simonSessionFbid != null && Object.hasOwnProperty.call(m, "simonSessionFbid"))
+w.uint32(26).string(m.simonSessionFbid);
+return w;
+};
+SideBySideSurveyAnalyticsData.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SideBySideSurveyAnalyticsData();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.tessaEvent = r.string();
+break;
+}
+case 2: {
+m.tessaSessionFbid = r.string();
+break;
+}
+case 3: {
+m.simonSessionFbid = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SideBySideSurveyAnalyticsData.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SideBySideSurveyAnalyticsData)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SideBySideSurveyAnalyticsData();
+if (d.tessaEvent != null) {
+m.tessaEvent = String(d.tessaEvent);
+}
+if (d.tessaSessionFbid != null) {
+m.tessaSessionFbid = String(d.tessaSessionFbid);
+}
+if (d.simonSessionFbid != null) {
+m.simonSessionFbid = String(d.simonSessionFbid);
+}
+return m;
+};
+SideBySideSurveyAnalyticsData.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.tessaEvent != null && m.hasOwnProperty("tessaEvent")) {
+d.tessaEvent = m.tessaEvent;
+if (o.oneofs)
+d._tessaEvent = "tessaEvent";
+}
+if (m.tessaSessionFbid != null && m.hasOwnProperty("tessaSessionFbid")) {
+d.tessaSessionFbid = m.tessaSessionFbid;
+if (o.oneofs)
+d._tessaSessionFbid = "tessaSessionFbid";
+}
+if (m.simonSessionFbid != null && m.hasOwnProperty("simonSessionFbid")) {
+d.simonSessionFbid = m.simonSessionFbid;
+if (o.oneofs)
+d._simonSessionFbid = "simonSessionFbid";
+}
+return d;
+};
+SideBySideSurveyAnalyticsData.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SideBySideSurveyAnalyticsData.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotFeedbackMessage.SideBySideSurveyMetadata.SideBySideSurveyAnalyticsData";
+};
+return SideBySideSurveyAnalyticsData;
+});
+$lazy(SideBySideSurveyMetadata, "SidebySideSurveyMetaAiAnalyticsData", function() {
+function SidebySideSurveyMetaAiAnalyticsData(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SidebySideSurveyMetaAiAnalyticsData.prototype.surveyId = null;
+SidebySideSurveyMetaAiAnalyticsData.prototype.primaryResponseId = null;
+SidebySideSurveyMetaAiAnalyticsData.prototype.testArmName = null;
+SidebySideSurveyMetaAiAnalyticsData.prototype.timestampMsString = null;
+SidebySideSurveyMetaAiAnalyticsData.prototype.ctaImpressionEvent = null;
+SidebySideSurveyMetaAiAnalyticsData.prototype.ctaClickEvent = null;
+SidebySideSurveyMetaAiAnalyticsData.prototype.cardImpressionEvent = null;
+SidebySideSurveyMetaAiAnalyticsData.prototype.responseEvent = null;
+SidebySideSurveyMetaAiAnalyticsData.prototype.abandonEvent = null;
+let $oneOfFields;
+Object.defineProperty(SidebySideSurveyMetaAiAnalyticsData.prototype, "_surveyId", {
+get: $util.oneOfGetter($oneOfFields = ["surveyId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SidebySideSurveyMetaAiAnalyticsData.prototype, "_primaryResponseId", {
+get: $util.oneOfGetter($oneOfFields = ["primaryResponseId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SidebySideSurveyMetaAiAnalyticsData.prototype, "_testArmName", {
+get: $util.oneOfGetter($oneOfFields = ["testArmName"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SidebySideSurveyMetaAiAnalyticsData.prototype, "_timestampMsString", {
+get: $util.oneOfGetter($oneOfFields = ["timestampMsString"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SidebySideSurveyMetaAiAnalyticsData.prototype, "_ctaImpressionEvent", {
+get: $util.oneOfGetter($oneOfFields = ["ctaImpressionEvent"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SidebySideSurveyMetaAiAnalyticsData.prototype, "_ctaClickEvent", {
+get: $util.oneOfGetter($oneOfFields = ["ctaClickEvent"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SidebySideSurveyMetaAiAnalyticsData.prototype, "_cardImpressionEvent", {
+get: $util.oneOfGetter($oneOfFields = ["cardImpressionEvent"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SidebySideSurveyMetaAiAnalyticsData.prototype, "_responseEvent", {
+get: $util.oneOfGetter($oneOfFields = ["responseEvent"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SidebySideSurveyMetaAiAnalyticsData.prototype, "_abandonEvent", {
+get: $util.oneOfGetter($oneOfFields = ["abandonEvent"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SidebySideSurveyMetaAiAnalyticsData.create = function create(properties) {
+return new SidebySideSurveyMetaAiAnalyticsData(properties);
+};
+SidebySideSurveyMetaAiAnalyticsData.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.surveyId != null && Object.hasOwnProperty.call(m, "surveyId"))
+w.uint32(8).uint32(m.surveyId);
+if (m.primaryResponseId != null && Object.hasOwnProperty.call(m, "primaryResponseId"))
+w.uint32(18).string(m.primaryResponseId);
+if (m.testArmName != null && Object.hasOwnProperty.call(m, "testArmName"))
+w.uint32(26).string(m.testArmName);
+if (m.timestampMsString != null && Object.hasOwnProperty.call(m, "timestampMsString"))
+w.uint32(34).string(m.timestampMsString);
+if (m.ctaImpressionEvent != null && Object.hasOwnProperty.call(m, "ctaImpressionEvent"))
+$root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCTAImpressionEventData.encode(m.ctaImpressionEvent, w.uint32(42).fork()).ldelim();
+if (m.ctaClickEvent != null && Object.hasOwnProperty.call(m, "ctaClickEvent"))
+$root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCTAClickEventData.encode(m.ctaClickEvent, w.uint32(50).fork()).ldelim();
+if (m.cardImpressionEvent != null && Object.hasOwnProperty.call(m, "cardImpressionEvent"))
+$root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCardImpressionEventData.encode(m.cardImpressionEvent, w.uint32(58).fork()).ldelim();
+if (m.responseEvent != null && Object.hasOwnProperty.call(m, "responseEvent"))
+$root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyResponseEventData.encode(m.responseEvent, w.uint32(66).fork()).ldelim();
+if (m.abandonEvent != null && Object.hasOwnProperty.call(m, "abandonEvent"))
+$root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyAbandonEventData.encode(m.abandonEvent, w.uint32(74).fork()).ldelim();
+return w;
+};
+SidebySideSurveyMetaAiAnalyticsData.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.surveyId = r.uint32();
+break;
+}
+case 2: {
+m.primaryResponseId = r.string();
+break;
+}
+case 3: {
+m.testArmName = r.string();
+break;
+}
+case 4: {
+m.timestampMsString = r.string();
+break;
+}
+case 5: {
+m.ctaImpressionEvent = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCTAImpressionEventData.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 6: {
+m.ctaClickEvent = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCTAClickEventData.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 7: {
+m.cardImpressionEvent = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCardImpressionEventData.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 8: {
+m.responseEvent = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyResponseEventData.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 9: {
+m.abandonEvent = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyAbandonEventData.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SidebySideSurveyMetaAiAnalyticsData.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData();
+if (d.surveyId != null) {
+m.surveyId = d.surveyId >>> 0;
+}
+if (d.primaryResponseId != null) {
+m.primaryResponseId = String(d.primaryResponseId);
+}
+if (d.testArmName != null) {
+m.testArmName = String(d.testArmName);
+}
+if (d.timestampMsString != null) {
+m.timestampMsString = String(d.timestampMsString);
+}
+if (d.ctaImpressionEvent != null) {
+if (typeof d.ctaImpressionEvent !== "object")
+throw TypeError(".proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.ctaImpressionEvent: object expected");
+m.ctaImpressionEvent = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCTAImpressionEventData.fromObject(d.ctaImpressionEvent, n + 1);
+}
+if (d.ctaClickEvent != null) {
+if (typeof d.ctaClickEvent !== "object")
+throw TypeError(".proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.ctaClickEvent: object expected");
+m.ctaClickEvent = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCTAClickEventData.fromObject(d.ctaClickEvent, n + 1);
+}
+if (d.cardImpressionEvent != null) {
+if (typeof d.cardImpressionEvent !== "object")
+throw TypeError(".proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.cardImpressionEvent: object expected");
+m.cardImpressionEvent = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCardImpressionEventData.fromObject(d.cardImpressionEvent, n + 1);
+}
+if (d.responseEvent != null) {
+if (typeof d.responseEvent !== "object")
+throw TypeError(".proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.responseEvent: object expected");
+m.responseEvent = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyResponseEventData.fromObject(d.responseEvent, n + 1);
+}
+if (d.abandonEvent != null) {
+if (typeof d.abandonEvent !== "object")
+throw TypeError(".proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.abandonEvent: object expected");
+m.abandonEvent = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyAbandonEventData.fromObject(d.abandonEvent, n + 1);
+}
+return m;
+};
+SidebySideSurveyMetaAiAnalyticsData.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.surveyId != null && m.hasOwnProperty("surveyId")) {
+d.surveyId = m.surveyId;
+if (o.oneofs)
+d._surveyId = "surveyId";
+}
+if (m.primaryResponseId != null && m.hasOwnProperty("primaryResponseId")) {
+d.primaryResponseId = m.primaryResponseId;
+if (o.oneofs)
+d._primaryResponseId = "primaryResponseId";
+}
+if (m.testArmName != null && m.hasOwnProperty("testArmName")) {
+d.testArmName = m.testArmName;
+if (o.oneofs)
+d._testArmName = "testArmName";
+}
+if (m.timestampMsString != null && m.hasOwnProperty("timestampMsString")) {
+d.timestampMsString = m.timestampMsString;
+if (o.oneofs)
+d._timestampMsString = "timestampMsString";
+}
+if (m.ctaImpressionEvent != null && m.hasOwnProperty("ctaImpressionEvent")) {
+d.ctaImpressionEvent = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCTAImpressionEventData.toObject(m.ctaImpressionEvent, o);
+if (o.oneofs)
+d._ctaImpressionEvent = "ctaImpressionEvent";
+}
+if (m.ctaClickEvent != null && m.hasOwnProperty("ctaClickEvent")) {
+d.ctaClickEvent = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCTAClickEventData.toObject(m.ctaClickEvent, o);
+if (o.oneofs)
+d._ctaClickEvent = "ctaClickEvent";
+}
+if (m.cardImpressionEvent != null && m.hasOwnProperty("cardImpressionEvent")) {
+d.cardImpressionEvent = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCardImpressionEventData.toObject(m.cardImpressionEvent, o);
+if (o.oneofs)
+d._cardImpressionEvent = "cardImpressionEvent";
+}
+if (m.responseEvent != null && m.hasOwnProperty("responseEvent")) {
+d.responseEvent = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyResponseEventData.toObject(m.responseEvent, o);
+if (o.oneofs)
+d._responseEvent = "responseEvent";
+}
+if (m.abandonEvent != null && m.hasOwnProperty("abandonEvent")) {
+d.abandonEvent = $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyAbandonEventData.toObject(m.abandonEvent, o);
+if (o.oneofs)
+d._abandonEvent = "abandonEvent";
+}
+return d;
+};
+SidebySideSurveyMetaAiAnalyticsData.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SidebySideSurveyMetaAiAnalyticsData.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData";
+};
+$lazy(SidebySideSurveyMetaAiAnalyticsData, "SideBySideSurveyAbandonEventData", function() {
+function SideBySideSurveyAbandonEventData(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SideBySideSurveyAbandonEventData.prototype.abandonDwellTimeMsString = null;
+let $oneOfFields;
+Object.defineProperty(SideBySideSurveyAbandonEventData.prototype, "_abandonDwellTimeMsString", {
+get: $util.oneOfGetter($oneOfFields = ["abandonDwellTimeMsString"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SideBySideSurveyAbandonEventData.create = function create(properties) {
+return new SideBySideSurveyAbandonEventData(properties);
+};
+SideBySideSurveyAbandonEventData.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.abandonDwellTimeMsString != null && Object.hasOwnProperty.call(m, "abandonDwellTimeMsString"))
+w.uint32(10).string(m.abandonDwellTimeMsString);
+return w;
+};
+SideBySideSurveyAbandonEventData.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyAbandonEventData();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.abandonDwellTimeMsString = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SideBySideSurveyAbandonEventData.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyAbandonEventData)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyAbandonEventData();
+if (d.abandonDwellTimeMsString != null) {
+m.abandonDwellTimeMsString = String(d.abandonDwellTimeMsString);
+}
+return m;
+};
+SideBySideSurveyAbandonEventData.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.abandonDwellTimeMsString != null && m.hasOwnProperty("abandonDwellTimeMsString")) {
+d.abandonDwellTimeMsString = m.abandonDwellTimeMsString;
+if (o.oneofs)
+d._abandonDwellTimeMsString = "abandonDwellTimeMsString";
+}
+return d;
+};
+SideBySideSurveyAbandonEventData.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SideBySideSurveyAbandonEventData.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyAbandonEventData";
+};
+return SideBySideSurveyAbandonEventData;
+});
+$lazy(SidebySideSurveyMetaAiAnalyticsData, "SideBySideSurveyCTAClickEventData", function() {
+function SideBySideSurveyCTAClickEventData(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SideBySideSurveyCTAClickEventData.prototype.isSurveyExpired = null;
+SideBySideSurveyCTAClickEventData.prototype.clickDwellTimeMsString = null;
+let $oneOfFields;
+Object.defineProperty(SideBySideSurveyCTAClickEventData.prototype, "_isSurveyExpired", {
+get: $util.oneOfGetter($oneOfFields = ["isSurveyExpired"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SideBySideSurveyCTAClickEventData.prototype, "_clickDwellTimeMsString", {
+get: $util.oneOfGetter($oneOfFields = ["clickDwellTimeMsString"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SideBySideSurveyCTAClickEventData.create = function create(properties) {
+return new SideBySideSurveyCTAClickEventData(properties);
+};
+SideBySideSurveyCTAClickEventData.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.isSurveyExpired != null && Object.hasOwnProperty.call(m, "isSurveyExpired"))
+w.uint32(8).bool(m.isSurveyExpired);
+if (m.clickDwellTimeMsString != null && Object.hasOwnProperty.call(m, "clickDwellTimeMsString"))
+w.uint32(18).string(m.clickDwellTimeMsString);
+return w;
+};
+SideBySideSurveyCTAClickEventData.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCTAClickEventData();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.isSurveyExpired = r.bool();
+break;
+}
+case 2: {
+m.clickDwellTimeMsString = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SideBySideSurveyCTAClickEventData.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCTAClickEventData)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCTAClickEventData();
+if (d.isSurveyExpired != null) {
+m.isSurveyExpired = Boolean(d.isSurveyExpired);
+}
+if (d.clickDwellTimeMsString != null) {
+m.clickDwellTimeMsString = String(d.clickDwellTimeMsString);
+}
+return m;
+};
+SideBySideSurveyCTAClickEventData.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.isSurveyExpired != null && m.hasOwnProperty("isSurveyExpired")) {
+d.isSurveyExpired = m.isSurveyExpired;
+if (o.oneofs)
+d._isSurveyExpired = "isSurveyExpired";
+}
+if (m.clickDwellTimeMsString != null && m.hasOwnProperty("clickDwellTimeMsString")) {
+d.clickDwellTimeMsString = m.clickDwellTimeMsString;
+if (o.oneofs)
+d._clickDwellTimeMsString = "clickDwellTimeMsString";
+}
+return d;
+};
+SideBySideSurveyCTAClickEventData.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SideBySideSurveyCTAClickEventData.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCTAClickEventData";
+};
+return SideBySideSurveyCTAClickEventData;
+});
+$lazy(SidebySideSurveyMetaAiAnalyticsData, "SideBySideSurveyCTAImpressionEventData", function() {
+function SideBySideSurveyCTAImpressionEventData(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SideBySideSurveyCTAImpressionEventData.prototype.isSurveyExpired = null;
+let $oneOfFields;
+Object.defineProperty(SideBySideSurveyCTAImpressionEventData.prototype, "_isSurveyExpired", {
+get: $util.oneOfGetter($oneOfFields = ["isSurveyExpired"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SideBySideSurveyCTAImpressionEventData.create = function create(properties) {
+return new SideBySideSurveyCTAImpressionEventData(properties);
+};
+SideBySideSurveyCTAImpressionEventData.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.isSurveyExpired != null && Object.hasOwnProperty.call(m, "isSurveyExpired"))
+w.uint32(8).bool(m.isSurveyExpired);
+return w;
+};
+SideBySideSurveyCTAImpressionEventData.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCTAImpressionEventData();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.isSurveyExpired = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SideBySideSurveyCTAImpressionEventData.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCTAImpressionEventData)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCTAImpressionEventData();
+if (d.isSurveyExpired != null) {
+m.isSurveyExpired = Boolean(d.isSurveyExpired);
+}
+return m;
+};
+SideBySideSurveyCTAImpressionEventData.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.isSurveyExpired != null && m.hasOwnProperty("isSurveyExpired")) {
+d.isSurveyExpired = m.isSurveyExpired;
+if (o.oneofs)
+d._isSurveyExpired = "isSurveyExpired";
+}
+return d;
+};
+SideBySideSurveyCTAImpressionEventData.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SideBySideSurveyCTAImpressionEventData.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCTAImpressionEventData";
+};
+return SideBySideSurveyCTAImpressionEventData;
+});
+$lazy(SidebySideSurveyMetaAiAnalyticsData, "SideBySideSurveyCardImpressionEventData", function() {
+function SideBySideSurveyCardImpressionEventData(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SideBySideSurveyCardImpressionEventData.create = function create(properties) {
+return new SideBySideSurveyCardImpressionEventData(properties);
+};
+SideBySideSurveyCardImpressionEventData.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+return w;
+};
+SideBySideSurveyCardImpressionEventData.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCardImpressionEventData();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SideBySideSurveyCardImpressionEventData.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCardImpressionEventData)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+return new $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCardImpressionEventData();
+};
+SideBySideSurveyCardImpressionEventData.toObject = function toObject() {
+return {};
+};
+SideBySideSurveyCardImpressionEventData.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SideBySideSurveyCardImpressionEventData.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyCardImpressionEventData";
+};
+return SideBySideSurveyCardImpressionEventData;
+});
+$lazy(SidebySideSurveyMetaAiAnalyticsData, "SideBySideSurveyResponseEventData", function() {
+function SideBySideSurveyResponseEventData(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SideBySideSurveyResponseEventData.prototype.responseDwellTimeMsString = null;
+SideBySideSurveyResponseEventData.prototype.selectedResponseId = null;
+let $oneOfFields;
+Object.defineProperty(SideBySideSurveyResponseEventData.prototype, "_responseDwellTimeMsString", {
+get: $util.oneOfGetter($oneOfFields = ["responseDwellTimeMsString"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SideBySideSurveyResponseEventData.prototype, "_selectedResponseId", {
+get: $util.oneOfGetter($oneOfFields = ["selectedResponseId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SideBySideSurveyResponseEventData.create = function create(properties) {
+return new SideBySideSurveyResponseEventData(properties);
+};
+SideBySideSurveyResponseEventData.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.responseDwellTimeMsString != null && Object.hasOwnProperty.call(m, "responseDwellTimeMsString"))
+w.uint32(10).string(m.responseDwellTimeMsString);
+if (m.selectedResponseId != null && Object.hasOwnProperty.call(m, "selectedResponseId"))
+w.uint32(18).string(m.selectedResponseId);
+return w;
+};
+SideBySideSurveyResponseEventData.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyResponseEventData();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.responseDwellTimeMsString = r.string();
+break;
+}
+case 2: {
+m.selectedResponseId = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SideBySideSurveyResponseEventData.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyResponseEventData)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyResponseEventData();
+if (d.responseDwellTimeMsString != null) {
+m.responseDwellTimeMsString = String(d.responseDwellTimeMsString);
+}
+if (d.selectedResponseId != null) {
+m.selectedResponseId = String(d.selectedResponseId);
+}
+return m;
+};
+SideBySideSurveyResponseEventData.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.responseDwellTimeMsString != null && m.hasOwnProperty("responseDwellTimeMsString")) {
+d.responseDwellTimeMsString = m.responseDwellTimeMsString;
+if (o.oneofs)
+d._responseDwellTimeMsString = "responseDwellTimeMsString";
+}
+if (m.selectedResponseId != null && m.hasOwnProperty("selectedResponseId")) {
+d.selectedResponseId = m.selectedResponseId;
+if (o.oneofs)
+d._selectedResponseId = "selectedResponseId";
+}
+return d;
+};
+SideBySideSurveyResponseEventData.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SideBySideSurveyResponseEventData.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotFeedbackMessage.SideBySideSurveyMetadata.SidebySideSurveyMetaAiAnalyticsData.SideBySideSurveyResponseEventData";
+};
+return SideBySideSurveyResponseEventData;
+});
+return SidebySideSurveyMetaAiAnalyticsData;
+});
+return SideBySideSurveyMetadata;
+});
+return BotFeedbackMessage;

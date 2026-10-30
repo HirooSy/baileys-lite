@@ -1,0 +1,6 @@
+"use strict";
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "E2EE"] = 0;
+values[valuesById[1] = "HOSTED"] = 1;
+values[valuesById[2] = "NON_E2EE"] = 2;
+return values;

@@ -1,0 +1,202 @@
+"use strict";
+function PollUpdate(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+PollUpdate.prototype.pollUpdateMessageKey = null;
+PollUpdate.prototype.vote = null;
+PollUpdate.prototype.senderTimestampMs = null;
+PollUpdate.prototype.serverTimestampMs = null;
+PollUpdate.prototype.unread = null;
+PollUpdate.prototype.metadata = null;
+let $oneOfFields;
+Object.defineProperty(PollUpdate.prototype, "_pollUpdateMessageKey", {
+get: $util.oneOfGetter($oneOfFields = ["pollUpdateMessageKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PollUpdate.prototype, "_vote", {
+get: $util.oneOfGetter($oneOfFields = ["vote"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PollUpdate.prototype, "_senderTimestampMs", {
+get: $util.oneOfGetter($oneOfFields = ["senderTimestampMs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PollUpdate.prototype, "_serverTimestampMs", {
+get: $util.oneOfGetter($oneOfFields = ["serverTimestampMs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PollUpdate.prototype, "_unread", {
+get: $util.oneOfGetter($oneOfFields = ["unread"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PollUpdate.prototype, "_metadata", {
+get: $util.oneOfGetter($oneOfFields = ["metadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+PollUpdate.create = function create(properties) {
+return new PollUpdate(properties);
+};
+PollUpdate.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.pollUpdateMessageKey != null && Object.hasOwnProperty.call(m, "pollUpdateMessageKey"))
+$root.proto.MessageKey.encode(m.pollUpdateMessageKey, w.uint32(10).fork()).ldelim();
+if (m.vote != null && Object.hasOwnProperty.call(m, "vote"))
+$root.proto.Message.PollVoteMessage.encode(m.vote, w.uint32(18).fork()).ldelim();
+if (m.senderTimestampMs != null && Object.hasOwnProperty.call(m, "senderTimestampMs"))
+w.uint32(24).int64(m.senderTimestampMs);
+if (m.serverTimestampMs != null && Object.hasOwnProperty.call(m, "serverTimestampMs"))
+w.uint32(32).int64(m.serverTimestampMs);
+if (m.unread != null && Object.hasOwnProperty.call(m, "unread"))
+w.uint32(40).bool(m.unread);
+if (m.metadata != null && Object.hasOwnProperty.call(m, "metadata"))
+$root.proto.Message.PollUpdateMessageMetadata.encode(m.metadata, w.uint32(50).fork()).ldelim();
+return w;
+};
+PollUpdate.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.PollUpdate();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.pollUpdateMessageKey = $root.proto.MessageKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.vote = $root.proto.Message.PollVoteMessage.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 3: {
+m.senderTimestampMs = r.int64();
+break;
+}
+case 4: {
+m.serverTimestampMs = r.int64();
+break;
+}
+case 5: {
+m.unread = r.bool();
+break;
+}
+case 6: {
+m.metadata = $root.proto.Message.PollUpdateMessageMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+PollUpdate.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.PollUpdate)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.PollUpdate();
+if (d.pollUpdateMessageKey != null) {
+if (typeof d.pollUpdateMessageKey !== "object")
+throw TypeError(".proto.PollUpdate.pollUpdateMessageKey: object expected");
+m.pollUpdateMessageKey = $root.proto.MessageKey.fromObject(d.pollUpdateMessageKey, n + 1);
+}
+if (d.vote != null) {
+if (typeof d.vote !== "object")
+throw TypeError(".proto.PollUpdate.vote: object expected");
+m.vote = $root.proto.Message.PollVoteMessage.fromObject(d.vote, n + 1);
+}
+if (d.senderTimestampMs != null) {
+if ($util.Long)
+(m.senderTimestampMs = $util.Long.fromValue(d.senderTimestampMs)).unsigned = false;
+else if (typeof d.senderTimestampMs === "string")
+m.senderTimestampMs = parseInt(d.senderTimestampMs, 10);
+else if (typeof d.senderTimestampMs === "number")
+m.senderTimestampMs = d.senderTimestampMs;
+else if (typeof d.senderTimestampMs === "object")
+m.senderTimestampMs = new $util.LongBits(d.senderTimestampMs.low >>> 0, d.senderTimestampMs.high >>> 0).toNumber();
+}
+if (d.serverTimestampMs != null) {
+if ($util.Long)
+(m.serverTimestampMs = $util.Long.fromValue(d.serverTimestampMs)).unsigned = false;
+else if (typeof d.serverTimestampMs === "string")
+m.serverTimestampMs = parseInt(d.serverTimestampMs, 10);
+else if (typeof d.serverTimestampMs === "number")
+m.serverTimestampMs = d.serverTimestampMs;
+else if (typeof d.serverTimestampMs === "object")
+m.serverTimestampMs = new $util.LongBits(d.serverTimestampMs.low >>> 0, d.serverTimestampMs.high >>> 0).toNumber();
+}
+if (d.unread != null) {
+m.unread = Boolean(d.unread);
+}
+if (d.metadata != null) {
+if (typeof d.metadata !== "object")
+throw TypeError(".proto.PollUpdate.metadata: object expected");
+m.metadata = $root.proto.Message.PollUpdateMessageMetadata.fromObject(d.metadata, n + 1);
+}
+return m;
+};
+PollUpdate.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.pollUpdateMessageKey != null && m.hasOwnProperty("pollUpdateMessageKey")) {
+d.pollUpdateMessageKey = $root.proto.MessageKey.toObject(m.pollUpdateMessageKey, o);
+if (o.oneofs)
+d._pollUpdateMessageKey = "pollUpdateMessageKey";
+}
+if (m.vote != null && m.hasOwnProperty("vote")) {
+d.vote = $root.proto.Message.PollVoteMessage.toObject(m.vote, o);
+if (o.oneofs)
+d._vote = "vote";
+}
+if (m.senderTimestampMs != null && m.hasOwnProperty("senderTimestampMs")) {
+if (typeof m.senderTimestampMs === "number")
+d.senderTimestampMs = o.longs === String ? String(m.senderTimestampMs) : m.senderTimestampMs;
+else
+d.senderTimestampMs = o.longs === String ? longToString(m.senderTimestampMs) : o.longs === Number ? longToNumber(m.senderTimestampMs) : m.senderTimestampMs;
+if (o.oneofs)
+d._senderTimestampMs = "senderTimestampMs";
+}
+if (m.serverTimestampMs != null && m.hasOwnProperty("serverTimestampMs")) {
+if (typeof m.serverTimestampMs === "number")
+d.serverTimestampMs = o.longs === String ? String(m.serverTimestampMs) : m.serverTimestampMs;
+else
+d.serverTimestampMs = o.longs === String ? longToString(m.serverTimestampMs) : o.longs === Number ? longToNumber(m.serverTimestampMs) : m.serverTimestampMs;
+if (o.oneofs)
+d._serverTimestampMs = "serverTimestampMs";
+}
+if (m.unread != null && m.hasOwnProperty("unread")) {
+d.unread = m.unread;
+if (o.oneofs)
+d._unread = "unread";
+}
+if (m.metadata != null && m.hasOwnProperty("metadata")) {
+d.metadata = $root.proto.Message.PollUpdateMessageMetadata.toObject(m.metadata, o);
+if (o.oneofs)
+d._metadata = "metadata";
+}
+return d;
+};
+PollUpdate.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+PollUpdate.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.PollUpdate";
+};
+return PollUpdate;

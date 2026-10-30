@@ -1,0 +1,297 @@
+"use strict";
+function BotMessageSharingInfo(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotMessageSharingInfo.prototype.botEntryPointOrigin = null;
+BotMessageSharingInfo.prototype.forwardScore = null;
+let $oneOfFields;
+Object.defineProperty(BotMessageSharingInfo.prototype, "_botEntryPointOrigin", {
+get: $util.oneOfGetter($oneOfFields = ["botEntryPointOrigin"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMessageSharingInfo.prototype, "_forwardScore", {
+get: $util.oneOfGetter($oneOfFields = ["forwardScore"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotMessageSharingInfo.create = function create(properties) {
+return new BotMessageSharingInfo(properties);
+};
+BotMessageSharingInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.botEntryPointOrigin != null && Object.hasOwnProperty.call(m, "botEntryPointOrigin"))
+w.uint32(8).int32(m.botEntryPointOrigin);
+if (m.forwardScore != null && Object.hasOwnProperty.call(m, "forwardScore"))
+w.uint32(16).uint32(m.forwardScore);
+return w;
+};
+BotMessageSharingInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotMessageSharingInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.botEntryPointOrigin = r.int32();
+break;
+}
+case 2: {
+m.forwardScore = r.uint32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotMessageSharingInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotMessageSharingInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotMessageSharingInfo();
+switch (d.botEntryPointOrigin) {
+default:
+if (typeof d.botEntryPointOrigin === "number") {
+m.botEntryPointOrigin = d.botEntryPointOrigin;
+break;
+}
+break;
+case "UNDEFINED_ENTRY_POINT":
+case 0:
+m.botEntryPointOrigin = 0;
+break;
+case "FAVICON":
+case 1:
+m.botEntryPointOrigin = 1;
+break;
+case "CHATLIST":
+case 2:
+m.botEntryPointOrigin = 2;
+break;
+case "AISEARCH_NULL_STATE_PAPER_PLANE":
+case 3:
+m.botEntryPointOrigin = 3;
+break;
+case "AISEARCH_NULL_STATE_SUGGESTION":
+case 4:
+m.botEntryPointOrigin = 4;
+break;
+case "AISEARCH_TYPE_AHEAD_SUGGESTION":
+case 5:
+m.botEntryPointOrigin = 5;
+break;
+case "AISEARCH_TYPE_AHEAD_PAPER_PLANE":
+case 6:
+m.botEntryPointOrigin = 6;
+break;
+case "AISEARCH_TYPE_AHEAD_RESULT_CHATLIST":
+case 7:
+m.botEntryPointOrigin = 7;
+break;
+case "AISEARCH_TYPE_AHEAD_RESULT_MESSAGES":
+case 8:
+m.botEntryPointOrigin = 8;
+break;
+case "AIVOICE_SEARCH_BAR":
+case 9:
+m.botEntryPointOrigin = 9;
+break;
+case "AIVOICE_FAVICON":
+case 10:
+m.botEntryPointOrigin = 10;
+break;
+case "AISTUDIO":
+case 11:
+m.botEntryPointOrigin = 11;
+break;
+case "DEEPLINK":
+case 12:
+m.botEntryPointOrigin = 12;
+break;
+case "NOTIFICATION":
+case 13:
+m.botEntryPointOrigin = 13;
+break;
+case "PROFILE_MESSAGE_BUTTON":
+case 14:
+m.botEntryPointOrigin = 14;
+break;
+case "FORWARD":
+case 15:
+m.botEntryPointOrigin = 15;
+break;
+case "APP_SHORTCUT":
+case 16:
+m.botEntryPointOrigin = 16;
+break;
+case "FF_FAMILY":
+case 17:
+m.botEntryPointOrigin = 17;
+break;
+case "AI_TAB":
+case 18:
+m.botEntryPointOrigin = 18;
+break;
+case "AI_HOME":
+case 19:
+m.botEntryPointOrigin = 19;
+break;
+case "AI_DEEPLINK_IMMERSIVE":
+case 20:
+m.botEntryPointOrigin = 20;
+break;
+case "AI_DEEPLINK":
+case 21:
+m.botEntryPointOrigin = 21;
+break;
+case "META_AI_CHAT_SHORTCUT_AI_STUDIO":
+case 22:
+m.botEntryPointOrigin = 22;
+break;
+case "UGC_CHAT_SHORTCUT_AI_STUDIO":
+case 23:
+m.botEntryPointOrigin = 23;
+break;
+case "NEW_CHAT_AI_STUDIO":
+case 24:
+m.botEntryPointOrigin = 24;
+break;
+case "AIVOICE_FAVICON_CALL_HISTORY":
+case 25:
+m.botEntryPointOrigin = 25;
+break;
+case "ASK_META_AI_CONTEXT_MENU":
+case 26:
+m.botEntryPointOrigin = 26;
+break;
+case "ASK_META_AI_CONTEXT_MENU_1ON1":
+case 27:
+m.botEntryPointOrigin = 27;
+break;
+case "ASK_META_AI_CONTEXT_MENU_GROUP":
+case 28:
+m.botEntryPointOrigin = 28;
+break;
+case "INVOKE_META_AI_1ON1":
+case 29:
+m.botEntryPointOrigin = 29;
+break;
+case "INVOKE_META_AI_GROUP":
+case 30:
+m.botEntryPointOrigin = 30;
+break;
+case "META_AI_FORWARD":
+case 31:
+m.botEntryPointOrigin = 31;
+break;
+case "NEW_CHAT_AI_CONTACT":
+case 32:
+m.botEntryPointOrigin = 32;
+break;
+case "MESSAGE_QUICK_ACTION_1_ON_1_CHAT":
+case 33:
+m.botEntryPointOrigin = 33;
+break;
+case "MESSAGE_QUICK_ACTION_GROUP_CHAT":
+case 34:
+m.botEntryPointOrigin = 34;
+break;
+case "ATTACHMENT_TRAY_1_ON_1_CHAT":
+case 35:
+m.botEntryPointOrigin = 35;
+break;
+case "ATTACHMENT_TRAY_GROUP_CHAT":
+case 36:
+m.botEntryPointOrigin = 36;
+break;
+case "ASK_META_AI_MEDIA_VIEWER_1ON1":
+case 37:
+m.botEntryPointOrigin = 37;
+break;
+case "ASK_META_AI_MEDIA_VIEWER_GROUP":
+case 38:
+m.botEntryPointOrigin = 38;
+break;
+case "MEDIA_PICKER_1_ON_1_CHAT":
+case 39:
+m.botEntryPointOrigin = 39;
+break;
+case "MEDIA_PICKER_GROUP_CHAT":
+case 40:
+m.botEntryPointOrigin = 40;
+break;
+case "ASK_META_AI_NO_SEARCH_RESULTS":
+case 41:
+m.botEntryPointOrigin = 41;
+break;
+case "META_AI_SETTINGS":
+case 45:
+m.botEntryPointOrigin = 45;
+break;
+case "WEB_INTRO_PANEL":
+case 46:
+m.botEntryPointOrigin = 46;
+break;
+case "WEB_NAVIGATION_BAR":
+case 47:
+m.botEntryPointOrigin = 47;
+break;
+case "GROUP_MEMBER":
+case 54:
+m.botEntryPointOrigin = 54;
+break;
+case "CHATLIST_SEARCH":
+case 55:
+m.botEntryPointOrigin = 55;
+break;
+case "NEW_CHAT_LIST":
+case 56:
+m.botEntryPointOrigin = 56;
+break;
+}
+if (d.forwardScore != null) {
+m.forwardScore = d.forwardScore >>> 0;
+}
+return m;
+};
+BotMessageSharingInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.botEntryPointOrigin != null && m.hasOwnProperty("botEntryPointOrigin")) {
+d.botEntryPointOrigin = o.enums === String ? $root.proto.BotMetricsEntryPoint[m.botEntryPointOrigin] === undefined ? m.botEntryPointOrigin : $root.proto.BotMetricsEntryPoint[m.botEntryPointOrigin] : m.botEntryPointOrigin;
+if (o.oneofs)
+d._botEntryPointOrigin = "botEntryPointOrigin";
+}
+if (m.forwardScore != null && m.hasOwnProperty("forwardScore")) {
+d.forwardScore = m.forwardScore;
+if (o.oneofs)
+d._forwardScore = "forwardScore";
+}
+return d;
+};
+BotMessageSharingInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotMessageSharingInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotMessageSharingInfo";
+};
+return BotMessageSharingInfo;

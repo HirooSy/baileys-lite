@@ -1,0 +1,81 @@
+"use strict";
+function BotAgentDeepLinkMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotAgentDeepLinkMetadata.prototype.token = null;
+let $oneOfFields;
+Object.defineProperty(BotAgentDeepLinkMetadata.prototype, "_token", {
+get: $util.oneOfGetter($oneOfFields = ["token"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotAgentDeepLinkMetadata.create = function create(properties) {
+return new BotAgentDeepLinkMetadata(properties);
+};
+BotAgentDeepLinkMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.token != null && Object.hasOwnProperty.call(m, "token"))
+w.uint32(10).string(m.token);
+return w;
+};
+BotAgentDeepLinkMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotAgentDeepLinkMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.token = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotAgentDeepLinkMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotAgentDeepLinkMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotAgentDeepLinkMetadata();
+if (d.token != null) {
+m.token = String(d.token);
+}
+return m;
+};
+BotAgentDeepLinkMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.token != null && m.hasOwnProperty("token")) {
+d.token = m.token;
+if (o.oneofs)
+d._token = "token";
+}
+return d;
+};
+BotAgentDeepLinkMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotAgentDeepLinkMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotAgentDeepLinkMetadata";
+};
+return BotAgentDeepLinkMetadata;

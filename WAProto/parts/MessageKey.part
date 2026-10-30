@@ -1,0 +1,138 @@
+"use strict";
+function MessageKey(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+MessageKey.prototype.remoteJid = null;
+MessageKey.prototype.fromMe = null;
+MessageKey.prototype.id = null;
+MessageKey.prototype.participant = null;
+let $oneOfFields;
+Object.defineProperty(MessageKey.prototype, "_remoteJid", {
+get: $util.oneOfGetter($oneOfFields = ["remoteJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageKey.prototype, "_fromMe", {
+get: $util.oneOfGetter($oneOfFields = ["fromMe"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageKey.prototype, "_id", {
+get: $util.oneOfGetter($oneOfFields = ["id"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageKey.prototype, "_participant", {
+get: $util.oneOfGetter($oneOfFields = ["participant"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+MessageKey.create = function create(properties) {
+return new MessageKey(properties);
+};
+MessageKey.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.remoteJid != null && Object.hasOwnProperty.call(m, "remoteJid"))
+w.uint32(10).string(m.remoteJid);
+if (m.fromMe != null && Object.hasOwnProperty.call(m, "fromMe"))
+w.uint32(16).bool(m.fromMe);
+if (m.id != null && Object.hasOwnProperty.call(m, "id"))
+w.uint32(26).string(m.id);
+if (m.participant != null && Object.hasOwnProperty.call(m, "participant"))
+w.uint32(34).string(m.participant);
+return w;
+};
+MessageKey.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.MessageKey();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.remoteJid = r.string();
+break;
+}
+case 2: {
+m.fromMe = r.bool();
+break;
+}
+case 3: {
+m.id = r.string();
+break;
+}
+case 4: {
+m.participant = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+MessageKey.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.MessageKey)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.MessageKey();
+if (d.remoteJid != null) {
+m.remoteJid = String(d.remoteJid);
+}
+if (d.fromMe != null) {
+m.fromMe = Boolean(d.fromMe);
+}
+if (d.id != null) {
+m.id = String(d.id);
+}
+if (d.participant != null) {
+m.participant = String(d.participant);
+}
+return m;
+};
+MessageKey.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.remoteJid != null && m.hasOwnProperty("remoteJid")) {
+d.remoteJid = m.remoteJid;
+if (o.oneofs)
+d._remoteJid = "remoteJid";
+}
+if (m.fromMe != null && m.hasOwnProperty("fromMe")) {
+d.fromMe = m.fromMe;
+if (o.oneofs)
+d._fromMe = "fromMe";
+}
+if (m.id != null && m.hasOwnProperty("id")) {
+d.id = m.id;
+if (o.oneofs)
+d._id = "id";
+}
+if (m.participant != null && m.hasOwnProperty("participant")) {
+d.participant = m.participant;
+if (o.oneofs)
+d._participant = "participant";
+}
+return d;
+};
+MessageKey.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+MessageKey.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.MessageKey";
+};
+return MessageKey;

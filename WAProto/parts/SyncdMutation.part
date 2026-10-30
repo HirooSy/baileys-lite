@@ -1,0 +1,121 @@
+"use strict";
+function SyncdMutation(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SyncdMutation.prototype.operation = null;
+SyncdMutation.prototype.record = null;
+let $oneOfFields;
+Object.defineProperty(SyncdMutation.prototype, "_operation", {
+get: $util.oneOfGetter($oneOfFields = ["operation"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SyncdMutation.prototype, "_record", {
+get: $util.oneOfGetter($oneOfFields = ["record"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SyncdMutation.create = function create(properties) {
+return new SyncdMutation(properties);
+};
+SyncdMutation.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.operation != null && Object.hasOwnProperty.call(m, "operation"))
+w.uint32(8).int32(m.operation);
+if (m.record != null && Object.hasOwnProperty.call(m, "record"))
+$root.proto.SyncdRecord.encode(m.record, w.uint32(18).fork()).ldelim();
+return w;
+};
+SyncdMutation.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.SyncdMutation();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.operation = r.int32();
+break;
+}
+case 2: {
+m.record = $root.proto.SyncdRecord.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SyncdMutation.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.SyncdMutation)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.SyncdMutation();
+switch (d.operation) {
+default:
+if (typeof d.operation === "number") {
+m.operation = d.operation;
+break;
+}
+break;
+case "SET":
+case 0:
+m.operation = 0;
+break;
+case "REMOVE":
+case 1:
+m.operation = 1;
+break;
+}
+if (d.record != null) {
+if (typeof d.record !== "object")
+throw TypeError(".proto.SyncdMutation.record: object expected");
+m.record = $root.proto.SyncdRecord.fromObject(d.record, n + 1);
+}
+return m;
+};
+SyncdMutation.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.operation != null && m.hasOwnProperty("operation")) {
+d.operation = o.enums === String ? $root.proto.SyncdMutation.SyncdOperation[m.operation] === undefined ? m.operation : $root.proto.SyncdMutation.SyncdOperation[m.operation] : m.operation;
+if (o.oneofs)
+d._operation = "operation";
+}
+if (m.record != null && m.hasOwnProperty("record")) {
+d.record = $root.proto.SyncdRecord.toObject(m.record, o);
+if (o.oneofs)
+d._record = "record";
+}
+return d;
+};
+SyncdMutation.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SyncdMutation.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.SyncdMutation";
+};
+$lazy(SyncdMutation, "SyncdOperation", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "SET"] = 0;
+values[valuesById[1] = "REMOVE"] = 1;
+return values;
+});
+return SyncdMutation;

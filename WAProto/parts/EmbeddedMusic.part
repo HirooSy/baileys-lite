@@ -1,0 +1,370 @@
+"use strict";
+function EmbeddedMusic(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+EmbeddedMusic.prototype.musicContentMediaId = null;
+EmbeddedMusic.prototype.songId = null;
+EmbeddedMusic.prototype.author = null;
+EmbeddedMusic.prototype.title = null;
+EmbeddedMusic.prototype.artworkDirectPath = null;
+EmbeddedMusic.prototype.artworkSha256 = null;
+EmbeddedMusic.prototype.artworkEncSha256 = null;
+EmbeddedMusic.prototype.artistAttribution = null;
+EmbeddedMusic.prototype.countryBlocklist = null;
+EmbeddedMusic.prototype.isExplicit = null;
+EmbeddedMusic.prototype.artworkMediaKey = null;
+EmbeddedMusic.prototype.musicSongStartTimeInMs = null;
+EmbeddedMusic.prototype.derivedContentStartTimeInMs = null;
+EmbeddedMusic.prototype.overlapDurationInMs = null;
+let $oneOfFields;
+Object.defineProperty(EmbeddedMusic.prototype, "_musicContentMediaId", {
+get: $util.oneOfGetter($oneOfFields = ["musicContentMediaId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(EmbeddedMusic.prototype, "_songId", {
+get: $util.oneOfGetter($oneOfFields = ["songId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(EmbeddedMusic.prototype, "_author", {
+get: $util.oneOfGetter($oneOfFields = ["author"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(EmbeddedMusic.prototype, "_title", {
+get: $util.oneOfGetter($oneOfFields = ["title"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(EmbeddedMusic.prototype, "_artworkDirectPath", {
+get: $util.oneOfGetter($oneOfFields = ["artworkDirectPath"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(EmbeddedMusic.prototype, "_artworkSha256", {
+get: $util.oneOfGetter($oneOfFields = ["artworkSha256"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(EmbeddedMusic.prototype, "_artworkEncSha256", {
+get: $util.oneOfGetter($oneOfFields = ["artworkEncSha256"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(EmbeddedMusic.prototype, "_artistAttribution", {
+get: $util.oneOfGetter($oneOfFields = ["artistAttribution"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(EmbeddedMusic.prototype, "_countryBlocklist", {
+get: $util.oneOfGetter($oneOfFields = ["countryBlocklist"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(EmbeddedMusic.prototype, "_isExplicit", {
+get: $util.oneOfGetter($oneOfFields = ["isExplicit"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(EmbeddedMusic.prototype, "_artworkMediaKey", {
+get: $util.oneOfGetter($oneOfFields = ["artworkMediaKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(EmbeddedMusic.prototype, "_musicSongStartTimeInMs", {
+get: $util.oneOfGetter($oneOfFields = ["musicSongStartTimeInMs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(EmbeddedMusic.prototype, "_derivedContentStartTimeInMs", {
+get: $util.oneOfGetter($oneOfFields = ["derivedContentStartTimeInMs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(EmbeddedMusic.prototype, "_overlapDurationInMs", {
+get: $util.oneOfGetter($oneOfFields = ["overlapDurationInMs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+EmbeddedMusic.create = function create(properties) {
+return new EmbeddedMusic(properties);
+};
+EmbeddedMusic.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.musicContentMediaId != null && Object.hasOwnProperty.call(m, "musicContentMediaId"))
+w.uint32(10).string(m.musicContentMediaId);
+if (m.songId != null && Object.hasOwnProperty.call(m, "songId"))
+w.uint32(18).string(m.songId);
+if (m.author != null && Object.hasOwnProperty.call(m, "author"))
+w.uint32(26).string(m.author);
+if (m.title != null && Object.hasOwnProperty.call(m, "title"))
+w.uint32(34).string(m.title);
+if (m.artworkDirectPath != null && Object.hasOwnProperty.call(m, "artworkDirectPath"))
+w.uint32(42).string(m.artworkDirectPath);
+if (m.artworkSha256 != null && Object.hasOwnProperty.call(m, "artworkSha256"))
+w.uint32(50).bytes(m.artworkSha256);
+if (m.artworkEncSha256 != null && Object.hasOwnProperty.call(m, "artworkEncSha256"))
+w.uint32(58).bytes(m.artworkEncSha256);
+if (m.artistAttribution != null && Object.hasOwnProperty.call(m, "artistAttribution"))
+w.uint32(66).string(m.artistAttribution);
+if (m.countryBlocklist != null && Object.hasOwnProperty.call(m, "countryBlocklist"))
+w.uint32(74).bytes(m.countryBlocklist);
+if (m.isExplicit != null && Object.hasOwnProperty.call(m, "isExplicit"))
+w.uint32(80).bool(m.isExplicit);
+if (m.artworkMediaKey != null && Object.hasOwnProperty.call(m, "artworkMediaKey"))
+w.uint32(90).bytes(m.artworkMediaKey);
+if (m.musicSongStartTimeInMs != null && Object.hasOwnProperty.call(m, "musicSongStartTimeInMs"))
+w.uint32(96).int64(m.musicSongStartTimeInMs);
+if (m.derivedContentStartTimeInMs != null && Object.hasOwnProperty.call(m, "derivedContentStartTimeInMs"))
+w.uint32(104).int64(m.derivedContentStartTimeInMs);
+if (m.overlapDurationInMs != null && Object.hasOwnProperty.call(m, "overlapDurationInMs"))
+w.uint32(112).int64(m.overlapDurationInMs);
+return w;
+};
+EmbeddedMusic.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.EmbeddedMusic();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.musicContentMediaId = r.string();
+break;
+}
+case 2: {
+m.songId = r.string();
+break;
+}
+case 3: {
+m.author = r.string();
+break;
+}
+case 4: {
+m.title = r.string();
+break;
+}
+case 5: {
+m.artworkDirectPath = r.string();
+break;
+}
+case 6: {
+m.artworkSha256 = r.bytes();
+break;
+}
+case 7: {
+m.artworkEncSha256 = r.bytes();
+break;
+}
+case 8: {
+m.artistAttribution = r.string();
+break;
+}
+case 9: {
+m.countryBlocklist = r.bytes();
+break;
+}
+case 10: {
+m.isExplicit = r.bool();
+break;
+}
+case 11: {
+m.artworkMediaKey = r.bytes();
+break;
+}
+case 12: {
+m.musicSongStartTimeInMs = r.int64();
+break;
+}
+case 13: {
+m.derivedContentStartTimeInMs = r.int64();
+break;
+}
+case 14: {
+m.overlapDurationInMs = r.int64();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+EmbeddedMusic.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.EmbeddedMusic)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.EmbeddedMusic();
+if (d.musicContentMediaId != null) {
+m.musicContentMediaId = String(d.musicContentMediaId);
+}
+if (d.songId != null) {
+m.songId = String(d.songId);
+}
+if (d.author != null) {
+m.author = String(d.author);
+}
+if (d.title != null) {
+m.title = String(d.title);
+}
+if (d.artworkDirectPath != null) {
+m.artworkDirectPath = String(d.artworkDirectPath);
+}
+if (d.artworkSha256 != null) {
+if (typeof d.artworkSha256 === "string")
+$util.base64.decode(d.artworkSha256, m.artworkSha256 = $util.newBuffer($util.base64.length(d.artworkSha256)), 0);
+else if (d.artworkSha256.length >= 0)
+m.artworkSha256 = d.artworkSha256;
+}
+if (d.artworkEncSha256 != null) {
+if (typeof d.artworkEncSha256 === "string")
+$util.base64.decode(d.artworkEncSha256, m.artworkEncSha256 = $util.newBuffer($util.base64.length(d.artworkEncSha256)), 0);
+else if (d.artworkEncSha256.length >= 0)
+m.artworkEncSha256 = d.artworkEncSha256;
+}
+if (d.artistAttribution != null) {
+m.artistAttribution = String(d.artistAttribution);
+}
+if (d.countryBlocklist != null) {
+if (typeof d.countryBlocklist === "string")
+$util.base64.decode(d.countryBlocklist, m.countryBlocklist = $util.newBuffer($util.base64.length(d.countryBlocklist)), 0);
+else if (d.countryBlocklist.length >= 0)
+m.countryBlocklist = d.countryBlocklist;
+}
+if (d.isExplicit != null) {
+m.isExplicit = Boolean(d.isExplicit);
+}
+if (d.artworkMediaKey != null) {
+if (typeof d.artworkMediaKey === "string")
+$util.base64.decode(d.artworkMediaKey, m.artworkMediaKey = $util.newBuffer($util.base64.length(d.artworkMediaKey)), 0);
+else if (d.artworkMediaKey.length >= 0)
+m.artworkMediaKey = d.artworkMediaKey;
+}
+if (d.musicSongStartTimeInMs != null) {
+if ($util.Long)
+(m.musicSongStartTimeInMs = $util.Long.fromValue(d.musicSongStartTimeInMs)).unsigned = false;
+else if (typeof d.musicSongStartTimeInMs === "string")
+m.musicSongStartTimeInMs = parseInt(d.musicSongStartTimeInMs, 10);
+else if (typeof d.musicSongStartTimeInMs === "number")
+m.musicSongStartTimeInMs = d.musicSongStartTimeInMs;
+else if (typeof d.musicSongStartTimeInMs === "object")
+m.musicSongStartTimeInMs = new $util.LongBits(d.musicSongStartTimeInMs.low >>> 0, d.musicSongStartTimeInMs.high >>> 0).toNumber();
+}
+if (d.derivedContentStartTimeInMs != null) {
+if ($util.Long)
+(m.derivedContentStartTimeInMs = $util.Long.fromValue(d.derivedContentStartTimeInMs)).unsigned = false;
+else if (typeof d.derivedContentStartTimeInMs === "string")
+m.derivedContentStartTimeInMs = parseInt(d.derivedContentStartTimeInMs, 10);
+else if (typeof d.derivedContentStartTimeInMs === "number")
+m.derivedContentStartTimeInMs = d.derivedContentStartTimeInMs;
+else if (typeof d.derivedContentStartTimeInMs === "object")
+m.derivedContentStartTimeInMs = new $util.LongBits(d.derivedContentStartTimeInMs.low >>> 0, d.derivedContentStartTimeInMs.high >>> 0).toNumber();
+}
+if (d.overlapDurationInMs != null) {
+if ($util.Long)
+(m.overlapDurationInMs = $util.Long.fromValue(d.overlapDurationInMs)).unsigned = false;
+else if (typeof d.overlapDurationInMs === "string")
+m.overlapDurationInMs = parseInt(d.overlapDurationInMs, 10);
+else if (typeof d.overlapDurationInMs === "number")
+m.overlapDurationInMs = d.overlapDurationInMs;
+else if (typeof d.overlapDurationInMs === "object")
+m.overlapDurationInMs = new $util.LongBits(d.overlapDurationInMs.low >>> 0, d.overlapDurationInMs.high >>> 0).toNumber();
+}
+return m;
+};
+EmbeddedMusic.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.musicContentMediaId != null && m.hasOwnProperty("musicContentMediaId")) {
+d.musicContentMediaId = m.musicContentMediaId;
+if (o.oneofs)
+d._musicContentMediaId = "musicContentMediaId";
+}
+if (m.songId != null && m.hasOwnProperty("songId")) {
+d.songId = m.songId;
+if (o.oneofs)
+d._songId = "songId";
+}
+if (m.author != null && m.hasOwnProperty("author")) {
+d.author = m.author;
+if (o.oneofs)
+d._author = "author";
+}
+if (m.title != null && m.hasOwnProperty("title")) {
+d.title = m.title;
+if (o.oneofs)
+d._title = "title";
+}
+if (m.artworkDirectPath != null && m.hasOwnProperty("artworkDirectPath")) {
+d.artworkDirectPath = m.artworkDirectPath;
+if (o.oneofs)
+d._artworkDirectPath = "artworkDirectPath";
+}
+if (m.artworkSha256 != null && m.hasOwnProperty("artworkSha256")) {
+d.artworkSha256 = o.bytes === String ? $util.base64.encode(m.artworkSha256, 0, m.artworkSha256.length) : o.bytes === Array ? Array.prototype.slice.call(m.artworkSha256) : m.artworkSha256;
+if (o.oneofs)
+d._artworkSha256 = "artworkSha256";
+}
+if (m.artworkEncSha256 != null && m.hasOwnProperty("artworkEncSha256")) {
+d.artworkEncSha256 = o.bytes === String ? $util.base64.encode(m.artworkEncSha256, 0, m.artworkEncSha256.length) : o.bytes === Array ? Array.prototype.slice.call(m.artworkEncSha256) : m.artworkEncSha256;
+if (o.oneofs)
+d._artworkEncSha256 = "artworkEncSha256";
+}
+if (m.artistAttribution != null && m.hasOwnProperty("artistAttribution")) {
+d.artistAttribution = m.artistAttribution;
+if (o.oneofs)
+d._artistAttribution = "artistAttribution";
+}
+if (m.countryBlocklist != null && m.hasOwnProperty("countryBlocklist")) {
+d.countryBlocklist = o.bytes === String ? $util.base64.encode(m.countryBlocklist, 0, m.countryBlocklist.length) : o.bytes === Array ? Array.prototype.slice.call(m.countryBlocklist) : m.countryBlocklist;
+if (o.oneofs)
+d._countryBlocklist = "countryBlocklist";
+}
+if (m.isExplicit != null && m.hasOwnProperty("isExplicit")) {
+d.isExplicit = m.isExplicit;
+if (o.oneofs)
+d._isExplicit = "isExplicit";
+}
+if (m.artworkMediaKey != null && m.hasOwnProperty("artworkMediaKey")) {
+d.artworkMediaKey = o.bytes === String ? $util.base64.encode(m.artworkMediaKey, 0, m.artworkMediaKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.artworkMediaKey) : m.artworkMediaKey;
+if (o.oneofs)
+d._artworkMediaKey = "artworkMediaKey";
+}
+if (m.musicSongStartTimeInMs != null && m.hasOwnProperty("musicSongStartTimeInMs")) {
+if (typeof m.musicSongStartTimeInMs === "number")
+d.musicSongStartTimeInMs = o.longs === String ? String(m.musicSongStartTimeInMs) : m.musicSongStartTimeInMs;
+else
+d.musicSongStartTimeInMs = o.longs === String ? longToString(m.musicSongStartTimeInMs) : o.longs === Number ? longToNumber(m.musicSongStartTimeInMs) : m.musicSongStartTimeInMs;
+if (o.oneofs)
+d._musicSongStartTimeInMs = "musicSongStartTimeInMs";
+}
+if (m.derivedContentStartTimeInMs != null && m.hasOwnProperty("derivedContentStartTimeInMs")) {
+if (typeof m.derivedContentStartTimeInMs === "number")
+d.derivedContentStartTimeInMs = o.longs === String ? String(m.derivedContentStartTimeInMs) : m.derivedContentStartTimeInMs;
+else
+d.derivedContentStartTimeInMs = o.longs === String ? longToString(m.derivedContentStartTimeInMs) : o.longs === Number ? longToNumber(m.derivedContentStartTimeInMs) : m.derivedContentStartTimeInMs;
+if (o.oneofs)
+d._derivedContentStartTimeInMs = "derivedContentStartTimeInMs";
+}
+if (m.overlapDurationInMs != null && m.hasOwnProperty("overlapDurationInMs")) {
+if (typeof m.overlapDurationInMs === "number")
+d.overlapDurationInMs = o.longs === String ? String(m.overlapDurationInMs) : m.overlapDurationInMs;
+else
+d.overlapDurationInMs = o.longs === String ? longToString(m.overlapDurationInMs) : o.longs === Number ? longToNumber(m.overlapDurationInMs) : m.overlapDurationInMs;
+if (o.oneofs)
+d._overlapDurationInMs = "overlapDurationInMs";
+}
+return d;
+};
+EmbeddedMusic.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+EmbeddedMusic.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.EmbeddedMusic";
+};
+return EmbeddedMusic;

@@ -1,0 +1,133 @@
+"use strict";
+function AIQueryFanout(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIQueryFanout.prototype.messageKey = null;
+AIQueryFanout.prototype.message = null;
+AIQueryFanout.prototype.timestamp = null;
+let $oneOfFields;
+Object.defineProperty(AIQueryFanout.prototype, "_messageKey", {
+get: $util.oneOfGetter($oneOfFields = ["messageKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIQueryFanout.prototype, "_message", {
+get: $util.oneOfGetter($oneOfFields = ["message"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIQueryFanout.prototype, "_timestamp", {
+get: $util.oneOfGetter($oneOfFields = ["timestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIQueryFanout.create = function create(properties) {
+return new AIQueryFanout(properties);
+};
+AIQueryFanout.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.messageKey != null && Object.hasOwnProperty.call(m, "messageKey"))
+$root.proto.MessageKey.encode(m.messageKey, w.uint32(10).fork()).ldelim();
+if (m.message != null && Object.hasOwnProperty.call(m, "message"))
+$root.proto.Message.encode(m.message, w.uint32(18).fork()).ldelim();
+if (m.timestamp != null && Object.hasOwnProperty.call(m, "timestamp"))
+w.uint32(24).int64(m.timestamp);
+return w;
+};
+AIQueryFanout.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIQueryFanout();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.messageKey = $root.proto.MessageKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.message = $root.proto.Message.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 3: {
+m.timestamp = r.int64();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIQueryFanout.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIQueryFanout)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIQueryFanout();
+if (d.messageKey != null) {
+if (typeof d.messageKey !== "object")
+throw TypeError(".proto.AIQueryFanout.messageKey: object expected");
+m.messageKey = $root.proto.MessageKey.fromObject(d.messageKey, n + 1);
+}
+if (d.message != null) {
+if (typeof d.message !== "object")
+throw TypeError(".proto.AIQueryFanout.message: object expected");
+m.message = $root.proto.Message.fromObject(d.message, n + 1);
+}
+if (d.timestamp != null) {
+if ($util.Long)
+(m.timestamp = $util.Long.fromValue(d.timestamp)).unsigned = false;
+else if (typeof d.timestamp === "string")
+m.timestamp = parseInt(d.timestamp, 10);
+else if (typeof d.timestamp === "number")
+m.timestamp = d.timestamp;
+else if (typeof d.timestamp === "object")
+m.timestamp = new $util.LongBits(d.timestamp.low >>> 0, d.timestamp.high >>> 0).toNumber();
+}
+return m;
+};
+AIQueryFanout.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.messageKey != null && m.hasOwnProperty("messageKey")) {
+d.messageKey = $root.proto.MessageKey.toObject(m.messageKey, o);
+if (o.oneofs)
+d._messageKey = "messageKey";
+}
+if (m.message != null && m.hasOwnProperty("message")) {
+d.message = $root.proto.Message.toObject(m.message, o);
+if (o.oneofs)
+d._message = "message";
+}
+if (m.timestamp != null && m.hasOwnProperty("timestamp")) {
+if (typeof m.timestamp === "number")
+d.timestamp = o.longs === String ? String(m.timestamp) : m.timestamp;
+else
+d.timestamp = o.longs === String ? longToString(m.timestamp) : o.longs === Number ? longToNumber(m.timestamp) : m.timestamp;
+if (o.oneofs)
+d._timestamp = "timestamp";
+}
+return d;
+};
+AIQueryFanout.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIQueryFanout.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIQueryFanout";
+};
+return AIQueryFanout;

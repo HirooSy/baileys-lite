@@ -1,0 +1,132 @@
+"use strict";
+function MediaNotifyMessage(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+MediaNotifyMessage.prototype.expressPathUrl = null;
+MediaNotifyMessage.prototype.fileEncSha256 = null;
+MediaNotifyMessage.prototype.fileLength = null;
+let $oneOfFields;
+Object.defineProperty(MediaNotifyMessage.prototype, "_expressPathUrl", {
+get: $util.oneOfGetter($oneOfFields = ["expressPathUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MediaNotifyMessage.prototype, "_fileEncSha256", {
+get: $util.oneOfGetter($oneOfFields = ["fileEncSha256"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MediaNotifyMessage.prototype, "_fileLength", {
+get: $util.oneOfGetter($oneOfFields = ["fileLength"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+MediaNotifyMessage.create = function create(properties) {
+return new MediaNotifyMessage(properties);
+};
+MediaNotifyMessage.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.expressPathUrl != null && Object.hasOwnProperty.call(m, "expressPathUrl"))
+w.uint32(10).string(m.expressPathUrl);
+if (m.fileEncSha256 != null && Object.hasOwnProperty.call(m, "fileEncSha256"))
+w.uint32(18).bytes(m.fileEncSha256);
+if (m.fileLength != null && Object.hasOwnProperty.call(m, "fileLength"))
+w.uint32(24).uint64(m.fileLength);
+return w;
+};
+MediaNotifyMessage.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.MediaNotifyMessage();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.expressPathUrl = r.string();
+break;
+}
+case 2: {
+m.fileEncSha256 = r.bytes();
+break;
+}
+case 3: {
+m.fileLength = r.uint64();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+MediaNotifyMessage.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.MediaNotifyMessage)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.MediaNotifyMessage();
+if (d.expressPathUrl != null) {
+m.expressPathUrl = String(d.expressPathUrl);
+}
+if (d.fileEncSha256 != null) {
+if (typeof d.fileEncSha256 === "string")
+$util.base64.decode(d.fileEncSha256, m.fileEncSha256 = $util.newBuffer($util.base64.length(d.fileEncSha256)), 0);
+else if (d.fileEncSha256.length >= 0)
+m.fileEncSha256 = d.fileEncSha256;
+}
+if (d.fileLength != null) {
+if ($util.Long)
+(m.fileLength = $util.Long.fromValue(d.fileLength)).unsigned = true;
+else if (typeof d.fileLength === "string")
+m.fileLength = parseInt(d.fileLength, 10);
+else if (typeof d.fileLength === "number")
+m.fileLength = d.fileLength;
+else if (typeof d.fileLength === "object")
+m.fileLength = new $util.LongBits(d.fileLength.low >>> 0, d.fileLength.high >>> 0).toNumber(true);
+}
+return m;
+};
+MediaNotifyMessage.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.expressPathUrl != null && m.hasOwnProperty("expressPathUrl")) {
+d.expressPathUrl = m.expressPathUrl;
+if (o.oneofs)
+d._expressPathUrl = "expressPathUrl";
+}
+if (m.fileEncSha256 != null && m.hasOwnProperty("fileEncSha256")) {
+d.fileEncSha256 = o.bytes === String ? $util.base64.encode(m.fileEncSha256, 0, m.fileEncSha256.length) : o.bytes === Array ? Array.prototype.slice.call(m.fileEncSha256) : m.fileEncSha256;
+if (o.oneofs)
+d._fileEncSha256 = "fileEncSha256";
+}
+if (m.fileLength != null && m.hasOwnProperty("fileLength")) {
+if (typeof m.fileLength === "number")
+d.fileLength = o.longs === String ? String(m.fileLength) : m.fileLength;
+else
+d.fileLength = o.longs === String ? longToString(m.fileLength, true) : o.longs === Number ? longToNumber(m.fileLength, true) : m.fileLength;
+if (o.oneofs)
+d._fileLength = "fileLength";
+}
+return d;
+};
+MediaNotifyMessage.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+MediaNotifyMessage.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.MediaNotifyMessage";
+};
+return MediaNotifyMessage;

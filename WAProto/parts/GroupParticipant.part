@@ -1,0 +1,142 @@
+"use strict";
+function GroupParticipant(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+GroupParticipant.prototype.userJid = "";
+GroupParticipant.prototype.rank = null;
+GroupParticipant.prototype.memberLabel = null;
+let $oneOfFields;
+Object.defineProperty(GroupParticipant.prototype, "_rank", {
+get: $util.oneOfGetter($oneOfFields = ["rank"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GroupParticipant.prototype, "_memberLabel", {
+get: $util.oneOfGetter($oneOfFields = ["memberLabel"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+GroupParticipant.create = function create(properties) {
+return new GroupParticipant(properties);
+};
+GroupParticipant.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.userJid != null && Object.hasOwnProperty.call(m, "userJid"))
+w.uint32(10).string(m.userJid);
+if (m.rank != null && Object.hasOwnProperty.call(m, "rank"))
+w.uint32(16).int32(m.rank);
+if (m.memberLabel != null && Object.hasOwnProperty.call(m, "memberLabel"))
+$root.proto.MemberLabel.encode(m.memberLabel, w.uint32(26).fork()).ldelim();
+return w;
+};
+GroupParticipant.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.GroupParticipant();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.userJid = r.string();
+break;
+}
+case 2: {
+m.rank = r.int32();
+break;
+}
+case 3: {
+m.memberLabel = $root.proto.MemberLabel.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+GroupParticipant.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.GroupParticipant)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.GroupParticipant();
+if (d.userJid != null) {
+m.userJid = String(d.userJid);
+}
+switch (d.rank) {
+default:
+if (typeof d.rank === "number") {
+m.rank = d.rank;
+break;
+}
+break;
+case "REGULAR":
+case 0:
+m.rank = 0;
+break;
+case "ADMIN":
+case 1:
+m.rank = 1;
+break;
+case "SUPERADMIN":
+case 2:
+m.rank = 2;
+break;
+}
+if (d.memberLabel != null) {
+if (typeof d.memberLabel !== "object")
+throw TypeError(".proto.GroupParticipant.memberLabel: object expected");
+m.memberLabel = $root.proto.MemberLabel.fromObject(d.memberLabel, n + 1);
+}
+return m;
+};
+GroupParticipant.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.defaults) {
+d.userJid = "";
+}
+if (m.userJid != null && m.hasOwnProperty("userJid")) {
+d.userJid = m.userJid;
+}
+if (m.rank != null && m.hasOwnProperty("rank")) {
+d.rank = o.enums === String ? $root.proto.GroupParticipant.Rank[m.rank] === undefined ? m.rank : $root.proto.GroupParticipant.Rank[m.rank] : m.rank;
+if (o.oneofs)
+d._rank = "rank";
+}
+if (m.memberLabel != null && m.hasOwnProperty("memberLabel")) {
+d.memberLabel = $root.proto.MemberLabel.toObject(m.memberLabel, o);
+if (o.oneofs)
+d._memberLabel = "memberLabel";
+}
+return d;
+};
+GroupParticipant.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+GroupParticipant.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.GroupParticipant";
+};
+$lazy(GroupParticipant, "Rank", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "REGULAR"] = 0;
+values[valuesById[1] = "ADMIN"] = 1;
+values[valuesById[2] = "SUPERADMIN"] = 2;
+return values;
+});
+return GroupParticipant;

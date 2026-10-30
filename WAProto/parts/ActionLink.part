@@ -1,0 +1,100 @@
+"use strict";
+function ActionLink(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ActionLink.prototype.url = null;
+ActionLink.prototype.buttonTitle = null;
+let $oneOfFields;
+Object.defineProperty(ActionLink.prototype, "_url", {
+get: $util.oneOfGetter($oneOfFields = ["url"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ActionLink.prototype, "_buttonTitle", {
+get: $util.oneOfGetter($oneOfFields = ["buttonTitle"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ActionLink.create = function create(properties) {
+return new ActionLink(properties);
+};
+ActionLink.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.url != null && Object.hasOwnProperty.call(m, "url"))
+w.uint32(10).string(m.url);
+if (m.buttonTitle != null && Object.hasOwnProperty.call(m, "buttonTitle"))
+w.uint32(18).string(m.buttonTitle);
+return w;
+};
+ActionLink.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ActionLink();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.url = r.string();
+break;
+}
+case 2: {
+m.buttonTitle = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ActionLink.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ActionLink)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ActionLink();
+if (d.url != null) {
+m.url = String(d.url);
+}
+if (d.buttonTitle != null) {
+m.buttonTitle = String(d.buttonTitle);
+}
+return m;
+};
+ActionLink.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.url != null && m.hasOwnProperty("url")) {
+d.url = m.url;
+if (o.oneofs)
+d._url = "url";
+}
+if (m.buttonTitle != null && m.hasOwnProperty("buttonTitle")) {
+d.buttonTitle = m.buttonTitle;
+if (o.oneofs)
+d._buttonTitle = "buttonTitle";
+}
+return d;
+};
+ActionLink.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ActionLink.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ActionLink";
+};
+return ActionLink;

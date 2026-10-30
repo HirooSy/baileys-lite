@@ -1,0 +1,141 @@
+"use strict";
+function BotMemoryMetadata(p) {
+this.addedFacts = [];
+this.removedFacts = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotMemoryMetadata.prototype.addedFacts = $util.emptyArray;
+BotMemoryMetadata.prototype.removedFacts = $util.emptyArray;
+BotMemoryMetadata.prototype.disclaimer = null;
+let $oneOfFields;
+Object.defineProperty(BotMemoryMetadata.prototype, "_disclaimer", {
+get: $util.oneOfGetter($oneOfFields = ["disclaimer"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotMemoryMetadata.create = function create(properties) {
+return new BotMemoryMetadata(properties);
+};
+BotMemoryMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.addedFacts != null && m.addedFacts.length) {
+for (var i = 0; i < m.addedFacts.length; ++i)
+$root.proto.BotMemoryFact.encode(m.addedFacts[i], w.uint32(10).fork()).ldelim();
+}
+if (m.removedFacts != null && m.removedFacts.length) {
+for (var i = 0; i < m.removedFacts.length; ++i)
+$root.proto.BotMemoryFact.encode(m.removedFacts[i], w.uint32(18).fork()).ldelim();
+}
+if (m.disclaimer != null && Object.hasOwnProperty.call(m, "disclaimer"))
+w.uint32(26).string(m.disclaimer);
+return w;
+};
+BotMemoryMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotMemoryMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+if (!(m.addedFacts && m.addedFacts.length))
+m.addedFacts = [];
+m.addedFacts.push($root.proto.BotMemoryFact.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 2: {
+if (!(m.removedFacts && m.removedFacts.length))
+m.removedFacts = [];
+m.removedFacts.push($root.proto.BotMemoryFact.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 3: {
+m.disclaimer = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotMemoryMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotMemoryMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotMemoryMetadata();
+if (d.addedFacts) {
+if (!Array.isArray(d.addedFacts))
+throw TypeError(".proto.BotMemoryMetadata.addedFacts: array expected");
+m.addedFacts = [];
+for (var i = 0; i < d.addedFacts.length; ++i) {
+if (typeof d.addedFacts[i] !== "object")
+throw TypeError(".proto.BotMemoryMetadata.addedFacts: object expected");
+m.addedFacts[i] = $root.proto.BotMemoryFact.fromObject(d.addedFacts[i], n + 1);
+}
+}
+if (d.removedFacts) {
+if (!Array.isArray(d.removedFacts))
+throw TypeError(".proto.BotMemoryMetadata.removedFacts: array expected");
+m.removedFacts = [];
+for (var i = 0; i < d.removedFacts.length; ++i) {
+if (typeof d.removedFacts[i] !== "object")
+throw TypeError(".proto.BotMemoryMetadata.removedFacts: object expected");
+m.removedFacts[i] = $root.proto.BotMemoryFact.fromObject(d.removedFacts[i], n + 1);
+}
+}
+if (d.disclaimer != null) {
+m.disclaimer = String(d.disclaimer);
+}
+return m;
+};
+BotMemoryMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.addedFacts = [];
+d.removedFacts = [];
+}
+if (m.addedFacts && m.addedFacts.length) {
+d.addedFacts = [];
+for (var j = 0; j < m.addedFacts.length; ++j) {
+d.addedFacts[j] = $root.proto.BotMemoryFact.toObject(m.addedFacts[j], o);
+}
+}
+if (m.removedFacts && m.removedFacts.length) {
+d.removedFacts = [];
+for (var j = 0; j < m.removedFacts.length; ++j) {
+d.removedFacts[j] = $root.proto.BotMemoryFact.toObject(m.removedFacts[j], o);
+}
+}
+if (m.disclaimer != null && m.hasOwnProperty("disclaimer")) {
+d.disclaimer = m.disclaimer;
+if (o.oneofs)
+d._disclaimer = "disclaimer";
+}
+return d;
+};
+BotMemoryMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotMemoryMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotMemoryMetadata";
+};
+return BotMemoryMetadata;

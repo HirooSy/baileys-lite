@@ -1,0 +1,223 @@
+"use strict";
+function AIRichResponseTableMetadata(p) {
+this.rows = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIRichResponseTableMetadata.prototype.rows = $util.emptyArray;
+AIRichResponseTableMetadata.prototype.title = null;
+let $oneOfFields;
+Object.defineProperty(AIRichResponseTableMetadata.prototype, "_title", {
+get: $util.oneOfGetter($oneOfFields = ["title"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIRichResponseTableMetadata.create = function create(properties) {
+return new AIRichResponseTableMetadata(properties);
+};
+AIRichResponseTableMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.rows != null && m.rows.length) {
+for (var i = 0; i < m.rows.length; ++i)
+$root.proto.AIRichResponseTableMetadata.AIRichResponseTableRow.encode(m.rows[i], w.uint32(10).fork()).ldelim();
+}
+if (m.title != null && Object.hasOwnProperty.call(m, "title"))
+w.uint32(18).string(m.title);
+return w;
+};
+AIRichResponseTableMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIRichResponseTableMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+if (!(m.rows && m.rows.length))
+m.rows = [];
+m.rows.push($root.proto.AIRichResponseTableMetadata.AIRichResponseTableRow.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 2: {
+m.title = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIRichResponseTableMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIRichResponseTableMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIRichResponseTableMetadata();
+if (d.rows) {
+if (!Array.isArray(d.rows))
+throw TypeError(".proto.AIRichResponseTableMetadata.rows: array expected");
+m.rows = [];
+for (var i = 0; i < d.rows.length; ++i) {
+if (typeof d.rows[i] !== "object")
+throw TypeError(".proto.AIRichResponseTableMetadata.rows: object expected");
+m.rows[i] = $root.proto.AIRichResponseTableMetadata.AIRichResponseTableRow.fromObject(d.rows[i], n + 1);
+}
+}
+if (d.title != null) {
+m.title = String(d.title);
+}
+return m;
+};
+AIRichResponseTableMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.rows = [];
+}
+if (m.rows && m.rows.length) {
+d.rows = [];
+for (var j = 0; j < m.rows.length; ++j) {
+d.rows[j] = $root.proto.AIRichResponseTableMetadata.AIRichResponseTableRow.toObject(m.rows[j], o);
+}
+}
+if (m.title != null && m.hasOwnProperty("title")) {
+d.title = m.title;
+if (o.oneofs)
+d._title = "title";
+}
+return d;
+};
+AIRichResponseTableMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIRichResponseTableMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIRichResponseTableMetadata";
+};
+$lazy(AIRichResponseTableMetadata, "AIRichResponseTableRow", function() {
+function AIRichResponseTableRow(p) {
+this.items = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIRichResponseTableRow.prototype.items = $util.emptyArray;
+AIRichResponseTableRow.prototype.isHeading = null;
+let $oneOfFields;
+Object.defineProperty(AIRichResponseTableRow.prototype, "_isHeading", {
+get: $util.oneOfGetter($oneOfFields = ["isHeading"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIRichResponseTableRow.create = function create(properties) {
+return new AIRichResponseTableRow(properties);
+};
+AIRichResponseTableRow.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.items != null && m.items.length) {
+for (var i = 0; i < m.items.length; ++i)
+w.uint32(10).string(m.items[i]);
+}
+if (m.isHeading != null && Object.hasOwnProperty.call(m, "isHeading"))
+w.uint32(16).bool(m.isHeading);
+return w;
+};
+AIRichResponseTableRow.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIRichResponseTableMetadata.AIRichResponseTableRow();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+if (!(m.items && m.items.length))
+m.items = [];
+m.items.push(r.string());
+break;
+}
+case 2: {
+m.isHeading = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIRichResponseTableRow.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIRichResponseTableMetadata.AIRichResponseTableRow)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIRichResponseTableMetadata.AIRichResponseTableRow();
+if (d.items) {
+if (!Array.isArray(d.items))
+throw TypeError(".proto.AIRichResponseTableMetadata.AIRichResponseTableRow.items: array expected");
+m.items = [];
+for (var i = 0; i < d.items.length; ++i) {
+m.items[i] = String(d.items[i]);
+}
+}
+if (d.isHeading != null) {
+m.isHeading = Boolean(d.isHeading);
+}
+return m;
+};
+AIRichResponseTableRow.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.items = [];
+}
+if (m.items && m.items.length) {
+d.items = [];
+for (var j = 0; j < m.items.length; ++j) {
+d.items[j] = m.items[j];
+}
+}
+if (m.isHeading != null && m.hasOwnProperty("isHeading")) {
+d.isHeading = m.isHeading;
+if (o.oneofs)
+d._isHeading = "isHeading";
+}
+return d;
+};
+AIRichResponseTableRow.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIRichResponseTableRow.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIRichResponseTableMetadata.AIRichResponseTableRow";
+};
+return AIRichResponseTableRow;
+});
+return AIRichResponseTableMetadata;

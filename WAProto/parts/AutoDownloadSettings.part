@@ -1,0 +1,138 @@
+"use strict";
+function AutoDownloadSettings(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AutoDownloadSettings.prototype.downloadImages = null;
+AutoDownloadSettings.prototype.downloadAudio = null;
+AutoDownloadSettings.prototype.downloadVideo = null;
+AutoDownloadSettings.prototype.downloadDocuments = null;
+let $oneOfFields;
+Object.defineProperty(AutoDownloadSettings.prototype, "_downloadImages", {
+get: $util.oneOfGetter($oneOfFields = ["downloadImages"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AutoDownloadSettings.prototype, "_downloadAudio", {
+get: $util.oneOfGetter($oneOfFields = ["downloadAudio"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AutoDownloadSettings.prototype, "_downloadVideo", {
+get: $util.oneOfGetter($oneOfFields = ["downloadVideo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AutoDownloadSettings.prototype, "_downloadDocuments", {
+get: $util.oneOfGetter($oneOfFields = ["downloadDocuments"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AutoDownloadSettings.create = function create(properties) {
+return new AutoDownloadSettings(properties);
+};
+AutoDownloadSettings.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.downloadImages != null && Object.hasOwnProperty.call(m, "downloadImages"))
+w.uint32(8).bool(m.downloadImages);
+if (m.downloadAudio != null && Object.hasOwnProperty.call(m, "downloadAudio"))
+w.uint32(16).bool(m.downloadAudio);
+if (m.downloadVideo != null && Object.hasOwnProperty.call(m, "downloadVideo"))
+w.uint32(24).bool(m.downloadVideo);
+if (m.downloadDocuments != null && Object.hasOwnProperty.call(m, "downloadDocuments"))
+w.uint32(32).bool(m.downloadDocuments);
+return w;
+};
+AutoDownloadSettings.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AutoDownloadSettings();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.downloadImages = r.bool();
+break;
+}
+case 2: {
+m.downloadAudio = r.bool();
+break;
+}
+case 3: {
+m.downloadVideo = r.bool();
+break;
+}
+case 4: {
+m.downloadDocuments = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AutoDownloadSettings.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AutoDownloadSettings)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AutoDownloadSettings();
+if (d.downloadImages != null) {
+m.downloadImages = Boolean(d.downloadImages);
+}
+if (d.downloadAudio != null) {
+m.downloadAudio = Boolean(d.downloadAudio);
+}
+if (d.downloadVideo != null) {
+m.downloadVideo = Boolean(d.downloadVideo);
+}
+if (d.downloadDocuments != null) {
+m.downloadDocuments = Boolean(d.downloadDocuments);
+}
+return m;
+};
+AutoDownloadSettings.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.downloadImages != null && m.hasOwnProperty("downloadImages")) {
+d.downloadImages = m.downloadImages;
+if (o.oneofs)
+d._downloadImages = "downloadImages";
+}
+if (m.downloadAudio != null && m.hasOwnProperty("downloadAudio")) {
+d.downloadAudio = m.downloadAudio;
+if (o.oneofs)
+d._downloadAudio = "downloadAudio";
+}
+if (m.downloadVideo != null && m.hasOwnProperty("downloadVideo")) {
+d.downloadVideo = m.downloadVideo;
+if (o.oneofs)
+d._downloadVideo = "downloadVideo";
+}
+if (m.downloadDocuments != null && m.hasOwnProperty("downloadDocuments")) {
+d.downloadDocuments = m.downloadDocuments;
+if (o.oneofs)
+d._downloadDocuments = "downloadDocuments";
+}
+return d;
+};
+AutoDownloadSettings.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AutoDownloadSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AutoDownloadSettings";
+};
+return AutoDownloadSettings;

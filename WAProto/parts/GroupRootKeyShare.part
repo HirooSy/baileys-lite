@@ -1,0 +1,92 @@
+"use strict";
+function GroupRootKeyShare(p) {
+this.keys = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+GroupRootKeyShare.prototype.keys = $util.emptyArray;
+GroupRootKeyShare.create = function create(properties) {
+return new GroupRootKeyShare(properties);
+};
+GroupRootKeyShare.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.keys != null && m.keys.length) {
+for (var i = 0; i < m.keys.length; ++i)
+$root.proto.GroupRootKeyShareEntry.encode(m.keys[i], w.uint32(10).fork()).ldelim();
+}
+return w;
+};
+GroupRootKeyShare.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.GroupRootKeyShare();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+if (!(m.keys && m.keys.length))
+m.keys = [];
+m.keys.push($root.proto.GroupRootKeyShareEntry.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+GroupRootKeyShare.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.GroupRootKeyShare)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.GroupRootKeyShare();
+if (d.keys) {
+if (!Array.isArray(d.keys))
+throw TypeError(".proto.GroupRootKeyShare.keys: array expected");
+m.keys = [];
+for (var i = 0; i < d.keys.length; ++i) {
+if (typeof d.keys[i] !== "object")
+throw TypeError(".proto.GroupRootKeyShare.keys: object expected");
+m.keys[i] = $root.proto.GroupRootKeyShareEntry.fromObject(d.keys[i], n + 1);
+}
+}
+return m;
+};
+GroupRootKeyShare.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.keys = [];
+}
+if (m.keys && m.keys.length) {
+d.keys = [];
+for (var j = 0; j < m.keys.length; ++j) {
+d.keys[j] = $root.proto.GroupRootKeyShareEntry.toObject(m.keys[j], o);
+}
+}
+return d;
+};
+GroupRootKeyShare.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+GroupRootKeyShare.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.GroupRootKeyShare";
+};
+return GroupRootKeyShare;

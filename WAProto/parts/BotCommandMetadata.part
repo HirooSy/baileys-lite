@@ -1,0 +1,119 @@
+"use strict";
+function BotCommandMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotCommandMetadata.prototype.commandName = null;
+BotCommandMetadata.prototype.commandDescription = null;
+BotCommandMetadata.prototype.commandPrompt = null;
+let $oneOfFields;
+Object.defineProperty(BotCommandMetadata.prototype, "_commandName", {
+get: $util.oneOfGetter($oneOfFields = ["commandName"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotCommandMetadata.prototype, "_commandDescription", {
+get: $util.oneOfGetter($oneOfFields = ["commandDescription"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotCommandMetadata.prototype, "_commandPrompt", {
+get: $util.oneOfGetter($oneOfFields = ["commandPrompt"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotCommandMetadata.create = function create(properties) {
+return new BotCommandMetadata(properties);
+};
+BotCommandMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.commandName != null && Object.hasOwnProperty.call(m, "commandName"))
+w.uint32(10).string(m.commandName);
+if (m.commandDescription != null && Object.hasOwnProperty.call(m, "commandDescription"))
+w.uint32(18).string(m.commandDescription);
+if (m.commandPrompt != null && Object.hasOwnProperty.call(m, "commandPrompt"))
+w.uint32(26).string(m.commandPrompt);
+return w;
+};
+BotCommandMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotCommandMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.commandName = r.string();
+break;
+}
+case 2: {
+m.commandDescription = r.string();
+break;
+}
+case 3: {
+m.commandPrompt = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotCommandMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotCommandMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotCommandMetadata();
+if (d.commandName != null) {
+m.commandName = String(d.commandName);
+}
+if (d.commandDescription != null) {
+m.commandDescription = String(d.commandDescription);
+}
+if (d.commandPrompt != null) {
+m.commandPrompt = String(d.commandPrompt);
+}
+return m;
+};
+BotCommandMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.commandName != null && m.hasOwnProperty("commandName")) {
+d.commandName = m.commandName;
+if (o.oneofs)
+d._commandName = "commandName";
+}
+if (m.commandDescription != null && m.hasOwnProperty("commandDescription")) {
+d.commandDescription = m.commandDescription;
+if (o.oneofs)
+d._commandDescription = "commandDescription";
+}
+if (m.commandPrompt != null && m.hasOwnProperty("commandPrompt")) {
+d.commandPrompt = m.commandPrompt;
+if (o.oneofs)
+d._commandPrompt = "commandPrompt";
+}
+return d;
+};
+BotCommandMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotCommandMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotCommandMetadata";
+};
+return BotCommandMetadata;

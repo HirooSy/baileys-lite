@@ -1,0 +1,128 @@
+"use strict";
+function ADVSignedKeyIndexList(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ADVSignedKeyIndexList.prototype.details = null;
+ADVSignedKeyIndexList.prototype.accountSignature = null;
+ADVSignedKeyIndexList.prototype.accountSignatureKey = null;
+let $oneOfFields;
+Object.defineProperty(ADVSignedKeyIndexList.prototype, "_details", {
+get: $util.oneOfGetter($oneOfFields = ["details"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ADVSignedKeyIndexList.prototype, "_accountSignature", {
+get: $util.oneOfGetter($oneOfFields = ["accountSignature"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ADVSignedKeyIndexList.prototype, "_accountSignatureKey", {
+get: $util.oneOfGetter($oneOfFields = ["accountSignatureKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ADVSignedKeyIndexList.create = function create(properties) {
+return new ADVSignedKeyIndexList(properties);
+};
+ADVSignedKeyIndexList.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.details != null && Object.hasOwnProperty.call(m, "details"))
+w.uint32(10).bytes(m.details);
+if (m.accountSignature != null && Object.hasOwnProperty.call(m, "accountSignature"))
+w.uint32(18).bytes(m.accountSignature);
+if (m.accountSignatureKey != null && Object.hasOwnProperty.call(m, "accountSignatureKey"))
+w.uint32(26).bytes(m.accountSignatureKey);
+return w;
+};
+ADVSignedKeyIndexList.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ADVSignedKeyIndexList();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.details = r.bytes();
+break;
+}
+case 2: {
+m.accountSignature = r.bytes();
+break;
+}
+case 3: {
+m.accountSignatureKey = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ADVSignedKeyIndexList.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ADVSignedKeyIndexList)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ADVSignedKeyIndexList();
+if (d.details != null) {
+if (typeof d.details === "string")
+$util.base64.decode(d.details, m.details = $util.newBuffer($util.base64.length(d.details)), 0);
+else if (d.details.length >= 0)
+m.details = d.details;
+}
+if (d.accountSignature != null) {
+if (typeof d.accountSignature === "string")
+$util.base64.decode(d.accountSignature, m.accountSignature = $util.newBuffer($util.base64.length(d.accountSignature)), 0);
+else if (d.accountSignature.length >= 0)
+m.accountSignature = d.accountSignature;
+}
+if (d.accountSignatureKey != null) {
+if (typeof d.accountSignatureKey === "string")
+$util.base64.decode(d.accountSignatureKey, m.accountSignatureKey = $util.newBuffer($util.base64.length(d.accountSignatureKey)), 0);
+else if (d.accountSignatureKey.length >= 0)
+m.accountSignatureKey = d.accountSignatureKey;
+}
+return m;
+};
+ADVSignedKeyIndexList.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.details != null && m.hasOwnProperty("details")) {
+d.details = o.bytes === String ? $util.base64.encode(m.details, 0, m.details.length) : o.bytes === Array ? Array.prototype.slice.call(m.details) : m.details;
+if (o.oneofs)
+d._details = "details";
+}
+if (m.accountSignature != null && m.hasOwnProperty("accountSignature")) {
+d.accountSignature = o.bytes === String ? $util.base64.encode(m.accountSignature, 0, m.accountSignature.length) : o.bytes === Array ? Array.prototype.slice.call(m.accountSignature) : m.accountSignature;
+if (o.oneofs)
+d._accountSignature = "accountSignature";
+}
+if (m.accountSignatureKey != null && m.hasOwnProperty("accountSignatureKey")) {
+d.accountSignatureKey = o.bytes === String ? $util.base64.encode(m.accountSignatureKey, 0, m.accountSignatureKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.accountSignatureKey) : m.accountSignatureKey;
+if (o.oneofs)
+d._accountSignatureKey = "accountSignatureKey";
+}
+return d;
+};
+ADVSignedKeyIndexList.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ADVSignedKeyIndexList.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ADVSignedKeyIndexList";
+};
+return ADVSignedKeyIndexList;

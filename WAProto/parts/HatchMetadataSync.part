@@ -1,0 +1,132 @@
+"use strict";
+function HatchMetadataSync(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+HatchMetadataSync.prototype.data = null;
+HatchMetadataSync.prototype.timestampMs = null;
+HatchMetadataSync.prototype.requestId = null;
+let $oneOfFields;
+Object.defineProperty(HatchMetadataSync.prototype, "_data", {
+get: $util.oneOfGetter($oneOfFields = ["data"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(HatchMetadataSync.prototype, "_timestampMs", {
+get: $util.oneOfGetter($oneOfFields = ["timestampMs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(HatchMetadataSync.prototype, "_requestId", {
+get: $util.oneOfGetter($oneOfFields = ["requestId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+HatchMetadataSync.create = function create(properties) {
+return new HatchMetadataSync(properties);
+};
+HatchMetadataSync.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.data != null && Object.hasOwnProperty.call(m, "data"))
+w.uint32(10).bytes(m.data);
+if (m.timestampMs != null && Object.hasOwnProperty.call(m, "timestampMs"))
+w.uint32(16).int64(m.timestampMs);
+if (m.requestId != null && Object.hasOwnProperty.call(m, "requestId"))
+w.uint32(26).string(m.requestId);
+return w;
+};
+HatchMetadataSync.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.HatchMetadataSync();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.data = r.bytes();
+break;
+}
+case 2: {
+m.timestampMs = r.int64();
+break;
+}
+case 3: {
+m.requestId = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+HatchMetadataSync.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.HatchMetadataSync)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.HatchMetadataSync();
+if (d.data != null) {
+if (typeof d.data === "string")
+$util.base64.decode(d.data, m.data = $util.newBuffer($util.base64.length(d.data)), 0);
+else if (d.data.length >= 0)
+m.data = d.data;
+}
+if (d.timestampMs != null) {
+if ($util.Long)
+(m.timestampMs = $util.Long.fromValue(d.timestampMs)).unsigned = false;
+else if (typeof d.timestampMs === "string")
+m.timestampMs = parseInt(d.timestampMs, 10);
+else if (typeof d.timestampMs === "number")
+m.timestampMs = d.timestampMs;
+else if (typeof d.timestampMs === "object")
+m.timestampMs = new $util.LongBits(d.timestampMs.low >>> 0, d.timestampMs.high >>> 0).toNumber();
+}
+if (d.requestId != null) {
+m.requestId = String(d.requestId);
+}
+return m;
+};
+HatchMetadataSync.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.data != null && m.hasOwnProperty("data")) {
+d.data = o.bytes === String ? $util.base64.encode(m.data, 0, m.data.length) : o.bytes === Array ? Array.prototype.slice.call(m.data) : m.data;
+if (o.oneofs)
+d._data = "data";
+}
+if (m.timestampMs != null && m.hasOwnProperty("timestampMs")) {
+if (typeof m.timestampMs === "number")
+d.timestampMs = o.longs === String ? String(m.timestampMs) : m.timestampMs;
+else
+d.timestampMs = o.longs === String ? longToString(m.timestampMs) : o.longs === Number ? longToNumber(m.timestampMs) : m.timestampMs;
+if (o.oneofs)
+d._timestampMs = "timestampMs";
+}
+if (m.requestId != null && m.hasOwnProperty("requestId")) {
+d.requestId = m.requestId;
+if (o.oneofs)
+d._requestId = "requestId";
+}
+return d;
+};
+HatchMetadataSync.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+HatchMetadataSync.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.HatchMetadataSync";
+};
+return HatchMetadataSync;

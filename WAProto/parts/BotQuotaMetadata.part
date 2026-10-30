@@ -1,0 +1,241 @@
+"use strict";
+function BotQuotaMetadata(p) {
+this.botFeatureQuotaMetadata = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotQuotaMetadata.prototype.botFeatureQuotaMetadata = $util.emptyArray;
+BotQuotaMetadata.create = function create(properties) {
+return new BotQuotaMetadata(properties);
+};
+BotQuotaMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.botFeatureQuotaMetadata != null && m.botFeatureQuotaMetadata.length) {
+for (var i = 0; i < m.botFeatureQuotaMetadata.length; ++i)
+$root.proto.BotQuotaMetadata.BotFeatureQuotaMetadata.encode(m.botFeatureQuotaMetadata[i], w.uint32(10).fork()).ldelim();
+}
+return w;
+};
+BotQuotaMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotQuotaMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+if (!(m.botFeatureQuotaMetadata && m.botFeatureQuotaMetadata.length))
+m.botFeatureQuotaMetadata = [];
+m.botFeatureQuotaMetadata.push($root.proto.BotQuotaMetadata.BotFeatureQuotaMetadata.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotQuotaMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotQuotaMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotQuotaMetadata();
+if (d.botFeatureQuotaMetadata) {
+if (!Array.isArray(d.botFeatureQuotaMetadata))
+throw TypeError(".proto.BotQuotaMetadata.botFeatureQuotaMetadata: array expected");
+m.botFeatureQuotaMetadata = [];
+for (var i = 0; i < d.botFeatureQuotaMetadata.length; ++i) {
+if (typeof d.botFeatureQuotaMetadata[i] !== "object")
+throw TypeError(".proto.BotQuotaMetadata.botFeatureQuotaMetadata: object expected");
+m.botFeatureQuotaMetadata[i] = $root.proto.BotQuotaMetadata.BotFeatureQuotaMetadata.fromObject(d.botFeatureQuotaMetadata[i], n + 1);
+}
+}
+return m;
+};
+BotQuotaMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.botFeatureQuotaMetadata = [];
+}
+if (m.botFeatureQuotaMetadata && m.botFeatureQuotaMetadata.length) {
+d.botFeatureQuotaMetadata = [];
+for (var j = 0; j < m.botFeatureQuotaMetadata.length; ++j) {
+d.botFeatureQuotaMetadata[j] = $root.proto.BotQuotaMetadata.BotFeatureQuotaMetadata.toObject(m.botFeatureQuotaMetadata[j], o);
+}
+}
+return d;
+};
+BotQuotaMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotQuotaMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotQuotaMetadata";
+};
+$lazy(BotQuotaMetadata, "BotFeatureQuotaMetadata", function() {
+function BotFeatureQuotaMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotFeatureQuotaMetadata.prototype.featureType = null;
+BotFeatureQuotaMetadata.prototype.remainingQuota = null;
+BotFeatureQuotaMetadata.prototype.expirationTimestamp = null;
+let $oneOfFields;
+Object.defineProperty(BotFeatureQuotaMetadata.prototype, "_featureType", {
+get: $util.oneOfGetter($oneOfFields = ["featureType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotFeatureQuotaMetadata.prototype, "_remainingQuota", {
+get: $util.oneOfGetter($oneOfFields = ["remainingQuota"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotFeatureQuotaMetadata.prototype, "_expirationTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["expirationTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotFeatureQuotaMetadata.create = function create(properties) {
+return new BotFeatureQuotaMetadata(properties);
+};
+BotFeatureQuotaMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.featureType != null && Object.hasOwnProperty.call(m, "featureType"))
+w.uint32(8).int32(m.featureType);
+if (m.remainingQuota != null && Object.hasOwnProperty.call(m, "remainingQuota"))
+w.uint32(16).uint32(m.remainingQuota);
+if (m.expirationTimestamp != null && Object.hasOwnProperty.call(m, "expirationTimestamp"))
+w.uint32(24).uint64(m.expirationTimestamp);
+return w;
+};
+BotFeatureQuotaMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotQuotaMetadata.BotFeatureQuotaMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.featureType = r.int32();
+break;
+}
+case 2: {
+m.remainingQuota = r.uint32();
+break;
+}
+case 3: {
+m.expirationTimestamp = r.uint64();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotFeatureQuotaMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotQuotaMetadata.BotFeatureQuotaMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotQuotaMetadata.BotFeatureQuotaMetadata();
+switch (d.featureType) {
+default:
+if (typeof d.featureType === "number") {
+m.featureType = d.featureType;
+break;
+}
+break;
+case "UNKNOWN_FEATURE":
+case 0:
+m.featureType = 0;
+break;
+case "REASONING_FEATURE":
+case 1:
+m.featureType = 1;
+break;
+}
+if (d.remainingQuota != null) {
+m.remainingQuota = d.remainingQuota >>> 0;
+}
+if (d.expirationTimestamp != null) {
+if ($util.Long)
+(m.expirationTimestamp = $util.Long.fromValue(d.expirationTimestamp)).unsigned = true;
+else if (typeof d.expirationTimestamp === "string")
+m.expirationTimestamp = parseInt(d.expirationTimestamp, 10);
+else if (typeof d.expirationTimestamp === "number")
+m.expirationTimestamp = d.expirationTimestamp;
+else if (typeof d.expirationTimestamp === "object")
+m.expirationTimestamp = new $util.LongBits(d.expirationTimestamp.low >>> 0, d.expirationTimestamp.high >>> 0).toNumber(true);
+}
+return m;
+};
+BotFeatureQuotaMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.featureType != null && m.hasOwnProperty("featureType")) {
+d.featureType = o.enums === String ? $root.proto.BotQuotaMetadata.BotFeatureQuotaMetadata.BotFeatureType[m.featureType] === undefined ? m.featureType : $root.proto.BotQuotaMetadata.BotFeatureQuotaMetadata.BotFeatureType[m.featureType] : m.featureType;
+if (o.oneofs)
+d._featureType = "featureType";
+}
+if (m.remainingQuota != null && m.hasOwnProperty("remainingQuota")) {
+d.remainingQuota = m.remainingQuota;
+if (o.oneofs)
+d._remainingQuota = "remainingQuota";
+}
+if (m.expirationTimestamp != null && m.hasOwnProperty("expirationTimestamp")) {
+if (typeof m.expirationTimestamp === "number")
+d.expirationTimestamp = o.longs === String ? String(m.expirationTimestamp) : m.expirationTimestamp;
+else
+d.expirationTimestamp = o.longs === String ? longToString(m.expirationTimestamp, true) : o.longs === Number ? longToNumber(m.expirationTimestamp, true) : m.expirationTimestamp;
+if (o.oneofs)
+d._expirationTimestamp = "expirationTimestamp";
+}
+return d;
+};
+BotFeatureQuotaMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotFeatureQuotaMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotQuotaMetadata.BotFeatureQuotaMetadata";
+};
+$lazy(BotFeatureQuotaMetadata, "BotFeatureType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN_FEATURE"] = 0;
+values[valuesById[1] = "REASONING_FEATURE"] = 1;
+return values;
+});
+return BotFeatureQuotaMetadata;
+});
+return BotQuotaMetadata;

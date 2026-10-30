@@ -1,0 +1,100 @@
+"use strict";
+function BotDocumentMessageMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotDocumentMessageMetadata.prototype.pluginType = null;
+let $oneOfFields;
+Object.defineProperty(BotDocumentMessageMetadata.prototype, "_pluginType", {
+get: $util.oneOfGetter($oneOfFields = ["pluginType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotDocumentMessageMetadata.create = function create(properties) {
+return new BotDocumentMessageMetadata(properties);
+};
+BotDocumentMessageMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.pluginType != null && Object.hasOwnProperty.call(m, "pluginType"))
+w.uint32(8).int32(m.pluginType);
+return w;
+};
+BotDocumentMessageMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotDocumentMessageMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.pluginType = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotDocumentMessageMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotDocumentMessageMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotDocumentMessageMetadata();
+switch (d.pluginType) {
+default:
+if (typeof d.pluginType === "number") {
+m.pluginType = d.pluginType;
+break;
+}
+break;
+case "TEXT_EXTRACTION":
+case 0:
+m.pluginType = 0;
+break;
+case "OCR_AND_IMAGES":
+case 1:
+m.pluginType = 1;
+break;
+}
+return m;
+};
+BotDocumentMessageMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.pluginType != null && m.hasOwnProperty("pluginType")) {
+d.pluginType = o.enums === String ? $root.proto.BotDocumentMessageMetadata.DocumentPluginType[m.pluginType] === undefined ? m.pluginType : $root.proto.BotDocumentMessageMetadata.DocumentPluginType[m.pluginType] : m.pluginType;
+if (o.oneofs)
+d._pluginType = "pluginType";
+}
+return d;
+};
+BotDocumentMessageMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotDocumentMessageMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotDocumentMessageMetadata";
+};
+$lazy(BotDocumentMessageMetadata, "DocumentPluginType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "TEXT_EXTRACTION"] = 0;
+values[valuesById[1] = "OCR_AND_IMAGES"] = 1;
+return values;
+});
+return BotDocumentMessageMetadata;

@@ -1,0 +1,837 @@
+"use strict";
+function BotProgressIndicatorMetadata(p) {
+this.stepsMetadata = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotProgressIndicatorMetadata.prototype.progressDescription = null;
+BotProgressIndicatorMetadata.prototype.stepsMetadata = $util.emptyArray;
+BotProgressIndicatorMetadata.prototype.estimatedCompletionTime = null;
+let $oneOfFields;
+Object.defineProperty(BotProgressIndicatorMetadata.prototype, "_progressDescription", {
+get: $util.oneOfGetter($oneOfFields = ["progressDescription"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotProgressIndicatorMetadata.prototype, "_estimatedCompletionTime", {
+get: $util.oneOfGetter($oneOfFields = ["estimatedCompletionTime"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotProgressIndicatorMetadata.create = function create(properties) {
+return new BotProgressIndicatorMetadata(properties);
+};
+BotProgressIndicatorMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.progressDescription != null && Object.hasOwnProperty.call(m, "progressDescription"))
+w.uint32(10).string(m.progressDescription);
+if (m.stepsMetadata != null && m.stepsMetadata.length) {
+for (var i = 0; i < m.stepsMetadata.length; ++i)
+$root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.encode(m.stepsMetadata[i], w.uint32(18).fork()).ldelim();
+}
+if (m.estimatedCompletionTime != null && Object.hasOwnProperty.call(m, "estimatedCompletionTime"))
+w.uint32(24).int64(m.estimatedCompletionTime);
+return w;
+};
+BotProgressIndicatorMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotProgressIndicatorMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.progressDescription = r.string();
+break;
+}
+case 2: {
+if (!(m.stepsMetadata && m.stepsMetadata.length))
+m.stepsMetadata = [];
+m.stepsMetadata.push($root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 3: {
+m.estimatedCompletionTime = r.int64();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotProgressIndicatorMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotProgressIndicatorMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotProgressIndicatorMetadata();
+if (d.progressDescription != null) {
+m.progressDescription = String(d.progressDescription);
+}
+if (d.stepsMetadata) {
+if (!Array.isArray(d.stepsMetadata))
+throw TypeError(".proto.BotProgressIndicatorMetadata.stepsMetadata: array expected");
+m.stepsMetadata = [];
+for (var i = 0; i < d.stepsMetadata.length; ++i) {
+if (typeof d.stepsMetadata[i] !== "object")
+throw TypeError(".proto.BotProgressIndicatorMetadata.stepsMetadata: object expected");
+m.stepsMetadata[i] = $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.fromObject(d.stepsMetadata[i], n + 1);
+}
+}
+if (d.estimatedCompletionTime != null) {
+if ($util.Long)
+(m.estimatedCompletionTime = $util.Long.fromValue(d.estimatedCompletionTime)).unsigned = false;
+else if (typeof d.estimatedCompletionTime === "string")
+m.estimatedCompletionTime = parseInt(d.estimatedCompletionTime, 10);
+else if (typeof d.estimatedCompletionTime === "number")
+m.estimatedCompletionTime = d.estimatedCompletionTime;
+else if (typeof d.estimatedCompletionTime === "object")
+m.estimatedCompletionTime = new $util.LongBits(d.estimatedCompletionTime.low >>> 0, d.estimatedCompletionTime.high >>> 0).toNumber();
+}
+return m;
+};
+BotProgressIndicatorMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.stepsMetadata = [];
+}
+if (m.progressDescription != null && m.hasOwnProperty("progressDescription")) {
+d.progressDescription = m.progressDescription;
+if (o.oneofs)
+d._progressDescription = "progressDescription";
+}
+if (m.stepsMetadata && m.stepsMetadata.length) {
+d.stepsMetadata = [];
+for (var j = 0; j < m.stepsMetadata.length; ++j) {
+d.stepsMetadata[j] = $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.toObject(m.stepsMetadata[j], o);
+}
+}
+if (m.estimatedCompletionTime != null && m.hasOwnProperty("estimatedCompletionTime")) {
+if (typeof m.estimatedCompletionTime === "number")
+d.estimatedCompletionTime = o.longs === String ? String(m.estimatedCompletionTime) : m.estimatedCompletionTime;
+else
+d.estimatedCompletionTime = o.longs === String ? longToString(m.estimatedCompletionTime) : o.longs === Number ? longToNumber(m.estimatedCompletionTime) : m.estimatedCompletionTime;
+if (o.oneofs)
+d._estimatedCompletionTime = "estimatedCompletionTime";
+}
+return d;
+};
+BotProgressIndicatorMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotProgressIndicatorMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotProgressIndicatorMetadata";
+};
+$lazy(BotProgressIndicatorMetadata, "BotPlanningStepMetadata", function() {
+function BotPlanningStepMetadata(p) {
+this.sourcesMetadata = [];
+this.sections = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotPlanningStepMetadata.prototype.statusTitle = null;
+BotPlanningStepMetadata.prototype.statusBody = null;
+BotPlanningStepMetadata.prototype.sourcesMetadata = $util.emptyArray;
+BotPlanningStepMetadata.prototype.status = null;
+BotPlanningStepMetadata.prototype.isReasoning = null;
+BotPlanningStepMetadata.prototype.isEnhancedSearch = null;
+BotPlanningStepMetadata.prototype.sections = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(BotPlanningStepMetadata.prototype, "_statusTitle", {
+get: $util.oneOfGetter($oneOfFields = ["statusTitle"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPlanningStepMetadata.prototype, "_statusBody", {
+get: $util.oneOfGetter($oneOfFields = ["statusBody"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPlanningStepMetadata.prototype, "_status", {
+get: $util.oneOfGetter($oneOfFields = ["status"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPlanningStepMetadata.prototype, "_isReasoning", {
+get: $util.oneOfGetter($oneOfFields = ["isReasoning"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPlanningStepMetadata.prototype, "_isEnhancedSearch", {
+get: $util.oneOfGetter($oneOfFields = ["isEnhancedSearch"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotPlanningStepMetadata.create = function create(properties) {
+return new BotPlanningStepMetadata(properties);
+};
+BotPlanningStepMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.statusTitle != null && Object.hasOwnProperty.call(m, "statusTitle"))
+w.uint32(10).string(m.statusTitle);
+if (m.statusBody != null && Object.hasOwnProperty.call(m, "statusBody"))
+w.uint32(18).string(m.statusBody);
+if (m.sourcesMetadata != null && m.sourcesMetadata.length) {
+for (var i = 0; i < m.sourcesMetadata.length; ++i)
+$root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourcesMetadata.encode(m.sourcesMetadata[i], w.uint32(26).fork()).ldelim();
+}
+if (m.status != null && Object.hasOwnProperty.call(m, "status"))
+w.uint32(32).int32(m.status);
+if (m.isReasoning != null && Object.hasOwnProperty.call(m, "isReasoning"))
+w.uint32(40).bool(m.isReasoning);
+if (m.isEnhancedSearch != null && Object.hasOwnProperty.call(m, "isEnhancedSearch"))
+w.uint32(48).bool(m.isEnhancedSearch);
+if (m.sections != null && m.sections.length) {
+for (var i = 0; i < m.sections.length; ++i)
+$root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningStepSectionMetadata.encode(m.sections[i], w.uint32(58).fork()).ldelim();
+}
+return w;
+};
+BotPlanningStepMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.statusTitle = r.string();
+break;
+}
+case 2: {
+m.statusBody = r.string();
+break;
+}
+case 3: {
+if (!(m.sourcesMetadata && m.sourcesMetadata.length))
+m.sourcesMetadata = [];
+m.sourcesMetadata.push($root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourcesMetadata.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 4: {
+m.status = r.int32();
+break;
+}
+case 5: {
+m.isReasoning = r.bool();
+break;
+}
+case 6: {
+m.isEnhancedSearch = r.bool();
+break;
+}
+case 7: {
+if (!(m.sections && m.sections.length))
+m.sections = [];
+m.sections.push($root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningStepSectionMetadata.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotPlanningStepMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata();
+if (d.statusTitle != null) {
+m.statusTitle = String(d.statusTitle);
+}
+if (d.statusBody != null) {
+m.statusBody = String(d.statusBody);
+}
+if (d.sourcesMetadata) {
+if (!Array.isArray(d.sourcesMetadata))
+throw TypeError(".proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.sourcesMetadata: array expected");
+m.sourcesMetadata = [];
+for (var i = 0; i < d.sourcesMetadata.length; ++i) {
+if (typeof d.sourcesMetadata[i] !== "object")
+throw TypeError(".proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.sourcesMetadata: object expected");
+m.sourcesMetadata[i] = $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourcesMetadata.fromObject(d.sourcesMetadata[i], n + 1);
+}
+}
+switch (d.status) {
+default:
+if (typeof d.status === "number") {
+m.status = d.status;
+break;
+}
+break;
+case "UNKNOWN":
+case 0:
+m.status = 0;
+break;
+case "PLANNED":
+case 1:
+m.status = 1;
+break;
+case "EXECUTING":
+case 2:
+m.status = 2;
+break;
+case "FINISHED":
+case 3:
+m.status = 3;
+break;
+}
+if (d.isReasoning != null) {
+m.isReasoning = Boolean(d.isReasoning);
+}
+if (d.isEnhancedSearch != null) {
+m.isEnhancedSearch = Boolean(d.isEnhancedSearch);
+}
+if (d.sections) {
+if (!Array.isArray(d.sections))
+throw TypeError(".proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.sections: array expected");
+m.sections = [];
+for (var i = 0; i < d.sections.length; ++i) {
+if (typeof d.sections[i] !== "object")
+throw TypeError(".proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.sections: object expected");
+m.sections[i] = $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningStepSectionMetadata.fromObject(d.sections[i], n + 1);
+}
+}
+return m;
+};
+BotPlanningStepMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.sourcesMetadata = [];
+d.sections = [];
+}
+if (m.statusTitle != null && m.hasOwnProperty("statusTitle")) {
+d.statusTitle = m.statusTitle;
+if (o.oneofs)
+d._statusTitle = "statusTitle";
+}
+if (m.statusBody != null && m.hasOwnProperty("statusBody")) {
+d.statusBody = m.statusBody;
+if (o.oneofs)
+d._statusBody = "statusBody";
+}
+if (m.sourcesMetadata && m.sourcesMetadata.length) {
+d.sourcesMetadata = [];
+for (var j = 0; j < m.sourcesMetadata.length; ++j) {
+d.sourcesMetadata[j] = $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourcesMetadata.toObject(m.sourcesMetadata[j], o);
+}
+}
+if (m.status != null && m.hasOwnProperty("status")) {
+d.status = o.enums === String ? $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.PlanningStepStatus[m.status] === undefined ? m.status : $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.PlanningStepStatus[m.status] : m.status;
+if (o.oneofs)
+d._status = "status";
+}
+if (m.isReasoning != null && m.hasOwnProperty("isReasoning")) {
+d.isReasoning = m.isReasoning;
+if (o.oneofs)
+d._isReasoning = "isReasoning";
+}
+if (m.isEnhancedSearch != null && m.hasOwnProperty("isEnhancedSearch")) {
+d.isEnhancedSearch = m.isEnhancedSearch;
+if (o.oneofs)
+d._isEnhancedSearch = "isEnhancedSearch";
+}
+if (m.sections && m.sections.length) {
+d.sections = [];
+for (var j = 0; j < m.sections.length; ++j) {
+d.sections[j] = $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningStepSectionMetadata.toObject(m.sections[j], o);
+}
+}
+return d;
+};
+BotPlanningStepMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotPlanningStepMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata";
+};
+$lazy(BotPlanningStepMetadata, "BotPlanningSearchSourceMetadata", function() {
+function BotPlanningSearchSourceMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotPlanningSearchSourceMetadata.prototype.title = null;
+BotPlanningSearchSourceMetadata.prototype.provider = null;
+BotPlanningSearchSourceMetadata.prototype.sourceUrl = null;
+BotPlanningSearchSourceMetadata.prototype.favIconUrl = null;
+let $oneOfFields;
+Object.defineProperty(BotPlanningSearchSourceMetadata.prototype, "_title", {
+get: $util.oneOfGetter($oneOfFields = ["title"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPlanningSearchSourceMetadata.prototype, "_provider", {
+get: $util.oneOfGetter($oneOfFields = ["provider"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPlanningSearchSourceMetadata.prototype, "_sourceUrl", {
+get: $util.oneOfGetter($oneOfFields = ["sourceUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPlanningSearchSourceMetadata.prototype, "_favIconUrl", {
+get: $util.oneOfGetter($oneOfFields = ["favIconUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotPlanningSearchSourceMetadata.create = function create(properties) {
+return new BotPlanningSearchSourceMetadata(properties);
+};
+BotPlanningSearchSourceMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.title != null && Object.hasOwnProperty.call(m, "title"))
+w.uint32(10).string(m.title);
+if (m.provider != null && Object.hasOwnProperty.call(m, "provider"))
+w.uint32(16).int32(m.provider);
+if (m.sourceUrl != null && Object.hasOwnProperty.call(m, "sourceUrl"))
+w.uint32(26).string(m.sourceUrl);
+if (m.favIconUrl != null && Object.hasOwnProperty.call(m, "favIconUrl"))
+w.uint32(34).string(m.favIconUrl);
+return w;
+};
+BotPlanningSearchSourceMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourceMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.title = r.string();
+break;
+}
+case 2: {
+m.provider = r.int32();
+break;
+}
+case 3: {
+m.sourceUrl = r.string();
+break;
+}
+case 4: {
+m.favIconUrl = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotPlanningSearchSourceMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourceMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourceMetadata();
+if (d.title != null) {
+m.title = String(d.title);
+}
+switch (d.provider) {
+default:
+if (typeof d.provider === "number") {
+m.provider = d.provider;
+break;
+}
+break;
+case "UNKNOWN_PROVIDER":
+case 0:
+m.provider = 0;
+break;
+case "OTHER":
+case 1:
+m.provider = 1;
+break;
+case "GOOGLE":
+case 2:
+m.provider = 2;
+break;
+case "BING":
+case 3:
+m.provider = 3;
+break;
+}
+if (d.sourceUrl != null) {
+m.sourceUrl = String(d.sourceUrl);
+}
+if (d.favIconUrl != null) {
+m.favIconUrl = String(d.favIconUrl);
+}
+return m;
+};
+BotPlanningSearchSourceMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.title != null && m.hasOwnProperty("title")) {
+d.title = m.title;
+if (o.oneofs)
+d._title = "title";
+}
+if (m.provider != null && m.hasOwnProperty("provider")) {
+d.provider = o.enums === String ? $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotSearchSourceProvider[m.provider] === undefined ? m.provider : $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotSearchSourceProvider[m.provider] : m.provider;
+if (o.oneofs)
+d._provider = "provider";
+}
+if (m.sourceUrl != null && m.hasOwnProperty("sourceUrl")) {
+d.sourceUrl = m.sourceUrl;
+if (o.oneofs)
+d._sourceUrl = "sourceUrl";
+}
+if (m.favIconUrl != null && m.hasOwnProperty("favIconUrl")) {
+d.favIconUrl = m.favIconUrl;
+if (o.oneofs)
+d._favIconUrl = "favIconUrl";
+}
+return d;
+};
+BotPlanningSearchSourceMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotPlanningSearchSourceMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourceMetadata";
+};
+return BotPlanningSearchSourceMetadata;
+});
+$lazy(BotPlanningStepMetadata, "BotPlanningSearchSourcesMetadata", function() {
+function BotPlanningSearchSourcesMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotPlanningSearchSourcesMetadata.prototype.sourceTitle = null;
+BotPlanningSearchSourcesMetadata.prototype.provider = null;
+BotPlanningSearchSourcesMetadata.prototype.sourceUrl = null;
+let $oneOfFields;
+Object.defineProperty(BotPlanningSearchSourcesMetadata.prototype, "_sourceTitle", {
+get: $util.oneOfGetter($oneOfFields = ["sourceTitle"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPlanningSearchSourcesMetadata.prototype, "_provider", {
+get: $util.oneOfGetter($oneOfFields = ["provider"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPlanningSearchSourcesMetadata.prototype, "_sourceUrl", {
+get: $util.oneOfGetter($oneOfFields = ["sourceUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotPlanningSearchSourcesMetadata.create = function create(properties) {
+return new BotPlanningSearchSourcesMetadata(properties);
+};
+BotPlanningSearchSourcesMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.sourceTitle != null && Object.hasOwnProperty.call(m, "sourceTitle"))
+w.uint32(10).string(m.sourceTitle);
+if (m.provider != null && Object.hasOwnProperty.call(m, "provider"))
+w.uint32(16).int32(m.provider);
+if (m.sourceUrl != null && Object.hasOwnProperty.call(m, "sourceUrl"))
+w.uint32(26).string(m.sourceUrl);
+return w;
+};
+BotPlanningSearchSourcesMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourcesMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.sourceTitle = r.string();
+break;
+}
+case 2: {
+m.provider = r.int32();
+break;
+}
+case 3: {
+m.sourceUrl = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotPlanningSearchSourcesMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourcesMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourcesMetadata();
+if (d.sourceTitle != null) {
+m.sourceTitle = String(d.sourceTitle);
+}
+switch (d.provider) {
+default:
+if (typeof d.provider === "number") {
+m.provider = d.provider;
+break;
+}
+break;
+case "UNKNOWN":
+case 0:
+m.provider = 0;
+break;
+case "OTHER":
+case 1:
+m.provider = 1;
+break;
+case "GOOGLE":
+case 2:
+m.provider = 2;
+break;
+case "BING":
+case 3:
+m.provider = 3;
+break;
+}
+if (d.sourceUrl != null) {
+m.sourceUrl = String(d.sourceUrl);
+}
+return m;
+};
+BotPlanningSearchSourcesMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.sourceTitle != null && m.hasOwnProperty("sourceTitle")) {
+d.sourceTitle = m.sourceTitle;
+if (o.oneofs)
+d._sourceTitle = "sourceTitle";
+}
+if (m.provider != null && m.hasOwnProperty("provider")) {
+d.provider = o.enums === String ? $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourcesMetadata.BotPlanningSearchSourceProvider[m.provider] === undefined ? m.provider : $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourcesMetadata.BotPlanningSearchSourceProvider[m.provider] : m.provider;
+if (o.oneofs)
+d._provider = "provider";
+}
+if (m.sourceUrl != null && m.hasOwnProperty("sourceUrl")) {
+d.sourceUrl = m.sourceUrl;
+if (o.oneofs)
+d._sourceUrl = "sourceUrl";
+}
+return d;
+};
+BotPlanningSearchSourcesMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotPlanningSearchSourcesMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourcesMetadata";
+};
+$lazy(BotPlanningSearchSourcesMetadata, "BotPlanningSearchSourceProvider", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN"] = 0;
+values[valuesById[1] = "OTHER"] = 1;
+values[valuesById[2] = "GOOGLE"] = 2;
+values[valuesById[3] = "BING"] = 3;
+return values;
+});
+return BotPlanningSearchSourcesMetadata;
+});
+$lazy(BotPlanningStepMetadata, "BotPlanningStepSectionMetadata", function() {
+function BotPlanningStepSectionMetadata(p) {
+this.sourcesMetadata = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotPlanningStepSectionMetadata.prototype.sectionTitle = null;
+BotPlanningStepSectionMetadata.prototype.sectionBody = null;
+BotPlanningStepSectionMetadata.prototype.sourcesMetadata = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(BotPlanningStepSectionMetadata.prototype, "_sectionTitle", {
+get: $util.oneOfGetter($oneOfFields = ["sectionTitle"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotPlanningStepSectionMetadata.prototype, "_sectionBody", {
+get: $util.oneOfGetter($oneOfFields = ["sectionBody"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotPlanningStepSectionMetadata.create = function create(properties) {
+return new BotPlanningStepSectionMetadata(properties);
+};
+BotPlanningStepSectionMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.sectionTitle != null && Object.hasOwnProperty.call(m, "sectionTitle"))
+w.uint32(10).string(m.sectionTitle);
+if (m.sectionBody != null && Object.hasOwnProperty.call(m, "sectionBody"))
+w.uint32(18).string(m.sectionBody);
+if (m.sourcesMetadata != null && m.sourcesMetadata.length) {
+for (var i = 0; i < m.sourcesMetadata.length; ++i)
+$root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourceMetadata.encode(m.sourcesMetadata[i], w.uint32(26).fork()).ldelim();
+}
+return w;
+};
+BotPlanningStepSectionMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningStepSectionMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.sectionTitle = r.string();
+break;
+}
+case 2: {
+m.sectionBody = r.string();
+break;
+}
+case 3: {
+if (!(m.sourcesMetadata && m.sourcesMetadata.length))
+m.sourcesMetadata = [];
+m.sourcesMetadata.push($root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourceMetadata.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotPlanningStepSectionMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningStepSectionMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningStepSectionMetadata();
+if (d.sectionTitle != null) {
+m.sectionTitle = String(d.sectionTitle);
+}
+if (d.sectionBody != null) {
+m.sectionBody = String(d.sectionBody);
+}
+if (d.sourcesMetadata) {
+if (!Array.isArray(d.sourcesMetadata))
+throw TypeError(".proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningStepSectionMetadata.sourcesMetadata: array expected");
+m.sourcesMetadata = [];
+for (var i = 0; i < d.sourcesMetadata.length; ++i) {
+if (typeof d.sourcesMetadata[i] !== "object")
+throw TypeError(".proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningStepSectionMetadata.sourcesMetadata: object expected");
+m.sourcesMetadata[i] = $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourceMetadata.fromObject(d.sourcesMetadata[i], n + 1);
+}
+}
+return m;
+};
+BotPlanningStepSectionMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.sourcesMetadata = [];
+}
+if (m.sectionTitle != null && m.hasOwnProperty("sectionTitle")) {
+d.sectionTitle = m.sectionTitle;
+if (o.oneofs)
+d._sectionTitle = "sectionTitle";
+}
+if (m.sectionBody != null && m.hasOwnProperty("sectionBody")) {
+d.sectionBody = m.sectionBody;
+if (o.oneofs)
+d._sectionBody = "sectionBody";
+}
+if (m.sourcesMetadata && m.sourcesMetadata.length) {
+d.sourcesMetadata = [];
+for (var j = 0; j < m.sourcesMetadata.length; ++j) {
+d.sourcesMetadata[j] = $root.proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourceMetadata.toObject(m.sourcesMetadata[j], o);
+}
+}
+return d;
+};
+BotPlanningStepSectionMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotPlanningStepSectionMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningStepSectionMetadata";
+};
+return BotPlanningStepSectionMetadata;
+});
+$lazy(BotPlanningStepMetadata, "BotSearchSourceProvider", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN_PROVIDER"] = 0;
+values[valuesById[1] = "OTHER"] = 1;
+values[valuesById[2] = "GOOGLE"] = 2;
+values[valuesById[3] = "BING"] = 3;
+return values;
+});
+$lazy(BotPlanningStepMetadata, "PlanningStepStatus", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN"] = 0;
+values[valuesById[1] = "PLANNED"] = 1;
+values[valuesById[2] = "EXECUTING"] = 2;
+values[valuesById[3] = "FINISHED"] = 3;
+return values;
+});
+return BotPlanningStepMetadata;
+});
+return BotProgressIndicatorMetadata;

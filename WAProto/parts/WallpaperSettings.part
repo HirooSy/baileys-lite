@@ -1,0 +1,119 @@
+"use strict";
+function WallpaperSettings(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+WallpaperSettings.prototype.filename = null;
+WallpaperSettings.prototype.opacity = null;
+WallpaperSettings.prototype.isGenAi = null;
+let $oneOfFields;
+Object.defineProperty(WallpaperSettings.prototype, "_filename", {
+get: $util.oneOfGetter($oneOfFields = ["filename"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WallpaperSettings.prototype, "_opacity", {
+get: $util.oneOfGetter($oneOfFields = ["opacity"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(WallpaperSettings.prototype, "_isGenAi", {
+get: $util.oneOfGetter($oneOfFields = ["isGenAi"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+WallpaperSettings.create = function create(properties) {
+return new WallpaperSettings(properties);
+};
+WallpaperSettings.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.filename != null && Object.hasOwnProperty.call(m, "filename"))
+w.uint32(10).string(m.filename);
+if (m.opacity != null && Object.hasOwnProperty.call(m, "opacity"))
+w.uint32(16).uint32(m.opacity);
+if (m.isGenAi != null && Object.hasOwnProperty.call(m, "isGenAi"))
+w.uint32(24).bool(m.isGenAi);
+return w;
+};
+WallpaperSettings.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.WallpaperSettings();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.filename = r.string();
+break;
+}
+case 2: {
+m.opacity = r.uint32();
+break;
+}
+case 3: {
+m.isGenAi = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+WallpaperSettings.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.WallpaperSettings)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.WallpaperSettings();
+if (d.filename != null) {
+m.filename = String(d.filename);
+}
+if (d.opacity != null) {
+m.opacity = d.opacity >>> 0;
+}
+if (d.isGenAi != null) {
+m.isGenAi = Boolean(d.isGenAi);
+}
+return m;
+};
+WallpaperSettings.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.filename != null && m.hasOwnProperty("filename")) {
+d.filename = m.filename;
+if (o.oneofs)
+d._filename = "filename";
+}
+if (m.opacity != null && m.hasOwnProperty("opacity")) {
+d.opacity = m.opacity;
+if (o.oneofs)
+d._opacity = "opacity";
+}
+if (m.isGenAi != null && m.hasOwnProperty("isGenAi")) {
+d.isGenAi = m.isGenAi;
+if (o.oneofs)
+d._isGenAi = "isGenAi";
+}
+return d;
+};
+WallpaperSettings.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+WallpaperSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.WallpaperSettings";
+};
+return WallpaperSettings;

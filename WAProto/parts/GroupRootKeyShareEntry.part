@@ -1,0 +1,161 @@
+"use strict";
+function GroupRootKeyShareEntry(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+GroupRootKeyShareEntry.prototype.groupRootKey = null;
+GroupRootKeyShareEntry.prototype.keyId = null;
+GroupRootKeyShareEntry.prototype.expiryTimestampMs = null;
+GroupRootKeyShareEntry.prototype.createdTimestampMs = null;
+let $oneOfFields;
+Object.defineProperty(GroupRootKeyShareEntry.prototype, "_groupRootKey", {
+get: $util.oneOfGetter($oneOfFields = ["groupRootKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GroupRootKeyShareEntry.prototype, "_keyId", {
+get: $util.oneOfGetter($oneOfFields = ["keyId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GroupRootKeyShareEntry.prototype, "_expiryTimestampMs", {
+get: $util.oneOfGetter($oneOfFields = ["expiryTimestampMs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GroupRootKeyShareEntry.prototype, "_createdTimestampMs", {
+get: $util.oneOfGetter($oneOfFields = ["createdTimestampMs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+GroupRootKeyShareEntry.create = function create(properties) {
+return new GroupRootKeyShareEntry(properties);
+};
+GroupRootKeyShareEntry.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.groupRootKey != null && Object.hasOwnProperty.call(m, "groupRootKey"))
+w.uint32(10).bytes(m.groupRootKey);
+if (m.keyId != null && Object.hasOwnProperty.call(m, "keyId"))
+w.uint32(18).string(m.keyId);
+if (m.expiryTimestampMs != null && Object.hasOwnProperty.call(m, "expiryTimestampMs"))
+w.uint32(24).int64(m.expiryTimestampMs);
+if (m.createdTimestampMs != null && Object.hasOwnProperty.call(m, "createdTimestampMs"))
+w.uint32(32).int64(m.createdTimestampMs);
+return w;
+};
+GroupRootKeyShareEntry.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.GroupRootKeyShareEntry();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.groupRootKey = r.bytes();
+break;
+}
+case 2: {
+m.keyId = r.string();
+break;
+}
+case 3: {
+m.expiryTimestampMs = r.int64();
+break;
+}
+case 4: {
+m.createdTimestampMs = r.int64();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+GroupRootKeyShareEntry.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.GroupRootKeyShareEntry)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.GroupRootKeyShareEntry();
+if (d.groupRootKey != null) {
+if (typeof d.groupRootKey === "string")
+$util.base64.decode(d.groupRootKey, m.groupRootKey = $util.newBuffer($util.base64.length(d.groupRootKey)), 0);
+else if (d.groupRootKey.length >= 0)
+m.groupRootKey = d.groupRootKey;
+}
+if (d.keyId != null) {
+m.keyId = String(d.keyId);
+}
+if (d.expiryTimestampMs != null) {
+if ($util.Long)
+(m.expiryTimestampMs = $util.Long.fromValue(d.expiryTimestampMs)).unsigned = false;
+else if (typeof d.expiryTimestampMs === "string")
+m.expiryTimestampMs = parseInt(d.expiryTimestampMs, 10);
+else if (typeof d.expiryTimestampMs === "number")
+m.expiryTimestampMs = d.expiryTimestampMs;
+else if (typeof d.expiryTimestampMs === "object")
+m.expiryTimestampMs = new $util.LongBits(d.expiryTimestampMs.low >>> 0, d.expiryTimestampMs.high >>> 0).toNumber();
+}
+if (d.createdTimestampMs != null) {
+if ($util.Long)
+(m.createdTimestampMs = $util.Long.fromValue(d.createdTimestampMs)).unsigned = false;
+else if (typeof d.createdTimestampMs === "string")
+m.createdTimestampMs = parseInt(d.createdTimestampMs, 10);
+else if (typeof d.createdTimestampMs === "number")
+m.createdTimestampMs = d.createdTimestampMs;
+else if (typeof d.createdTimestampMs === "object")
+m.createdTimestampMs = new $util.LongBits(d.createdTimestampMs.low >>> 0, d.createdTimestampMs.high >>> 0).toNumber();
+}
+return m;
+};
+GroupRootKeyShareEntry.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.groupRootKey != null && m.hasOwnProperty("groupRootKey")) {
+d.groupRootKey = o.bytes === String ? $util.base64.encode(m.groupRootKey, 0, m.groupRootKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.groupRootKey) : m.groupRootKey;
+if (o.oneofs)
+d._groupRootKey = "groupRootKey";
+}
+if (m.keyId != null && m.hasOwnProperty("keyId")) {
+d.keyId = m.keyId;
+if (o.oneofs)
+d._keyId = "keyId";
+}
+if (m.expiryTimestampMs != null && m.hasOwnProperty("expiryTimestampMs")) {
+if (typeof m.expiryTimestampMs === "number")
+d.expiryTimestampMs = o.longs === String ? String(m.expiryTimestampMs) : m.expiryTimestampMs;
+else
+d.expiryTimestampMs = o.longs === String ? longToString(m.expiryTimestampMs) : o.longs === Number ? longToNumber(m.expiryTimestampMs) : m.expiryTimestampMs;
+if (o.oneofs)
+d._expiryTimestampMs = "expiryTimestampMs";
+}
+if (m.createdTimestampMs != null && m.hasOwnProperty("createdTimestampMs")) {
+if (typeof m.createdTimestampMs === "number")
+d.createdTimestampMs = o.longs === String ? String(m.createdTimestampMs) : m.createdTimestampMs;
+else
+d.createdTimestampMs = o.longs === String ? longToString(m.createdTimestampMs) : o.longs === Number ? longToNumber(m.createdTimestampMs) : m.createdTimestampMs;
+if (o.oneofs)
+d._createdTimestampMs = "createdTimestampMs";
+}
+return d;
+};
+GroupRootKeyShareEntry.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+GroupRootKeyShareEntry.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.GroupRootKeyShareEntry";
+};
+return GroupRootKeyShareEntry;

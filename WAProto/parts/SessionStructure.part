@@ -1,0 +1,1087 @@
+"use strict";
+function SessionStructure(p) {
+this.receiverChains = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SessionStructure.prototype.sessionVersion = null;
+SessionStructure.prototype.localIdentityPublic = null;
+SessionStructure.prototype.remoteIdentityPublic = null;
+SessionStructure.prototype.rootKey = null;
+SessionStructure.prototype.previousCounter = null;
+SessionStructure.prototype.senderChain = null;
+SessionStructure.prototype.receiverChains = $util.emptyArray;
+SessionStructure.prototype.pendingKeyExchange = null;
+SessionStructure.prototype.pendingPreKey = null;
+SessionStructure.prototype.remoteRegistrationId = null;
+SessionStructure.prototype.localRegistrationId = null;
+SessionStructure.prototype.needsRefresh = null;
+SessionStructure.prototype.aliceBaseKey = null;
+let $oneOfFields;
+Object.defineProperty(SessionStructure.prototype, "_sessionVersion", {
+get: $util.oneOfGetter($oneOfFields = ["sessionVersion"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SessionStructure.prototype, "_localIdentityPublic", {
+get: $util.oneOfGetter($oneOfFields = ["localIdentityPublic"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SessionStructure.prototype, "_remoteIdentityPublic", {
+get: $util.oneOfGetter($oneOfFields = ["remoteIdentityPublic"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SessionStructure.prototype, "_rootKey", {
+get: $util.oneOfGetter($oneOfFields = ["rootKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SessionStructure.prototype, "_previousCounter", {
+get: $util.oneOfGetter($oneOfFields = ["previousCounter"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SessionStructure.prototype, "_senderChain", {
+get: $util.oneOfGetter($oneOfFields = ["senderChain"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SessionStructure.prototype, "_pendingKeyExchange", {
+get: $util.oneOfGetter($oneOfFields = ["pendingKeyExchange"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SessionStructure.prototype, "_pendingPreKey", {
+get: $util.oneOfGetter($oneOfFields = ["pendingPreKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SessionStructure.prototype, "_remoteRegistrationId", {
+get: $util.oneOfGetter($oneOfFields = ["remoteRegistrationId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SessionStructure.prototype, "_localRegistrationId", {
+get: $util.oneOfGetter($oneOfFields = ["localRegistrationId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SessionStructure.prototype, "_needsRefresh", {
+get: $util.oneOfGetter($oneOfFields = ["needsRefresh"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SessionStructure.prototype, "_aliceBaseKey", {
+get: $util.oneOfGetter($oneOfFields = ["aliceBaseKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SessionStructure.create = function create(properties) {
+return new SessionStructure(properties);
+};
+SessionStructure.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.sessionVersion != null && Object.hasOwnProperty.call(m, "sessionVersion"))
+w.uint32(8).uint32(m.sessionVersion);
+if (m.localIdentityPublic != null && Object.hasOwnProperty.call(m, "localIdentityPublic"))
+w.uint32(18).bytes(m.localIdentityPublic);
+if (m.remoteIdentityPublic != null && Object.hasOwnProperty.call(m, "remoteIdentityPublic"))
+w.uint32(26).bytes(m.remoteIdentityPublic);
+if (m.rootKey != null && Object.hasOwnProperty.call(m, "rootKey"))
+w.uint32(34).bytes(m.rootKey);
+if (m.previousCounter != null && Object.hasOwnProperty.call(m, "previousCounter"))
+w.uint32(40).uint32(m.previousCounter);
+if (m.senderChain != null && Object.hasOwnProperty.call(m, "senderChain"))
+$root.proto.SessionStructure.Chain.encode(m.senderChain, w.uint32(50).fork()).ldelim();
+if (m.receiverChains != null && m.receiverChains.length) {
+for (var i = 0; i < m.receiverChains.length; ++i)
+$root.proto.SessionStructure.Chain.encode(m.receiverChains[i], w.uint32(58).fork()).ldelim();
+}
+if (m.pendingKeyExchange != null && Object.hasOwnProperty.call(m, "pendingKeyExchange"))
+$root.proto.SessionStructure.PendingKeyExchange.encode(m.pendingKeyExchange, w.uint32(66).fork()).ldelim();
+if (m.pendingPreKey != null && Object.hasOwnProperty.call(m, "pendingPreKey"))
+$root.proto.SessionStructure.PendingPreKey.encode(m.pendingPreKey, w.uint32(74).fork()).ldelim();
+if (m.remoteRegistrationId != null && Object.hasOwnProperty.call(m, "remoteRegistrationId"))
+w.uint32(80).uint32(m.remoteRegistrationId);
+if (m.localRegistrationId != null && Object.hasOwnProperty.call(m, "localRegistrationId"))
+w.uint32(88).uint32(m.localRegistrationId);
+if (m.needsRefresh != null && Object.hasOwnProperty.call(m, "needsRefresh"))
+w.uint32(96).bool(m.needsRefresh);
+if (m.aliceBaseKey != null && Object.hasOwnProperty.call(m, "aliceBaseKey"))
+w.uint32(106).bytes(m.aliceBaseKey);
+return w;
+};
+SessionStructure.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.SessionStructure();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.sessionVersion = r.uint32();
+break;
+}
+case 2: {
+m.localIdentityPublic = r.bytes();
+break;
+}
+case 3: {
+m.remoteIdentityPublic = r.bytes();
+break;
+}
+case 4: {
+m.rootKey = r.bytes();
+break;
+}
+case 5: {
+m.previousCounter = r.uint32();
+break;
+}
+case 6: {
+m.senderChain = $root.proto.SessionStructure.Chain.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 7: {
+if (!(m.receiverChains && m.receiverChains.length))
+m.receiverChains = [];
+m.receiverChains.push($root.proto.SessionStructure.Chain.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 8: {
+m.pendingKeyExchange = $root.proto.SessionStructure.PendingKeyExchange.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 9: {
+m.pendingPreKey = $root.proto.SessionStructure.PendingPreKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 10: {
+m.remoteRegistrationId = r.uint32();
+break;
+}
+case 11: {
+m.localRegistrationId = r.uint32();
+break;
+}
+case 12: {
+m.needsRefresh = r.bool();
+break;
+}
+case 13: {
+m.aliceBaseKey = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SessionStructure.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.SessionStructure)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.SessionStructure();
+if (d.sessionVersion != null) {
+m.sessionVersion = d.sessionVersion >>> 0;
+}
+if (d.localIdentityPublic != null) {
+if (typeof d.localIdentityPublic === "string")
+$util.base64.decode(d.localIdentityPublic, m.localIdentityPublic = $util.newBuffer($util.base64.length(d.localIdentityPublic)), 0);
+else if (d.localIdentityPublic.length >= 0)
+m.localIdentityPublic = d.localIdentityPublic;
+}
+if (d.remoteIdentityPublic != null) {
+if (typeof d.remoteIdentityPublic === "string")
+$util.base64.decode(d.remoteIdentityPublic, m.remoteIdentityPublic = $util.newBuffer($util.base64.length(d.remoteIdentityPublic)), 0);
+else if (d.remoteIdentityPublic.length >= 0)
+m.remoteIdentityPublic = d.remoteIdentityPublic;
+}
+if (d.rootKey != null) {
+if (typeof d.rootKey === "string")
+$util.base64.decode(d.rootKey, m.rootKey = $util.newBuffer($util.base64.length(d.rootKey)), 0);
+else if (d.rootKey.length >= 0)
+m.rootKey = d.rootKey;
+}
+if (d.previousCounter != null) {
+m.previousCounter = d.previousCounter >>> 0;
+}
+if (d.senderChain != null) {
+if (typeof d.senderChain !== "object")
+throw TypeError(".proto.SessionStructure.senderChain: object expected");
+m.senderChain = $root.proto.SessionStructure.Chain.fromObject(d.senderChain, n + 1);
+}
+if (d.receiverChains) {
+if (!Array.isArray(d.receiverChains))
+throw TypeError(".proto.SessionStructure.receiverChains: array expected");
+m.receiverChains = [];
+for (var i = 0; i < d.receiverChains.length; ++i) {
+if (typeof d.receiverChains[i] !== "object")
+throw TypeError(".proto.SessionStructure.receiverChains: object expected");
+m.receiverChains[i] = $root.proto.SessionStructure.Chain.fromObject(d.receiverChains[i], n + 1);
+}
+}
+if (d.pendingKeyExchange != null) {
+if (typeof d.pendingKeyExchange !== "object")
+throw TypeError(".proto.SessionStructure.pendingKeyExchange: object expected");
+m.pendingKeyExchange = $root.proto.SessionStructure.PendingKeyExchange.fromObject(d.pendingKeyExchange, n + 1);
+}
+if (d.pendingPreKey != null) {
+if (typeof d.pendingPreKey !== "object")
+throw TypeError(".proto.SessionStructure.pendingPreKey: object expected");
+m.pendingPreKey = $root.proto.SessionStructure.PendingPreKey.fromObject(d.pendingPreKey, n + 1);
+}
+if (d.remoteRegistrationId != null) {
+m.remoteRegistrationId = d.remoteRegistrationId >>> 0;
+}
+if (d.localRegistrationId != null) {
+m.localRegistrationId = d.localRegistrationId >>> 0;
+}
+if (d.needsRefresh != null) {
+m.needsRefresh = Boolean(d.needsRefresh);
+}
+if (d.aliceBaseKey != null) {
+if (typeof d.aliceBaseKey === "string")
+$util.base64.decode(d.aliceBaseKey, m.aliceBaseKey = $util.newBuffer($util.base64.length(d.aliceBaseKey)), 0);
+else if (d.aliceBaseKey.length >= 0)
+m.aliceBaseKey = d.aliceBaseKey;
+}
+return m;
+};
+SessionStructure.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.receiverChains = [];
+}
+if (m.sessionVersion != null && m.hasOwnProperty("sessionVersion")) {
+d.sessionVersion = m.sessionVersion;
+if (o.oneofs)
+d._sessionVersion = "sessionVersion";
+}
+if (m.localIdentityPublic != null && m.hasOwnProperty("localIdentityPublic")) {
+d.localIdentityPublic = o.bytes === String ? $util.base64.encode(m.localIdentityPublic, 0, m.localIdentityPublic.length) : o.bytes === Array ? Array.prototype.slice.call(m.localIdentityPublic) : m.localIdentityPublic;
+if (o.oneofs)
+d._localIdentityPublic = "localIdentityPublic";
+}
+if (m.remoteIdentityPublic != null && m.hasOwnProperty("remoteIdentityPublic")) {
+d.remoteIdentityPublic = o.bytes === String ? $util.base64.encode(m.remoteIdentityPublic, 0, m.remoteIdentityPublic.length) : o.bytes === Array ? Array.prototype.slice.call(m.remoteIdentityPublic) : m.remoteIdentityPublic;
+if (o.oneofs)
+d._remoteIdentityPublic = "remoteIdentityPublic";
+}
+if (m.rootKey != null && m.hasOwnProperty("rootKey")) {
+d.rootKey = o.bytes === String ? $util.base64.encode(m.rootKey, 0, m.rootKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.rootKey) : m.rootKey;
+if (o.oneofs)
+d._rootKey = "rootKey";
+}
+if (m.previousCounter != null && m.hasOwnProperty("previousCounter")) {
+d.previousCounter = m.previousCounter;
+if (o.oneofs)
+d._previousCounter = "previousCounter";
+}
+if (m.senderChain != null && m.hasOwnProperty("senderChain")) {
+d.senderChain = $root.proto.SessionStructure.Chain.toObject(m.senderChain, o);
+if (o.oneofs)
+d._senderChain = "senderChain";
+}
+if (m.receiverChains && m.receiverChains.length) {
+d.receiverChains = [];
+for (var j = 0; j < m.receiverChains.length; ++j) {
+d.receiverChains[j] = $root.proto.SessionStructure.Chain.toObject(m.receiverChains[j], o);
+}
+}
+if (m.pendingKeyExchange != null && m.hasOwnProperty("pendingKeyExchange")) {
+d.pendingKeyExchange = $root.proto.SessionStructure.PendingKeyExchange.toObject(m.pendingKeyExchange, o);
+if (o.oneofs)
+d._pendingKeyExchange = "pendingKeyExchange";
+}
+if (m.pendingPreKey != null && m.hasOwnProperty("pendingPreKey")) {
+d.pendingPreKey = $root.proto.SessionStructure.PendingPreKey.toObject(m.pendingPreKey, o);
+if (o.oneofs)
+d._pendingPreKey = "pendingPreKey";
+}
+if (m.remoteRegistrationId != null && m.hasOwnProperty("remoteRegistrationId")) {
+d.remoteRegistrationId = m.remoteRegistrationId;
+if (o.oneofs)
+d._remoteRegistrationId = "remoteRegistrationId";
+}
+if (m.localRegistrationId != null && m.hasOwnProperty("localRegistrationId")) {
+d.localRegistrationId = m.localRegistrationId;
+if (o.oneofs)
+d._localRegistrationId = "localRegistrationId";
+}
+if (m.needsRefresh != null && m.hasOwnProperty("needsRefresh")) {
+d.needsRefresh = m.needsRefresh;
+if (o.oneofs)
+d._needsRefresh = "needsRefresh";
+}
+if (m.aliceBaseKey != null && m.hasOwnProperty("aliceBaseKey")) {
+d.aliceBaseKey = o.bytes === String ? $util.base64.encode(m.aliceBaseKey, 0, m.aliceBaseKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.aliceBaseKey) : m.aliceBaseKey;
+if (o.oneofs)
+d._aliceBaseKey = "aliceBaseKey";
+}
+return d;
+};
+SessionStructure.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SessionStructure.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.SessionStructure";
+};
+$lazy(SessionStructure, "Chain", function() {
+function Chain(p) {
+this.messageKeys = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+Chain.prototype.senderRatchetKey = null;
+Chain.prototype.senderRatchetKeyPrivate = null;
+Chain.prototype.chainKey = null;
+Chain.prototype.messageKeys = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(Chain.prototype, "_senderRatchetKey", {
+get: $util.oneOfGetter($oneOfFields = ["senderRatchetKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Chain.prototype, "_senderRatchetKeyPrivate", {
+get: $util.oneOfGetter($oneOfFields = ["senderRatchetKeyPrivate"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Chain.prototype, "_chainKey", {
+get: $util.oneOfGetter($oneOfFields = ["chainKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Chain.create = function create(properties) {
+return new Chain(properties);
+};
+Chain.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.senderRatchetKey != null && Object.hasOwnProperty.call(m, "senderRatchetKey"))
+w.uint32(10).bytes(m.senderRatchetKey);
+if (m.senderRatchetKeyPrivate != null && Object.hasOwnProperty.call(m, "senderRatchetKeyPrivate"))
+w.uint32(18).bytes(m.senderRatchetKeyPrivate);
+if (m.chainKey != null && Object.hasOwnProperty.call(m, "chainKey"))
+$root.proto.SessionStructure.Chain.ChainKey.encode(m.chainKey, w.uint32(26).fork()).ldelim();
+if (m.messageKeys != null && m.messageKeys.length) {
+for (var i = 0; i < m.messageKeys.length; ++i)
+$root.proto.SessionStructure.Chain.MessageKey.encode(m.messageKeys[i], w.uint32(34).fork()).ldelim();
+}
+return w;
+};
+Chain.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.SessionStructure.Chain();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.senderRatchetKey = r.bytes();
+break;
+}
+case 2: {
+m.senderRatchetKeyPrivate = r.bytes();
+break;
+}
+case 3: {
+m.chainKey = $root.proto.SessionStructure.Chain.ChainKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 4: {
+if (!(m.messageKeys && m.messageKeys.length))
+m.messageKeys = [];
+m.messageKeys.push($root.proto.SessionStructure.Chain.MessageKey.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+Chain.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.SessionStructure.Chain)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.SessionStructure.Chain();
+if (d.senderRatchetKey != null) {
+if (typeof d.senderRatchetKey === "string")
+$util.base64.decode(d.senderRatchetKey, m.senderRatchetKey = $util.newBuffer($util.base64.length(d.senderRatchetKey)), 0);
+else if (d.senderRatchetKey.length >= 0)
+m.senderRatchetKey = d.senderRatchetKey;
+}
+if (d.senderRatchetKeyPrivate != null) {
+if (typeof d.senderRatchetKeyPrivate === "string")
+$util.base64.decode(d.senderRatchetKeyPrivate, m.senderRatchetKeyPrivate = $util.newBuffer($util.base64.length(d.senderRatchetKeyPrivate)), 0);
+else if (d.senderRatchetKeyPrivate.length >= 0)
+m.senderRatchetKeyPrivate = d.senderRatchetKeyPrivate;
+}
+if (d.chainKey != null) {
+if (typeof d.chainKey !== "object")
+throw TypeError(".proto.SessionStructure.Chain.chainKey: object expected");
+m.chainKey = $root.proto.SessionStructure.Chain.ChainKey.fromObject(d.chainKey, n + 1);
+}
+if (d.messageKeys) {
+if (!Array.isArray(d.messageKeys))
+throw TypeError(".proto.SessionStructure.Chain.messageKeys: array expected");
+m.messageKeys = [];
+for (var i = 0; i < d.messageKeys.length; ++i) {
+if (typeof d.messageKeys[i] !== "object")
+throw TypeError(".proto.SessionStructure.Chain.messageKeys: object expected");
+m.messageKeys[i] = $root.proto.SessionStructure.Chain.MessageKey.fromObject(d.messageKeys[i], n + 1);
+}
+}
+return m;
+};
+Chain.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.messageKeys = [];
+}
+if (m.senderRatchetKey != null && m.hasOwnProperty("senderRatchetKey")) {
+d.senderRatchetKey = o.bytes === String ? $util.base64.encode(m.senderRatchetKey, 0, m.senderRatchetKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.senderRatchetKey) : m.senderRatchetKey;
+if (o.oneofs)
+d._senderRatchetKey = "senderRatchetKey";
+}
+if (m.senderRatchetKeyPrivate != null && m.hasOwnProperty("senderRatchetKeyPrivate")) {
+d.senderRatchetKeyPrivate = o.bytes === String ? $util.base64.encode(m.senderRatchetKeyPrivate, 0, m.senderRatchetKeyPrivate.length) : o.bytes === Array ? Array.prototype.slice.call(m.senderRatchetKeyPrivate) : m.senderRatchetKeyPrivate;
+if (o.oneofs)
+d._senderRatchetKeyPrivate = "senderRatchetKeyPrivate";
+}
+if (m.chainKey != null && m.hasOwnProperty("chainKey")) {
+d.chainKey = $root.proto.SessionStructure.Chain.ChainKey.toObject(m.chainKey, o);
+if (o.oneofs)
+d._chainKey = "chainKey";
+}
+if (m.messageKeys && m.messageKeys.length) {
+d.messageKeys = [];
+for (var j = 0; j < m.messageKeys.length; ++j) {
+d.messageKeys[j] = $root.proto.SessionStructure.Chain.MessageKey.toObject(m.messageKeys[j], o);
+}
+}
+return d;
+};
+Chain.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+Chain.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.SessionStructure.Chain";
+};
+$lazy(Chain, "ChainKey", function() {
+function ChainKey(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ChainKey.prototype.index = null;
+ChainKey.prototype.key = null;
+let $oneOfFields;
+Object.defineProperty(ChainKey.prototype, "_index", {
+get: $util.oneOfGetter($oneOfFields = ["index"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ChainKey.prototype, "_key", {
+get: $util.oneOfGetter($oneOfFields = ["key"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ChainKey.create = function create(properties) {
+return new ChainKey(properties);
+};
+ChainKey.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.index != null && Object.hasOwnProperty.call(m, "index"))
+w.uint32(8).uint32(m.index);
+if (m.key != null && Object.hasOwnProperty.call(m, "key"))
+w.uint32(18).bytes(m.key);
+return w;
+};
+ChainKey.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.SessionStructure.Chain.ChainKey();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.index = r.uint32();
+break;
+}
+case 2: {
+m.key = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ChainKey.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.SessionStructure.Chain.ChainKey)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.SessionStructure.Chain.ChainKey();
+if (d.index != null) {
+m.index = d.index >>> 0;
+}
+if (d.key != null) {
+if (typeof d.key === "string")
+$util.base64.decode(d.key, m.key = $util.newBuffer($util.base64.length(d.key)), 0);
+else if (d.key.length >= 0)
+m.key = d.key;
+}
+return m;
+};
+ChainKey.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.index != null && m.hasOwnProperty("index")) {
+d.index = m.index;
+if (o.oneofs)
+d._index = "index";
+}
+if (m.key != null && m.hasOwnProperty("key")) {
+d.key = o.bytes === String ? $util.base64.encode(m.key, 0, m.key.length) : o.bytes === Array ? Array.prototype.slice.call(m.key) : m.key;
+if (o.oneofs)
+d._key = "key";
+}
+return d;
+};
+ChainKey.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ChainKey.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.SessionStructure.Chain.ChainKey";
+};
+return ChainKey;
+});
+$lazy(Chain, "MessageKey", function() {
+function MessageKey(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+MessageKey.prototype.index = null;
+MessageKey.prototype.cipherKey = null;
+MessageKey.prototype.macKey = null;
+MessageKey.prototype.iv = null;
+let $oneOfFields;
+Object.defineProperty(MessageKey.prototype, "_index", {
+get: $util.oneOfGetter($oneOfFields = ["index"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageKey.prototype, "_cipherKey", {
+get: $util.oneOfGetter($oneOfFields = ["cipherKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageKey.prototype, "_macKey", {
+get: $util.oneOfGetter($oneOfFields = ["macKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MessageKey.prototype, "_iv", {
+get: $util.oneOfGetter($oneOfFields = ["iv"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+MessageKey.create = function create(properties) {
+return new MessageKey(properties);
+};
+MessageKey.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.index != null && Object.hasOwnProperty.call(m, "index"))
+w.uint32(8).uint32(m.index);
+if (m.cipherKey != null && Object.hasOwnProperty.call(m, "cipherKey"))
+w.uint32(18).bytes(m.cipherKey);
+if (m.macKey != null && Object.hasOwnProperty.call(m, "macKey"))
+w.uint32(26).bytes(m.macKey);
+if (m.iv != null && Object.hasOwnProperty.call(m, "iv"))
+w.uint32(34).bytes(m.iv);
+return w;
+};
+MessageKey.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.SessionStructure.Chain.MessageKey();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.index = r.uint32();
+break;
+}
+case 2: {
+m.cipherKey = r.bytes();
+break;
+}
+case 3: {
+m.macKey = r.bytes();
+break;
+}
+case 4: {
+m.iv = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+MessageKey.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.SessionStructure.Chain.MessageKey)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.SessionStructure.Chain.MessageKey();
+if (d.index != null) {
+m.index = d.index >>> 0;
+}
+if (d.cipherKey != null) {
+if (typeof d.cipherKey === "string")
+$util.base64.decode(d.cipherKey, m.cipherKey = $util.newBuffer($util.base64.length(d.cipherKey)), 0);
+else if (d.cipherKey.length >= 0)
+m.cipherKey = d.cipherKey;
+}
+if (d.macKey != null) {
+if (typeof d.macKey === "string")
+$util.base64.decode(d.macKey, m.macKey = $util.newBuffer($util.base64.length(d.macKey)), 0);
+else if (d.macKey.length >= 0)
+m.macKey = d.macKey;
+}
+if (d.iv != null) {
+if (typeof d.iv === "string")
+$util.base64.decode(d.iv, m.iv = $util.newBuffer($util.base64.length(d.iv)), 0);
+else if (d.iv.length >= 0)
+m.iv = d.iv;
+}
+return m;
+};
+MessageKey.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.index != null && m.hasOwnProperty("index")) {
+d.index = m.index;
+if (o.oneofs)
+d._index = "index";
+}
+if (m.cipherKey != null && m.hasOwnProperty("cipherKey")) {
+d.cipherKey = o.bytes === String ? $util.base64.encode(m.cipherKey, 0, m.cipherKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.cipherKey) : m.cipherKey;
+if (o.oneofs)
+d._cipherKey = "cipherKey";
+}
+if (m.macKey != null && m.hasOwnProperty("macKey")) {
+d.macKey = o.bytes === String ? $util.base64.encode(m.macKey, 0, m.macKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.macKey) : m.macKey;
+if (o.oneofs)
+d._macKey = "macKey";
+}
+if (m.iv != null && m.hasOwnProperty("iv")) {
+d.iv = o.bytes === String ? $util.base64.encode(m.iv, 0, m.iv.length) : o.bytes === Array ? Array.prototype.slice.call(m.iv) : m.iv;
+if (o.oneofs)
+d._iv = "iv";
+}
+return d;
+};
+MessageKey.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+MessageKey.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.SessionStructure.Chain.MessageKey";
+};
+return MessageKey;
+});
+return Chain;
+});
+$lazy(SessionStructure, "PendingKeyExchange", function() {
+function PendingKeyExchange(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+PendingKeyExchange.prototype.sequence = null;
+PendingKeyExchange.prototype.localBaseKey = null;
+PendingKeyExchange.prototype.localBaseKeyPrivate = null;
+PendingKeyExchange.prototype.localRatchetKey = null;
+PendingKeyExchange.prototype.localRatchetKeyPrivate = null;
+PendingKeyExchange.prototype.localIdentityKey = null;
+PendingKeyExchange.prototype.localIdentityKeyPrivate = null;
+let $oneOfFields;
+Object.defineProperty(PendingKeyExchange.prototype, "_sequence", {
+get: $util.oneOfGetter($oneOfFields = ["sequence"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PendingKeyExchange.prototype, "_localBaseKey", {
+get: $util.oneOfGetter($oneOfFields = ["localBaseKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PendingKeyExchange.prototype, "_localBaseKeyPrivate", {
+get: $util.oneOfGetter($oneOfFields = ["localBaseKeyPrivate"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PendingKeyExchange.prototype, "_localRatchetKey", {
+get: $util.oneOfGetter($oneOfFields = ["localRatchetKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PendingKeyExchange.prototype, "_localRatchetKeyPrivate", {
+get: $util.oneOfGetter($oneOfFields = ["localRatchetKeyPrivate"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PendingKeyExchange.prototype, "_localIdentityKey", {
+get: $util.oneOfGetter($oneOfFields = ["localIdentityKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PendingKeyExchange.prototype, "_localIdentityKeyPrivate", {
+get: $util.oneOfGetter($oneOfFields = ["localIdentityKeyPrivate"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+PendingKeyExchange.create = function create(properties) {
+return new PendingKeyExchange(properties);
+};
+PendingKeyExchange.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.sequence != null && Object.hasOwnProperty.call(m, "sequence"))
+w.uint32(8).uint32(m.sequence);
+if (m.localBaseKey != null && Object.hasOwnProperty.call(m, "localBaseKey"))
+w.uint32(18).bytes(m.localBaseKey);
+if (m.localBaseKeyPrivate != null && Object.hasOwnProperty.call(m, "localBaseKeyPrivate"))
+w.uint32(26).bytes(m.localBaseKeyPrivate);
+if (m.localRatchetKey != null && Object.hasOwnProperty.call(m, "localRatchetKey"))
+w.uint32(34).bytes(m.localRatchetKey);
+if (m.localRatchetKeyPrivate != null && Object.hasOwnProperty.call(m, "localRatchetKeyPrivate"))
+w.uint32(42).bytes(m.localRatchetKeyPrivate);
+if (m.localIdentityKey != null && Object.hasOwnProperty.call(m, "localIdentityKey"))
+w.uint32(58).bytes(m.localIdentityKey);
+if (m.localIdentityKeyPrivate != null && Object.hasOwnProperty.call(m, "localIdentityKeyPrivate"))
+w.uint32(66).bytes(m.localIdentityKeyPrivate);
+return w;
+};
+PendingKeyExchange.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.SessionStructure.PendingKeyExchange();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.sequence = r.uint32();
+break;
+}
+case 2: {
+m.localBaseKey = r.bytes();
+break;
+}
+case 3: {
+m.localBaseKeyPrivate = r.bytes();
+break;
+}
+case 4: {
+m.localRatchetKey = r.bytes();
+break;
+}
+case 5: {
+m.localRatchetKeyPrivate = r.bytes();
+break;
+}
+case 7: {
+m.localIdentityKey = r.bytes();
+break;
+}
+case 8: {
+m.localIdentityKeyPrivate = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+PendingKeyExchange.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.SessionStructure.PendingKeyExchange)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.SessionStructure.PendingKeyExchange();
+if (d.sequence != null) {
+m.sequence = d.sequence >>> 0;
+}
+if (d.localBaseKey != null) {
+if (typeof d.localBaseKey === "string")
+$util.base64.decode(d.localBaseKey, m.localBaseKey = $util.newBuffer($util.base64.length(d.localBaseKey)), 0);
+else if (d.localBaseKey.length >= 0)
+m.localBaseKey = d.localBaseKey;
+}
+if (d.localBaseKeyPrivate != null) {
+if (typeof d.localBaseKeyPrivate === "string")
+$util.base64.decode(d.localBaseKeyPrivate, m.localBaseKeyPrivate = $util.newBuffer($util.base64.length(d.localBaseKeyPrivate)), 0);
+else if (d.localBaseKeyPrivate.length >= 0)
+m.localBaseKeyPrivate = d.localBaseKeyPrivate;
+}
+if (d.localRatchetKey != null) {
+if (typeof d.localRatchetKey === "string")
+$util.base64.decode(d.localRatchetKey, m.localRatchetKey = $util.newBuffer($util.base64.length(d.localRatchetKey)), 0);
+else if (d.localRatchetKey.length >= 0)
+m.localRatchetKey = d.localRatchetKey;
+}
+if (d.localRatchetKeyPrivate != null) {
+if (typeof d.localRatchetKeyPrivate === "string")
+$util.base64.decode(d.localRatchetKeyPrivate, m.localRatchetKeyPrivate = $util.newBuffer($util.base64.length(d.localRatchetKeyPrivate)), 0);
+else if (d.localRatchetKeyPrivate.length >= 0)
+m.localRatchetKeyPrivate = d.localRatchetKeyPrivate;
+}
+if (d.localIdentityKey != null) {
+if (typeof d.localIdentityKey === "string")
+$util.base64.decode(d.localIdentityKey, m.localIdentityKey = $util.newBuffer($util.base64.length(d.localIdentityKey)), 0);
+else if (d.localIdentityKey.length >= 0)
+m.localIdentityKey = d.localIdentityKey;
+}
+if (d.localIdentityKeyPrivate != null) {
+if (typeof d.localIdentityKeyPrivate === "string")
+$util.base64.decode(d.localIdentityKeyPrivate, m.localIdentityKeyPrivate = $util.newBuffer($util.base64.length(d.localIdentityKeyPrivate)), 0);
+else if (d.localIdentityKeyPrivate.length >= 0)
+m.localIdentityKeyPrivate = d.localIdentityKeyPrivate;
+}
+return m;
+};
+PendingKeyExchange.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.sequence != null && m.hasOwnProperty("sequence")) {
+d.sequence = m.sequence;
+if (o.oneofs)
+d._sequence = "sequence";
+}
+if (m.localBaseKey != null && m.hasOwnProperty("localBaseKey")) {
+d.localBaseKey = o.bytes === String ? $util.base64.encode(m.localBaseKey, 0, m.localBaseKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.localBaseKey) : m.localBaseKey;
+if (o.oneofs)
+d._localBaseKey = "localBaseKey";
+}
+if (m.localBaseKeyPrivate != null && m.hasOwnProperty("localBaseKeyPrivate")) {
+d.localBaseKeyPrivate = o.bytes === String ? $util.base64.encode(m.localBaseKeyPrivate, 0, m.localBaseKeyPrivate.length) : o.bytes === Array ? Array.prototype.slice.call(m.localBaseKeyPrivate) : m.localBaseKeyPrivate;
+if (o.oneofs)
+d._localBaseKeyPrivate = "localBaseKeyPrivate";
+}
+if (m.localRatchetKey != null && m.hasOwnProperty("localRatchetKey")) {
+d.localRatchetKey = o.bytes === String ? $util.base64.encode(m.localRatchetKey, 0, m.localRatchetKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.localRatchetKey) : m.localRatchetKey;
+if (o.oneofs)
+d._localRatchetKey = "localRatchetKey";
+}
+if (m.localRatchetKeyPrivate != null && m.hasOwnProperty("localRatchetKeyPrivate")) {
+d.localRatchetKeyPrivate = o.bytes === String ? $util.base64.encode(m.localRatchetKeyPrivate, 0, m.localRatchetKeyPrivate.length) : o.bytes === Array ? Array.prototype.slice.call(m.localRatchetKeyPrivate) : m.localRatchetKeyPrivate;
+if (o.oneofs)
+d._localRatchetKeyPrivate = "localRatchetKeyPrivate";
+}
+if (m.localIdentityKey != null && m.hasOwnProperty("localIdentityKey")) {
+d.localIdentityKey = o.bytes === String ? $util.base64.encode(m.localIdentityKey, 0, m.localIdentityKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.localIdentityKey) : m.localIdentityKey;
+if (o.oneofs)
+d._localIdentityKey = "localIdentityKey";
+}
+if (m.localIdentityKeyPrivate != null && m.hasOwnProperty("localIdentityKeyPrivate")) {
+d.localIdentityKeyPrivate = o.bytes === String ? $util.base64.encode(m.localIdentityKeyPrivate, 0, m.localIdentityKeyPrivate.length) : o.bytes === Array ? Array.prototype.slice.call(m.localIdentityKeyPrivate) : m.localIdentityKeyPrivate;
+if (o.oneofs)
+d._localIdentityKeyPrivate = "localIdentityKeyPrivate";
+}
+return d;
+};
+PendingKeyExchange.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+PendingKeyExchange.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.SessionStructure.PendingKeyExchange";
+};
+return PendingKeyExchange;
+});
+$lazy(SessionStructure, "PendingPreKey", function() {
+function PendingPreKey(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+PendingPreKey.prototype.preKeyId = null;
+PendingPreKey.prototype.signedPreKeyId = null;
+PendingPreKey.prototype.baseKey = null;
+let $oneOfFields;
+Object.defineProperty(PendingPreKey.prototype, "_preKeyId", {
+get: $util.oneOfGetter($oneOfFields = ["preKeyId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PendingPreKey.prototype, "_signedPreKeyId", {
+get: $util.oneOfGetter($oneOfFields = ["signedPreKeyId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PendingPreKey.prototype, "_baseKey", {
+get: $util.oneOfGetter($oneOfFields = ["baseKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+PendingPreKey.create = function create(properties) {
+return new PendingPreKey(properties);
+};
+PendingPreKey.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.preKeyId != null && Object.hasOwnProperty.call(m, "preKeyId"))
+w.uint32(8).uint32(m.preKeyId);
+if (m.baseKey != null && Object.hasOwnProperty.call(m, "baseKey"))
+w.uint32(18).bytes(m.baseKey);
+if (m.signedPreKeyId != null && Object.hasOwnProperty.call(m, "signedPreKeyId"))
+w.uint32(24).int32(m.signedPreKeyId);
+return w;
+};
+PendingPreKey.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.SessionStructure.PendingPreKey();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.preKeyId = r.uint32();
+break;
+}
+case 3: {
+m.signedPreKeyId = r.int32();
+break;
+}
+case 2: {
+m.baseKey = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+PendingPreKey.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.SessionStructure.PendingPreKey)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.SessionStructure.PendingPreKey();
+if (d.preKeyId != null) {
+m.preKeyId = d.preKeyId >>> 0;
+}
+if (d.signedPreKeyId != null) {
+m.signedPreKeyId = d.signedPreKeyId | 0;
+}
+if (d.baseKey != null) {
+if (typeof d.baseKey === "string")
+$util.base64.decode(d.baseKey, m.baseKey = $util.newBuffer($util.base64.length(d.baseKey)), 0);
+else if (d.baseKey.length >= 0)
+m.baseKey = d.baseKey;
+}
+return m;
+};
+PendingPreKey.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.preKeyId != null && m.hasOwnProperty("preKeyId")) {
+d.preKeyId = m.preKeyId;
+if (o.oneofs)
+d._preKeyId = "preKeyId";
+}
+if (m.baseKey != null && m.hasOwnProperty("baseKey")) {
+d.baseKey = o.bytes === String ? $util.base64.encode(m.baseKey, 0, m.baseKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.baseKey) : m.baseKey;
+if (o.oneofs)
+d._baseKey = "baseKey";
+}
+if (m.signedPreKeyId != null && m.hasOwnProperty("signedPreKeyId")) {
+d.signedPreKeyId = m.signedPreKeyId;
+if (o.oneofs)
+d._signedPreKeyId = "signedPreKeyId";
+}
+return d;
+};
+PendingPreKey.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+PendingPreKey.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.SessionStructure.PendingPreKey";
+};
+return PendingPreKey;
+});
+return SessionStructure;

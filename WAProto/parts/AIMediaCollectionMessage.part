@@ -1,0 +1,119 @@
+"use strict";
+function AIMediaCollectionMessage(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIMediaCollectionMessage.prototype.collectionId = null;
+AIMediaCollectionMessage.prototype.expectedMediaCount = null;
+AIMediaCollectionMessage.prototype.hasGlobalCaption = null;
+let $oneOfFields;
+Object.defineProperty(AIMediaCollectionMessage.prototype, "_collectionId", {
+get: $util.oneOfGetter($oneOfFields = ["collectionId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIMediaCollectionMessage.prototype, "_expectedMediaCount", {
+get: $util.oneOfGetter($oneOfFields = ["expectedMediaCount"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIMediaCollectionMessage.prototype, "_hasGlobalCaption", {
+get: $util.oneOfGetter($oneOfFields = ["hasGlobalCaption"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIMediaCollectionMessage.create = function create(properties) {
+return new AIMediaCollectionMessage(properties);
+};
+AIMediaCollectionMessage.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.collectionId != null && Object.hasOwnProperty.call(m, "collectionId"))
+w.uint32(10).string(m.collectionId);
+if (m.expectedMediaCount != null && Object.hasOwnProperty.call(m, "expectedMediaCount"))
+w.uint32(16).uint32(m.expectedMediaCount);
+if (m.hasGlobalCaption != null && Object.hasOwnProperty.call(m, "hasGlobalCaption"))
+w.uint32(24).bool(m.hasGlobalCaption);
+return w;
+};
+AIMediaCollectionMessage.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIMediaCollectionMessage();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.collectionId = r.string();
+break;
+}
+case 2: {
+m.expectedMediaCount = r.uint32();
+break;
+}
+case 3: {
+m.hasGlobalCaption = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIMediaCollectionMessage.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIMediaCollectionMessage)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIMediaCollectionMessage();
+if (d.collectionId != null) {
+m.collectionId = String(d.collectionId);
+}
+if (d.expectedMediaCount != null) {
+m.expectedMediaCount = d.expectedMediaCount >>> 0;
+}
+if (d.hasGlobalCaption != null) {
+m.hasGlobalCaption = Boolean(d.hasGlobalCaption);
+}
+return m;
+};
+AIMediaCollectionMessage.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.collectionId != null && m.hasOwnProperty("collectionId")) {
+d.collectionId = m.collectionId;
+if (o.oneofs)
+d._collectionId = "collectionId";
+}
+if (m.expectedMediaCount != null && m.hasOwnProperty("expectedMediaCount")) {
+d.expectedMediaCount = m.expectedMediaCount;
+if (o.oneofs)
+d._expectedMediaCount = "expectedMediaCount";
+}
+if (m.hasGlobalCaption != null && m.hasOwnProperty("hasGlobalCaption")) {
+d.hasGlobalCaption = m.hasGlobalCaption;
+if (o.oneofs)
+d._hasGlobalCaption = "hasGlobalCaption";
+}
+return d;
+};
+AIMediaCollectionMessage.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIMediaCollectionMessage.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIMediaCollectionMessage";
+};
+return AIMediaCollectionMessage;

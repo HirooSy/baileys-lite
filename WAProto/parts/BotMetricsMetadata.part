@@ -1,0 +1,341 @@
+"use strict";
+function BotMetricsMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotMetricsMetadata.prototype.destinationId = null;
+BotMetricsMetadata.prototype.destinationEntryPoint = null;
+BotMetricsMetadata.prototype.threadOrigin = null;
+let $oneOfFields;
+Object.defineProperty(BotMetricsMetadata.prototype, "_destinationId", {
+get: $util.oneOfGetter($oneOfFields = ["destinationId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetricsMetadata.prototype, "_destinationEntryPoint", {
+get: $util.oneOfGetter($oneOfFields = ["destinationEntryPoint"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMetricsMetadata.prototype, "_threadOrigin", {
+get: $util.oneOfGetter($oneOfFields = ["threadOrigin"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotMetricsMetadata.create = function create(properties) {
+return new BotMetricsMetadata(properties);
+};
+BotMetricsMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.destinationId != null && Object.hasOwnProperty.call(m, "destinationId"))
+w.uint32(10).string(m.destinationId);
+if (m.destinationEntryPoint != null && Object.hasOwnProperty.call(m, "destinationEntryPoint"))
+w.uint32(16).int32(m.destinationEntryPoint);
+if (m.threadOrigin != null && Object.hasOwnProperty.call(m, "threadOrigin"))
+w.uint32(24).int32(m.threadOrigin);
+return w;
+};
+BotMetricsMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotMetricsMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.destinationId = r.string();
+break;
+}
+case 2: {
+m.destinationEntryPoint = r.int32();
+break;
+}
+case 3: {
+m.threadOrigin = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotMetricsMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotMetricsMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotMetricsMetadata();
+if (d.destinationId != null) {
+m.destinationId = String(d.destinationId);
+}
+switch (d.destinationEntryPoint) {
+default:
+if (typeof d.destinationEntryPoint === "number") {
+m.destinationEntryPoint = d.destinationEntryPoint;
+break;
+}
+break;
+case "UNDEFINED_ENTRY_POINT":
+case 0:
+m.destinationEntryPoint = 0;
+break;
+case "FAVICON":
+case 1:
+m.destinationEntryPoint = 1;
+break;
+case "CHATLIST":
+case 2:
+m.destinationEntryPoint = 2;
+break;
+case "AISEARCH_NULL_STATE_PAPER_PLANE":
+case 3:
+m.destinationEntryPoint = 3;
+break;
+case "AISEARCH_NULL_STATE_SUGGESTION":
+case 4:
+m.destinationEntryPoint = 4;
+break;
+case "AISEARCH_TYPE_AHEAD_SUGGESTION":
+case 5:
+m.destinationEntryPoint = 5;
+break;
+case "AISEARCH_TYPE_AHEAD_PAPER_PLANE":
+case 6:
+m.destinationEntryPoint = 6;
+break;
+case "AISEARCH_TYPE_AHEAD_RESULT_CHATLIST":
+case 7:
+m.destinationEntryPoint = 7;
+break;
+case "AISEARCH_TYPE_AHEAD_RESULT_MESSAGES":
+case 8:
+m.destinationEntryPoint = 8;
+break;
+case "AIVOICE_SEARCH_BAR":
+case 9:
+m.destinationEntryPoint = 9;
+break;
+case "AIVOICE_FAVICON":
+case 10:
+m.destinationEntryPoint = 10;
+break;
+case "AISTUDIO":
+case 11:
+m.destinationEntryPoint = 11;
+break;
+case "DEEPLINK":
+case 12:
+m.destinationEntryPoint = 12;
+break;
+case "NOTIFICATION":
+case 13:
+m.destinationEntryPoint = 13;
+break;
+case "PROFILE_MESSAGE_BUTTON":
+case 14:
+m.destinationEntryPoint = 14;
+break;
+case "FORWARD":
+case 15:
+m.destinationEntryPoint = 15;
+break;
+case "APP_SHORTCUT":
+case 16:
+m.destinationEntryPoint = 16;
+break;
+case "FF_FAMILY":
+case 17:
+m.destinationEntryPoint = 17;
+break;
+case "AI_TAB":
+case 18:
+m.destinationEntryPoint = 18;
+break;
+case "AI_HOME":
+case 19:
+m.destinationEntryPoint = 19;
+break;
+case "AI_DEEPLINK_IMMERSIVE":
+case 20:
+m.destinationEntryPoint = 20;
+break;
+case "AI_DEEPLINK":
+case 21:
+m.destinationEntryPoint = 21;
+break;
+case "META_AI_CHAT_SHORTCUT_AI_STUDIO":
+case 22:
+m.destinationEntryPoint = 22;
+break;
+case "UGC_CHAT_SHORTCUT_AI_STUDIO":
+case 23:
+m.destinationEntryPoint = 23;
+break;
+case "NEW_CHAT_AI_STUDIO":
+case 24:
+m.destinationEntryPoint = 24;
+break;
+case "AIVOICE_FAVICON_CALL_HISTORY":
+case 25:
+m.destinationEntryPoint = 25;
+break;
+case "ASK_META_AI_CONTEXT_MENU":
+case 26:
+m.destinationEntryPoint = 26;
+break;
+case "ASK_META_AI_CONTEXT_MENU_1ON1":
+case 27:
+m.destinationEntryPoint = 27;
+break;
+case "ASK_META_AI_CONTEXT_MENU_GROUP":
+case 28:
+m.destinationEntryPoint = 28;
+break;
+case "INVOKE_META_AI_1ON1":
+case 29:
+m.destinationEntryPoint = 29;
+break;
+case "INVOKE_META_AI_GROUP":
+case 30:
+m.destinationEntryPoint = 30;
+break;
+case "META_AI_FORWARD":
+case 31:
+m.destinationEntryPoint = 31;
+break;
+case "NEW_CHAT_AI_CONTACT":
+case 32:
+m.destinationEntryPoint = 32;
+break;
+case "MESSAGE_QUICK_ACTION_1_ON_1_CHAT":
+case 33:
+m.destinationEntryPoint = 33;
+break;
+case "MESSAGE_QUICK_ACTION_GROUP_CHAT":
+case 34:
+m.destinationEntryPoint = 34;
+break;
+case "ATTACHMENT_TRAY_1_ON_1_CHAT":
+case 35:
+m.destinationEntryPoint = 35;
+break;
+case "ATTACHMENT_TRAY_GROUP_CHAT":
+case 36:
+m.destinationEntryPoint = 36;
+break;
+case "ASK_META_AI_MEDIA_VIEWER_1ON1":
+case 37:
+m.destinationEntryPoint = 37;
+break;
+case "ASK_META_AI_MEDIA_VIEWER_GROUP":
+case 38:
+m.destinationEntryPoint = 38;
+break;
+case "MEDIA_PICKER_1_ON_1_CHAT":
+case 39:
+m.destinationEntryPoint = 39;
+break;
+case "MEDIA_PICKER_GROUP_CHAT":
+case 40:
+m.destinationEntryPoint = 40;
+break;
+case "ASK_META_AI_NO_SEARCH_RESULTS":
+case 41:
+m.destinationEntryPoint = 41;
+break;
+case "META_AI_SETTINGS":
+case 45:
+m.destinationEntryPoint = 45;
+break;
+case "WEB_INTRO_PANEL":
+case 46:
+m.destinationEntryPoint = 46;
+break;
+case "WEB_NAVIGATION_BAR":
+case 47:
+m.destinationEntryPoint = 47;
+break;
+case "GROUP_MEMBER":
+case 54:
+m.destinationEntryPoint = 54;
+break;
+case "CHATLIST_SEARCH":
+case 55:
+m.destinationEntryPoint = 55;
+break;
+case "NEW_CHAT_LIST":
+case 56:
+m.destinationEntryPoint = 56;
+break;
+}
+switch (d.threadOrigin) {
+default:
+if (typeof d.threadOrigin === "number") {
+m.threadOrigin = d.threadOrigin;
+break;
+}
+break;
+case "AI_TAB_THREAD":
+case 1:
+m.threadOrigin = 1;
+break;
+case "AI_HOME_THREAD":
+case 2:
+m.threadOrigin = 2;
+break;
+case "AI_DEEPLINK_IMMERSIVE_THREAD":
+case 3:
+m.threadOrigin = 3;
+break;
+case "AI_DEEPLINK_THREAD":
+case 4:
+m.threadOrigin = 4;
+break;
+case "ASK_META_AI_CONTEXT_MENU_THREAD":
+case 5:
+m.threadOrigin = 5;
+break;
+}
+return m;
+};
+BotMetricsMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.destinationId != null && m.hasOwnProperty("destinationId")) {
+d.destinationId = m.destinationId;
+if (o.oneofs)
+d._destinationId = "destinationId";
+}
+if (m.destinationEntryPoint != null && m.hasOwnProperty("destinationEntryPoint")) {
+d.destinationEntryPoint = o.enums === String ? $root.proto.BotMetricsEntryPoint[m.destinationEntryPoint] === undefined ? m.destinationEntryPoint : $root.proto.BotMetricsEntryPoint[m.destinationEntryPoint] : m.destinationEntryPoint;
+if (o.oneofs)
+d._destinationEntryPoint = "destinationEntryPoint";
+}
+if (m.threadOrigin != null && m.hasOwnProperty("threadOrigin")) {
+d.threadOrigin = o.enums === String ? $root.proto.BotMetricsThreadEntryPoint[m.threadOrigin] === undefined ? m.threadOrigin : $root.proto.BotMetricsThreadEntryPoint[m.threadOrigin] : m.threadOrigin;
+if (o.oneofs)
+d._threadOrigin = "threadOrigin";
+}
+return d;
+};
+BotMetricsMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotMetricsMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotMetricsMetadata";
+};
+return BotMetricsMetadata;

@@ -1,0 +1,119 @@
+"use strict";
+function LocalizedName(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+LocalizedName.prototype.lg = null;
+LocalizedName.prototype.lc = null;
+LocalizedName.prototype.verifiedName = null;
+let $oneOfFields;
+Object.defineProperty(LocalizedName.prototype, "_lg", {
+get: $util.oneOfGetter($oneOfFields = ["lg"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(LocalizedName.prototype, "_lc", {
+get: $util.oneOfGetter($oneOfFields = ["lc"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(LocalizedName.prototype, "_verifiedName", {
+get: $util.oneOfGetter($oneOfFields = ["verifiedName"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+LocalizedName.create = function create(properties) {
+return new LocalizedName(properties);
+};
+LocalizedName.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.lg != null && Object.hasOwnProperty.call(m, "lg"))
+w.uint32(10).string(m.lg);
+if (m.lc != null && Object.hasOwnProperty.call(m, "lc"))
+w.uint32(18).string(m.lc);
+if (m.verifiedName != null && Object.hasOwnProperty.call(m, "verifiedName"))
+w.uint32(26).string(m.verifiedName);
+return w;
+};
+LocalizedName.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.LocalizedName();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.lg = r.string();
+break;
+}
+case 2: {
+m.lc = r.string();
+break;
+}
+case 3: {
+m.verifiedName = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+LocalizedName.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.LocalizedName)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.LocalizedName();
+if (d.lg != null) {
+m.lg = String(d.lg);
+}
+if (d.lc != null) {
+m.lc = String(d.lc);
+}
+if (d.verifiedName != null) {
+m.verifiedName = String(d.verifiedName);
+}
+return m;
+};
+LocalizedName.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.lg != null && m.hasOwnProperty("lg")) {
+d.lg = m.lg;
+if (o.oneofs)
+d._lg = "lg";
+}
+if (m.lc != null && m.hasOwnProperty("lc")) {
+d.lc = m.lc;
+if (o.oneofs)
+d._lc = "lc";
+}
+if (m.verifiedName != null && m.hasOwnProperty("verifiedName")) {
+d.verifiedName = m.verifiedName;
+if (o.oneofs)
+d._verifiedName = "verifiedName";
+}
+return d;
+};
+LocalizedName.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+LocalizedName.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.LocalizedName";
+};
+return LocalizedName;

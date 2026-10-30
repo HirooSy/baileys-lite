@@ -1,0 +1,102 @@
+"use strict";
+function GroupHistoryIndividualMessageInfo(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+GroupHistoryIndividualMessageInfo.prototype.bundleMessageKey = null;
+GroupHistoryIndividualMessageInfo.prototype.editedAfterReceivedAsHistory = null;
+let $oneOfFields;
+Object.defineProperty(GroupHistoryIndividualMessageInfo.prototype, "_bundleMessageKey", {
+get: $util.oneOfGetter($oneOfFields = ["bundleMessageKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GroupHistoryIndividualMessageInfo.prototype, "_editedAfterReceivedAsHistory", {
+get: $util.oneOfGetter($oneOfFields = ["editedAfterReceivedAsHistory"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+GroupHistoryIndividualMessageInfo.create = function create(properties) {
+return new GroupHistoryIndividualMessageInfo(properties);
+};
+GroupHistoryIndividualMessageInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.bundleMessageKey != null && Object.hasOwnProperty.call(m, "bundleMessageKey"))
+$root.proto.MessageKey.encode(m.bundleMessageKey, w.uint32(10).fork()).ldelim();
+if (m.editedAfterReceivedAsHistory != null && Object.hasOwnProperty.call(m, "editedAfterReceivedAsHistory"))
+w.uint32(16).bool(m.editedAfterReceivedAsHistory);
+return w;
+};
+GroupHistoryIndividualMessageInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.GroupHistoryIndividualMessageInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.bundleMessageKey = $root.proto.MessageKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.editedAfterReceivedAsHistory = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+GroupHistoryIndividualMessageInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.GroupHistoryIndividualMessageInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.GroupHistoryIndividualMessageInfo();
+if (d.bundleMessageKey != null) {
+if (typeof d.bundleMessageKey !== "object")
+throw TypeError(".proto.GroupHistoryIndividualMessageInfo.bundleMessageKey: object expected");
+m.bundleMessageKey = $root.proto.MessageKey.fromObject(d.bundleMessageKey, n + 1);
+}
+if (d.editedAfterReceivedAsHistory != null) {
+m.editedAfterReceivedAsHistory = Boolean(d.editedAfterReceivedAsHistory);
+}
+return m;
+};
+GroupHistoryIndividualMessageInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.bundleMessageKey != null && m.hasOwnProperty("bundleMessageKey")) {
+d.bundleMessageKey = $root.proto.MessageKey.toObject(m.bundleMessageKey, o);
+if (o.oneofs)
+d._bundleMessageKey = "bundleMessageKey";
+}
+if (m.editedAfterReceivedAsHistory != null && m.hasOwnProperty("editedAfterReceivedAsHistory")) {
+d.editedAfterReceivedAsHistory = m.editedAfterReceivedAsHistory;
+if (o.oneofs)
+d._editedAfterReceivedAsHistory = "editedAfterReceivedAsHistory";
+}
+return d;
+};
+GroupHistoryIndividualMessageInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+GroupHistoryIndividualMessageInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.GroupHistoryIndividualMessageInfo";
+};
+return GroupHistoryIndividualMessageInfo;

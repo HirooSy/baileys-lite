@@ -1,0 +1,84 @@
+"use strict";
+function KeyId(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+KeyId.prototype.id = null;
+let $oneOfFields;
+Object.defineProperty(KeyId.prototype, "_id", {
+get: $util.oneOfGetter($oneOfFields = ["id"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+KeyId.create = function create(properties) {
+return new KeyId(properties);
+};
+KeyId.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.id != null && Object.hasOwnProperty.call(m, "id"))
+w.uint32(10).bytes(m.id);
+return w;
+};
+KeyId.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.KeyId();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.id = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+KeyId.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.KeyId)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.KeyId();
+if (d.id != null) {
+if (typeof d.id === "string")
+$util.base64.decode(d.id, m.id = $util.newBuffer($util.base64.length(d.id)), 0);
+else if (d.id.length >= 0)
+m.id = d.id;
+}
+return m;
+};
+KeyId.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.id != null && m.hasOwnProperty("id")) {
+d.id = o.bytes === String ? $util.base64.encode(m.id, 0, m.id.length) : o.bytes === Array ? Array.prototype.slice.call(m.id) : m.id;
+if (o.oneofs)
+d._id = "id";
+}
+return d;
+};
+KeyId.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+KeyId.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.KeyId";
+};
+return KeyId;

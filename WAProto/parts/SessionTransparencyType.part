@@ -1,0 +1,5 @@
+"use strict";
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN_TYPE"] = 0;
+values[valuesById[1] = "NY_AI_SAFETY_DISCLAIMER"] = 1;
+return values;

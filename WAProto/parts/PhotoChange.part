@@ -1,0 +1,125 @@
+"use strict";
+function PhotoChange(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+PhotoChange.prototype.oldPhoto = null;
+PhotoChange.prototype.newPhoto = null;
+PhotoChange.prototype.newPhotoId = null;
+let $oneOfFields;
+Object.defineProperty(PhotoChange.prototype, "_oldPhoto", {
+get: $util.oneOfGetter($oneOfFields = ["oldPhoto"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PhotoChange.prototype, "_newPhoto", {
+get: $util.oneOfGetter($oneOfFields = ["newPhoto"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PhotoChange.prototype, "_newPhotoId", {
+get: $util.oneOfGetter($oneOfFields = ["newPhotoId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+PhotoChange.create = function create(properties) {
+return new PhotoChange(properties);
+};
+PhotoChange.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.oldPhoto != null && Object.hasOwnProperty.call(m, "oldPhoto"))
+w.uint32(10).bytes(m.oldPhoto);
+if (m.newPhoto != null && Object.hasOwnProperty.call(m, "newPhoto"))
+w.uint32(18).bytes(m.newPhoto);
+if (m.newPhotoId != null && Object.hasOwnProperty.call(m, "newPhotoId"))
+w.uint32(24).uint32(m.newPhotoId);
+return w;
+};
+PhotoChange.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.PhotoChange();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.oldPhoto = r.bytes();
+break;
+}
+case 2: {
+m.newPhoto = r.bytes();
+break;
+}
+case 3: {
+m.newPhotoId = r.uint32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+PhotoChange.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.PhotoChange)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.PhotoChange();
+if (d.oldPhoto != null) {
+if (typeof d.oldPhoto === "string")
+$util.base64.decode(d.oldPhoto, m.oldPhoto = $util.newBuffer($util.base64.length(d.oldPhoto)), 0);
+else if (d.oldPhoto.length >= 0)
+m.oldPhoto = d.oldPhoto;
+}
+if (d.newPhoto != null) {
+if (typeof d.newPhoto === "string")
+$util.base64.decode(d.newPhoto, m.newPhoto = $util.newBuffer($util.base64.length(d.newPhoto)), 0);
+else if (d.newPhoto.length >= 0)
+m.newPhoto = d.newPhoto;
+}
+if (d.newPhotoId != null) {
+m.newPhotoId = d.newPhotoId >>> 0;
+}
+return m;
+};
+PhotoChange.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.oldPhoto != null && m.hasOwnProperty("oldPhoto")) {
+d.oldPhoto = o.bytes === String ? $util.base64.encode(m.oldPhoto, 0, m.oldPhoto.length) : o.bytes === Array ? Array.prototype.slice.call(m.oldPhoto) : m.oldPhoto;
+if (o.oneofs)
+d._oldPhoto = "oldPhoto";
+}
+if (m.newPhoto != null && m.hasOwnProperty("newPhoto")) {
+d.newPhoto = o.bytes === String ? $util.base64.encode(m.newPhoto, 0, m.newPhoto.length) : o.bytes === Array ? Array.prototype.slice.call(m.newPhoto) : m.newPhoto;
+if (o.oneofs)
+d._newPhoto = "newPhoto";
+}
+if (m.newPhotoId != null && m.hasOwnProperty("newPhotoId")) {
+d.newPhotoId = m.newPhotoId;
+if (o.oneofs)
+d._newPhotoId = "newPhotoId";
+}
+return d;
+};
+PhotoChange.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+PhotoChange.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.PhotoChange";
+};
+return PhotoChange;

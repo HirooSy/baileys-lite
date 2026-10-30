@@ -1,0 +1,114 @@
+"use strict";
+function RecordStructure(p) {
+this.previousSessions = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+RecordStructure.prototype.currentSession = null;
+RecordStructure.prototype.previousSessions = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(RecordStructure.prototype, "_currentSession", {
+get: $util.oneOfGetter($oneOfFields = ["currentSession"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+RecordStructure.create = function create(properties) {
+return new RecordStructure(properties);
+};
+RecordStructure.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.currentSession != null && Object.hasOwnProperty.call(m, "currentSession"))
+$root.proto.SessionStructure.encode(m.currentSession, w.uint32(10).fork()).ldelim();
+if (m.previousSessions != null && m.previousSessions.length) {
+for (var i = 0; i < m.previousSessions.length; ++i)
+$root.proto.SessionStructure.encode(m.previousSessions[i], w.uint32(18).fork()).ldelim();
+}
+return w;
+};
+RecordStructure.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.RecordStructure();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.currentSession = $root.proto.SessionStructure.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+if (!(m.previousSessions && m.previousSessions.length))
+m.previousSessions = [];
+m.previousSessions.push($root.proto.SessionStructure.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+RecordStructure.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.RecordStructure)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.RecordStructure();
+if (d.currentSession != null) {
+if (typeof d.currentSession !== "object")
+throw TypeError(".proto.RecordStructure.currentSession: object expected");
+m.currentSession = $root.proto.SessionStructure.fromObject(d.currentSession, n + 1);
+}
+if (d.previousSessions) {
+if (!Array.isArray(d.previousSessions))
+throw TypeError(".proto.RecordStructure.previousSessions: array expected");
+m.previousSessions = [];
+for (var i = 0; i < d.previousSessions.length; ++i) {
+if (typeof d.previousSessions[i] !== "object")
+throw TypeError(".proto.RecordStructure.previousSessions: object expected");
+m.previousSessions[i] = $root.proto.SessionStructure.fromObject(d.previousSessions[i], n + 1);
+}
+}
+return m;
+};
+RecordStructure.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.previousSessions = [];
+}
+if (m.currentSession != null && m.hasOwnProperty("currentSession")) {
+d.currentSession = $root.proto.SessionStructure.toObject(m.currentSession, o);
+if (o.oneofs)
+d._currentSession = "currentSession";
+}
+if (m.previousSessions && m.previousSessions.length) {
+d.previousSessions = [];
+for (var j = 0; j < m.previousSessions.length; ++j) {
+d.previousSessions[j] = $root.proto.SessionStructure.toObject(m.previousSessions[j], o);
+}
+}
+return d;
+};
+RecordStructure.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+RecordStructure.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.RecordStructure";
+};
+return RecordStructure;

@@ -1,0 +1,318 @@
+"use strict";
+function VerifiedNameCertificate(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+VerifiedNameCertificate.prototype.details = null;
+VerifiedNameCertificate.prototype.signature = null;
+VerifiedNameCertificate.prototype.serverSignature = null;
+let $oneOfFields;
+Object.defineProperty(VerifiedNameCertificate.prototype, "_details", {
+get: $util.oneOfGetter($oneOfFields = ["details"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(VerifiedNameCertificate.prototype, "_signature", {
+get: $util.oneOfGetter($oneOfFields = ["signature"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(VerifiedNameCertificate.prototype, "_serverSignature", {
+get: $util.oneOfGetter($oneOfFields = ["serverSignature"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+VerifiedNameCertificate.create = function create(properties) {
+return new VerifiedNameCertificate(properties);
+};
+VerifiedNameCertificate.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.details != null && Object.hasOwnProperty.call(m, "details"))
+w.uint32(10).bytes(m.details);
+if (m.signature != null && Object.hasOwnProperty.call(m, "signature"))
+w.uint32(18).bytes(m.signature);
+if (m.serverSignature != null && Object.hasOwnProperty.call(m, "serverSignature"))
+w.uint32(26).bytes(m.serverSignature);
+return w;
+};
+VerifiedNameCertificate.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.VerifiedNameCertificate();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.details = r.bytes();
+break;
+}
+case 2: {
+m.signature = r.bytes();
+break;
+}
+case 3: {
+m.serverSignature = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+VerifiedNameCertificate.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.VerifiedNameCertificate)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.VerifiedNameCertificate();
+if (d.details != null) {
+if (typeof d.details === "string")
+$util.base64.decode(d.details, m.details = $util.newBuffer($util.base64.length(d.details)), 0);
+else if (d.details.length >= 0)
+m.details = d.details;
+}
+if (d.signature != null) {
+if (typeof d.signature === "string")
+$util.base64.decode(d.signature, m.signature = $util.newBuffer($util.base64.length(d.signature)), 0);
+else if (d.signature.length >= 0)
+m.signature = d.signature;
+}
+if (d.serverSignature != null) {
+if (typeof d.serverSignature === "string")
+$util.base64.decode(d.serverSignature, m.serverSignature = $util.newBuffer($util.base64.length(d.serverSignature)), 0);
+else if (d.serverSignature.length >= 0)
+m.serverSignature = d.serverSignature;
+}
+return m;
+};
+VerifiedNameCertificate.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.details != null && m.hasOwnProperty("details")) {
+d.details = o.bytes === String ? $util.base64.encode(m.details, 0, m.details.length) : o.bytes === Array ? Array.prototype.slice.call(m.details) : m.details;
+if (o.oneofs)
+d._details = "details";
+}
+if (m.signature != null && m.hasOwnProperty("signature")) {
+d.signature = o.bytes === String ? $util.base64.encode(m.signature, 0, m.signature.length) : o.bytes === Array ? Array.prototype.slice.call(m.signature) : m.signature;
+if (o.oneofs)
+d._signature = "signature";
+}
+if (m.serverSignature != null && m.hasOwnProperty("serverSignature")) {
+d.serverSignature = o.bytes === String ? $util.base64.encode(m.serverSignature, 0, m.serverSignature.length) : o.bytes === Array ? Array.prototype.slice.call(m.serverSignature) : m.serverSignature;
+if (o.oneofs)
+d._serverSignature = "serverSignature";
+}
+return d;
+};
+VerifiedNameCertificate.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+VerifiedNameCertificate.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.VerifiedNameCertificate";
+};
+$lazy(VerifiedNameCertificate, "Details", function() {
+function Details(p) {
+this.localizedNames = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+Details.prototype.serial = null;
+Details.prototype.issuer = null;
+Details.prototype.verifiedName = null;
+Details.prototype.localizedNames = $util.emptyArray;
+Details.prototype.issueTime = null;
+let $oneOfFields;
+Object.defineProperty(Details.prototype, "_serial", {
+get: $util.oneOfGetter($oneOfFields = ["serial"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Details.prototype, "_issuer", {
+get: $util.oneOfGetter($oneOfFields = ["issuer"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Details.prototype, "_verifiedName", {
+get: $util.oneOfGetter($oneOfFields = ["verifiedName"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Details.prototype, "_issueTime", {
+get: $util.oneOfGetter($oneOfFields = ["issueTime"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Details.create = function create(properties) {
+return new Details(properties);
+};
+Details.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.serial != null && Object.hasOwnProperty.call(m, "serial"))
+w.uint32(8).uint64(m.serial);
+if (m.issuer != null && Object.hasOwnProperty.call(m, "issuer"))
+w.uint32(18).string(m.issuer);
+if (m.verifiedName != null && Object.hasOwnProperty.call(m, "verifiedName"))
+w.uint32(34).string(m.verifiedName);
+if (m.localizedNames != null && m.localizedNames.length) {
+for (var i = 0; i < m.localizedNames.length; ++i)
+$root.proto.LocalizedName.encode(m.localizedNames[i], w.uint32(66).fork()).ldelim();
+}
+if (m.issueTime != null && Object.hasOwnProperty.call(m, "issueTime"))
+w.uint32(80).uint64(m.issueTime);
+return w;
+};
+Details.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.VerifiedNameCertificate.Details();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.serial = r.uint64();
+break;
+}
+case 2: {
+m.issuer = r.string();
+break;
+}
+case 4: {
+m.verifiedName = r.string();
+break;
+}
+case 8: {
+if (!(m.localizedNames && m.localizedNames.length))
+m.localizedNames = [];
+m.localizedNames.push($root.proto.LocalizedName.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 10: {
+m.issueTime = r.uint64();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+Details.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.VerifiedNameCertificate.Details)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.VerifiedNameCertificate.Details();
+if (d.serial != null) {
+if ($util.Long)
+(m.serial = $util.Long.fromValue(d.serial)).unsigned = true;
+else if (typeof d.serial === "string")
+m.serial = parseInt(d.serial, 10);
+else if (typeof d.serial === "number")
+m.serial = d.serial;
+else if (typeof d.serial === "object")
+m.serial = new $util.LongBits(d.serial.low >>> 0, d.serial.high >>> 0).toNumber(true);
+}
+if (d.issuer != null) {
+m.issuer = String(d.issuer);
+}
+if (d.verifiedName != null) {
+m.verifiedName = String(d.verifiedName);
+}
+if (d.localizedNames) {
+if (!Array.isArray(d.localizedNames))
+throw TypeError(".proto.VerifiedNameCertificate.Details.localizedNames: array expected");
+m.localizedNames = [];
+for (var i = 0; i < d.localizedNames.length; ++i) {
+if (typeof d.localizedNames[i] !== "object")
+throw TypeError(".proto.VerifiedNameCertificate.Details.localizedNames: object expected");
+m.localizedNames[i] = $root.proto.LocalizedName.fromObject(d.localizedNames[i], n + 1);
+}
+}
+if (d.issueTime != null) {
+if ($util.Long)
+(m.issueTime = $util.Long.fromValue(d.issueTime)).unsigned = true;
+else if (typeof d.issueTime === "string")
+m.issueTime = parseInt(d.issueTime, 10);
+else if (typeof d.issueTime === "number")
+m.issueTime = d.issueTime;
+else if (typeof d.issueTime === "object")
+m.issueTime = new $util.LongBits(d.issueTime.low >>> 0, d.issueTime.high >>> 0).toNumber(true);
+}
+return m;
+};
+Details.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.localizedNames = [];
+}
+if (m.serial != null && m.hasOwnProperty("serial")) {
+if (typeof m.serial === "number")
+d.serial = o.longs === String ? String(m.serial) : m.serial;
+else
+d.serial = o.longs === String ? longToString(m.serial, true) : o.longs === Number ? longToNumber(m.serial, true) : m.serial;
+if (o.oneofs)
+d._serial = "serial";
+}
+if (m.issuer != null && m.hasOwnProperty("issuer")) {
+d.issuer = m.issuer;
+if (o.oneofs)
+d._issuer = "issuer";
+}
+if (m.verifiedName != null && m.hasOwnProperty("verifiedName")) {
+d.verifiedName = m.verifiedName;
+if (o.oneofs)
+d._verifiedName = "verifiedName";
+}
+if (m.localizedNames && m.localizedNames.length) {
+d.localizedNames = [];
+for (var j = 0; j < m.localizedNames.length; ++j) {
+d.localizedNames[j] = $root.proto.LocalizedName.toObject(m.localizedNames[j], o);
+}
+}
+if (m.issueTime != null && m.hasOwnProperty("issueTime")) {
+if (typeof m.issueTime === "number")
+d.issueTime = o.longs === String ? String(m.issueTime) : m.issueTime;
+else
+d.issueTime = o.longs === String ? longToString(m.issueTime, true) : o.longs === Number ? longToNumber(m.issueTime, true) : m.issueTime;
+if (o.oneofs)
+d._issueTime = "issueTime";
+}
+return d;
+};
+Details.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+Details.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.VerifiedNameCertificate.Details";
+};
+return Details;
+});
+return VerifiedNameCertificate;

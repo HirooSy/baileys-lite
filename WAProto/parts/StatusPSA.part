@@ -1,0 +1,121 @@
+"use strict";
+function StatusPSA(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+StatusPSA.prototype.campaignId = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
+StatusPSA.prototype.campaignExpirationTimestamp = null;
+let $oneOfFields;
+Object.defineProperty(StatusPSA.prototype, "_campaignExpirationTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["campaignExpirationTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+StatusPSA.create = function create(properties) {
+return new StatusPSA(properties);
+};
+StatusPSA.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.campaignId != null && Object.hasOwnProperty.call(m, "campaignId"))
+w.uint32(352).uint64(m.campaignId);
+if (m.campaignExpirationTimestamp != null && Object.hasOwnProperty.call(m, "campaignExpirationTimestamp"))
+w.uint32(360).uint64(m.campaignExpirationTimestamp);
+return w;
+};
+StatusPSA.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.StatusPSA();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 44: {
+m.campaignId = r.uint64();
+break;
+}
+case 45: {
+m.campaignExpirationTimestamp = r.uint64();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+StatusPSA.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.StatusPSA)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.StatusPSA();
+if (d.campaignId != null) {
+if ($util.Long)
+(m.campaignId = $util.Long.fromValue(d.campaignId)).unsigned = true;
+else if (typeof d.campaignId === "string")
+m.campaignId = parseInt(d.campaignId, 10);
+else if (typeof d.campaignId === "number")
+m.campaignId = d.campaignId;
+else if (typeof d.campaignId === "object")
+m.campaignId = new $util.LongBits(d.campaignId.low >>> 0, d.campaignId.high >>> 0).toNumber(true);
+}
+if (d.campaignExpirationTimestamp != null) {
+if ($util.Long)
+(m.campaignExpirationTimestamp = $util.Long.fromValue(d.campaignExpirationTimestamp)).unsigned = true;
+else if (typeof d.campaignExpirationTimestamp === "string")
+m.campaignExpirationTimestamp = parseInt(d.campaignExpirationTimestamp, 10);
+else if (typeof d.campaignExpirationTimestamp === "number")
+m.campaignExpirationTimestamp = d.campaignExpirationTimestamp;
+else if (typeof d.campaignExpirationTimestamp === "object")
+m.campaignExpirationTimestamp = new $util.LongBits(d.campaignExpirationTimestamp.low >>> 0, d.campaignExpirationTimestamp.high >>> 0).toNumber(true);
+}
+return m;
+};
+StatusPSA.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.defaults) {
+if ($util.Long) {
+var n = new $util.Long(0, 0, true);
+d.campaignId = o.longs === String ? n.toString() : o.longs === Number ? n.toNumber() : n;
+} else
+d.campaignId = o.longs === String ? "0" : 0;
+}
+if (m.campaignId != null && m.hasOwnProperty("campaignId")) {
+if (typeof m.campaignId === "number")
+d.campaignId = o.longs === String ? String(m.campaignId) : m.campaignId;
+else
+d.campaignId = o.longs === String ? longToString(m.campaignId, true) : o.longs === Number ? longToNumber(m.campaignId, true) : m.campaignId;
+}
+if (m.campaignExpirationTimestamp != null && m.hasOwnProperty("campaignExpirationTimestamp")) {
+if (typeof m.campaignExpirationTimestamp === "number")
+d.campaignExpirationTimestamp = o.longs === String ? String(m.campaignExpirationTimestamp) : m.campaignExpirationTimestamp;
+else
+d.campaignExpirationTimestamp = o.longs === String ? longToString(m.campaignExpirationTimestamp, true) : o.longs === Number ? longToNumber(m.campaignExpirationTimestamp, true) : m.campaignExpirationTimestamp;
+if (o.oneofs)
+d._campaignExpirationTimestamp = "campaignExpirationTimestamp";
+}
+return d;
+};
+StatusPSA.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+StatusPSA.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.StatusPSA";
+};
+return StatusPSA;

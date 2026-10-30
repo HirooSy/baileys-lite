@@ -1,0 +1,313 @@
+"use strict";
+function AIRichResponseSubMessage(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIRichResponseSubMessage.prototype.messageType = null;
+AIRichResponseSubMessage.prototype.gridImageMetadata = null;
+AIRichResponseSubMessage.prototype.messageText = null;
+AIRichResponseSubMessage.prototype.imageMetadata = null;
+AIRichResponseSubMessage.prototype.codeMetadata = null;
+AIRichResponseSubMessage.prototype.tableMetadata = null;
+AIRichResponseSubMessage.prototype.dynamicMetadata = null;
+AIRichResponseSubMessage.prototype.latexMetadata = null;
+AIRichResponseSubMessage.prototype.mapMetadata = null;
+AIRichResponseSubMessage.prototype.contentItemsMetadata = null;
+let $oneOfFields;
+Object.defineProperty(AIRichResponseSubMessage.prototype, "_messageType", {
+get: $util.oneOfGetter($oneOfFields = ["messageType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseSubMessage.prototype, "_gridImageMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["gridImageMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseSubMessage.prototype, "_messageText", {
+get: $util.oneOfGetter($oneOfFields = ["messageText"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseSubMessage.prototype, "_imageMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["imageMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseSubMessage.prototype, "_codeMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["codeMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseSubMessage.prototype, "_tableMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["tableMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseSubMessage.prototype, "_dynamicMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["dynamicMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseSubMessage.prototype, "_latexMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["latexMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseSubMessage.prototype, "_mapMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["mapMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseSubMessage.prototype, "_contentItemsMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["contentItemsMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIRichResponseSubMessage.create = function create(properties) {
+return new AIRichResponseSubMessage(properties);
+};
+AIRichResponseSubMessage.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.messageType != null && Object.hasOwnProperty.call(m, "messageType"))
+w.uint32(8).int32(m.messageType);
+if (m.gridImageMetadata != null && Object.hasOwnProperty.call(m, "gridImageMetadata"))
+$root.proto.AIRichResponseGridImageMetadata.encode(m.gridImageMetadata, w.uint32(18).fork()).ldelim();
+if (m.messageText != null && Object.hasOwnProperty.call(m, "messageText"))
+w.uint32(26).string(m.messageText);
+if (m.imageMetadata != null && Object.hasOwnProperty.call(m, "imageMetadata"))
+$root.proto.AIRichResponseInlineImageMetadata.encode(m.imageMetadata, w.uint32(34).fork()).ldelim();
+if (m.codeMetadata != null && Object.hasOwnProperty.call(m, "codeMetadata"))
+$root.proto.AIRichResponseCodeMetadata.encode(m.codeMetadata, w.uint32(42).fork()).ldelim();
+if (m.tableMetadata != null && Object.hasOwnProperty.call(m, "tableMetadata"))
+$root.proto.AIRichResponseTableMetadata.encode(m.tableMetadata, w.uint32(50).fork()).ldelim();
+if (m.dynamicMetadata != null && Object.hasOwnProperty.call(m, "dynamicMetadata"))
+$root.proto.AIRichResponseDynamicMetadata.encode(m.dynamicMetadata, w.uint32(58).fork()).ldelim();
+if (m.latexMetadata != null && Object.hasOwnProperty.call(m, "latexMetadata"))
+$root.proto.AIRichResponseLatexMetadata.encode(m.latexMetadata, w.uint32(66).fork()).ldelim();
+if (m.mapMetadata != null && Object.hasOwnProperty.call(m, "mapMetadata"))
+$root.proto.AIRichResponseMapMetadata.encode(m.mapMetadata, w.uint32(74).fork()).ldelim();
+if (m.contentItemsMetadata != null && Object.hasOwnProperty.call(m, "contentItemsMetadata"))
+$root.proto.AIRichResponseContentItemsMetadata.encode(m.contentItemsMetadata, w.uint32(82).fork()).ldelim();
+return w;
+};
+AIRichResponseSubMessage.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIRichResponseSubMessage();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.messageType = r.int32();
+break;
+}
+case 2: {
+m.gridImageMetadata = $root.proto.AIRichResponseGridImageMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 3: {
+m.messageText = r.string();
+break;
+}
+case 4: {
+m.imageMetadata = $root.proto.AIRichResponseInlineImageMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 5: {
+m.codeMetadata = $root.proto.AIRichResponseCodeMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 6: {
+m.tableMetadata = $root.proto.AIRichResponseTableMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 7: {
+m.dynamicMetadata = $root.proto.AIRichResponseDynamicMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 8: {
+m.latexMetadata = $root.proto.AIRichResponseLatexMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 9: {
+m.mapMetadata = $root.proto.AIRichResponseMapMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 10: {
+m.contentItemsMetadata = $root.proto.AIRichResponseContentItemsMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIRichResponseSubMessage.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIRichResponseSubMessage)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIRichResponseSubMessage();
+switch (d.messageType) {
+default:
+if (typeof d.messageType === "number") {
+m.messageType = d.messageType;
+break;
+}
+break;
+case "AI_RICH_RESPONSE_UNKNOWN":
+case 0:
+m.messageType = 0;
+break;
+case "AI_RICH_RESPONSE_GRID_IMAGE":
+case 1:
+m.messageType = 1;
+break;
+case "AI_RICH_RESPONSE_TEXT":
+case 2:
+m.messageType = 2;
+break;
+case "AI_RICH_RESPONSE_INLINE_IMAGE":
+case 3:
+m.messageType = 3;
+break;
+case "AI_RICH_RESPONSE_TABLE":
+case 4:
+m.messageType = 4;
+break;
+case "AI_RICH_RESPONSE_CODE":
+case 5:
+m.messageType = 5;
+break;
+case "AI_RICH_RESPONSE_DYNAMIC":
+case 6:
+m.messageType = 6;
+break;
+case "AI_RICH_RESPONSE_MAP":
+case 7:
+m.messageType = 7;
+break;
+case "AI_RICH_RESPONSE_LATEX":
+case 8:
+m.messageType = 8;
+break;
+case "AI_RICH_RESPONSE_CONTENT_ITEMS":
+case 9:
+m.messageType = 9;
+break;
+}
+if (d.gridImageMetadata != null) {
+if (typeof d.gridImageMetadata !== "object")
+throw TypeError(".proto.AIRichResponseSubMessage.gridImageMetadata: object expected");
+m.gridImageMetadata = $root.proto.AIRichResponseGridImageMetadata.fromObject(d.gridImageMetadata, n + 1);
+}
+if (d.messageText != null) {
+m.messageText = String(d.messageText);
+}
+if (d.imageMetadata != null) {
+if (typeof d.imageMetadata !== "object")
+throw TypeError(".proto.AIRichResponseSubMessage.imageMetadata: object expected");
+m.imageMetadata = $root.proto.AIRichResponseInlineImageMetadata.fromObject(d.imageMetadata, n + 1);
+}
+if (d.codeMetadata != null) {
+if (typeof d.codeMetadata !== "object")
+throw TypeError(".proto.AIRichResponseSubMessage.codeMetadata: object expected");
+m.codeMetadata = $root.proto.AIRichResponseCodeMetadata.fromObject(d.codeMetadata, n + 1);
+}
+if (d.tableMetadata != null) {
+if (typeof d.tableMetadata !== "object")
+throw TypeError(".proto.AIRichResponseSubMessage.tableMetadata: object expected");
+m.tableMetadata = $root.proto.AIRichResponseTableMetadata.fromObject(d.tableMetadata, n + 1);
+}
+if (d.dynamicMetadata != null) {
+if (typeof d.dynamicMetadata !== "object")
+throw TypeError(".proto.AIRichResponseSubMessage.dynamicMetadata: object expected");
+m.dynamicMetadata = $root.proto.AIRichResponseDynamicMetadata.fromObject(d.dynamicMetadata, n + 1);
+}
+if (d.latexMetadata != null) {
+if (typeof d.latexMetadata !== "object")
+throw TypeError(".proto.AIRichResponseSubMessage.latexMetadata: object expected");
+m.latexMetadata = $root.proto.AIRichResponseLatexMetadata.fromObject(d.latexMetadata, n + 1);
+}
+if (d.mapMetadata != null) {
+if (typeof d.mapMetadata !== "object")
+throw TypeError(".proto.AIRichResponseSubMessage.mapMetadata: object expected");
+m.mapMetadata = $root.proto.AIRichResponseMapMetadata.fromObject(d.mapMetadata, n + 1);
+}
+if (d.contentItemsMetadata != null) {
+if (typeof d.contentItemsMetadata !== "object")
+throw TypeError(".proto.AIRichResponseSubMessage.contentItemsMetadata: object expected");
+m.contentItemsMetadata = $root.proto.AIRichResponseContentItemsMetadata.fromObject(d.contentItemsMetadata, n + 1);
+}
+return m;
+};
+AIRichResponseSubMessage.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.messageType != null && m.hasOwnProperty("messageType")) {
+d.messageType = o.enums === String ? $root.proto.AIRichResponseSubMessageType[m.messageType] === undefined ? m.messageType : $root.proto.AIRichResponseSubMessageType[m.messageType] : m.messageType;
+if (o.oneofs)
+d._messageType = "messageType";
+}
+if (m.gridImageMetadata != null && m.hasOwnProperty("gridImageMetadata")) {
+d.gridImageMetadata = $root.proto.AIRichResponseGridImageMetadata.toObject(m.gridImageMetadata, o);
+if (o.oneofs)
+d._gridImageMetadata = "gridImageMetadata";
+}
+if (m.messageText != null && m.hasOwnProperty("messageText")) {
+d.messageText = m.messageText;
+if (o.oneofs)
+d._messageText = "messageText";
+}
+if (m.imageMetadata != null && m.hasOwnProperty("imageMetadata")) {
+d.imageMetadata = $root.proto.AIRichResponseInlineImageMetadata.toObject(m.imageMetadata, o);
+if (o.oneofs)
+d._imageMetadata = "imageMetadata";
+}
+if (m.codeMetadata != null && m.hasOwnProperty("codeMetadata")) {
+d.codeMetadata = $root.proto.AIRichResponseCodeMetadata.toObject(m.codeMetadata, o);
+if (o.oneofs)
+d._codeMetadata = "codeMetadata";
+}
+if (m.tableMetadata != null && m.hasOwnProperty("tableMetadata")) {
+d.tableMetadata = $root.proto.AIRichResponseTableMetadata.toObject(m.tableMetadata, o);
+if (o.oneofs)
+d._tableMetadata = "tableMetadata";
+}
+if (m.dynamicMetadata != null && m.hasOwnProperty("dynamicMetadata")) {
+d.dynamicMetadata = $root.proto.AIRichResponseDynamicMetadata.toObject(m.dynamicMetadata, o);
+if (o.oneofs)
+d._dynamicMetadata = "dynamicMetadata";
+}
+if (m.latexMetadata != null && m.hasOwnProperty("latexMetadata")) {
+d.latexMetadata = $root.proto.AIRichResponseLatexMetadata.toObject(m.latexMetadata, o);
+if (o.oneofs)
+d._latexMetadata = "latexMetadata";
+}
+if (m.mapMetadata != null && m.hasOwnProperty("mapMetadata")) {
+d.mapMetadata = $root.proto.AIRichResponseMapMetadata.toObject(m.mapMetadata, o);
+if (o.oneofs)
+d._mapMetadata = "mapMetadata";
+}
+if (m.contentItemsMetadata != null && m.hasOwnProperty("contentItemsMetadata")) {
+d.contentItemsMetadata = $root.proto.AIRichResponseContentItemsMetadata.toObject(m.contentItemsMetadata, o);
+if (o.oneofs)
+d._contentItemsMetadata = "contentItemsMetadata";
+}
+return d;
+};
+AIRichResponseSubMessage.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIRichResponseSubMessage.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIRichResponseSubMessage";
+};
+return AIRichResponseSubMessage;

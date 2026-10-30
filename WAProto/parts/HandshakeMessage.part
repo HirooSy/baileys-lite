@@ -1,0 +1,815 @@
+"use strict";
+function HandshakeMessage(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+HandshakeMessage.prototype.clientHello = null;
+HandshakeMessage.prototype.serverHello = null;
+HandshakeMessage.prototype.clientFinish = null;
+let $oneOfFields;
+Object.defineProperty(HandshakeMessage.prototype, "_clientHello", {
+get: $util.oneOfGetter($oneOfFields = ["clientHello"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(HandshakeMessage.prototype, "_serverHello", {
+get: $util.oneOfGetter($oneOfFields = ["serverHello"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(HandshakeMessage.prototype, "_clientFinish", {
+get: $util.oneOfGetter($oneOfFields = ["clientFinish"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+HandshakeMessage.create = function create(properties) {
+return new HandshakeMessage(properties);
+};
+HandshakeMessage.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.clientHello != null && Object.hasOwnProperty.call(m, "clientHello"))
+$root.proto.HandshakeMessage.ClientHello.encode(m.clientHello, w.uint32(18).fork()).ldelim();
+if (m.serverHello != null && Object.hasOwnProperty.call(m, "serverHello"))
+$root.proto.HandshakeMessage.ServerHello.encode(m.serverHello, w.uint32(26).fork()).ldelim();
+if (m.clientFinish != null && Object.hasOwnProperty.call(m, "clientFinish"))
+$root.proto.HandshakeMessage.ClientFinish.encode(m.clientFinish, w.uint32(34).fork()).ldelim();
+return w;
+};
+HandshakeMessage.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.HandshakeMessage();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 2: {
+m.clientHello = $root.proto.HandshakeMessage.ClientHello.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 3: {
+m.serverHello = $root.proto.HandshakeMessage.ServerHello.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 4: {
+m.clientFinish = $root.proto.HandshakeMessage.ClientFinish.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+HandshakeMessage.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.HandshakeMessage)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.HandshakeMessage();
+if (d.clientHello != null) {
+if (typeof d.clientHello !== "object")
+throw TypeError(".proto.HandshakeMessage.clientHello: object expected");
+m.clientHello = $root.proto.HandshakeMessage.ClientHello.fromObject(d.clientHello, n + 1);
+}
+if (d.serverHello != null) {
+if (typeof d.serverHello !== "object")
+throw TypeError(".proto.HandshakeMessage.serverHello: object expected");
+m.serverHello = $root.proto.HandshakeMessage.ServerHello.fromObject(d.serverHello, n + 1);
+}
+if (d.clientFinish != null) {
+if (typeof d.clientFinish !== "object")
+throw TypeError(".proto.HandshakeMessage.clientFinish: object expected");
+m.clientFinish = $root.proto.HandshakeMessage.ClientFinish.fromObject(d.clientFinish, n + 1);
+}
+return m;
+};
+HandshakeMessage.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.clientHello != null && m.hasOwnProperty("clientHello")) {
+d.clientHello = $root.proto.HandshakeMessage.ClientHello.toObject(m.clientHello, o);
+if (o.oneofs)
+d._clientHello = "clientHello";
+}
+if (m.serverHello != null && m.hasOwnProperty("serverHello")) {
+d.serverHello = $root.proto.HandshakeMessage.ServerHello.toObject(m.serverHello, o);
+if (o.oneofs)
+d._serverHello = "serverHello";
+}
+if (m.clientFinish != null && m.hasOwnProperty("clientFinish")) {
+d.clientFinish = $root.proto.HandshakeMessage.ClientFinish.toObject(m.clientFinish, o);
+if (o.oneofs)
+d._clientFinish = "clientFinish";
+}
+return d;
+};
+HandshakeMessage.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+HandshakeMessage.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.HandshakeMessage";
+};
+$lazy(HandshakeMessage, "ClientFinish", function() {
+function ClientFinish(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ClientFinish.prototype["static"] = null;
+ClientFinish.prototype.payload = null;
+ClientFinish.prototype.extendedCiphertext = null;
+ClientFinish.prototype.paddedBytes = null;
+ClientFinish.prototype.simulateXxkemFs = null;
+let $oneOfFields;
+Object.defineProperty(ClientFinish.prototype, "_static", {
+get: $util.oneOfGetter($oneOfFields = ["static"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ClientFinish.prototype, "_payload", {
+get: $util.oneOfGetter($oneOfFields = ["payload"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ClientFinish.prototype, "_extendedCiphertext", {
+get: $util.oneOfGetter($oneOfFields = ["extendedCiphertext"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ClientFinish.prototype, "_paddedBytes", {
+get: $util.oneOfGetter($oneOfFields = ["paddedBytes"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ClientFinish.prototype, "_simulateXxkemFs", {
+get: $util.oneOfGetter($oneOfFields = ["simulateXxkemFs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ClientFinish.create = function create(properties) {
+return new ClientFinish(properties);
+};
+ClientFinish.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m["static"] != null && Object.hasOwnProperty.call(m, "static"))
+w.uint32(10).bytes(m["static"]);
+if (m.payload != null && Object.hasOwnProperty.call(m, "payload"))
+w.uint32(18).bytes(m.payload);
+if (m.extendedCiphertext != null && Object.hasOwnProperty.call(m, "extendedCiphertext"))
+w.uint32(26).bytes(m.extendedCiphertext);
+if (m.paddedBytes != null && Object.hasOwnProperty.call(m, "paddedBytes"))
+w.uint32(34).bytes(m.paddedBytes);
+if (m.simulateXxkemFs != null && Object.hasOwnProperty.call(m, "simulateXxkemFs"))
+w.uint32(40).bool(m.simulateXxkemFs);
+return w;
+};
+ClientFinish.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.HandshakeMessage.ClientFinish();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m["static"] = r.bytes();
+break;
+}
+case 2: {
+m.payload = r.bytes();
+break;
+}
+case 3: {
+m.extendedCiphertext = r.bytes();
+break;
+}
+case 4: {
+m.paddedBytes = r.bytes();
+break;
+}
+case 5: {
+m.simulateXxkemFs = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ClientFinish.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.HandshakeMessage.ClientFinish)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.HandshakeMessage.ClientFinish();
+if (d["static"] != null) {
+if (typeof d["static"] === "string")
+$util.base64.decode(d["static"], m["static"] = $util.newBuffer($util.base64.length(d["static"])), 0);
+else if (d["static"].length >= 0)
+m["static"] = d["static"];
+}
+if (d.payload != null) {
+if (typeof d.payload === "string")
+$util.base64.decode(d.payload, m.payload = $util.newBuffer($util.base64.length(d.payload)), 0);
+else if (d.payload.length >= 0)
+m.payload = d.payload;
+}
+if (d.extendedCiphertext != null) {
+if (typeof d.extendedCiphertext === "string")
+$util.base64.decode(d.extendedCiphertext, m.extendedCiphertext = $util.newBuffer($util.base64.length(d.extendedCiphertext)), 0);
+else if (d.extendedCiphertext.length >= 0)
+m.extendedCiphertext = d.extendedCiphertext;
+}
+if (d.paddedBytes != null) {
+if (typeof d.paddedBytes === "string")
+$util.base64.decode(d.paddedBytes, m.paddedBytes = $util.newBuffer($util.base64.length(d.paddedBytes)), 0);
+else if (d.paddedBytes.length >= 0)
+m.paddedBytes = d.paddedBytes;
+}
+if (d.simulateXxkemFs != null) {
+m.simulateXxkemFs = Boolean(d.simulateXxkemFs);
+}
+return m;
+};
+ClientFinish.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m["static"] != null && m.hasOwnProperty("static")) {
+d["static"] = o.bytes === String ? $util.base64.encode(m["static"], 0, m["static"].length) : o.bytes === Array ? Array.prototype.slice.call(m["static"]) : m["static"];
+if (o.oneofs)
+d._static = "static";
+}
+if (m.payload != null && m.hasOwnProperty("payload")) {
+d.payload = o.bytes === String ? $util.base64.encode(m.payload, 0, m.payload.length) : o.bytes === Array ? Array.prototype.slice.call(m.payload) : m.payload;
+if (o.oneofs)
+d._payload = "payload";
+}
+if (m.extendedCiphertext != null && m.hasOwnProperty("extendedCiphertext")) {
+d.extendedCiphertext = o.bytes === String ? $util.base64.encode(m.extendedCiphertext, 0, m.extendedCiphertext.length) : o.bytes === Array ? Array.prototype.slice.call(m.extendedCiphertext) : m.extendedCiphertext;
+if (o.oneofs)
+d._extendedCiphertext = "extendedCiphertext";
+}
+if (m.paddedBytes != null && m.hasOwnProperty("paddedBytes")) {
+d.paddedBytes = o.bytes === String ? $util.base64.encode(m.paddedBytes, 0, m.paddedBytes.length) : o.bytes === Array ? Array.prototype.slice.call(m.paddedBytes) : m.paddedBytes;
+if (o.oneofs)
+d._paddedBytes = "paddedBytes";
+}
+if (m.simulateXxkemFs != null && m.hasOwnProperty("simulateXxkemFs")) {
+d.simulateXxkemFs = m.simulateXxkemFs;
+if (o.oneofs)
+d._simulateXxkemFs = "simulateXxkemFs";
+}
+return d;
+};
+ClientFinish.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ClientFinish.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.HandshakeMessage.ClientFinish";
+};
+return ClientFinish;
+});
+$lazy(HandshakeMessage, "ClientHello", function() {
+function ClientHello(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ClientHello.prototype.ephemeral = null;
+ClientHello.prototype["static"] = null;
+ClientHello.prototype.payload = null;
+ClientHello.prototype.useExtended = null;
+ClientHello.prototype.extendedCiphertext = null;
+ClientHello.prototype.paddedBytes = null;
+ClientHello.prototype.sendServerHelloPaddedBytes = null;
+ClientHello.prototype.simulateXxkemFs = null;
+ClientHello.prototype.pqMode = null;
+ClientHello.prototype.extendedEphemeral = null;
+let $oneOfFields;
+Object.defineProperty(ClientHello.prototype, "_ephemeral", {
+get: $util.oneOfGetter($oneOfFields = ["ephemeral"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ClientHello.prototype, "_static", {
+get: $util.oneOfGetter($oneOfFields = ["static"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ClientHello.prototype, "_payload", {
+get: $util.oneOfGetter($oneOfFields = ["payload"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ClientHello.prototype, "_useExtended", {
+get: $util.oneOfGetter($oneOfFields = ["useExtended"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ClientHello.prototype, "_extendedCiphertext", {
+get: $util.oneOfGetter($oneOfFields = ["extendedCiphertext"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ClientHello.prototype, "_paddedBytes", {
+get: $util.oneOfGetter($oneOfFields = ["paddedBytes"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ClientHello.prototype, "_sendServerHelloPaddedBytes", {
+get: $util.oneOfGetter($oneOfFields = ["sendServerHelloPaddedBytes"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ClientHello.prototype, "_simulateXxkemFs", {
+get: $util.oneOfGetter($oneOfFields = ["simulateXxkemFs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ClientHello.prototype, "_pqMode", {
+get: $util.oneOfGetter($oneOfFields = ["pqMode"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ClientHello.prototype, "_extendedEphemeral", {
+get: $util.oneOfGetter($oneOfFields = ["extendedEphemeral"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ClientHello.create = function create(properties) {
+return new ClientHello(properties);
+};
+ClientHello.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.ephemeral != null && Object.hasOwnProperty.call(m, "ephemeral"))
+w.uint32(10).bytes(m.ephemeral);
+if (m["static"] != null && Object.hasOwnProperty.call(m, "static"))
+w.uint32(18).bytes(m["static"]);
+if (m.payload != null && Object.hasOwnProperty.call(m, "payload"))
+w.uint32(26).bytes(m.payload);
+if (m.useExtended != null && Object.hasOwnProperty.call(m, "useExtended"))
+w.uint32(32).bool(m.useExtended);
+if (m.extendedCiphertext != null && Object.hasOwnProperty.call(m, "extendedCiphertext"))
+w.uint32(42).bytes(m.extendedCiphertext);
+if (m.paddedBytes != null && Object.hasOwnProperty.call(m, "paddedBytes"))
+w.uint32(50).bytes(m.paddedBytes);
+if (m.sendServerHelloPaddedBytes != null && Object.hasOwnProperty.call(m, "sendServerHelloPaddedBytes"))
+w.uint32(56).bool(m.sendServerHelloPaddedBytes);
+if (m.simulateXxkemFs != null && Object.hasOwnProperty.call(m, "simulateXxkemFs"))
+w.uint32(64).bool(m.simulateXxkemFs);
+if (m.pqMode != null && Object.hasOwnProperty.call(m, "pqMode"))
+w.uint32(72).int32(m.pqMode);
+if (m.extendedEphemeral != null && Object.hasOwnProperty.call(m, "extendedEphemeral"))
+w.uint32(82).bytes(m.extendedEphemeral);
+return w;
+};
+ClientHello.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.HandshakeMessage.ClientHello();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.ephemeral = r.bytes();
+break;
+}
+case 2: {
+m["static"] = r.bytes();
+break;
+}
+case 3: {
+m.payload = r.bytes();
+break;
+}
+case 4: {
+m.useExtended = r.bool();
+break;
+}
+case 5: {
+m.extendedCiphertext = r.bytes();
+break;
+}
+case 6: {
+m.paddedBytes = r.bytes();
+break;
+}
+case 7: {
+m.sendServerHelloPaddedBytes = r.bool();
+break;
+}
+case 8: {
+m.simulateXxkemFs = r.bool();
+break;
+}
+case 9: {
+m.pqMode = r.int32();
+break;
+}
+case 10: {
+m.extendedEphemeral = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ClientHello.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.HandshakeMessage.ClientHello)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.HandshakeMessage.ClientHello();
+if (d.ephemeral != null) {
+if (typeof d.ephemeral === "string")
+$util.base64.decode(d.ephemeral, m.ephemeral = $util.newBuffer($util.base64.length(d.ephemeral)), 0);
+else if (d.ephemeral.length >= 0)
+m.ephemeral = d.ephemeral;
+}
+if (d["static"] != null) {
+if (typeof d["static"] === "string")
+$util.base64.decode(d["static"], m["static"] = $util.newBuffer($util.base64.length(d["static"])), 0);
+else if (d["static"].length >= 0)
+m["static"] = d["static"];
+}
+if (d.payload != null) {
+if (typeof d.payload === "string")
+$util.base64.decode(d.payload, m.payload = $util.newBuffer($util.base64.length(d.payload)), 0);
+else if (d.payload.length >= 0)
+m.payload = d.payload;
+}
+if (d.useExtended != null) {
+m.useExtended = Boolean(d.useExtended);
+}
+if (d.extendedCiphertext != null) {
+if (typeof d.extendedCiphertext === "string")
+$util.base64.decode(d.extendedCiphertext, m.extendedCiphertext = $util.newBuffer($util.base64.length(d.extendedCiphertext)), 0);
+else if (d.extendedCiphertext.length >= 0)
+m.extendedCiphertext = d.extendedCiphertext;
+}
+if (d.paddedBytes != null) {
+if (typeof d.paddedBytes === "string")
+$util.base64.decode(d.paddedBytes, m.paddedBytes = $util.newBuffer($util.base64.length(d.paddedBytes)), 0);
+else if (d.paddedBytes.length >= 0)
+m.paddedBytes = d.paddedBytes;
+}
+if (d.sendServerHelloPaddedBytes != null) {
+m.sendServerHelloPaddedBytes = Boolean(d.sendServerHelloPaddedBytes);
+}
+if (d.simulateXxkemFs != null) {
+m.simulateXxkemFs = Boolean(d.simulateXxkemFs);
+}
+switch (d.pqMode) {
+default:
+if (typeof d.pqMode === "number") {
+m.pqMode = d.pqMode;
+break;
+}
+break;
+case "HANDSHAKE_PQ_MODE_UNKNOWN":
+case 0:
+m.pqMode = 0;
+break;
+case "XXKEM":
+case 1:
+m.pqMode = 1;
+break;
+case "XXKEM_FS":
+case 2:
+m.pqMode = 2;
+break;
+case "WA_CLASSICAL":
+case 3:
+m.pqMode = 3;
+break;
+case "WA_PQ":
+case 4:
+m.pqMode = 4;
+break;
+case "IKKEM":
+case 5:
+m.pqMode = 5;
+break;
+case "IKKEM_FS":
+case 6:
+m.pqMode = 6;
+break;
+case "XXKEM_2":
+case 7:
+m.pqMode = 7;
+break;
+case "IKKEM_2":
+case 8:
+m.pqMode = 8;
+break;
+}
+if (d.extendedEphemeral != null) {
+if (typeof d.extendedEphemeral === "string")
+$util.base64.decode(d.extendedEphemeral, m.extendedEphemeral = $util.newBuffer($util.base64.length(d.extendedEphemeral)), 0);
+else if (d.extendedEphemeral.length >= 0)
+m.extendedEphemeral = d.extendedEphemeral;
+}
+return m;
+};
+ClientHello.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.ephemeral != null && m.hasOwnProperty("ephemeral")) {
+d.ephemeral = o.bytes === String ? $util.base64.encode(m.ephemeral, 0, m.ephemeral.length) : o.bytes === Array ? Array.prototype.slice.call(m.ephemeral) : m.ephemeral;
+if (o.oneofs)
+d._ephemeral = "ephemeral";
+}
+if (m["static"] != null && m.hasOwnProperty("static")) {
+d["static"] = o.bytes === String ? $util.base64.encode(m["static"], 0, m["static"].length) : o.bytes === Array ? Array.prototype.slice.call(m["static"]) : m["static"];
+if (o.oneofs)
+d._static = "static";
+}
+if (m.payload != null && m.hasOwnProperty("payload")) {
+d.payload = o.bytes === String ? $util.base64.encode(m.payload, 0, m.payload.length) : o.bytes === Array ? Array.prototype.slice.call(m.payload) : m.payload;
+if (o.oneofs)
+d._payload = "payload";
+}
+if (m.useExtended != null && m.hasOwnProperty("useExtended")) {
+d.useExtended = m.useExtended;
+if (o.oneofs)
+d._useExtended = "useExtended";
+}
+if (m.extendedCiphertext != null && m.hasOwnProperty("extendedCiphertext")) {
+d.extendedCiphertext = o.bytes === String ? $util.base64.encode(m.extendedCiphertext, 0, m.extendedCiphertext.length) : o.bytes === Array ? Array.prototype.slice.call(m.extendedCiphertext) : m.extendedCiphertext;
+if (o.oneofs)
+d._extendedCiphertext = "extendedCiphertext";
+}
+if (m.paddedBytes != null && m.hasOwnProperty("paddedBytes")) {
+d.paddedBytes = o.bytes === String ? $util.base64.encode(m.paddedBytes, 0, m.paddedBytes.length) : o.bytes === Array ? Array.prototype.slice.call(m.paddedBytes) : m.paddedBytes;
+if (o.oneofs)
+d._paddedBytes = "paddedBytes";
+}
+if (m.sendServerHelloPaddedBytes != null && m.hasOwnProperty("sendServerHelloPaddedBytes")) {
+d.sendServerHelloPaddedBytes = m.sendServerHelloPaddedBytes;
+if (o.oneofs)
+d._sendServerHelloPaddedBytes = "sendServerHelloPaddedBytes";
+}
+if (m.simulateXxkemFs != null && m.hasOwnProperty("simulateXxkemFs")) {
+d.simulateXxkemFs = m.simulateXxkemFs;
+if (o.oneofs)
+d._simulateXxkemFs = "simulateXxkemFs";
+}
+if (m.pqMode != null && m.hasOwnProperty("pqMode")) {
+d.pqMode = o.enums === String ? $root.proto.HandshakeMessage.HandshakePqMode[m.pqMode] === undefined ? m.pqMode : $root.proto.HandshakeMessage.HandshakePqMode[m.pqMode] : m.pqMode;
+if (o.oneofs)
+d._pqMode = "pqMode";
+}
+if (m.extendedEphemeral != null && m.hasOwnProperty("extendedEphemeral")) {
+d.extendedEphemeral = o.bytes === String ? $util.base64.encode(m.extendedEphemeral, 0, m.extendedEphemeral.length) : o.bytes === Array ? Array.prototype.slice.call(m.extendedEphemeral) : m.extendedEphemeral;
+if (o.oneofs)
+d._extendedEphemeral = "extendedEphemeral";
+}
+return d;
+};
+ClientHello.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ClientHello.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.HandshakeMessage.ClientHello";
+};
+return ClientHello;
+});
+$lazy(HandshakeMessage, "HandshakePqMode", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "HANDSHAKE_PQ_MODE_UNKNOWN"] = 0;
+values[valuesById[1] = "XXKEM"] = 1;
+values[valuesById[2] = "XXKEM_FS"] = 2;
+values[valuesById[3] = "WA_CLASSICAL"] = 3;
+values[valuesById[4] = "WA_PQ"] = 4;
+values[valuesById[5] = "IKKEM"] = 5;
+values[valuesById[6] = "IKKEM_FS"] = 6;
+values[valuesById[7] = "XXKEM_2"] = 7;
+values[valuesById[8] = "IKKEM_2"] = 8;
+return values;
+});
+$lazy(HandshakeMessage, "ServerHello", function() {
+function ServerHello(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ServerHello.prototype.ephemeral = null;
+ServerHello.prototype["static"] = null;
+ServerHello.prototype.payload = null;
+ServerHello.prototype.extendedStatic = null;
+ServerHello.prototype.paddingBytes = null;
+ServerHello.prototype.extendedCiphertext = null;
+let $oneOfFields;
+Object.defineProperty(ServerHello.prototype, "_ephemeral", {
+get: $util.oneOfGetter($oneOfFields = ["ephemeral"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ServerHello.prototype, "_static", {
+get: $util.oneOfGetter($oneOfFields = ["static"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ServerHello.prototype, "_payload", {
+get: $util.oneOfGetter($oneOfFields = ["payload"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ServerHello.prototype, "_extendedStatic", {
+get: $util.oneOfGetter($oneOfFields = ["extendedStatic"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ServerHello.prototype, "_paddingBytes", {
+get: $util.oneOfGetter($oneOfFields = ["paddingBytes"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ServerHello.prototype, "_extendedCiphertext", {
+get: $util.oneOfGetter($oneOfFields = ["extendedCiphertext"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ServerHello.create = function create(properties) {
+return new ServerHello(properties);
+};
+ServerHello.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.ephemeral != null && Object.hasOwnProperty.call(m, "ephemeral"))
+w.uint32(10).bytes(m.ephemeral);
+if (m["static"] != null && Object.hasOwnProperty.call(m, "static"))
+w.uint32(18).bytes(m["static"]);
+if (m.payload != null && Object.hasOwnProperty.call(m, "payload"))
+w.uint32(26).bytes(m.payload);
+if (m.extendedStatic != null && Object.hasOwnProperty.call(m, "extendedStatic"))
+w.uint32(34).bytes(m.extendedStatic);
+if (m.paddingBytes != null && Object.hasOwnProperty.call(m, "paddingBytes"))
+w.uint32(42).bytes(m.paddingBytes);
+if (m.extendedCiphertext != null && Object.hasOwnProperty.call(m, "extendedCiphertext"))
+w.uint32(50).bytes(m.extendedCiphertext);
+return w;
+};
+ServerHello.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.HandshakeMessage.ServerHello();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.ephemeral = r.bytes();
+break;
+}
+case 2: {
+m["static"] = r.bytes();
+break;
+}
+case 3: {
+m.payload = r.bytes();
+break;
+}
+case 4: {
+m.extendedStatic = r.bytes();
+break;
+}
+case 5: {
+m.paddingBytes = r.bytes();
+break;
+}
+case 6: {
+m.extendedCiphertext = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ServerHello.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.HandshakeMessage.ServerHello)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.HandshakeMessage.ServerHello();
+if (d.ephemeral != null) {
+if (typeof d.ephemeral === "string")
+$util.base64.decode(d.ephemeral, m.ephemeral = $util.newBuffer($util.base64.length(d.ephemeral)), 0);
+else if (d.ephemeral.length >= 0)
+m.ephemeral = d.ephemeral;
+}
+if (d["static"] != null) {
+if (typeof d["static"] === "string")
+$util.base64.decode(d["static"], m["static"] = $util.newBuffer($util.base64.length(d["static"])), 0);
+else if (d["static"].length >= 0)
+m["static"] = d["static"];
+}
+if (d.payload != null) {
+if (typeof d.payload === "string")
+$util.base64.decode(d.payload, m.payload = $util.newBuffer($util.base64.length(d.payload)), 0);
+else if (d.payload.length >= 0)
+m.payload = d.payload;
+}
+if (d.extendedStatic != null) {
+if (typeof d.extendedStatic === "string")
+$util.base64.decode(d.extendedStatic, m.extendedStatic = $util.newBuffer($util.base64.length(d.extendedStatic)), 0);
+else if (d.extendedStatic.length >= 0)
+m.extendedStatic = d.extendedStatic;
+}
+if (d.paddingBytes != null) {
+if (typeof d.paddingBytes === "string")
+$util.base64.decode(d.paddingBytes, m.paddingBytes = $util.newBuffer($util.base64.length(d.paddingBytes)), 0);
+else if (d.paddingBytes.length >= 0)
+m.paddingBytes = d.paddingBytes;
+}
+if (d.extendedCiphertext != null) {
+if (typeof d.extendedCiphertext === "string")
+$util.base64.decode(d.extendedCiphertext, m.extendedCiphertext = $util.newBuffer($util.base64.length(d.extendedCiphertext)), 0);
+else if (d.extendedCiphertext.length >= 0)
+m.extendedCiphertext = d.extendedCiphertext;
+}
+return m;
+};
+ServerHello.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.ephemeral != null && m.hasOwnProperty("ephemeral")) {
+d.ephemeral = o.bytes === String ? $util.base64.encode(m.ephemeral, 0, m.ephemeral.length) : o.bytes === Array ? Array.prototype.slice.call(m.ephemeral) : m.ephemeral;
+if (o.oneofs)
+d._ephemeral = "ephemeral";
+}
+if (m["static"] != null && m.hasOwnProperty("static")) {
+d["static"] = o.bytes === String ? $util.base64.encode(m["static"], 0, m["static"].length) : o.bytes === Array ? Array.prototype.slice.call(m["static"]) : m["static"];
+if (o.oneofs)
+d._static = "static";
+}
+if (m.payload != null && m.hasOwnProperty("payload")) {
+d.payload = o.bytes === String ? $util.base64.encode(m.payload, 0, m.payload.length) : o.bytes === Array ? Array.prototype.slice.call(m.payload) : m.payload;
+if (o.oneofs)
+d._payload = "payload";
+}
+if (m.extendedStatic != null && m.hasOwnProperty("extendedStatic")) {
+d.extendedStatic = o.bytes === String ? $util.base64.encode(m.extendedStatic, 0, m.extendedStatic.length) : o.bytes === Array ? Array.prototype.slice.call(m.extendedStatic) : m.extendedStatic;
+if (o.oneofs)
+d._extendedStatic = "extendedStatic";
+}
+if (m.paddingBytes != null && m.hasOwnProperty("paddingBytes")) {
+d.paddingBytes = o.bytes === String ? $util.base64.encode(m.paddingBytes, 0, m.paddingBytes.length) : o.bytes === Array ? Array.prototype.slice.call(m.paddingBytes) : m.paddingBytes;
+if (o.oneofs)
+d._paddingBytes = "paddingBytes";
+}
+if (m.extendedCiphertext != null && m.hasOwnProperty("extendedCiphertext")) {
+d.extendedCiphertext = o.bytes === String ? $util.base64.encode(m.extendedCiphertext, 0, m.extendedCiphertext.length) : o.bytes === Array ? Array.prototype.slice.call(m.extendedCiphertext) : m.extendedCiphertext;
+if (o.oneofs)
+d._extendedCiphertext = "extendedCiphertext";
+}
+return d;
+};
+ServerHello.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ServerHello.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.HandshakeMessage.ServerHello";
+};
+return ServerHello;
+});
+return HandshakeMessage;

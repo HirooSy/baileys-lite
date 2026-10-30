@@ -1,0 +1,358 @@
+"use strict";
+function PatchDebugData(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+PatchDebugData.prototype.currentLthash = null;
+PatchDebugData.prototype.newLthash = null;
+PatchDebugData.prototype.patchVersion = null;
+PatchDebugData.prototype.collectionName = null;
+PatchDebugData.prototype.firstFourBytesFromAHashOfSnapshotMacKey = null;
+PatchDebugData.prototype.newLthashSubtract = null;
+PatchDebugData.prototype.numberAdd = null;
+PatchDebugData.prototype.numberRemove = null;
+PatchDebugData.prototype.numberOverride = null;
+PatchDebugData.prototype.senderPlatform = null;
+PatchDebugData.prototype.isSenderPrimary = null;
+let $oneOfFields;
+Object.defineProperty(PatchDebugData.prototype, "_currentLthash", {
+get: $util.oneOfGetter($oneOfFields = ["currentLthash"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PatchDebugData.prototype, "_newLthash", {
+get: $util.oneOfGetter($oneOfFields = ["newLthash"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PatchDebugData.prototype, "_patchVersion", {
+get: $util.oneOfGetter($oneOfFields = ["patchVersion"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PatchDebugData.prototype, "_collectionName", {
+get: $util.oneOfGetter($oneOfFields = ["collectionName"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PatchDebugData.prototype, "_firstFourBytesFromAHashOfSnapshotMacKey", {
+get: $util.oneOfGetter($oneOfFields = ["firstFourBytesFromAHashOfSnapshotMacKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PatchDebugData.prototype, "_newLthashSubtract", {
+get: $util.oneOfGetter($oneOfFields = ["newLthashSubtract"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PatchDebugData.prototype, "_numberAdd", {
+get: $util.oneOfGetter($oneOfFields = ["numberAdd"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PatchDebugData.prototype, "_numberRemove", {
+get: $util.oneOfGetter($oneOfFields = ["numberRemove"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PatchDebugData.prototype, "_numberOverride", {
+get: $util.oneOfGetter($oneOfFields = ["numberOverride"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PatchDebugData.prototype, "_senderPlatform", {
+get: $util.oneOfGetter($oneOfFields = ["senderPlatform"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PatchDebugData.prototype, "_isSenderPrimary", {
+get: $util.oneOfGetter($oneOfFields = ["isSenderPrimary"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+PatchDebugData.create = function create(properties) {
+return new PatchDebugData(properties);
+};
+PatchDebugData.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.currentLthash != null && Object.hasOwnProperty.call(m, "currentLthash"))
+w.uint32(10).bytes(m.currentLthash);
+if (m.newLthash != null && Object.hasOwnProperty.call(m, "newLthash"))
+w.uint32(18).bytes(m.newLthash);
+if (m.patchVersion != null && Object.hasOwnProperty.call(m, "patchVersion"))
+w.uint32(26).bytes(m.patchVersion);
+if (m.collectionName != null && Object.hasOwnProperty.call(m, "collectionName"))
+w.uint32(34).bytes(m.collectionName);
+if (m.firstFourBytesFromAHashOfSnapshotMacKey != null && Object.hasOwnProperty.call(m, "firstFourBytesFromAHashOfSnapshotMacKey"))
+w.uint32(42).bytes(m.firstFourBytesFromAHashOfSnapshotMacKey);
+if (m.newLthashSubtract != null && Object.hasOwnProperty.call(m, "newLthashSubtract"))
+w.uint32(50).bytes(m.newLthashSubtract);
+if (m.numberAdd != null && Object.hasOwnProperty.call(m, "numberAdd"))
+w.uint32(56).int32(m.numberAdd);
+if (m.numberRemove != null && Object.hasOwnProperty.call(m, "numberRemove"))
+w.uint32(64).int32(m.numberRemove);
+if (m.numberOverride != null && Object.hasOwnProperty.call(m, "numberOverride"))
+w.uint32(72).int32(m.numberOverride);
+if (m.senderPlatform != null && Object.hasOwnProperty.call(m, "senderPlatform"))
+w.uint32(80).int32(m.senderPlatform);
+if (m.isSenderPrimary != null && Object.hasOwnProperty.call(m, "isSenderPrimary"))
+w.uint32(88).bool(m.isSenderPrimary);
+return w;
+};
+PatchDebugData.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.PatchDebugData();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.currentLthash = r.bytes();
+break;
+}
+case 2: {
+m.newLthash = r.bytes();
+break;
+}
+case 3: {
+m.patchVersion = r.bytes();
+break;
+}
+case 4: {
+m.collectionName = r.bytes();
+break;
+}
+case 5: {
+m.firstFourBytesFromAHashOfSnapshotMacKey = r.bytes();
+break;
+}
+case 6: {
+m.newLthashSubtract = r.bytes();
+break;
+}
+case 7: {
+m.numberAdd = r.int32();
+break;
+}
+case 8: {
+m.numberRemove = r.int32();
+break;
+}
+case 9: {
+m.numberOverride = r.int32();
+break;
+}
+case 10: {
+m.senderPlatform = r.int32();
+break;
+}
+case 11: {
+m.isSenderPrimary = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+PatchDebugData.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.PatchDebugData)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.PatchDebugData();
+if (d.currentLthash != null) {
+if (typeof d.currentLthash === "string")
+$util.base64.decode(d.currentLthash, m.currentLthash = $util.newBuffer($util.base64.length(d.currentLthash)), 0);
+else if (d.currentLthash.length >= 0)
+m.currentLthash = d.currentLthash;
+}
+if (d.newLthash != null) {
+if (typeof d.newLthash === "string")
+$util.base64.decode(d.newLthash, m.newLthash = $util.newBuffer($util.base64.length(d.newLthash)), 0);
+else if (d.newLthash.length >= 0)
+m.newLthash = d.newLthash;
+}
+if (d.patchVersion != null) {
+if (typeof d.patchVersion === "string")
+$util.base64.decode(d.patchVersion, m.patchVersion = $util.newBuffer($util.base64.length(d.patchVersion)), 0);
+else if (d.patchVersion.length >= 0)
+m.patchVersion = d.patchVersion;
+}
+if (d.collectionName != null) {
+if (typeof d.collectionName === "string")
+$util.base64.decode(d.collectionName, m.collectionName = $util.newBuffer($util.base64.length(d.collectionName)), 0);
+else if (d.collectionName.length >= 0)
+m.collectionName = d.collectionName;
+}
+if (d.firstFourBytesFromAHashOfSnapshotMacKey != null) {
+if (typeof d.firstFourBytesFromAHashOfSnapshotMacKey === "string")
+$util.base64.decode(d.firstFourBytesFromAHashOfSnapshotMacKey, m.firstFourBytesFromAHashOfSnapshotMacKey = $util.newBuffer($util.base64.length(d.firstFourBytesFromAHashOfSnapshotMacKey)), 0);
+else if (d.firstFourBytesFromAHashOfSnapshotMacKey.length >= 0)
+m.firstFourBytesFromAHashOfSnapshotMacKey = d.firstFourBytesFromAHashOfSnapshotMacKey;
+}
+if (d.newLthashSubtract != null) {
+if (typeof d.newLthashSubtract === "string")
+$util.base64.decode(d.newLthashSubtract, m.newLthashSubtract = $util.newBuffer($util.base64.length(d.newLthashSubtract)), 0);
+else if (d.newLthashSubtract.length >= 0)
+m.newLthashSubtract = d.newLthashSubtract;
+}
+if (d.numberAdd != null) {
+m.numberAdd = d.numberAdd | 0;
+}
+if (d.numberRemove != null) {
+m.numberRemove = d.numberRemove | 0;
+}
+if (d.numberOverride != null) {
+m.numberOverride = d.numberOverride | 0;
+}
+switch (d.senderPlatform) {
+default:
+if (typeof d.senderPlatform === "number") {
+m.senderPlatform = d.senderPlatform;
+break;
+}
+break;
+case "ANDROID":
+case 0:
+m.senderPlatform = 0;
+break;
+case "SMBA":
+case 1:
+m.senderPlatform = 1;
+break;
+case "IPHONE":
+case 2:
+m.senderPlatform = 2;
+break;
+case "SMBI":
+case 3:
+m.senderPlatform = 3;
+break;
+case "WEB":
+case 4:
+m.senderPlatform = 4;
+break;
+case "UWP":
+case 5:
+m.senderPlatform = 5;
+break;
+case "DARWIN":
+case 6:
+m.senderPlatform = 6;
+break;
+case "IPAD":
+case 7:
+m.senderPlatform = 7;
+break;
+case "WEAROS":
+case 8:
+m.senderPlatform = 8;
+break;
+case "WASG":
+case 9:
+m.senderPlatform = 9;
+break;
+case "WEARM":
+case 10:
+m.senderPlatform = 10;
+break;
+case "CAPI":
+case 11:
+m.senderPlatform = 11;
+break;
+}
+if (d.isSenderPrimary != null) {
+m.isSenderPrimary = Boolean(d.isSenderPrimary);
+}
+return m;
+};
+PatchDebugData.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.currentLthash != null && m.hasOwnProperty("currentLthash")) {
+d.currentLthash = o.bytes === String ? $util.base64.encode(m.currentLthash, 0, m.currentLthash.length) : o.bytes === Array ? Array.prototype.slice.call(m.currentLthash) : m.currentLthash;
+if (o.oneofs)
+d._currentLthash = "currentLthash";
+}
+if (m.newLthash != null && m.hasOwnProperty("newLthash")) {
+d.newLthash = o.bytes === String ? $util.base64.encode(m.newLthash, 0, m.newLthash.length) : o.bytes === Array ? Array.prototype.slice.call(m.newLthash) : m.newLthash;
+if (o.oneofs)
+d._newLthash = "newLthash";
+}
+if (m.patchVersion != null && m.hasOwnProperty("patchVersion")) {
+d.patchVersion = o.bytes === String ? $util.base64.encode(m.patchVersion, 0, m.patchVersion.length) : o.bytes === Array ? Array.prototype.slice.call(m.patchVersion) : m.patchVersion;
+if (o.oneofs)
+d._patchVersion = "patchVersion";
+}
+if (m.collectionName != null && m.hasOwnProperty("collectionName")) {
+d.collectionName = o.bytes === String ? $util.base64.encode(m.collectionName, 0, m.collectionName.length) : o.bytes === Array ? Array.prototype.slice.call(m.collectionName) : m.collectionName;
+if (o.oneofs)
+d._collectionName = "collectionName";
+}
+if (m.firstFourBytesFromAHashOfSnapshotMacKey != null && m.hasOwnProperty("firstFourBytesFromAHashOfSnapshotMacKey")) {
+d.firstFourBytesFromAHashOfSnapshotMacKey = o.bytes === String ? $util.base64.encode(m.firstFourBytesFromAHashOfSnapshotMacKey, 0, m.firstFourBytesFromAHashOfSnapshotMacKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.firstFourBytesFromAHashOfSnapshotMacKey) : m.firstFourBytesFromAHashOfSnapshotMacKey;
+if (o.oneofs)
+d._firstFourBytesFromAHashOfSnapshotMacKey = "firstFourBytesFromAHashOfSnapshotMacKey";
+}
+if (m.newLthashSubtract != null && m.hasOwnProperty("newLthashSubtract")) {
+d.newLthashSubtract = o.bytes === String ? $util.base64.encode(m.newLthashSubtract, 0, m.newLthashSubtract.length) : o.bytes === Array ? Array.prototype.slice.call(m.newLthashSubtract) : m.newLthashSubtract;
+if (o.oneofs)
+d._newLthashSubtract = "newLthashSubtract";
+}
+if (m.numberAdd != null && m.hasOwnProperty("numberAdd")) {
+d.numberAdd = m.numberAdd;
+if (o.oneofs)
+d._numberAdd = "numberAdd";
+}
+if (m.numberRemove != null && m.hasOwnProperty("numberRemove")) {
+d.numberRemove = m.numberRemove;
+if (o.oneofs)
+d._numberRemove = "numberRemove";
+}
+if (m.numberOverride != null && m.hasOwnProperty("numberOverride")) {
+d.numberOverride = m.numberOverride;
+if (o.oneofs)
+d._numberOverride = "numberOverride";
+}
+if (m.senderPlatform != null && m.hasOwnProperty("senderPlatform")) {
+d.senderPlatform = o.enums === String ? $root.proto.PatchDebugData.Platform[m.senderPlatform] === undefined ? m.senderPlatform : $root.proto.PatchDebugData.Platform[m.senderPlatform] : m.senderPlatform;
+if (o.oneofs)
+d._senderPlatform = "senderPlatform";
+}
+if (m.isSenderPrimary != null && m.hasOwnProperty("isSenderPrimary")) {
+d.isSenderPrimary = m.isSenderPrimary;
+if (o.oneofs)
+d._isSenderPrimary = "isSenderPrimary";
+}
+return d;
+};
+PatchDebugData.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+PatchDebugData.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.PatchDebugData";
+};
+$lazy(PatchDebugData, "Platform", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "ANDROID"] = 0;
+values[valuesById[1] = "SMBA"] = 1;
+values[valuesById[2] = "IPHONE"] = 2;
+values[valuesById[3] = "SMBI"] = 3;
+values[valuesById[4] = "WEB"] = 4;
+values[valuesById[5] = "UWP"] = 5;
+values[valuesById[6] = "DARWIN"] = 6;
+values[valuesById[7] = "IPAD"] = 7;
+values[valuesById[8] = "WEAROS"] = 8;
+values[valuesById[9] = "WASG"] = 9;
+values[valuesById[10] = "WEARM"] = 10;
+values[valuesById[11] = "CAPI"] = 11;
+return values;
+});
+return PatchDebugData;

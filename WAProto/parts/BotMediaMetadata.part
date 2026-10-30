@@ -1,0 +1,229 @@
+"use strict";
+function BotMediaMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotMediaMetadata.prototype.fileSha256 = null;
+BotMediaMetadata.prototype.mediaKey = null;
+BotMediaMetadata.prototype.fileEncSha256 = null;
+BotMediaMetadata.prototype.directPath = null;
+BotMediaMetadata.prototype.mediaKeyTimestamp = null;
+BotMediaMetadata.prototype.mimetype = null;
+BotMediaMetadata.prototype.orientationType = null;
+let $oneOfFields;
+Object.defineProperty(BotMediaMetadata.prototype, "_fileSha256", {
+get: $util.oneOfGetter($oneOfFields = ["fileSha256"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMediaMetadata.prototype, "_mediaKey", {
+get: $util.oneOfGetter($oneOfFields = ["mediaKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMediaMetadata.prototype, "_fileEncSha256", {
+get: $util.oneOfGetter($oneOfFields = ["fileEncSha256"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMediaMetadata.prototype, "_directPath", {
+get: $util.oneOfGetter($oneOfFields = ["directPath"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMediaMetadata.prototype, "_mediaKeyTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["mediaKeyTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMediaMetadata.prototype, "_mimetype", {
+get: $util.oneOfGetter($oneOfFields = ["mimetype"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotMediaMetadata.prototype, "_orientationType", {
+get: $util.oneOfGetter($oneOfFields = ["orientationType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotMediaMetadata.create = function create(properties) {
+return new BotMediaMetadata(properties);
+};
+BotMediaMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.fileSha256 != null && Object.hasOwnProperty.call(m, "fileSha256"))
+w.uint32(10).string(m.fileSha256);
+if (m.mediaKey != null && Object.hasOwnProperty.call(m, "mediaKey"))
+w.uint32(18).string(m.mediaKey);
+if (m.fileEncSha256 != null && Object.hasOwnProperty.call(m, "fileEncSha256"))
+w.uint32(26).string(m.fileEncSha256);
+if (m.directPath != null && Object.hasOwnProperty.call(m, "directPath"))
+w.uint32(34).string(m.directPath);
+if (m.mediaKeyTimestamp != null && Object.hasOwnProperty.call(m, "mediaKeyTimestamp"))
+w.uint32(40).int64(m.mediaKeyTimestamp);
+if (m.mimetype != null && Object.hasOwnProperty.call(m, "mimetype"))
+w.uint32(50).string(m.mimetype);
+if (m.orientationType != null && Object.hasOwnProperty.call(m, "orientationType"))
+w.uint32(56).int32(m.orientationType);
+return w;
+};
+BotMediaMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotMediaMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.fileSha256 = r.string();
+break;
+}
+case 2: {
+m.mediaKey = r.string();
+break;
+}
+case 3: {
+m.fileEncSha256 = r.string();
+break;
+}
+case 4: {
+m.directPath = r.string();
+break;
+}
+case 5: {
+m.mediaKeyTimestamp = r.int64();
+break;
+}
+case 6: {
+m.mimetype = r.string();
+break;
+}
+case 7: {
+m.orientationType = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotMediaMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotMediaMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotMediaMetadata();
+if (d.fileSha256 != null) {
+m.fileSha256 = String(d.fileSha256);
+}
+if (d.mediaKey != null) {
+m.mediaKey = String(d.mediaKey);
+}
+if (d.fileEncSha256 != null) {
+m.fileEncSha256 = String(d.fileEncSha256);
+}
+if (d.directPath != null) {
+m.directPath = String(d.directPath);
+}
+if (d.mediaKeyTimestamp != null) {
+if ($util.Long)
+(m.mediaKeyTimestamp = $util.Long.fromValue(d.mediaKeyTimestamp)).unsigned = false;
+else if (typeof d.mediaKeyTimestamp === "string")
+m.mediaKeyTimestamp = parseInt(d.mediaKeyTimestamp, 10);
+else if (typeof d.mediaKeyTimestamp === "number")
+m.mediaKeyTimestamp = d.mediaKeyTimestamp;
+else if (typeof d.mediaKeyTimestamp === "object")
+m.mediaKeyTimestamp = new $util.LongBits(d.mediaKeyTimestamp.low >>> 0, d.mediaKeyTimestamp.high >>> 0).toNumber();
+}
+if (d.mimetype != null) {
+m.mimetype = String(d.mimetype);
+}
+switch (d.orientationType) {
+default:
+if (typeof d.orientationType === "number") {
+m.orientationType = d.orientationType;
+break;
+}
+break;
+case "CENTER":
+case 1:
+m.orientationType = 1;
+break;
+case "LEFT":
+case 2:
+m.orientationType = 2;
+break;
+case "RIGHT":
+case 3:
+m.orientationType = 3;
+break;
+}
+return m;
+};
+BotMediaMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.fileSha256 != null && m.hasOwnProperty("fileSha256")) {
+d.fileSha256 = m.fileSha256;
+if (o.oneofs)
+d._fileSha256 = "fileSha256";
+}
+if (m.mediaKey != null && m.hasOwnProperty("mediaKey")) {
+d.mediaKey = m.mediaKey;
+if (o.oneofs)
+d._mediaKey = "mediaKey";
+}
+if (m.fileEncSha256 != null && m.hasOwnProperty("fileEncSha256")) {
+d.fileEncSha256 = m.fileEncSha256;
+if (o.oneofs)
+d._fileEncSha256 = "fileEncSha256";
+}
+if (m.directPath != null && m.hasOwnProperty("directPath")) {
+d.directPath = m.directPath;
+if (o.oneofs)
+d._directPath = "directPath";
+}
+if (m.mediaKeyTimestamp != null && m.hasOwnProperty("mediaKeyTimestamp")) {
+if (typeof m.mediaKeyTimestamp === "number")
+d.mediaKeyTimestamp = o.longs === String ? String(m.mediaKeyTimestamp) : m.mediaKeyTimestamp;
+else
+d.mediaKeyTimestamp = o.longs === String ? longToString(m.mediaKeyTimestamp) : o.longs === Number ? longToNumber(m.mediaKeyTimestamp) : m.mediaKeyTimestamp;
+if (o.oneofs)
+d._mediaKeyTimestamp = "mediaKeyTimestamp";
+}
+if (m.mimetype != null && m.hasOwnProperty("mimetype")) {
+d.mimetype = m.mimetype;
+if (o.oneofs)
+d._mimetype = "mimetype";
+}
+if (m.orientationType != null && m.hasOwnProperty("orientationType")) {
+d.orientationType = o.enums === String ? $root.proto.BotMediaMetadata.OrientationType[m.orientationType] === undefined ? m.orientationType : $root.proto.BotMediaMetadata.OrientationType[m.orientationType] : m.orientationType;
+if (o.oneofs)
+d._orientationType = "orientationType";
+}
+return d;
+};
+BotMediaMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotMediaMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotMediaMetadata";
+};
+$lazy(BotMediaMetadata, "OrientationType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[1] = "CENTER"] = 1;
+values[valuesById[2] = "LEFT"] = 2;
+values[valuesById[3] = "RIGHT"] = 3;
+return values;
+});
+return BotMediaMetadata;

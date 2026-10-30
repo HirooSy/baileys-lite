@@ -1,0 +1,646 @@
+"use strict";
+function CallLogRecord(p) {
+this.participants = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+CallLogRecord.prototype.callResult = null;
+CallLogRecord.prototype.isDndMode = null;
+CallLogRecord.prototype.silenceReason = null;
+CallLogRecord.prototype.duration = null;
+CallLogRecord.prototype.startTime = null;
+CallLogRecord.prototype.isIncoming = null;
+CallLogRecord.prototype.isVideo = null;
+CallLogRecord.prototype.isCallLink = null;
+CallLogRecord.prototype.callLinkToken = null;
+CallLogRecord.prototype.scheduledCallId = null;
+CallLogRecord.prototype.callId = null;
+CallLogRecord.prototype.callCreatorJid = null;
+CallLogRecord.prototype.groupJid = null;
+CallLogRecord.prototype.participants = $util.emptyArray;
+CallLogRecord.prototype.callType = null;
+let $oneOfFields;
+Object.defineProperty(CallLogRecord.prototype, "_callResult", {
+get: $util.oneOfGetter($oneOfFields = ["callResult"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CallLogRecord.prototype, "_isDndMode", {
+get: $util.oneOfGetter($oneOfFields = ["isDndMode"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CallLogRecord.prototype, "_silenceReason", {
+get: $util.oneOfGetter($oneOfFields = ["silenceReason"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CallLogRecord.prototype, "_duration", {
+get: $util.oneOfGetter($oneOfFields = ["duration"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CallLogRecord.prototype, "_startTime", {
+get: $util.oneOfGetter($oneOfFields = ["startTime"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CallLogRecord.prototype, "_isIncoming", {
+get: $util.oneOfGetter($oneOfFields = ["isIncoming"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CallLogRecord.prototype, "_isVideo", {
+get: $util.oneOfGetter($oneOfFields = ["isVideo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CallLogRecord.prototype, "_isCallLink", {
+get: $util.oneOfGetter($oneOfFields = ["isCallLink"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CallLogRecord.prototype, "_callLinkToken", {
+get: $util.oneOfGetter($oneOfFields = ["callLinkToken"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CallLogRecord.prototype, "_scheduledCallId", {
+get: $util.oneOfGetter($oneOfFields = ["scheduledCallId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CallLogRecord.prototype, "_callId", {
+get: $util.oneOfGetter($oneOfFields = ["callId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CallLogRecord.prototype, "_callCreatorJid", {
+get: $util.oneOfGetter($oneOfFields = ["callCreatorJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CallLogRecord.prototype, "_groupJid", {
+get: $util.oneOfGetter($oneOfFields = ["groupJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(CallLogRecord.prototype, "_callType", {
+get: $util.oneOfGetter($oneOfFields = ["callType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+CallLogRecord.create = function create(properties) {
+return new CallLogRecord(properties);
+};
+CallLogRecord.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.callResult != null && Object.hasOwnProperty.call(m, "callResult"))
+w.uint32(8).int32(m.callResult);
+if (m.isDndMode != null && Object.hasOwnProperty.call(m, "isDndMode"))
+w.uint32(16).bool(m.isDndMode);
+if (m.silenceReason != null && Object.hasOwnProperty.call(m, "silenceReason"))
+w.uint32(24).int32(m.silenceReason);
+if (m.duration != null && Object.hasOwnProperty.call(m, "duration"))
+w.uint32(32).int64(m.duration);
+if (m.startTime != null && Object.hasOwnProperty.call(m, "startTime"))
+w.uint32(40).int64(m.startTime);
+if (m.isIncoming != null && Object.hasOwnProperty.call(m, "isIncoming"))
+w.uint32(48).bool(m.isIncoming);
+if (m.isVideo != null && Object.hasOwnProperty.call(m, "isVideo"))
+w.uint32(56).bool(m.isVideo);
+if (m.isCallLink != null && Object.hasOwnProperty.call(m, "isCallLink"))
+w.uint32(64).bool(m.isCallLink);
+if (m.callLinkToken != null && Object.hasOwnProperty.call(m, "callLinkToken"))
+w.uint32(74).string(m.callLinkToken);
+if (m.scheduledCallId != null && Object.hasOwnProperty.call(m, "scheduledCallId"))
+w.uint32(82).string(m.scheduledCallId);
+if (m.callId != null && Object.hasOwnProperty.call(m, "callId"))
+w.uint32(90).string(m.callId);
+if (m.callCreatorJid != null && Object.hasOwnProperty.call(m, "callCreatorJid"))
+w.uint32(98).string(m.callCreatorJid);
+if (m.groupJid != null && Object.hasOwnProperty.call(m, "groupJid"))
+w.uint32(106).string(m.groupJid);
+if (m.participants != null && m.participants.length) {
+for (var i = 0; i < m.participants.length; ++i)
+$root.proto.CallLogRecord.ParticipantInfo.encode(m.participants[i], w.uint32(114).fork()).ldelim();
+}
+if (m.callType != null && Object.hasOwnProperty.call(m, "callType"))
+w.uint32(120).int32(m.callType);
+return w;
+};
+CallLogRecord.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.CallLogRecord();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.callResult = r.int32();
+break;
+}
+case 2: {
+m.isDndMode = r.bool();
+break;
+}
+case 3: {
+m.silenceReason = r.int32();
+break;
+}
+case 4: {
+m.duration = r.int64();
+break;
+}
+case 5: {
+m.startTime = r.int64();
+break;
+}
+case 6: {
+m.isIncoming = r.bool();
+break;
+}
+case 7: {
+m.isVideo = r.bool();
+break;
+}
+case 8: {
+m.isCallLink = r.bool();
+break;
+}
+case 9: {
+m.callLinkToken = r.string();
+break;
+}
+case 10: {
+m.scheduledCallId = r.string();
+break;
+}
+case 11: {
+m.callId = r.string();
+break;
+}
+case 12: {
+m.callCreatorJid = r.string();
+break;
+}
+case 13: {
+m.groupJid = r.string();
+break;
+}
+case 14: {
+if (!(m.participants && m.participants.length))
+m.participants = [];
+m.participants.push($root.proto.CallLogRecord.ParticipantInfo.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 15: {
+m.callType = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+CallLogRecord.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.CallLogRecord)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.CallLogRecord();
+switch (d.callResult) {
+default:
+if (typeof d.callResult === "number") {
+m.callResult = d.callResult;
+break;
+}
+break;
+case "CONNECTED":
+case 0:
+m.callResult = 0;
+break;
+case "REJECTED":
+case 1:
+m.callResult = 1;
+break;
+case "CANCELLED":
+case 2:
+m.callResult = 2;
+break;
+case "ACCEPTEDELSEWHERE":
+case 3:
+m.callResult = 3;
+break;
+case "MISSED":
+case 4:
+m.callResult = 4;
+break;
+case "INVALID":
+case 5:
+m.callResult = 5;
+break;
+case "UNAVAILABLE":
+case 6:
+m.callResult = 6;
+break;
+case "UPCOMING":
+case 7:
+m.callResult = 7;
+break;
+case "FAILED":
+case 8:
+m.callResult = 8;
+break;
+case "ABANDONED":
+case 9:
+m.callResult = 9;
+break;
+case "ONGOING":
+case 10:
+m.callResult = 10;
+break;
+}
+if (d.isDndMode != null) {
+m.isDndMode = Boolean(d.isDndMode);
+}
+switch (d.silenceReason) {
+default:
+if (typeof d.silenceReason === "number") {
+m.silenceReason = d.silenceReason;
+break;
+}
+break;
+case "NONE":
+case 0:
+m.silenceReason = 0;
+break;
+case "SCHEDULED":
+case 1:
+m.silenceReason = 1;
+break;
+case "PRIVACY":
+case 2:
+m.silenceReason = 2;
+break;
+case "LIGHTWEIGHT":
+case 3:
+m.silenceReason = 3;
+break;
+}
+if (d.duration != null) {
+if ($util.Long)
+(m.duration = $util.Long.fromValue(d.duration)).unsigned = false;
+else if (typeof d.duration === "string")
+m.duration = parseInt(d.duration, 10);
+else if (typeof d.duration === "number")
+m.duration = d.duration;
+else if (typeof d.duration === "object")
+m.duration = new $util.LongBits(d.duration.low >>> 0, d.duration.high >>> 0).toNumber();
+}
+if (d.startTime != null) {
+if ($util.Long)
+(m.startTime = $util.Long.fromValue(d.startTime)).unsigned = false;
+else if (typeof d.startTime === "string")
+m.startTime = parseInt(d.startTime, 10);
+else if (typeof d.startTime === "number")
+m.startTime = d.startTime;
+else if (typeof d.startTime === "object")
+m.startTime = new $util.LongBits(d.startTime.low >>> 0, d.startTime.high >>> 0).toNumber();
+}
+if (d.isIncoming != null) {
+m.isIncoming = Boolean(d.isIncoming);
+}
+if (d.isVideo != null) {
+m.isVideo = Boolean(d.isVideo);
+}
+if (d.isCallLink != null) {
+m.isCallLink = Boolean(d.isCallLink);
+}
+if (d.callLinkToken != null) {
+m.callLinkToken = String(d.callLinkToken);
+}
+if (d.scheduledCallId != null) {
+m.scheduledCallId = String(d.scheduledCallId);
+}
+if (d.callId != null) {
+m.callId = String(d.callId);
+}
+if (d.callCreatorJid != null) {
+m.callCreatorJid = String(d.callCreatorJid);
+}
+if (d.groupJid != null) {
+m.groupJid = String(d.groupJid);
+}
+if (d.participants) {
+if (!Array.isArray(d.participants))
+throw TypeError(".proto.CallLogRecord.participants: array expected");
+m.participants = [];
+for (var i = 0; i < d.participants.length; ++i) {
+if (typeof d.participants[i] !== "object")
+throw TypeError(".proto.CallLogRecord.participants: object expected");
+m.participants[i] = $root.proto.CallLogRecord.ParticipantInfo.fromObject(d.participants[i], n + 1);
+}
+}
+switch (d.callType) {
+default:
+if (typeof d.callType === "number") {
+m.callType = d.callType;
+break;
+}
+break;
+case "REGULAR":
+case 0:
+m.callType = 0;
+break;
+case "SCHEDULED_CALL":
+case 1:
+m.callType = 1;
+break;
+case "VOICE_CHAT":
+case 2:
+m.callType = 2;
+break;
+}
+return m;
+};
+CallLogRecord.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.participants = [];
+}
+if (m.callResult != null && m.hasOwnProperty("callResult")) {
+d.callResult = o.enums === String ? $root.proto.CallLogRecord.CallResult[m.callResult] === undefined ? m.callResult : $root.proto.CallLogRecord.CallResult[m.callResult] : m.callResult;
+if (o.oneofs)
+d._callResult = "callResult";
+}
+if (m.isDndMode != null && m.hasOwnProperty("isDndMode")) {
+d.isDndMode = m.isDndMode;
+if (o.oneofs)
+d._isDndMode = "isDndMode";
+}
+if (m.silenceReason != null && m.hasOwnProperty("silenceReason")) {
+d.silenceReason = o.enums === String ? $root.proto.CallLogRecord.SilenceReason[m.silenceReason] === undefined ? m.silenceReason : $root.proto.CallLogRecord.SilenceReason[m.silenceReason] : m.silenceReason;
+if (o.oneofs)
+d._silenceReason = "silenceReason";
+}
+if (m.duration != null && m.hasOwnProperty("duration")) {
+if (typeof m.duration === "number")
+d.duration = o.longs === String ? String(m.duration) : m.duration;
+else
+d.duration = o.longs === String ? longToString(m.duration) : o.longs === Number ? longToNumber(m.duration) : m.duration;
+if (o.oneofs)
+d._duration = "duration";
+}
+if (m.startTime != null && m.hasOwnProperty("startTime")) {
+if (typeof m.startTime === "number")
+d.startTime = o.longs === String ? String(m.startTime) : m.startTime;
+else
+d.startTime = o.longs === String ? longToString(m.startTime) : o.longs === Number ? longToNumber(m.startTime) : m.startTime;
+if (o.oneofs)
+d._startTime = "startTime";
+}
+if (m.isIncoming != null && m.hasOwnProperty("isIncoming")) {
+d.isIncoming = m.isIncoming;
+if (o.oneofs)
+d._isIncoming = "isIncoming";
+}
+if (m.isVideo != null && m.hasOwnProperty("isVideo")) {
+d.isVideo = m.isVideo;
+if (o.oneofs)
+d._isVideo = "isVideo";
+}
+if (m.isCallLink != null && m.hasOwnProperty("isCallLink")) {
+d.isCallLink = m.isCallLink;
+if (o.oneofs)
+d._isCallLink = "isCallLink";
+}
+if (m.callLinkToken != null && m.hasOwnProperty("callLinkToken")) {
+d.callLinkToken = m.callLinkToken;
+if (o.oneofs)
+d._callLinkToken = "callLinkToken";
+}
+if (m.scheduledCallId != null && m.hasOwnProperty("scheduledCallId")) {
+d.scheduledCallId = m.scheduledCallId;
+if (o.oneofs)
+d._scheduledCallId = "scheduledCallId";
+}
+if (m.callId != null && m.hasOwnProperty("callId")) {
+d.callId = m.callId;
+if (o.oneofs)
+d._callId = "callId";
+}
+if (m.callCreatorJid != null && m.hasOwnProperty("callCreatorJid")) {
+d.callCreatorJid = m.callCreatorJid;
+if (o.oneofs)
+d._callCreatorJid = "callCreatorJid";
+}
+if (m.groupJid != null && m.hasOwnProperty("groupJid")) {
+d.groupJid = m.groupJid;
+if (o.oneofs)
+d._groupJid = "groupJid";
+}
+if (m.participants && m.participants.length) {
+d.participants = [];
+for (var j = 0; j < m.participants.length; ++j) {
+d.participants[j] = $root.proto.CallLogRecord.ParticipantInfo.toObject(m.participants[j], o);
+}
+}
+if (m.callType != null && m.hasOwnProperty("callType")) {
+d.callType = o.enums === String ? $root.proto.CallLogRecord.CallType[m.callType] === undefined ? m.callType : $root.proto.CallLogRecord.CallType[m.callType] : m.callType;
+if (o.oneofs)
+d._callType = "callType";
+}
+return d;
+};
+CallLogRecord.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+CallLogRecord.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.CallLogRecord";
+};
+$lazy(CallLogRecord, "CallResult", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "CONNECTED"] = 0;
+values[valuesById[1] = "REJECTED"] = 1;
+values[valuesById[2] = "CANCELLED"] = 2;
+values[valuesById[3] = "ACCEPTEDELSEWHERE"] = 3;
+values[valuesById[4] = "MISSED"] = 4;
+values[valuesById[5] = "INVALID"] = 5;
+values[valuesById[6] = "UNAVAILABLE"] = 6;
+values[valuesById[7] = "UPCOMING"] = 7;
+values[valuesById[8] = "FAILED"] = 8;
+values[valuesById[9] = "ABANDONED"] = 9;
+values[valuesById[10] = "ONGOING"] = 10;
+return values;
+});
+$lazy(CallLogRecord, "CallType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "REGULAR"] = 0;
+values[valuesById[1] = "SCHEDULED_CALL"] = 1;
+values[valuesById[2] = "VOICE_CHAT"] = 2;
+return values;
+});
+$lazy(CallLogRecord, "ParticipantInfo", function() {
+function ParticipantInfo(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ParticipantInfo.prototype.userJid = null;
+ParticipantInfo.prototype.callResult = null;
+let $oneOfFields;
+Object.defineProperty(ParticipantInfo.prototype, "_userJid", {
+get: $util.oneOfGetter($oneOfFields = ["userJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ParticipantInfo.prototype, "_callResult", {
+get: $util.oneOfGetter($oneOfFields = ["callResult"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ParticipantInfo.create = function create(properties) {
+return new ParticipantInfo(properties);
+};
+ParticipantInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.userJid != null && Object.hasOwnProperty.call(m, "userJid"))
+w.uint32(10).string(m.userJid);
+if (m.callResult != null && Object.hasOwnProperty.call(m, "callResult"))
+w.uint32(16).int32(m.callResult);
+return w;
+};
+ParticipantInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.CallLogRecord.ParticipantInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.userJid = r.string();
+break;
+}
+case 2: {
+m.callResult = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ParticipantInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.CallLogRecord.ParticipantInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.CallLogRecord.ParticipantInfo();
+if (d.userJid != null) {
+m.userJid = String(d.userJid);
+}
+switch (d.callResult) {
+default:
+if (typeof d.callResult === "number") {
+m.callResult = d.callResult;
+break;
+}
+break;
+case "CONNECTED":
+case 0:
+m.callResult = 0;
+break;
+case "REJECTED":
+case 1:
+m.callResult = 1;
+break;
+case "CANCELLED":
+case 2:
+m.callResult = 2;
+break;
+case "ACCEPTEDELSEWHERE":
+case 3:
+m.callResult = 3;
+break;
+case "MISSED":
+case 4:
+m.callResult = 4;
+break;
+case "INVALID":
+case 5:
+m.callResult = 5;
+break;
+case "UNAVAILABLE":
+case 6:
+m.callResult = 6;
+break;
+case "UPCOMING":
+case 7:
+m.callResult = 7;
+break;
+case "FAILED":
+case 8:
+m.callResult = 8;
+break;
+case "ABANDONED":
+case 9:
+m.callResult = 9;
+break;
+case "ONGOING":
+case 10:
+m.callResult = 10;
+break;
+}
+return m;
+};
+ParticipantInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.userJid != null && m.hasOwnProperty("userJid")) {
+d.userJid = m.userJid;
+if (o.oneofs)
+d._userJid = "userJid";
+}
+if (m.callResult != null && m.hasOwnProperty("callResult")) {
+d.callResult = o.enums === String ? $root.proto.CallLogRecord.CallResult[m.callResult] === undefined ? m.callResult : $root.proto.CallLogRecord.CallResult[m.callResult] : m.callResult;
+if (o.oneofs)
+d._callResult = "callResult";
+}
+return d;
+};
+ParticipantInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ParticipantInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.CallLogRecord.ParticipantInfo";
+};
+return ParticipantInfo;
+});
+$lazy(CallLogRecord, "SilenceReason", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "NONE"] = 0;
+values[valuesById[1] = "SCHEDULED"] = 1;
+values[valuesById[2] = "PRIVACY"] = 2;
+values[valuesById[3] = "LIGHTWEIGHT"] = 3;
+return values;
+});
+return CallLogRecord;

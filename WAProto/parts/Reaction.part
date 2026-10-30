@@ -1,0 +1,169 @@
+"use strict";
+function Reaction(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+Reaction.prototype.key = null;
+Reaction.prototype.text = null;
+Reaction.prototype.groupingKey = null;
+Reaction.prototype.senderTimestampMs = null;
+Reaction.prototype.unread = null;
+let $oneOfFields;
+Object.defineProperty(Reaction.prototype, "_key", {
+get: $util.oneOfGetter($oneOfFields = ["key"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Reaction.prototype, "_text", {
+get: $util.oneOfGetter($oneOfFields = ["text"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Reaction.prototype, "_groupingKey", {
+get: $util.oneOfGetter($oneOfFields = ["groupingKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Reaction.prototype, "_senderTimestampMs", {
+get: $util.oneOfGetter($oneOfFields = ["senderTimestampMs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Reaction.prototype, "_unread", {
+get: $util.oneOfGetter($oneOfFields = ["unread"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Reaction.create = function create(properties) {
+return new Reaction(properties);
+};
+Reaction.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.key != null && Object.hasOwnProperty.call(m, "key"))
+$root.proto.MessageKey.encode(m.key, w.uint32(10).fork()).ldelim();
+if (m.text != null && Object.hasOwnProperty.call(m, "text"))
+w.uint32(18).string(m.text);
+if (m.groupingKey != null && Object.hasOwnProperty.call(m, "groupingKey"))
+w.uint32(26).string(m.groupingKey);
+if (m.senderTimestampMs != null && Object.hasOwnProperty.call(m, "senderTimestampMs"))
+w.uint32(32).int64(m.senderTimestampMs);
+if (m.unread != null && Object.hasOwnProperty.call(m, "unread"))
+w.uint32(40).bool(m.unread);
+return w;
+};
+Reaction.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.Reaction();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.key = $root.proto.MessageKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.text = r.string();
+break;
+}
+case 3: {
+m.groupingKey = r.string();
+break;
+}
+case 4: {
+m.senderTimestampMs = r.int64();
+break;
+}
+case 5: {
+m.unread = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+Reaction.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.Reaction)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.Reaction();
+if (d.key != null) {
+if (typeof d.key !== "object")
+throw TypeError(".proto.Reaction.key: object expected");
+m.key = $root.proto.MessageKey.fromObject(d.key, n + 1);
+}
+if (d.text != null) {
+m.text = String(d.text);
+}
+if (d.groupingKey != null) {
+m.groupingKey = String(d.groupingKey);
+}
+if (d.senderTimestampMs != null) {
+if ($util.Long)
+(m.senderTimestampMs = $util.Long.fromValue(d.senderTimestampMs)).unsigned = false;
+else if (typeof d.senderTimestampMs === "string")
+m.senderTimestampMs = parseInt(d.senderTimestampMs, 10);
+else if (typeof d.senderTimestampMs === "number")
+m.senderTimestampMs = d.senderTimestampMs;
+else if (typeof d.senderTimestampMs === "object")
+m.senderTimestampMs = new $util.LongBits(d.senderTimestampMs.low >>> 0, d.senderTimestampMs.high >>> 0).toNumber();
+}
+if (d.unread != null) {
+m.unread = Boolean(d.unread);
+}
+return m;
+};
+Reaction.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.key != null && m.hasOwnProperty("key")) {
+d.key = $root.proto.MessageKey.toObject(m.key, o);
+if (o.oneofs)
+d._key = "key";
+}
+if (m.text != null && m.hasOwnProperty("text")) {
+d.text = m.text;
+if (o.oneofs)
+d._text = "text";
+}
+if (m.groupingKey != null && m.hasOwnProperty("groupingKey")) {
+d.groupingKey = m.groupingKey;
+if (o.oneofs)
+d._groupingKey = "groupingKey";
+}
+if (m.senderTimestampMs != null && m.hasOwnProperty("senderTimestampMs")) {
+if (typeof m.senderTimestampMs === "number")
+d.senderTimestampMs = o.longs === String ? String(m.senderTimestampMs) : m.senderTimestampMs;
+else
+d.senderTimestampMs = o.longs === String ? longToString(m.senderTimestampMs) : o.longs === Number ? longToNumber(m.senderTimestampMs) : m.senderTimestampMs;
+if (o.oneofs)
+d._senderTimestampMs = "senderTimestampMs";
+}
+if (m.unread != null && m.hasOwnProperty("unread")) {
+d.unread = m.unread;
+if (o.oneofs)
+d._unread = "unread";
+}
+return d;
+};
+Reaction.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+Reaction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.Reaction";
+};
+return Reaction;

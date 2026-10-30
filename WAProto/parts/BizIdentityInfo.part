@@ -1,0 +1,298 @@
+"use strict";
+function BizIdentityInfo(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BizIdentityInfo.prototype.vlevel = null;
+BizIdentityInfo.prototype.vnameCert = null;
+BizIdentityInfo.prototype.signed = null;
+BizIdentityInfo.prototype.revoked = null;
+BizIdentityInfo.prototype.hostStorage = null;
+BizIdentityInfo.prototype.actualActors = null;
+BizIdentityInfo.prototype.privacyModeTs = null;
+BizIdentityInfo.prototype.featureControls = null;
+let $oneOfFields;
+Object.defineProperty(BizIdentityInfo.prototype, "_vlevel", {
+get: $util.oneOfGetter($oneOfFields = ["vlevel"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BizIdentityInfo.prototype, "_vnameCert", {
+get: $util.oneOfGetter($oneOfFields = ["vnameCert"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BizIdentityInfo.prototype, "_signed", {
+get: $util.oneOfGetter($oneOfFields = ["signed"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BizIdentityInfo.prototype, "_revoked", {
+get: $util.oneOfGetter($oneOfFields = ["revoked"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BizIdentityInfo.prototype, "_hostStorage", {
+get: $util.oneOfGetter($oneOfFields = ["hostStorage"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BizIdentityInfo.prototype, "_actualActors", {
+get: $util.oneOfGetter($oneOfFields = ["actualActors"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BizIdentityInfo.prototype, "_privacyModeTs", {
+get: $util.oneOfGetter($oneOfFields = ["privacyModeTs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BizIdentityInfo.prototype, "_featureControls", {
+get: $util.oneOfGetter($oneOfFields = ["featureControls"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BizIdentityInfo.create = function create(properties) {
+return new BizIdentityInfo(properties);
+};
+BizIdentityInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.vlevel != null && Object.hasOwnProperty.call(m, "vlevel"))
+w.uint32(8).int32(m.vlevel);
+if (m.vnameCert != null && Object.hasOwnProperty.call(m, "vnameCert"))
+$root.proto.VerifiedNameCertificate.encode(m.vnameCert, w.uint32(18).fork()).ldelim();
+if (m.signed != null && Object.hasOwnProperty.call(m, "signed"))
+w.uint32(24).bool(m.signed);
+if (m.revoked != null && Object.hasOwnProperty.call(m, "revoked"))
+w.uint32(32).bool(m.revoked);
+if (m.hostStorage != null && Object.hasOwnProperty.call(m, "hostStorage"))
+w.uint32(40).int32(m.hostStorage);
+if (m.actualActors != null && Object.hasOwnProperty.call(m, "actualActors"))
+w.uint32(48).int32(m.actualActors);
+if (m.privacyModeTs != null && Object.hasOwnProperty.call(m, "privacyModeTs"))
+w.uint32(56).uint64(m.privacyModeTs);
+if (m.featureControls != null && Object.hasOwnProperty.call(m, "featureControls"))
+w.uint32(64).uint64(m.featureControls);
+return w;
+};
+BizIdentityInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BizIdentityInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.vlevel = r.int32();
+break;
+}
+case 2: {
+m.vnameCert = $root.proto.VerifiedNameCertificate.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 3: {
+m.signed = r.bool();
+break;
+}
+case 4: {
+m.revoked = r.bool();
+break;
+}
+case 5: {
+m.hostStorage = r.int32();
+break;
+}
+case 6: {
+m.actualActors = r.int32();
+break;
+}
+case 7: {
+m.privacyModeTs = r.uint64();
+break;
+}
+case 8: {
+m.featureControls = r.uint64();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BizIdentityInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BizIdentityInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BizIdentityInfo();
+switch (d.vlevel) {
+default:
+if (typeof d.vlevel === "number") {
+m.vlevel = d.vlevel;
+break;
+}
+break;
+case "UNKNOWN":
+case 0:
+m.vlevel = 0;
+break;
+case "LOW":
+case 1:
+m.vlevel = 1;
+break;
+case "HIGH":
+case 2:
+m.vlevel = 2;
+break;
+}
+if (d.vnameCert != null) {
+if (typeof d.vnameCert !== "object")
+throw TypeError(".proto.BizIdentityInfo.vnameCert: object expected");
+m.vnameCert = $root.proto.VerifiedNameCertificate.fromObject(d.vnameCert, n + 1);
+}
+if (d.signed != null) {
+m.signed = Boolean(d.signed);
+}
+if (d.revoked != null) {
+m.revoked = Boolean(d.revoked);
+}
+switch (d.hostStorage) {
+default:
+if (typeof d.hostStorage === "number") {
+m.hostStorage = d.hostStorage;
+break;
+}
+break;
+case "ON_PREMISE":
+case 0:
+m.hostStorage = 0;
+break;
+case "FACEBOOK":
+case 1:
+m.hostStorage = 1;
+break;
+}
+switch (d.actualActors) {
+default:
+if (typeof d.actualActors === "number") {
+m.actualActors = d.actualActors;
+break;
+}
+break;
+case "SELF":
+case 0:
+m.actualActors = 0;
+break;
+case "BSP":
+case 1:
+m.actualActors = 1;
+break;
+}
+if (d.privacyModeTs != null) {
+if ($util.Long)
+(m.privacyModeTs = $util.Long.fromValue(d.privacyModeTs)).unsigned = true;
+else if (typeof d.privacyModeTs === "string")
+m.privacyModeTs = parseInt(d.privacyModeTs, 10);
+else if (typeof d.privacyModeTs === "number")
+m.privacyModeTs = d.privacyModeTs;
+else if (typeof d.privacyModeTs === "object")
+m.privacyModeTs = new $util.LongBits(d.privacyModeTs.low >>> 0, d.privacyModeTs.high >>> 0).toNumber(true);
+}
+if (d.featureControls != null) {
+if ($util.Long)
+(m.featureControls = $util.Long.fromValue(d.featureControls)).unsigned = true;
+else if (typeof d.featureControls === "string")
+m.featureControls = parseInt(d.featureControls, 10);
+else if (typeof d.featureControls === "number")
+m.featureControls = d.featureControls;
+else if (typeof d.featureControls === "object")
+m.featureControls = new $util.LongBits(d.featureControls.low >>> 0, d.featureControls.high >>> 0).toNumber(true);
+}
+return m;
+};
+BizIdentityInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.vlevel != null && m.hasOwnProperty("vlevel")) {
+d.vlevel = o.enums === String ? $root.proto.BizIdentityInfo.VerifiedLevelValue[m.vlevel] === undefined ? m.vlevel : $root.proto.BizIdentityInfo.VerifiedLevelValue[m.vlevel] : m.vlevel;
+if (o.oneofs)
+d._vlevel = "vlevel";
+}
+if (m.vnameCert != null && m.hasOwnProperty("vnameCert")) {
+d.vnameCert = $root.proto.VerifiedNameCertificate.toObject(m.vnameCert, o);
+if (o.oneofs)
+d._vnameCert = "vnameCert";
+}
+if (m.signed != null && m.hasOwnProperty("signed")) {
+d.signed = m.signed;
+if (o.oneofs)
+d._signed = "signed";
+}
+if (m.revoked != null && m.hasOwnProperty("revoked")) {
+d.revoked = m.revoked;
+if (o.oneofs)
+d._revoked = "revoked";
+}
+if (m.hostStorage != null && m.hasOwnProperty("hostStorage")) {
+d.hostStorage = o.enums === String ? $root.proto.BizIdentityInfo.HostStorageType[m.hostStorage] === undefined ? m.hostStorage : $root.proto.BizIdentityInfo.HostStorageType[m.hostStorage] : m.hostStorage;
+if (o.oneofs)
+d._hostStorage = "hostStorage";
+}
+if (m.actualActors != null && m.hasOwnProperty("actualActors")) {
+d.actualActors = o.enums === String ? $root.proto.BizIdentityInfo.ActualActorsType[m.actualActors] === undefined ? m.actualActors : $root.proto.BizIdentityInfo.ActualActorsType[m.actualActors] : m.actualActors;
+if (o.oneofs)
+d._actualActors = "actualActors";
+}
+if (m.privacyModeTs != null && m.hasOwnProperty("privacyModeTs")) {
+if (typeof m.privacyModeTs === "number")
+d.privacyModeTs = o.longs === String ? String(m.privacyModeTs) : m.privacyModeTs;
+else
+d.privacyModeTs = o.longs === String ? longToString(m.privacyModeTs, true) : o.longs === Number ? longToNumber(m.privacyModeTs, true) : m.privacyModeTs;
+if (o.oneofs)
+d._privacyModeTs = "privacyModeTs";
+}
+if (m.featureControls != null && m.hasOwnProperty("featureControls")) {
+if (typeof m.featureControls === "number")
+d.featureControls = o.longs === String ? String(m.featureControls) : m.featureControls;
+else
+d.featureControls = o.longs === String ? longToString(m.featureControls, true) : o.longs === Number ? longToNumber(m.featureControls, true) : m.featureControls;
+if (o.oneofs)
+d._featureControls = "featureControls";
+}
+return d;
+};
+BizIdentityInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BizIdentityInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BizIdentityInfo";
+};
+$lazy(BizIdentityInfo, "ActualActorsType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "SELF"] = 0;
+values[valuesById[1] = "BSP"] = 1;
+return values;
+});
+$lazy(BizIdentityInfo, "HostStorageType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "ON_PREMISE"] = 0;
+values[valuesById[1] = "FACEBOOK"] = 1;
+return values;
+});
+$lazy(BizIdentityInfo, "VerifiedLevelValue", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN"] = 0;
+values[valuesById[1] = "LOW"] = 1;
+values[valuesById[2] = "HIGH"] = 2;
+return values;
+});
+return BizIdentityInfo;

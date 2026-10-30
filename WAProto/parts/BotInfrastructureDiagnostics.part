@@ -1,0 +1,148 @@
+"use strict";
+function BotInfrastructureDiagnostics(p) {
+this.toolsUsed = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotInfrastructureDiagnostics.prototype.botBackend = null;
+BotInfrastructureDiagnostics.prototype.toolsUsed = $util.emptyArray;
+BotInfrastructureDiagnostics.prototype.isThinking = null;
+let $oneOfFields;
+Object.defineProperty(BotInfrastructureDiagnostics.prototype, "_botBackend", {
+get: $util.oneOfGetter($oneOfFields = ["botBackend"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotInfrastructureDiagnostics.prototype, "_isThinking", {
+get: $util.oneOfGetter($oneOfFields = ["isThinking"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotInfrastructureDiagnostics.create = function create(properties) {
+return new BotInfrastructureDiagnostics(properties);
+};
+BotInfrastructureDiagnostics.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.botBackend != null && Object.hasOwnProperty.call(m, "botBackend"))
+w.uint32(8).int32(m.botBackend);
+if (m.toolsUsed != null && m.toolsUsed.length) {
+for (var i = 0; i < m.toolsUsed.length; ++i)
+w.uint32(18).string(m.toolsUsed[i]);
+}
+if (m.isThinking != null && Object.hasOwnProperty.call(m, "isThinking"))
+w.uint32(24).bool(m.isThinking);
+return w;
+};
+BotInfrastructureDiagnostics.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotInfrastructureDiagnostics();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.botBackend = r.int32();
+break;
+}
+case 2: {
+if (!(m.toolsUsed && m.toolsUsed.length))
+m.toolsUsed = [];
+m.toolsUsed.push(r.string());
+break;
+}
+case 3: {
+m.isThinking = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotInfrastructureDiagnostics.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotInfrastructureDiagnostics)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotInfrastructureDiagnostics();
+switch (d.botBackend) {
+default:
+if (typeof d.botBackend === "number") {
+m.botBackend = d.botBackend;
+break;
+}
+break;
+case "AAPI":
+case 0:
+m.botBackend = 0;
+break;
+case "CLIPPY":
+case 1:
+m.botBackend = 1;
+break;
+}
+if (d.toolsUsed) {
+if (!Array.isArray(d.toolsUsed))
+throw TypeError(".proto.BotInfrastructureDiagnostics.toolsUsed: array expected");
+m.toolsUsed = [];
+for (var i = 0; i < d.toolsUsed.length; ++i) {
+m.toolsUsed[i] = String(d.toolsUsed[i]);
+}
+}
+if (d.isThinking != null) {
+m.isThinking = Boolean(d.isThinking);
+}
+return m;
+};
+BotInfrastructureDiagnostics.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.toolsUsed = [];
+}
+if (m.botBackend != null && m.hasOwnProperty("botBackend")) {
+d.botBackend = o.enums === String ? $root.proto.BotInfrastructureDiagnostics.BotBackend[m.botBackend] === undefined ? m.botBackend : $root.proto.BotInfrastructureDiagnostics.BotBackend[m.botBackend] : m.botBackend;
+if (o.oneofs)
+d._botBackend = "botBackend";
+}
+if (m.toolsUsed && m.toolsUsed.length) {
+d.toolsUsed = [];
+for (var j = 0; j < m.toolsUsed.length; ++j) {
+d.toolsUsed[j] = m.toolsUsed[j];
+}
+}
+if (m.isThinking != null && m.hasOwnProperty("isThinking")) {
+d.isThinking = m.isThinking;
+if (o.oneofs)
+d._isThinking = "isThinking";
+}
+return d;
+};
+BotInfrastructureDiagnostics.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotInfrastructureDiagnostics.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotInfrastructureDiagnostics";
+};
+$lazy(BotInfrastructureDiagnostics, "BotBackend", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "AAPI"] = 0;
+values[valuesById[1] = "CLIPPY"] = 1;
+return values;
+});
+return BotInfrastructureDiagnostics;

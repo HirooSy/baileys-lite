@@ -1,0 +1,167 @@
+"use strict";
+function BotModelMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotModelMetadata.prototype.modelType = null;
+BotModelMetadata.prototype.premiumModelStatus = null;
+BotModelMetadata.prototype.modelNameOverride = null;
+let $oneOfFields;
+Object.defineProperty(BotModelMetadata.prototype, "_modelType", {
+get: $util.oneOfGetter($oneOfFields = ["modelType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotModelMetadata.prototype, "_premiumModelStatus", {
+get: $util.oneOfGetter($oneOfFields = ["premiumModelStatus"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotModelMetadata.prototype, "_modelNameOverride", {
+get: $util.oneOfGetter($oneOfFields = ["modelNameOverride"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotModelMetadata.create = function create(properties) {
+return new BotModelMetadata(properties);
+};
+BotModelMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.modelType != null && Object.hasOwnProperty.call(m, "modelType"))
+w.uint32(8).int32(m.modelType);
+if (m.premiumModelStatus != null && Object.hasOwnProperty.call(m, "premiumModelStatus"))
+w.uint32(16).int32(m.premiumModelStatus);
+if (m.modelNameOverride != null && Object.hasOwnProperty.call(m, "modelNameOverride"))
+w.uint32(26).string(m.modelNameOverride);
+return w;
+};
+BotModelMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotModelMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.modelType = r.int32();
+break;
+}
+case 2: {
+m.premiumModelStatus = r.int32();
+break;
+}
+case 3: {
+m.modelNameOverride = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotModelMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotModelMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotModelMetadata();
+switch (d.modelType) {
+default:
+if (typeof d.modelType === "number") {
+m.modelType = d.modelType;
+break;
+}
+break;
+case "UNKNOWN_TYPE":
+case 0:
+m.modelType = 0;
+break;
+case "LLAMA_PROD":
+case 1:
+m.modelType = 1;
+break;
+case "LLAMA_PROD_PREMIUM":
+case 2:
+m.modelType = 2;
+break;
+}
+switch (d.premiumModelStatus) {
+default:
+if (typeof d.premiumModelStatus === "number") {
+m.premiumModelStatus = d.premiumModelStatus;
+break;
+}
+break;
+case "UNKNOWN_STATUS":
+case 0:
+m.premiumModelStatus = 0;
+break;
+case "AVAILABLE":
+case 1:
+m.premiumModelStatus = 1;
+break;
+case "QUOTA_EXCEED_LIMIT":
+case 2:
+m.premiumModelStatus = 2;
+break;
+}
+if (d.modelNameOverride != null) {
+m.modelNameOverride = String(d.modelNameOverride);
+}
+return m;
+};
+BotModelMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.modelType != null && m.hasOwnProperty("modelType")) {
+d.modelType = o.enums === String ? $root.proto.BotModelMetadata.ModelType[m.modelType] === undefined ? m.modelType : $root.proto.BotModelMetadata.ModelType[m.modelType] : m.modelType;
+if (o.oneofs)
+d._modelType = "modelType";
+}
+if (m.premiumModelStatus != null && m.hasOwnProperty("premiumModelStatus")) {
+d.premiumModelStatus = o.enums === String ? $root.proto.BotModelMetadata.PremiumModelStatus[m.premiumModelStatus] === undefined ? m.premiumModelStatus : $root.proto.BotModelMetadata.PremiumModelStatus[m.premiumModelStatus] : m.premiumModelStatus;
+if (o.oneofs)
+d._premiumModelStatus = "premiumModelStatus";
+}
+if (m.modelNameOverride != null && m.hasOwnProperty("modelNameOverride")) {
+d.modelNameOverride = m.modelNameOverride;
+if (o.oneofs)
+d._modelNameOverride = "modelNameOverride";
+}
+return d;
+};
+BotModelMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotModelMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotModelMetadata";
+};
+$lazy(BotModelMetadata, "ModelType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN_TYPE"] = 0;
+values[valuesById[1] = "LLAMA_PROD"] = 1;
+values[valuesById[2] = "LLAMA_PROD_PREMIUM"] = 2;
+return values;
+});
+$lazy(BotModelMetadata, "PremiumModelStatus", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN_STATUS"] = 0;
+values[valuesById[1] = "AVAILABLE"] = 1;
+values[valuesById[2] = "QUOTA_EXCEED_LIMIT"] = 2;
+return values;
+});
+return BotModelMetadata;

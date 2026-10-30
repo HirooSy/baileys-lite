@@ -1,0 +1,405 @@
+"use strict";
+function AIHomeState(p) {
+this.capabilityOptions = [];
+this.conversationOptions = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIHomeState.prototype.lastFetchTime = null;
+AIHomeState.prototype.capabilityOptions = $util.emptyArray;
+AIHomeState.prototype.conversationOptions = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(AIHomeState.prototype, "_lastFetchTime", {
+get: $util.oneOfGetter($oneOfFields = ["lastFetchTime"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIHomeState.create = function create(properties) {
+return new AIHomeState(properties);
+};
+AIHomeState.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.lastFetchTime != null && Object.hasOwnProperty.call(m, "lastFetchTime"))
+w.uint32(8).int64(m.lastFetchTime);
+if (m.capabilityOptions != null && m.capabilityOptions.length) {
+for (var i = 0; i < m.capabilityOptions.length; ++i)
+$root.proto.AIHomeState.AIHomeOption.encode(m.capabilityOptions[i], w.uint32(18).fork()).ldelim();
+}
+if (m.conversationOptions != null && m.conversationOptions.length) {
+for (var i = 0; i < m.conversationOptions.length; ++i)
+$root.proto.AIHomeState.AIHomeOption.encode(m.conversationOptions[i], w.uint32(26).fork()).ldelim();
+}
+return w;
+};
+AIHomeState.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIHomeState();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.lastFetchTime = r.int64();
+break;
+}
+case 2: {
+if (!(m.capabilityOptions && m.capabilityOptions.length))
+m.capabilityOptions = [];
+m.capabilityOptions.push($root.proto.AIHomeState.AIHomeOption.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 3: {
+if (!(m.conversationOptions && m.conversationOptions.length))
+m.conversationOptions = [];
+m.conversationOptions.push($root.proto.AIHomeState.AIHomeOption.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIHomeState.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIHomeState)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIHomeState();
+if (d.lastFetchTime != null) {
+if ($util.Long)
+(m.lastFetchTime = $util.Long.fromValue(d.lastFetchTime)).unsigned = false;
+else if (typeof d.lastFetchTime === "string")
+m.lastFetchTime = parseInt(d.lastFetchTime, 10);
+else if (typeof d.lastFetchTime === "number")
+m.lastFetchTime = d.lastFetchTime;
+else if (typeof d.lastFetchTime === "object")
+m.lastFetchTime = new $util.LongBits(d.lastFetchTime.low >>> 0, d.lastFetchTime.high >>> 0).toNumber();
+}
+if (d.capabilityOptions) {
+if (!Array.isArray(d.capabilityOptions))
+throw TypeError(".proto.AIHomeState.capabilityOptions: array expected");
+m.capabilityOptions = [];
+for (var i = 0; i < d.capabilityOptions.length; ++i) {
+if (typeof d.capabilityOptions[i] !== "object")
+throw TypeError(".proto.AIHomeState.capabilityOptions: object expected");
+m.capabilityOptions[i] = $root.proto.AIHomeState.AIHomeOption.fromObject(d.capabilityOptions[i], n + 1);
+}
+}
+if (d.conversationOptions) {
+if (!Array.isArray(d.conversationOptions))
+throw TypeError(".proto.AIHomeState.conversationOptions: array expected");
+m.conversationOptions = [];
+for (var i = 0; i < d.conversationOptions.length; ++i) {
+if (typeof d.conversationOptions[i] !== "object")
+throw TypeError(".proto.AIHomeState.conversationOptions: object expected");
+m.conversationOptions[i] = $root.proto.AIHomeState.AIHomeOption.fromObject(d.conversationOptions[i], n + 1);
+}
+}
+return m;
+};
+AIHomeState.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.capabilityOptions = [];
+d.conversationOptions = [];
+}
+if (m.lastFetchTime != null && m.hasOwnProperty("lastFetchTime")) {
+if (typeof m.lastFetchTime === "number")
+d.lastFetchTime = o.longs === String ? String(m.lastFetchTime) : m.lastFetchTime;
+else
+d.lastFetchTime = o.longs === String ? longToString(m.lastFetchTime) : o.longs === Number ? longToNumber(m.lastFetchTime) : m.lastFetchTime;
+if (o.oneofs)
+d._lastFetchTime = "lastFetchTime";
+}
+if (m.capabilityOptions && m.capabilityOptions.length) {
+d.capabilityOptions = [];
+for (var j = 0; j < m.capabilityOptions.length; ++j) {
+d.capabilityOptions[j] = $root.proto.AIHomeState.AIHomeOption.toObject(m.capabilityOptions[j], o);
+}
+}
+if (m.conversationOptions && m.conversationOptions.length) {
+d.conversationOptions = [];
+for (var j = 0; j < m.conversationOptions.length; ++j) {
+d.conversationOptions[j] = $root.proto.AIHomeState.AIHomeOption.toObject(m.conversationOptions[j], o);
+}
+}
+return d;
+};
+AIHomeState.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIHomeState.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIHomeState";
+};
+$lazy(AIHomeState, "AIHomeOption", function() {
+function AIHomeOption(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIHomeOption.prototype.type = null;
+AIHomeOption.prototype.title = null;
+AIHomeOption.prototype.promptText = null;
+AIHomeOption.prototype.sessionId = null;
+AIHomeOption.prototype.imageWdsIdentifier = null;
+AIHomeOption.prototype.imageTintColor = null;
+AIHomeOption.prototype.imageBackgroundColor = null;
+AIHomeOption.prototype.cardTypeId = null;
+let $oneOfFields;
+Object.defineProperty(AIHomeOption.prototype, "_type", {
+get: $util.oneOfGetter($oneOfFields = ["type"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIHomeOption.prototype, "_title", {
+get: $util.oneOfGetter($oneOfFields = ["title"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIHomeOption.prototype, "_promptText", {
+get: $util.oneOfGetter($oneOfFields = ["promptText"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIHomeOption.prototype, "_sessionId", {
+get: $util.oneOfGetter($oneOfFields = ["sessionId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIHomeOption.prototype, "_imageWdsIdentifier", {
+get: $util.oneOfGetter($oneOfFields = ["imageWdsIdentifier"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIHomeOption.prototype, "_imageTintColor", {
+get: $util.oneOfGetter($oneOfFields = ["imageTintColor"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIHomeOption.prototype, "_imageBackgroundColor", {
+get: $util.oneOfGetter($oneOfFields = ["imageBackgroundColor"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIHomeOption.prototype, "_cardTypeId", {
+get: $util.oneOfGetter($oneOfFields = ["cardTypeId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIHomeOption.create = function create(properties) {
+return new AIHomeOption(properties);
+};
+AIHomeOption.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.type != null && Object.hasOwnProperty.call(m, "type"))
+w.uint32(8).int32(m.type);
+if (m.title != null && Object.hasOwnProperty.call(m, "title"))
+w.uint32(18).string(m.title);
+if (m.promptText != null && Object.hasOwnProperty.call(m, "promptText"))
+w.uint32(26).string(m.promptText);
+if (m.sessionId != null && Object.hasOwnProperty.call(m, "sessionId"))
+w.uint32(34).string(m.sessionId);
+if (m.imageWdsIdentifier != null && Object.hasOwnProperty.call(m, "imageWdsIdentifier"))
+w.uint32(42).string(m.imageWdsIdentifier);
+if (m.imageTintColor != null && Object.hasOwnProperty.call(m, "imageTintColor"))
+w.uint32(50).string(m.imageTintColor);
+if (m.imageBackgroundColor != null && Object.hasOwnProperty.call(m, "imageBackgroundColor"))
+w.uint32(58).string(m.imageBackgroundColor);
+if (m.cardTypeId != null && Object.hasOwnProperty.call(m, "cardTypeId"))
+w.uint32(66).string(m.cardTypeId);
+return w;
+};
+AIHomeOption.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIHomeState.AIHomeOption();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.type = r.int32();
+break;
+}
+case 2: {
+m.title = r.string();
+break;
+}
+case 3: {
+m.promptText = r.string();
+break;
+}
+case 4: {
+m.sessionId = r.string();
+break;
+}
+case 5: {
+m.imageWdsIdentifier = r.string();
+break;
+}
+case 6: {
+m.imageTintColor = r.string();
+break;
+}
+case 7: {
+m.imageBackgroundColor = r.string();
+break;
+}
+case 8: {
+m.cardTypeId = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIHomeOption.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIHomeState.AIHomeOption)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIHomeState.AIHomeOption();
+switch (d.type) {
+default:
+if (typeof d.type === "number") {
+m.type = d.type;
+break;
+}
+break;
+case "PROMPT":
+case 0:
+m.type = 0;
+break;
+case "CREATE_IMAGE":
+case 1:
+m.type = 1;
+break;
+case "ANIMATE_PHOTO":
+case 2:
+m.type = 2;
+break;
+case "ANALYZE_FILE":
+case 3:
+m.type = 3;
+break;
+case "COLLABORATE":
+case 4:
+m.type = 4;
+break;
+case "OPEN_GREETING_CARD":
+case 5:
+m.type = 5;
+break;
+}
+if (d.title != null) {
+m.title = String(d.title);
+}
+if (d.promptText != null) {
+m.promptText = String(d.promptText);
+}
+if (d.sessionId != null) {
+m.sessionId = String(d.sessionId);
+}
+if (d.imageWdsIdentifier != null) {
+m.imageWdsIdentifier = String(d.imageWdsIdentifier);
+}
+if (d.imageTintColor != null) {
+m.imageTintColor = String(d.imageTintColor);
+}
+if (d.imageBackgroundColor != null) {
+m.imageBackgroundColor = String(d.imageBackgroundColor);
+}
+if (d.cardTypeId != null) {
+m.cardTypeId = String(d.cardTypeId);
+}
+return m;
+};
+AIHomeOption.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.type != null && m.hasOwnProperty("type")) {
+d.type = o.enums === String ? $root.proto.AIHomeState.AIHomeOption.AIHomeActionType[m.type] === undefined ? m.type : $root.proto.AIHomeState.AIHomeOption.AIHomeActionType[m.type] : m.type;
+if (o.oneofs)
+d._type = "type";
+}
+if (m.title != null && m.hasOwnProperty("title")) {
+d.title = m.title;
+if (o.oneofs)
+d._title = "title";
+}
+if (m.promptText != null && m.hasOwnProperty("promptText")) {
+d.promptText = m.promptText;
+if (o.oneofs)
+d._promptText = "promptText";
+}
+if (m.sessionId != null && m.hasOwnProperty("sessionId")) {
+d.sessionId = m.sessionId;
+if (o.oneofs)
+d._sessionId = "sessionId";
+}
+if (m.imageWdsIdentifier != null && m.hasOwnProperty("imageWdsIdentifier")) {
+d.imageWdsIdentifier = m.imageWdsIdentifier;
+if (o.oneofs)
+d._imageWdsIdentifier = "imageWdsIdentifier";
+}
+if (m.imageTintColor != null && m.hasOwnProperty("imageTintColor")) {
+d.imageTintColor = m.imageTintColor;
+if (o.oneofs)
+d._imageTintColor = "imageTintColor";
+}
+if (m.imageBackgroundColor != null && m.hasOwnProperty("imageBackgroundColor")) {
+d.imageBackgroundColor = m.imageBackgroundColor;
+if (o.oneofs)
+d._imageBackgroundColor = "imageBackgroundColor";
+}
+if (m.cardTypeId != null && m.hasOwnProperty("cardTypeId")) {
+d.cardTypeId = m.cardTypeId;
+if (o.oneofs)
+d._cardTypeId = "cardTypeId";
+}
+return d;
+};
+AIHomeOption.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIHomeOption.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIHomeState.AIHomeOption";
+};
+$lazy(AIHomeOption, "AIHomeActionType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "PROMPT"] = 0;
+values[valuesById[1] = "CREATE_IMAGE"] = 1;
+values[valuesById[2] = "ANIMATE_PHOTO"] = 2;
+values[valuesById[3] = "ANALYZE_FILE"] = 3;
+values[valuesById[4] = "COLLABORATE"] = 4;
+values[valuesById[5] = "OPEN_GREETING_CARD"] = 5;
+return values;
+});
+return AIHomeOption;
+});
+return AIHomeState;

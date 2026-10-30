@@ -1,0 +1,100 @@
+"use strict";
+function GroupMention(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+GroupMention.prototype.groupJid = null;
+GroupMention.prototype.groupSubject = null;
+let $oneOfFields;
+Object.defineProperty(GroupMention.prototype, "_groupJid", {
+get: $util.oneOfGetter($oneOfFields = ["groupJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GroupMention.prototype, "_groupSubject", {
+get: $util.oneOfGetter($oneOfFields = ["groupSubject"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+GroupMention.create = function create(properties) {
+return new GroupMention(properties);
+};
+GroupMention.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.groupJid != null && Object.hasOwnProperty.call(m, "groupJid"))
+w.uint32(10).string(m.groupJid);
+if (m.groupSubject != null && Object.hasOwnProperty.call(m, "groupSubject"))
+w.uint32(18).string(m.groupSubject);
+return w;
+};
+GroupMention.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.GroupMention();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.groupJid = r.string();
+break;
+}
+case 2: {
+m.groupSubject = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+GroupMention.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.GroupMention)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.GroupMention();
+if (d.groupJid != null) {
+m.groupJid = String(d.groupJid);
+}
+if (d.groupSubject != null) {
+m.groupSubject = String(d.groupSubject);
+}
+return m;
+};
+GroupMention.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.groupJid != null && m.hasOwnProperty("groupJid")) {
+d.groupJid = m.groupJid;
+if (o.oneofs)
+d._groupJid = "groupJid";
+}
+if (m.groupSubject != null && m.hasOwnProperty("groupSubject")) {
+d.groupSubject = m.groupSubject;
+if (o.oneofs)
+d._groupSubject = "groupSubject";
+}
+return d;
+};
+GroupMention.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+GroupMention.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.GroupMention";
+};
+return GroupMention;

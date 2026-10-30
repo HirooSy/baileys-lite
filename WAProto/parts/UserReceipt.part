@@ -1,0 +1,221 @@
+"use strict";
+function UserReceipt(p) {
+this.pendingDeviceJid = [];
+this.deliveredDeviceJid = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+UserReceipt.prototype.userJid = "";
+UserReceipt.prototype.receiptTimestamp = null;
+UserReceipt.prototype.readTimestamp = null;
+UserReceipt.prototype.playedTimestamp = null;
+UserReceipt.prototype.pendingDeviceJid = $util.emptyArray;
+UserReceipt.prototype.deliveredDeviceJid = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(UserReceipt.prototype, "_receiptTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["receiptTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(UserReceipt.prototype, "_readTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["readTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(UserReceipt.prototype, "_playedTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["playedTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+UserReceipt.create = function create(properties) {
+return new UserReceipt(properties);
+};
+UserReceipt.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.userJid != null && Object.hasOwnProperty.call(m, "userJid"))
+w.uint32(10).string(m.userJid);
+if (m.receiptTimestamp != null && Object.hasOwnProperty.call(m, "receiptTimestamp"))
+w.uint32(16).int64(m.receiptTimestamp);
+if (m.readTimestamp != null && Object.hasOwnProperty.call(m, "readTimestamp"))
+w.uint32(24).int64(m.readTimestamp);
+if (m.playedTimestamp != null && Object.hasOwnProperty.call(m, "playedTimestamp"))
+w.uint32(32).int64(m.playedTimestamp);
+if (m.pendingDeviceJid != null && m.pendingDeviceJid.length) {
+for (var i = 0; i < m.pendingDeviceJid.length; ++i)
+w.uint32(42).string(m.pendingDeviceJid[i]);
+}
+if (m.deliveredDeviceJid != null && m.deliveredDeviceJid.length) {
+for (var i = 0; i < m.deliveredDeviceJid.length; ++i)
+w.uint32(50).string(m.deliveredDeviceJid[i]);
+}
+return w;
+};
+UserReceipt.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.UserReceipt();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.userJid = r.string();
+break;
+}
+case 2: {
+m.receiptTimestamp = r.int64();
+break;
+}
+case 3: {
+m.readTimestamp = r.int64();
+break;
+}
+case 4: {
+m.playedTimestamp = r.int64();
+break;
+}
+case 5: {
+if (!(m.pendingDeviceJid && m.pendingDeviceJid.length))
+m.pendingDeviceJid = [];
+m.pendingDeviceJid.push(r.string());
+break;
+}
+case 6: {
+if (!(m.deliveredDeviceJid && m.deliveredDeviceJid.length))
+m.deliveredDeviceJid = [];
+m.deliveredDeviceJid.push(r.string());
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+UserReceipt.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.UserReceipt)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.UserReceipt();
+if (d.userJid != null) {
+m.userJid = String(d.userJid);
+}
+if (d.receiptTimestamp != null) {
+if ($util.Long)
+(m.receiptTimestamp = $util.Long.fromValue(d.receiptTimestamp)).unsigned = false;
+else if (typeof d.receiptTimestamp === "string")
+m.receiptTimestamp = parseInt(d.receiptTimestamp, 10);
+else if (typeof d.receiptTimestamp === "number")
+m.receiptTimestamp = d.receiptTimestamp;
+else if (typeof d.receiptTimestamp === "object")
+m.receiptTimestamp = new $util.LongBits(d.receiptTimestamp.low >>> 0, d.receiptTimestamp.high >>> 0).toNumber();
+}
+if (d.readTimestamp != null) {
+if ($util.Long)
+(m.readTimestamp = $util.Long.fromValue(d.readTimestamp)).unsigned = false;
+else if (typeof d.readTimestamp === "string")
+m.readTimestamp = parseInt(d.readTimestamp, 10);
+else if (typeof d.readTimestamp === "number")
+m.readTimestamp = d.readTimestamp;
+else if (typeof d.readTimestamp === "object")
+m.readTimestamp = new $util.LongBits(d.readTimestamp.low >>> 0, d.readTimestamp.high >>> 0).toNumber();
+}
+if (d.playedTimestamp != null) {
+if ($util.Long)
+(m.playedTimestamp = $util.Long.fromValue(d.playedTimestamp)).unsigned = false;
+else if (typeof d.playedTimestamp === "string")
+m.playedTimestamp = parseInt(d.playedTimestamp, 10);
+else if (typeof d.playedTimestamp === "number")
+m.playedTimestamp = d.playedTimestamp;
+else if (typeof d.playedTimestamp === "object")
+m.playedTimestamp = new $util.LongBits(d.playedTimestamp.low >>> 0, d.playedTimestamp.high >>> 0).toNumber();
+}
+if (d.pendingDeviceJid) {
+if (!Array.isArray(d.pendingDeviceJid))
+throw TypeError(".proto.UserReceipt.pendingDeviceJid: array expected");
+m.pendingDeviceJid = [];
+for (var i = 0; i < d.pendingDeviceJid.length; ++i) {
+m.pendingDeviceJid[i] = String(d.pendingDeviceJid[i]);
+}
+}
+if (d.deliveredDeviceJid) {
+if (!Array.isArray(d.deliveredDeviceJid))
+throw TypeError(".proto.UserReceipt.deliveredDeviceJid: array expected");
+m.deliveredDeviceJid = [];
+for (var i = 0; i < d.deliveredDeviceJid.length; ++i) {
+m.deliveredDeviceJid[i] = String(d.deliveredDeviceJid[i]);
+}
+}
+return m;
+};
+UserReceipt.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.pendingDeviceJid = [];
+d.deliveredDeviceJid = [];
+}
+if (o.defaults) {
+d.userJid = "";
+}
+if (m.userJid != null && m.hasOwnProperty("userJid")) {
+d.userJid = m.userJid;
+}
+if (m.receiptTimestamp != null && m.hasOwnProperty("receiptTimestamp")) {
+if (typeof m.receiptTimestamp === "number")
+d.receiptTimestamp = o.longs === String ? String(m.receiptTimestamp) : m.receiptTimestamp;
+else
+d.receiptTimestamp = o.longs === String ? longToString(m.receiptTimestamp) : o.longs === Number ? longToNumber(m.receiptTimestamp) : m.receiptTimestamp;
+if (o.oneofs)
+d._receiptTimestamp = "receiptTimestamp";
+}
+if (m.readTimestamp != null && m.hasOwnProperty("readTimestamp")) {
+if (typeof m.readTimestamp === "number")
+d.readTimestamp = o.longs === String ? String(m.readTimestamp) : m.readTimestamp;
+else
+d.readTimestamp = o.longs === String ? longToString(m.readTimestamp) : o.longs === Number ? longToNumber(m.readTimestamp) : m.readTimestamp;
+if (o.oneofs)
+d._readTimestamp = "readTimestamp";
+}
+if (m.playedTimestamp != null && m.hasOwnProperty("playedTimestamp")) {
+if (typeof m.playedTimestamp === "number")
+d.playedTimestamp = o.longs === String ? String(m.playedTimestamp) : m.playedTimestamp;
+else
+d.playedTimestamp = o.longs === String ? longToString(m.playedTimestamp) : o.longs === Number ? longToNumber(m.playedTimestamp) : m.playedTimestamp;
+if (o.oneofs)
+d._playedTimestamp = "playedTimestamp";
+}
+if (m.pendingDeviceJid && m.pendingDeviceJid.length) {
+d.pendingDeviceJid = [];
+for (var j = 0; j < m.pendingDeviceJid.length; ++j) {
+d.pendingDeviceJid[j] = m.pendingDeviceJid[j];
+}
+}
+if (m.deliveredDeviceJid && m.deliveredDeviceJid.length) {
+d.deliveredDeviceJid = [];
+for (var j = 0; j < m.deliveredDeviceJid.length; ++j) {
+d.deliveredDeviceJid[j] = m.deliveredDeviceJid[j];
+}
+}
+return d;
+};
+UserReceipt.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+UserReceipt.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.UserReceipt";
+};
+return UserReceipt;

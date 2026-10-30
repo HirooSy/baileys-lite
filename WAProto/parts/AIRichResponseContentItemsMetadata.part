@@ -1,0 +1,354 @@
+"use strict";
+function AIRichResponseContentItemsMetadata(p) {
+this.itemsMetadata = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIRichResponseContentItemsMetadata.prototype.itemsMetadata = $util.emptyArray;
+AIRichResponseContentItemsMetadata.prototype.contentType = null;
+let $oneOfFields;
+Object.defineProperty(AIRichResponseContentItemsMetadata.prototype, "_contentType", {
+get: $util.oneOfGetter($oneOfFields = ["contentType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIRichResponseContentItemsMetadata.create = function create(properties) {
+return new AIRichResponseContentItemsMetadata(properties);
+};
+AIRichResponseContentItemsMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.itemsMetadata != null && m.itemsMetadata.length) {
+for (var i = 0; i < m.itemsMetadata.length; ++i)
+$root.proto.AIRichResponseContentItemsMetadata.AIRichResponseContentItemMetadata.encode(m.itemsMetadata[i], w.uint32(10).fork()).ldelim();
+}
+if (m.contentType != null && Object.hasOwnProperty.call(m, "contentType"))
+w.uint32(16).int32(m.contentType);
+return w;
+};
+AIRichResponseContentItemsMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIRichResponseContentItemsMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+if (!(m.itemsMetadata && m.itemsMetadata.length))
+m.itemsMetadata = [];
+m.itemsMetadata.push($root.proto.AIRichResponseContentItemsMetadata.AIRichResponseContentItemMetadata.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 2: {
+m.contentType = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIRichResponseContentItemsMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIRichResponseContentItemsMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIRichResponseContentItemsMetadata();
+if (d.itemsMetadata) {
+if (!Array.isArray(d.itemsMetadata))
+throw TypeError(".proto.AIRichResponseContentItemsMetadata.itemsMetadata: array expected");
+m.itemsMetadata = [];
+for (var i = 0; i < d.itemsMetadata.length; ++i) {
+if (typeof d.itemsMetadata[i] !== "object")
+throw TypeError(".proto.AIRichResponseContentItemsMetadata.itemsMetadata: object expected");
+m.itemsMetadata[i] = $root.proto.AIRichResponseContentItemsMetadata.AIRichResponseContentItemMetadata.fromObject(d.itemsMetadata[i], n + 1);
+}
+}
+switch (d.contentType) {
+default:
+if (typeof d.contentType === "number") {
+m.contentType = d.contentType;
+break;
+}
+break;
+case "DEFAULT":
+case 0:
+m.contentType = 0;
+break;
+case "CAROUSEL":
+case 1:
+m.contentType = 1;
+break;
+}
+return m;
+};
+AIRichResponseContentItemsMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.itemsMetadata = [];
+}
+if (m.itemsMetadata && m.itemsMetadata.length) {
+d.itemsMetadata = [];
+for (var j = 0; j < m.itemsMetadata.length; ++j) {
+d.itemsMetadata[j] = $root.proto.AIRichResponseContentItemsMetadata.AIRichResponseContentItemMetadata.toObject(m.itemsMetadata[j], o);
+}
+}
+if (m.contentType != null && m.hasOwnProperty("contentType")) {
+d.contentType = o.enums === String ? $root.proto.AIRichResponseContentItemsMetadata.ContentType[m.contentType] === undefined ? m.contentType : $root.proto.AIRichResponseContentItemsMetadata.ContentType[m.contentType] : m.contentType;
+if (o.oneofs)
+d._contentType = "contentType";
+}
+return d;
+};
+AIRichResponseContentItemsMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIRichResponseContentItemsMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIRichResponseContentItemsMetadata";
+};
+$lazy(AIRichResponseContentItemsMetadata, "AIRichResponseContentItemMetadata", function() {
+function AIRichResponseContentItemMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIRichResponseContentItemMetadata.prototype.reelItem = null;
+let $oneOfFields;
+Object.defineProperty(AIRichResponseContentItemMetadata.prototype, "aIRichResponseContentItem", {
+get: $util.oneOfGetter($oneOfFields = ["reelItem"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIRichResponseContentItemMetadata.create = function create(properties) {
+return new AIRichResponseContentItemMetadata(properties);
+};
+AIRichResponseContentItemMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.reelItem != null && Object.hasOwnProperty.call(m, "reelItem"))
+$root.proto.AIRichResponseContentItemsMetadata.AIRichResponseReelItem.encode(m.reelItem, w.uint32(10).fork()).ldelim();
+return w;
+};
+AIRichResponseContentItemMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIRichResponseContentItemsMetadata.AIRichResponseContentItemMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.reelItem = $root.proto.AIRichResponseContentItemsMetadata.AIRichResponseReelItem.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIRichResponseContentItemMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIRichResponseContentItemsMetadata.AIRichResponseContentItemMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIRichResponseContentItemsMetadata.AIRichResponseContentItemMetadata();
+if (d.reelItem != null) {
+if (typeof d.reelItem !== "object")
+throw TypeError(".proto.AIRichResponseContentItemsMetadata.AIRichResponseContentItemMetadata.reelItem: object expected");
+m.reelItem = $root.proto.AIRichResponseContentItemsMetadata.AIRichResponseReelItem.fromObject(d.reelItem, n + 1);
+}
+return m;
+};
+AIRichResponseContentItemMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.reelItem != null && m.hasOwnProperty("reelItem")) {
+d.reelItem = $root.proto.AIRichResponseContentItemsMetadata.AIRichResponseReelItem.toObject(m.reelItem, o);
+if (o.oneofs)
+d.aIRichResponseContentItem = "reelItem";
+}
+return d;
+};
+AIRichResponseContentItemMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIRichResponseContentItemMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIRichResponseContentItemsMetadata.AIRichResponseContentItemMetadata";
+};
+return AIRichResponseContentItemMetadata;
+});
+$lazy(AIRichResponseContentItemsMetadata, "AIRichResponseReelItem", function() {
+function AIRichResponseReelItem(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIRichResponseReelItem.prototype.title = null;
+AIRichResponseReelItem.prototype.profileIconUrl = null;
+AIRichResponseReelItem.prototype.thumbnailUrl = null;
+AIRichResponseReelItem.prototype.videoUrl = null;
+let $oneOfFields;
+Object.defineProperty(AIRichResponseReelItem.prototype, "_title", {
+get: $util.oneOfGetter($oneOfFields = ["title"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseReelItem.prototype, "_profileIconUrl", {
+get: $util.oneOfGetter($oneOfFields = ["profileIconUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseReelItem.prototype, "_thumbnailUrl", {
+get: $util.oneOfGetter($oneOfFields = ["thumbnailUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIRichResponseReelItem.prototype, "_videoUrl", {
+get: $util.oneOfGetter($oneOfFields = ["videoUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIRichResponseReelItem.create = function create(properties) {
+return new AIRichResponseReelItem(properties);
+};
+AIRichResponseReelItem.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.title != null && Object.hasOwnProperty.call(m, "title"))
+w.uint32(10).string(m.title);
+if (m.profileIconUrl != null && Object.hasOwnProperty.call(m, "profileIconUrl"))
+w.uint32(18).string(m.profileIconUrl);
+if (m.thumbnailUrl != null && Object.hasOwnProperty.call(m, "thumbnailUrl"))
+w.uint32(26).string(m.thumbnailUrl);
+if (m.videoUrl != null && Object.hasOwnProperty.call(m, "videoUrl"))
+w.uint32(34).string(m.videoUrl);
+return w;
+};
+AIRichResponseReelItem.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIRichResponseContentItemsMetadata.AIRichResponseReelItem();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.title = r.string();
+break;
+}
+case 2: {
+m.profileIconUrl = r.string();
+break;
+}
+case 3: {
+m.thumbnailUrl = r.string();
+break;
+}
+case 4: {
+m.videoUrl = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIRichResponseReelItem.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIRichResponseContentItemsMetadata.AIRichResponseReelItem)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIRichResponseContentItemsMetadata.AIRichResponseReelItem();
+if (d.title != null) {
+m.title = String(d.title);
+}
+if (d.profileIconUrl != null) {
+m.profileIconUrl = String(d.profileIconUrl);
+}
+if (d.thumbnailUrl != null) {
+m.thumbnailUrl = String(d.thumbnailUrl);
+}
+if (d.videoUrl != null) {
+m.videoUrl = String(d.videoUrl);
+}
+return m;
+};
+AIRichResponseReelItem.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.title != null && m.hasOwnProperty("title")) {
+d.title = m.title;
+if (o.oneofs)
+d._title = "title";
+}
+if (m.profileIconUrl != null && m.hasOwnProperty("profileIconUrl")) {
+d.profileIconUrl = m.profileIconUrl;
+if (o.oneofs)
+d._profileIconUrl = "profileIconUrl";
+}
+if (m.thumbnailUrl != null && m.hasOwnProperty("thumbnailUrl")) {
+d.thumbnailUrl = m.thumbnailUrl;
+if (o.oneofs)
+d._thumbnailUrl = "thumbnailUrl";
+}
+if (m.videoUrl != null && m.hasOwnProperty("videoUrl")) {
+d.videoUrl = m.videoUrl;
+if (o.oneofs)
+d._videoUrl = "videoUrl";
+}
+return d;
+};
+AIRichResponseReelItem.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIRichResponseReelItem.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIRichResponseContentItemsMetadata.AIRichResponseReelItem";
+};
+return AIRichResponseReelItem;
+});
+$lazy(AIRichResponseContentItemsMetadata, "ContentType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "DEFAULT"] = 0;
+values[valuesById[1] = "CAROUSEL"] = 1;
+return values;
+});
+return AIRichResponseContentItemsMetadata;

@@ -1,0 +1,6 @@
+"use strict";
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[1] = "E2EE_MSG"] = 1;
+values[valuesById[2] = "NE2EE_SELF"] = 2;
+values[valuesById[3] = "NE2EE_OTHER"] = 3;
+return values;

@@ -1,0 +1,497 @@
+"use strict";
+function GlobalSettings(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+GlobalSettings.prototype.lightThemeWallpaper = null;
+GlobalSettings.prototype.mediaVisibility = null;
+GlobalSettings.prototype.darkThemeWallpaper = null;
+GlobalSettings.prototype.autoDownloadWiFi = null;
+GlobalSettings.prototype.autoDownloadCellular = null;
+GlobalSettings.prototype.autoDownloadRoaming = null;
+GlobalSettings.prototype.showIndividualNotificationsPreview = null;
+GlobalSettings.prototype.showGroupNotificationsPreview = null;
+GlobalSettings.prototype.disappearingModeDuration = null;
+GlobalSettings.prototype.disappearingModeTimestamp = null;
+GlobalSettings.prototype.avatarUserSettings = null;
+GlobalSettings.prototype.fontSize = null;
+GlobalSettings.prototype.securityNotifications = null;
+GlobalSettings.prototype.autoUnarchiveChats = null;
+GlobalSettings.prototype.videoQualityMode = null;
+GlobalSettings.prototype.photoQualityMode = null;
+GlobalSettings.prototype.individualNotificationSettings = null;
+GlobalSettings.prototype.groupNotificationSettings = null;
+GlobalSettings.prototype.chatLockSettings = null;
+GlobalSettings.prototype.chatDbLidMigrationTimestamp = null;
+let $oneOfFields;
+Object.defineProperty(GlobalSettings.prototype, "_lightThemeWallpaper", {
+get: $util.oneOfGetter($oneOfFields = ["lightThemeWallpaper"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_mediaVisibility", {
+get: $util.oneOfGetter($oneOfFields = ["mediaVisibility"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_darkThemeWallpaper", {
+get: $util.oneOfGetter($oneOfFields = ["darkThemeWallpaper"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_autoDownloadWiFi", {
+get: $util.oneOfGetter($oneOfFields = ["autoDownloadWiFi"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_autoDownloadCellular", {
+get: $util.oneOfGetter($oneOfFields = ["autoDownloadCellular"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_autoDownloadRoaming", {
+get: $util.oneOfGetter($oneOfFields = ["autoDownloadRoaming"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_showIndividualNotificationsPreview", {
+get: $util.oneOfGetter($oneOfFields = ["showIndividualNotificationsPreview"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_showGroupNotificationsPreview", {
+get: $util.oneOfGetter($oneOfFields = ["showGroupNotificationsPreview"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_disappearingModeDuration", {
+get: $util.oneOfGetter($oneOfFields = ["disappearingModeDuration"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_disappearingModeTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["disappearingModeTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_avatarUserSettings", {
+get: $util.oneOfGetter($oneOfFields = ["avatarUserSettings"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_fontSize", {
+get: $util.oneOfGetter($oneOfFields = ["fontSize"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_securityNotifications", {
+get: $util.oneOfGetter($oneOfFields = ["securityNotifications"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_autoUnarchiveChats", {
+get: $util.oneOfGetter($oneOfFields = ["autoUnarchiveChats"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_videoQualityMode", {
+get: $util.oneOfGetter($oneOfFields = ["videoQualityMode"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_photoQualityMode", {
+get: $util.oneOfGetter($oneOfFields = ["photoQualityMode"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_individualNotificationSettings", {
+get: $util.oneOfGetter($oneOfFields = ["individualNotificationSettings"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_groupNotificationSettings", {
+get: $util.oneOfGetter($oneOfFields = ["groupNotificationSettings"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_chatLockSettings", {
+get: $util.oneOfGetter($oneOfFields = ["chatLockSettings"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(GlobalSettings.prototype, "_chatDbLidMigrationTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["chatDbLidMigrationTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+GlobalSettings.create = function create(properties) {
+return new GlobalSettings(properties);
+};
+GlobalSettings.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.lightThemeWallpaper != null && Object.hasOwnProperty.call(m, "lightThemeWallpaper"))
+$root.proto.WallpaperSettings.encode(m.lightThemeWallpaper, w.uint32(10).fork()).ldelim();
+if (m.mediaVisibility != null && Object.hasOwnProperty.call(m, "mediaVisibility"))
+w.uint32(16).int32(m.mediaVisibility);
+if (m.darkThemeWallpaper != null && Object.hasOwnProperty.call(m, "darkThemeWallpaper"))
+$root.proto.WallpaperSettings.encode(m.darkThemeWallpaper, w.uint32(26).fork()).ldelim();
+if (m.autoDownloadWiFi != null && Object.hasOwnProperty.call(m, "autoDownloadWiFi"))
+$root.proto.AutoDownloadSettings.encode(m.autoDownloadWiFi, w.uint32(34).fork()).ldelim();
+if (m.autoDownloadCellular != null && Object.hasOwnProperty.call(m, "autoDownloadCellular"))
+$root.proto.AutoDownloadSettings.encode(m.autoDownloadCellular, w.uint32(42).fork()).ldelim();
+if (m.autoDownloadRoaming != null && Object.hasOwnProperty.call(m, "autoDownloadRoaming"))
+$root.proto.AutoDownloadSettings.encode(m.autoDownloadRoaming, w.uint32(50).fork()).ldelim();
+if (m.showIndividualNotificationsPreview != null && Object.hasOwnProperty.call(m, "showIndividualNotificationsPreview"))
+w.uint32(56).bool(m.showIndividualNotificationsPreview);
+if (m.showGroupNotificationsPreview != null && Object.hasOwnProperty.call(m, "showGroupNotificationsPreview"))
+w.uint32(64).bool(m.showGroupNotificationsPreview);
+if (m.disappearingModeDuration != null && Object.hasOwnProperty.call(m, "disappearingModeDuration"))
+w.uint32(72).int32(m.disappearingModeDuration);
+if (m.disappearingModeTimestamp != null && Object.hasOwnProperty.call(m, "disappearingModeTimestamp"))
+w.uint32(80).int64(m.disappearingModeTimestamp);
+if (m.avatarUserSettings != null && Object.hasOwnProperty.call(m, "avatarUserSettings"))
+$root.proto.AvatarUserSettings.encode(m.avatarUserSettings, w.uint32(90).fork()).ldelim();
+if (m.fontSize != null && Object.hasOwnProperty.call(m, "fontSize"))
+w.uint32(96).int32(m.fontSize);
+if (m.securityNotifications != null && Object.hasOwnProperty.call(m, "securityNotifications"))
+w.uint32(104).bool(m.securityNotifications);
+if (m.autoUnarchiveChats != null && Object.hasOwnProperty.call(m, "autoUnarchiveChats"))
+w.uint32(112).bool(m.autoUnarchiveChats);
+if (m.videoQualityMode != null && Object.hasOwnProperty.call(m, "videoQualityMode"))
+w.uint32(120).int32(m.videoQualityMode);
+if (m.photoQualityMode != null && Object.hasOwnProperty.call(m, "photoQualityMode"))
+w.uint32(128).int32(m.photoQualityMode);
+if (m.individualNotificationSettings != null && Object.hasOwnProperty.call(m, "individualNotificationSettings"))
+$root.proto.NotificationSettings.encode(m.individualNotificationSettings, w.uint32(138).fork()).ldelim();
+if (m.groupNotificationSettings != null && Object.hasOwnProperty.call(m, "groupNotificationSettings"))
+$root.proto.NotificationSettings.encode(m.groupNotificationSettings, w.uint32(146).fork()).ldelim();
+if (m.chatLockSettings != null && Object.hasOwnProperty.call(m, "chatLockSettings"))
+$root.proto.ChatLockSettings.encode(m.chatLockSettings, w.uint32(154).fork()).ldelim();
+if (m.chatDbLidMigrationTimestamp != null && Object.hasOwnProperty.call(m, "chatDbLidMigrationTimestamp"))
+w.uint32(160).int64(m.chatDbLidMigrationTimestamp);
+return w;
+};
+GlobalSettings.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.GlobalSettings();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.lightThemeWallpaper = $root.proto.WallpaperSettings.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.mediaVisibility = r.int32();
+break;
+}
+case 3: {
+m.darkThemeWallpaper = $root.proto.WallpaperSettings.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 4: {
+m.autoDownloadWiFi = $root.proto.AutoDownloadSettings.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 5: {
+m.autoDownloadCellular = $root.proto.AutoDownloadSettings.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 6: {
+m.autoDownloadRoaming = $root.proto.AutoDownloadSettings.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 7: {
+m.showIndividualNotificationsPreview = r.bool();
+break;
+}
+case 8: {
+m.showGroupNotificationsPreview = r.bool();
+break;
+}
+case 9: {
+m.disappearingModeDuration = r.int32();
+break;
+}
+case 10: {
+m.disappearingModeTimestamp = r.int64();
+break;
+}
+case 11: {
+m.avatarUserSettings = $root.proto.AvatarUserSettings.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 12: {
+m.fontSize = r.int32();
+break;
+}
+case 13: {
+m.securityNotifications = r.bool();
+break;
+}
+case 14: {
+m.autoUnarchiveChats = r.bool();
+break;
+}
+case 15: {
+m.videoQualityMode = r.int32();
+break;
+}
+case 16: {
+m.photoQualityMode = r.int32();
+break;
+}
+case 17: {
+m.individualNotificationSettings = $root.proto.NotificationSettings.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 18: {
+m.groupNotificationSettings = $root.proto.NotificationSettings.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 19: {
+m.chatLockSettings = $root.proto.ChatLockSettings.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 20: {
+m.chatDbLidMigrationTimestamp = r.int64();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+GlobalSettings.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.GlobalSettings)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.GlobalSettings();
+if (d.lightThemeWallpaper != null) {
+if (typeof d.lightThemeWallpaper !== "object")
+throw TypeError(".proto.GlobalSettings.lightThemeWallpaper: object expected");
+m.lightThemeWallpaper = $root.proto.WallpaperSettings.fromObject(d.lightThemeWallpaper, n + 1);
+}
+switch (d.mediaVisibility) {
+default:
+if (typeof d.mediaVisibility === "number") {
+m.mediaVisibility = d.mediaVisibility;
+break;
+}
+break;
+case "DEFAULT":
+case 0:
+m.mediaVisibility = 0;
+break;
+case "OFF":
+case 1:
+m.mediaVisibility = 1;
+break;
+case "ON":
+case 2:
+m.mediaVisibility = 2;
+break;
+}
+if (d.darkThemeWallpaper != null) {
+if (typeof d.darkThemeWallpaper !== "object")
+throw TypeError(".proto.GlobalSettings.darkThemeWallpaper: object expected");
+m.darkThemeWallpaper = $root.proto.WallpaperSettings.fromObject(d.darkThemeWallpaper, n + 1);
+}
+if (d.autoDownloadWiFi != null) {
+if (typeof d.autoDownloadWiFi !== "object")
+throw TypeError(".proto.GlobalSettings.autoDownloadWiFi: object expected");
+m.autoDownloadWiFi = $root.proto.AutoDownloadSettings.fromObject(d.autoDownloadWiFi, n + 1);
+}
+if (d.autoDownloadCellular != null) {
+if (typeof d.autoDownloadCellular !== "object")
+throw TypeError(".proto.GlobalSettings.autoDownloadCellular: object expected");
+m.autoDownloadCellular = $root.proto.AutoDownloadSettings.fromObject(d.autoDownloadCellular, n + 1);
+}
+if (d.autoDownloadRoaming != null) {
+if (typeof d.autoDownloadRoaming !== "object")
+throw TypeError(".proto.GlobalSettings.autoDownloadRoaming: object expected");
+m.autoDownloadRoaming = $root.proto.AutoDownloadSettings.fromObject(d.autoDownloadRoaming, n + 1);
+}
+if (d.showIndividualNotificationsPreview != null) {
+m.showIndividualNotificationsPreview = Boolean(d.showIndividualNotificationsPreview);
+}
+if (d.showGroupNotificationsPreview != null) {
+m.showGroupNotificationsPreview = Boolean(d.showGroupNotificationsPreview);
+}
+if (d.disappearingModeDuration != null) {
+m.disappearingModeDuration = d.disappearingModeDuration | 0;
+}
+if (d.disappearingModeTimestamp != null) {
+if ($util.Long)
+(m.disappearingModeTimestamp = $util.Long.fromValue(d.disappearingModeTimestamp)).unsigned = false;
+else if (typeof d.disappearingModeTimestamp === "string")
+m.disappearingModeTimestamp = parseInt(d.disappearingModeTimestamp, 10);
+else if (typeof d.disappearingModeTimestamp === "number")
+m.disappearingModeTimestamp = d.disappearingModeTimestamp;
+else if (typeof d.disappearingModeTimestamp === "object")
+m.disappearingModeTimestamp = new $util.LongBits(d.disappearingModeTimestamp.low >>> 0, d.disappearingModeTimestamp.high >>> 0).toNumber();
+}
+if (d.avatarUserSettings != null) {
+if (typeof d.avatarUserSettings !== "object")
+throw TypeError(".proto.GlobalSettings.avatarUserSettings: object expected");
+m.avatarUserSettings = $root.proto.AvatarUserSettings.fromObject(d.avatarUserSettings, n + 1);
+}
+if (d.fontSize != null) {
+m.fontSize = d.fontSize | 0;
+}
+if (d.securityNotifications != null) {
+m.securityNotifications = Boolean(d.securityNotifications);
+}
+if (d.autoUnarchiveChats != null) {
+m.autoUnarchiveChats = Boolean(d.autoUnarchiveChats);
+}
+if (d.videoQualityMode != null) {
+m.videoQualityMode = d.videoQualityMode | 0;
+}
+if (d.photoQualityMode != null) {
+m.photoQualityMode = d.photoQualityMode | 0;
+}
+if (d.individualNotificationSettings != null) {
+if (typeof d.individualNotificationSettings !== "object")
+throw TypeError(".proto.GlobalSettings.individualNotificationSettings: object expected");
+m.individualNotificationSettings = $root.proto.NotificationSettings.fromObject(d.individualNotificationSettings, n + 1);
+}
+if (d.groupNotificationSettings != null) {
+if (typeof d.groupNotificationSettings !== "object")
+throw TypeError(".proto.GlobalSettings.groupNotificationSettings: object expected");
+m.groupNotificationSettings = $root.proto.NotificationSettings.fromObject(d.groupNotificationSettings, n + 1);
+}
+if (d.chatLockSettings != null) {
+if (typeof d.chatLockSettings !== "object")
+throw TypeError(".proto.GlobalSettings.chatLockSettings: object expected");
+m.chatLockSettings = $root.proto.ChatLockSettings.fromObject(d.chatLockSettings, n + 1);
+}
+if (d.chatDbLidMigrationTimestamp != null) {
+if ($util.Long)
+(m.chatDbLidMigrationTimestamp = $util.Long.fromValue(d.chatDbLidMigrationTimestamp)).unsigned = false;
+else if (typeof d.chatDbLidMigrationTimestamp === "string")
+m.chatDbLidMigrationTimestamp = parseInt(d.chatDbLidMigrationTimestamp, 10);
+else if (typeof d.chatDbLidMigrationTimestamp === "number")
+m.chatDbLidMigrationTimestamp = d.chatDbLidMigrationTimestamp;
+else if (typeof d.chatDbLidMigrationTimestamp === "object")
+m.chatDbLidMigrationTimestamp = new $util.LongBits(d.chatDbLidMigrationTimestamp.low >>> 0, d.chatDbLidMigrationTimestamp.high >>> 0).toNumber();
+}
+return m;
+};
+GlobalSettings.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.lightThemeWallpaper != null && m.hasOwnProperty("lightThemeWallpaper")) {
+d.lightThemeWallpaper = $root.proto.WallpaperSettings.toObject(m.lightThemeWallpaper, o);
+if (o.oneofs)
+d._lightThemeWallpaper = "lightThemeWallpaper";
+}
+if (m.mediaVisibility != null && m.hasOwnProperty("mediaVisibility")) {
+d.mediaVisibility = o.enums === String ? $root.proto.MediaVisibility[m.mediaVisibility] === undefined ? m.mediaVisibility : $root.proto.MediaVisibility[m.mediaVisibility] : m.mediaVisibility;
+if (o.oneofs)
+d._mediaVisibility = "mediaVisibility";
+}
+if (m.darkThemeWallpaper != null && m.hasOwnProperty("darkThemeWallpaper")) {
+d.darkThemeWallpaper = $root.proto.WallpaperSettings.toObject(m.darkThemeWallpaper, o);
+if (o.oneofs)
+d._darkThemeWallpaper = "darkThemeWallpaper";
+}
+if (m.autoDownloadWiFi != null && m.hasOwnProperty("autoDownloadWiFi")) {
+d.autoDownloadWiFi = $root.proto.AutoDownloadSettings.toObject(m.autoDownloadWiFi, o);
+if (o.oneofs)
+d._autoDownloadWiFi = "autoDownloadWiFi";
+}
+if (m.autoDownloadCellular != null && m.hasOwnProperty("autoDownloadCellular")) {
+d.autoDownloadCellular = $root.proto.AutoDownloadSettings.toObject(m.autoDownloadCellular, o);
+if (o.oneofs)
+d._autoDownloadCellular = "autoDownloadCellular";
+}
+if (m.autoDownloadRoaming != null && m.hasOwnProperty("autoDownloadRoaming")) {
+d.autoDownloadRoaming = $root.proto.AutoDownloadSettings.toObject(m.autoDownloadRoaming, o);
+if (o.oneofs)
+d._autoDownloadRoaming = "autoDownloadRoaming";
+}
+if (m.showIndividualNotificationsPreview != null && m.hasOwnProperty("showIndividualNotificationsPreview")) {
+d.showIndividualNotificationsPreview = m.showIndividualNotificationsPreview;
+if (o.oneofs)
+d._showIndividualNotificationsPreview = "showIndividualNotificationsPreview";
+}
+if (m.showGroupNotificationsPreview != null && m.hasOwnProperty("showGroupNotificationsPreview")) {
+d.showGroupNotificationsPreview = m.showGroupNotificationsPreview;
+if (o.oneofs)
+d._showGroupNotificationsPreview = "showGroupNotificationsPreview";
+}
+if (m.disappearingModeDuration != null && m.hasOwnProperty("disappearingModeDuration")) {
+d.disappearingModeDuration = m.disappearingModeDuration;
+if (o.oneofs)
+d._disappearingModeDuration = "disappearingModeDuration";
+}
+if (m.disappearingModeTimestamp != null && m.hasOwnProperty("disappearingModeTimestamp")) {
+if (typeof m.disappearingModeTimestamp === "number")
+d.disappearingModeTimestamp = o.longs === String ? String(m.disappearingModeTimestamp) : m.disappearingModeTimestamp;
+else
+d.disappearingModeTimestamp = o.longs === String ? longToString(m.disappearingModeTimestamp) : o.longs === Number ? longToNumber(m.disappearingModeTimestamp) : m.disappearingModeTimestamp;
+if (o.oneofs)
+d._disappearingModeTimestamp = "disappearingModeTimestamp";
+}
+if (m.avatarUserSettings != null && m.hasOwnProperty("avatarUserSettings")) {
+d.avatarUserSettings = $root.proto.AvatarUserSettings.toObject(m.avatarUserSettings, o);
+if (o.oneofs)
+d._avatarUserSettings = "avatarUserSettings";
+}
+if (m.fontSize != null && m.hasOwnProperty("fontSize")) {
+d.fontSize = m.fontSize;
+if (o.oneofs)
+d._fontSize = "fontSize";
+}
+if (m.securityNotifications != null && m.hasOwnProperty("securityNotifications")) {
+d.securityNotifications = m.securityNotifications;
+if (o.oneofs)
+d._securityNotifications = "securityNotifications";
+}
+if (m.autoUnarchiveChats != null && m.hasOwnProperty("autoUnarchiveChats")) {
+d.autoUnarchiveChats = m.autoUnarchiveChats;
+if (o.oneofs)
+d._autoUnarchiveChats = "autoUnarchiveChats";
+}
+if (m.videoQualityMode != null && m.hasOwnProperty("videoQualityMode")) {
+d.videoQualityMode = m.videoQualityMode;
+if (o.oneofs)
+d._videoQualityMode = "videoQualityMode";
+}
+if (m.photoQualityMode != null && m.hasOwnProperty("photoQualityMode")) {
+d.photoQualityMode = m.photoQualityMode;
+if (o.oneofs)
+d._photoQualityMode = "photoQualityMode";
+}
+if (m.individualNotificationSettings != null && m.hasOwnProperty("individualNotificationSettings")) {
+d.individualNotificationSettings = $root.proto.NotificationSettings.toObject(m.individualNotificationSettings, o);
+if (o.oneofs)
+d._individualNotificationSettings = "individualNotificationSettings";
+}
+if (m.groupNotificationSettings != null && m.hasOwnProperty("groupNotificationSettings")) {
+d.groupNotificationSettings = $root.proto.NotificationSettings.toObject(m.groupNotificationSettings, o);
+if (o.oneofs)
+d._groupNotificationSettings = "groupNotificationSettings";
+}
+if (m.chatLockSettings != null && m.hasOwnProperty("chatLockSettings")) {
+d.chatLockSettings = $root.proto.ChatLockSettings.toObject(m.chatLockSettings, o);
+if (o.oneofs)
+d._chatLockSettings = "chatLockSettings";
+}
+if (m.chatDbLidMigrationTimestamp != null && m.hasOwnProperty("chatDbLidMigrationTimestamp")) {
+if (typeof m.chatDbLidMigrationTimestamp === "number")
+d.chatDbLidMigrationTimestamp = o.longs === String ? String(m.chatDbLidMigrationTimestamp) : m.chatDbLidMigrationTimestamp;
+else
+d.chatDbLidMigrationTimestamp = o.longs === String ? longToString(m.chatDbLidMigrationTimestamp) : o.longs === Number ? longToNumber(m.chatDbLidMigrationTimestamp) : m.chatDbLidMigrationTimestamp;
+if (o.oneofs)
+d._chatDbLidMigrationTimestamp = "chatDbLidMigrationTimestamp";
+}
+return d;
+};
+GlobalSettings.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+GlobalSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.GlobalSettings";
+};
+return GlobalSettings;

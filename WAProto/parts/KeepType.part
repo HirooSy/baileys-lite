@@ -1,0 +1,6 @@
+"use strict";
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN"] = 0;
+values[valuesById[1] = "KEEP_FOR_ALL"] = 1;
+values[valuesById[2] = "UNDO_KEEP_FOR_ALL"] = 2;
+return values;

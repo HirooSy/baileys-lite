@@ -1,0 +1,128 @@
+"use strict";
+function PairingRequest(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+PairingRequest.prototype.companionPublicKey = null;
+PairingRequest.prototype.companionIdentityKey = null;
+PairingRequest.prototype.advSecret = null;
+let $oneOfFields;
+Object.defineProperty(PairingRequest.prototype, "_companionPublicKey", {
+get: $util.oneOfGetter($oneOfFields = ["companionPublicKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PairingRequest.prototype, "_companionIdentityKey", {
+get: $util.oneOfGetter($oneOfFields = ["companionIdentityKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PairingRequest.prototype, "_advSecret", {
+get: $util.oneOfGetter($oneOfFields = ["advSecret"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+PairingRequest.create = function create(properties) {
+return new PairingRequest(properties);
+};
+PairingRequest.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.companionPublicKey != null && Object.hasOwnProperty.call(m, "companionPublicKey"))
+w.uint32(10).bytes(m.companionPublicKey);
+if (m.companionIdentityKey != null && Object.hasOwnProperty.call(m, "companionIdentityKey"))
+w.uint32(18).bytes(m.companionIdentityKey);
+if (m.advSecret != null && Object.hasOwnProperty.call(m, "advSecret"))
+w.uint32(26).bytes(m.advSecret);
+return w;
+};
+PairingRequest.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.PairingRequest();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.companionPublicKey = r.bytes();
+break;
+}
+case 2: {
+m.companionIdentityKey = r.bytes();
+break;
+}
+case 3: {
+m.advSecret = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+PairingRequest.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.PairingRequest)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.PairingRequest();
+if (d.companionPublicKey != null) {
+if (typeof d.companionPublicKey === "string")
+$util.base64.decode(d.companionPublicKey, m.companionPublicKey = $util.newBuffer($util.base64.length(d.companionPublicKey)), 0);
+else if (d.companionPublicKey.length >= 0)
+m.companionPublicKey = d.companionPublicKey;
+}
+if (d.companionIdentityKey != null) {
+if (typeof d.companionIdentityKey === "string")
+$util.base64.decode(d.companionIdentityKey, m.companionIdentityKey = $util.newBuffer($util.base64.length(d.companionIdentityKey)), 0);
+else if (d.companionIdentityKey.length >= 0)
+m.companionIdentityKey = d.companionIdentityKey;
+}
+if (d.advSecret != null) {
+if (typeof d.advSecret === "string")
+$util.base64.decode(d.advSecret, m.advSecret = $util.newBuffer($util.base64.length(d.advSecret)), 0);
+else if (d.advSecret.length >= 0)
+m.advSecret = d.advSecret;
+}
+return m;
+};
+PairingRequest.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.companionPublicKey != null && m.hasOwnProperty("companionPublicKey")) {
+d.companionPublicKey = o.bytes === String ? $util.base64.encode(m.companionPublicKey, 0, m.companionPublicKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.companionPublicKey) : m.companionPublicKey;
+if (o.oneofs)
+d._companionPublicKey = "companionPublicKey";
+}
+if (m.companionIdentityKey != null && m.hasOwnProperty("companionIdentityKey")) {
+d.companionIdentityKey = o.bytes === String ? $util.base64.encode(m.companionIdentityKey, 0, m.companionIdentityKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.companionIdentityKey) : m.companionIdentityKey;
+if (o.oneofs)
+d._companionIdentityKey = "companionIdentityKey";
+}
+if (m.advSecret != null && m.hasOwnProperty("advSecret")) {
+d.advSecret = o.bytes === String ? $util.base64.encode(m.advSecret, 0, m.advSecret.length) : o.bytes === Array ? Array.prototype.slice.call(m.advSecret) : m.advSecret;
+if (o.oneofs)
+d._advSecret = "advSecret";
+}
+return d;
+};
+PairingRequest.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+PairingRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.PairingRequest";
+};
+return PairingRequest;

@@ -1,0 +1,262 @@
+"use strict";
+function SyncdPatch(p) {
+this.mutations = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SyncdPatch.prototype.version = null;
+SyncdPatch.prototype.mutations = $util.emptyArray;
+SyncdPatch.prototype.externalMutations = null;
+SyncdPatch.prototype.snapshotMac = null;
+SyncdPatch.prototype.patchMac = null;
+SyncdPatch.prototype.keyId = null;
+SyncdPatch.prototype.exitCode = null;
+SyncdPatch.prototype.deviceIndex = null;
+SyncdPatch.prototype.clientDebugData = null;
+let $oneOfFields;
+Object.defineProperty(SyncdPatch.prototype, "_version", {
+get: $util.oneOfGetter($oneOfFields = ["version"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SyncdPatch.prototype, "_externalMutations", {
+get: $util.oneOfGetter($oneOfFields = ["externalMutations"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SyncdPatch.prototype, "_snapshotMac", {
+get: $util.oneOfGetter($oneOfFields = ["snapshotMac"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SyncdPatch.prototype, "_patchMac", {
+get: $util.oneOfGetter($oneOfFields = ["patchMac"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SyncdPatch.prototype, "_keyId", {
+get: $util.oneOfGetter($oneOfFields = ["keyId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SyncdPatch.prototype, "_exitCode", {
+get: $util.oneOfGetter($oneOfFields = ["exitCode"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SyncdPatch.prototype, "_deviceIndex", {
+get: $util.oneOfGetter($oneOfFields = ["deviceIndex"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SyncdPatch.prototype, "_clientDebugData", {
+get: $util.oneOfGetter($oneOfFields = ["clientDebugData"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SyncdPatch.create = function create(properties) {
+return new SyncdPatch(properties);
+};
+SyncdPatch.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.version != null && Object.hasOwnProperty.call(m, "version"))
+$root.proto.SyncdVersion.encode(m.version, w.uint32(10).fork()).ldelim();
+if (m.mutations != null && m.mutations.length) {
+for (var i = 0; i < m.mutations.length; ++i)
+$root.proto.SyncdMutation.encode(m.mutations[i], w.uint32(18).fork()).ldelim();
+}
+if (m.externalMutations != null && Object.hasOwnProperty.call(m, "externalMutations"))
+$root.proto.ExternalBlobReference.encode(m.externalMutations, w.uint32(26).fork()).ldelim();
+if (m.snapshotMac != null && Object.hasOwnProperty.call(m, "snapshotMac"))
+w.uint32(34).bytes(m.snapshotMac);
+if (m.patchMac != null && Object.hasOwnProperty.call(m, "patchMac"))
+w.uint32(42).bytes(m.patchMac);
+if (m.keyId != null && Object.hasOwnProperty.call(m, "keyId"))
+$root.proto.KeyId.encode(m.keyId, w.uint32(50).fork()).ldelim();
+if (m.exitCode != null && Object.hasOwnProperty.call(m, "exitCode"))
+$root.proto.ExitCode.encode(m.exitCode, w.uint32(58).fork()).ldelim();
+if (m.deviceIndex != null && Object.hasOwnProperty.call(m, "deviceIndex"))
+w.uint32(64).uint32(m.deviceIndex);
+if (m.clientDebugData != null && Object.hasOwnProperty.call(m, "clientDebugData"))
+w.uint32(74).bytes(m.clientDebugData);
+return w;
+};
+SyncdPatch.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.SyncdPatch();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.version = $root.proto.SyncdVersion.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+if (!(m.mutations && m.mutations.length))
+m.mutations = [];
+m.mutations.push($root.proto.SyncdMutation.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 3: {
+m.externalMutations = $root.proto.ExternalBlobReference.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 4: {
+m.snapshotMac = r.bytes();
+break;
+}
+case 5: {
+m.patchMac = r.bytes();
+break;
+}
+case 6: {
+m.keyId = $root.proto.KeyId.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 7: {
+m.exitCode = $root.proto.ExitCode.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 8: {
+m.deviceIndex = r.uint32();
+break;
+}
+case 9: {
+m.clientDebugData = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SyncdPatch.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.SyncdPatch)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.SyncdPatch();
+if (d.version != null) {
+if (typeof d.version !== "object")
+throw TypeError(".proto.SyncdPatch.version: object expected");
+m.version = $root.proto.SyncdVersion.fromObject(d.version, n + 1);
+}
+if (d.mutations) {
+if (!Array.isArray(d.mutations))
+throw TypeError(".proto.SyncdPatch.mutations: array expected");
+m.mutations = [];
+for (var i = 0; i < d.mutations.length; ++i) {
+if (typeof d.mutations[i] !== "object")
+throw TypeError(".proto.SyncdPatch.mutations: object expected");
+m.mutations[i] = $root.proto.SyncdMutation.fromObject(d.mutations[i], n + 1);
+}
+}
+if (d.externalMutations != null) {
+if (typeof d.externalMutations !== "object")
+throw TypeError(".proto.SyncdPatch.externalMutations: object expected");
+m.externalMutations = $root.proto.ExternalBlobReference.fromObject(d.externalMutations, n + 1);
+}
+if (d.snapshotMac != null) {
+if (typeof d.snapshotMac === "string")
+$util.base64.decode(d.snapshotMac, m.snapshotMac = $util.newBuffer($util.base64.length(d.snapshotMac)), 0);
+else if (d.snapshotMac.length >= 0)
+m.snapshotMac = d.snapshotMac;
+}
+if (d.patchMac != null) {
+if (typeof d.patchMac === "string")
+$util.base64.decode(d.patchMac, m.patchMac = $util.newBuffer($util.base64.length(d.patchMac)), 0);
+else if (d.patchMac.length >= 0)
+m.patchMac = d.patchMac;
+}
+if (d.keyId != null) {
+if (typeof d.keyId !== "object")
+throw TypeError(".proto.SyncdPatch.keyId: object expected");
+m.keyId = $root.proto.KeyId.fromObject(d.keyId, n + 1);
+}
+if (d.exitCode != null) {
+if (typeof d.exitCode !== "object")
+throw TypeError(".proto.SyncdPatch.exitCode: object expected");
+m.exitCode = $root.proto.ExitCode.fromObject(d.exitCode, n + 1);
+}
+if (d.deviceIndex != null) {
+m.deviceIndex = d.deviceIndex >>> 0;
+}
+if (d.clientDebugData != null) {
+if (typeof d.clientDebugData === "string")
+$util.base64.decode(d.clientDebugData, m.clientDebugData = $util.newBuffer($util.base64.length(d.clientDebugData)), 0);
+else if (d.clientDebugData.length >= 0)
+m.clientDebugData = d.clientDebugData;
+}
+return m;
+};
+SyncdPatch.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.mutations = [];
+}
+if (m.version != null && m.hasOwnProperty("version")) {
+d.version = $root.proto.SyncdVersion.toObject(m.version, o);
+if (o.oneofs)
+d._version = "version";
+}
+if (m.mutations && m.mutations.length) {
+d.mutations = [];
+for (var j = 0; j < m.mutations.length; ++j) {
+d.mutations[j] = $root.proto.SyncdMutation.toObject(m.mutations[j], o);
+}
+}
+if (m.externalMutations != null && m.hasOwnProperty("externalMutations")) {
+d.externalMutations = $root.proto.ExternalBlobReference.toObject(m.externalMutations, o);
+if (o.oneofs)
+d._externalMutations = "externalMutations";
+}
+if (m.snapshotMac != null && m.hasOwnProperty("snapshotMac")) {
+d.snapshotMac = o.bytes === String ? $util.base64.encode(m.snapshotMac, 0, m.snapshotMac.length) : o.bytes === Array ? Array.prototype.slice.call(m.snapshotMac) : m.snapshotMac;
+if (o.oneofs)
+d._snapshotMac = "snapshotMac";
+}
+if (m.patchMac != null && m.hasOwnProperty("patchMac")) {
+d.patchMac = o.bytes === String ? $util.base64.encode(m.patchMac, 0, m.patchMac.length) : o.bytes === Array ? Array.prototype.slice.call(m.patchMac) : m.patchMac;
+if (o.oneofs)
+d._patchMac = "patchMac";
+}
+if (m.keyId != null && m.hasOwnProperty("keyId")) {
+d.keyId = $root.proto.KeyId.toObject(m.keyId, o);
+if (o.oneofs)
+d._keyId = "keyId";
+}
+if (m.exitCode != null && m.hasOwnProperty("exitCode")) {
+d.exitCode = $root.proto.ExitCode.toObject(m.exitCode, o);
+if (o.oneofs)
+d._exitCode = "exitCode";
+}
+if (m.deviceIndex != null && m.hasOwnProperty("deviceIndex")) {
+d.deviceIndex = m.deviceIndex;
+if (o.oneofs)
+d._deviceIndex = "deviceIndex";
+}
+if (m.clientDebugData != null && m.hasOwnProperty("clientDebugData")) {
+d.clientDebugData = o.bytes === String ? $util.base64.encode(m.clientDebugData, 0, m.clientDebugData.length) : o.bytes === Array ? Array.prototype.slice.call(m.clientDebugData) : m.clientDebugData;
+if (o.oneofs)
+d._clientDebugData = "clientDebugData";
+}
+return d;
+};
+SyncdPatch.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SyncdPatch.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.SyncdPatch";
+};
+return SyncdPatch;

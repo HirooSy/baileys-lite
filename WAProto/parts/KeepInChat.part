@@ -1,0 +1,225 @@
+"use strict";
+function KeepInChat(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+KeepInChat.prototype.keepType = null;
+KeepInChat.prototype.serverTimestamp = null;
+KeepInChat.prototype.key = null;
+KeepInChat.prototype.deviceJid = null;
+KeepInChat.prototype.clientTimestampMs = null;
+KeepInChat.prototype.serverTimestampMs = null;
+let $oneOfFields;
+Object.defineProperty(KeepInChat.prototype, "_keepType", {
+get: $util.oneOfGetter($oneOfFields = ["keepType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(KeepInChat.prototype, "_serverTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["serverTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(KeepInChat.prototype, "_key", {
+get: $util.oneOfGetter($oneOfFields = ["key"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(KeepInChat.prototype, "_deviceJid", {
+get: $util.oneOfGetter($oneOfFields = ["deviceJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(KeepInChat.prototype, "_clientTimestampMs", {
+get: $util.oneOfGetter($oneOfFields = ["clientTimestampMs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(KeepInChat.prototype, "_serverTimestampMs", {
+get: $util.oneOfGetter($oneOfFields = ["serverTimestampMs"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+KeepInChat.create = function create(properties) {
+return new KeepInChat(properties);
+};
+KeepInChat.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.keepType != null && Object.hasOwnProperty.call(m, "keepType"))
+w.uint32(8).int32(m.keepType);
+if (m.serverTimestamp != null && Object.hasOwnProperty.call(m, "serverTimestamp"))
+w.uint32(16).int64(m.serverTimestamp);
+if (m.key != null && Object.hasOwnProperty.call(m, "key"))
+$root.proto.MessageKey.encode(m.key, w.uint32(26).fork()).ldelim();
+if (m.deviceJid != null && Object.hasOwnProperty.call(m, "deviceJid"))
+w.uint32(34).string(m.deviceJid);
+if (m.clientTimestampMs != null && Object.hasOwnProperty.call(m, "clientTimestampMs"))
+w.uint32(40).int64(m.clientTimestampMs);
+if (m.serverTimestampMs != null && Object.hasOwnProperty.call(m, "serverTimestampMs"))
+w.uint32(48).int64(m.serverTimestampMs);
+return w;
+};
+KeepInChat.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.KeepInChat();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.keepType = r.int32();
+break;
+}
+case 2: {
+m.serverTimestamp = r.int64();
+break;
+}
+case 3: {
+m.key = $root.proto.MessageKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 4: {
+m.deviceJid = r.string();
+break;
+}
+case 5: {
+m.clientTimestampMs = r.int64();
+break;
+}
+case 6: {
+m.serverTimestampMs = r.int64();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+KeepInChat.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.KeepInChat)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.KeepInChat();
+switch (d.keepType) {
+default:
+if (typeof d.keepType === "number") {
+m.keepType = d.keepType;
+break;
+}
+break;
+case "UNKNOWN":
+case 0:
+m.keepType = 0;
+break;
+case "KEEP_FOR_ALL":
+case 1:
+m.keepType = 1;
+break;
+case "UNDO_KEEP_FOR_ALL":
+case 2:
+m.keepType = 2;
+break;
+}
+if (d.serverTimestamp != null) {
+if ($util.Long)
+(m.serverTimestamp = $util.Long.fromValue(d.serverTimestamp)).unsigned = false;
+else if (typeof d.serverTimestamp === "string")
+m.serverTimestamp = parseInt(d.serverTimestamp, 10);
+else if (typeof d.serverTimestamp === "number")
+m.serverTimestamp = d.serverTimestamp;
+else if (typeof d.serverTimestamp === "object")
+m.serverTimestamp = new $util.LongBits(d.serverTimestamp.low >>> 0, d.serverTimestamp.high >>> 0).toNumber();
+}
+if (d.key != null) {
+if (typeof d.key !== "object")
+throw TypeError(".proto.KeepInChat.key: object expected");
+m.key = $root.proto.MessageKey.fromObject(d.key, n + 1);
+}
+if (d.deviceJid != null) {
+m.deviceJid = String(d.deviceJid);
+}
+if (d.clientTimestampMs != null) {
+if ($util.Long)
+(m.clientTimestampMs = $util.Long.fromValue(d.clientTimestampMs)).unsigned = false;
+else if (typeof d.clientTimestampMs === "string")
+m.clientTimestampMs = parseInt(d.clientTimestampMs, 10);
+else if (typeof d.clientTimestampMs === "number")
+m.clientTimestampMs = d.clientTimestampMs;
+else if (typeof d.clientTimestampMs === "object")
+m.clientTimestampMs = new $util.LongBits(d.clientTimestampMs.low >>> 0, d.clientTimestampMs.high >>> 0).toNumber();
+}
+if (d.serverTimestampMs != null) {
+if ($util.Long)
+(m.serverTimestampMs = $util.Long.fromValue(d.serverTimestampMs)).unsigned = false;
+else if (typeof d.serverTimestampMs === "string")
+m.serverTimestampMs = parseInt(d.serverTimestampMs, 10);
+else if (typeof d.serverTimestampMs === "number")
+m.serverTimestampMs = d.serverTimestampMs;
+else if (typeof d.serverTimestampMs === "object")
+m.serverTimestampMs = new $util.LongBits(d.serverTimestampMs.low >>> 0, d.serverTimestampMs.high >>> 0).toNumber();
+}
+return m;
+};
+KeepInChat.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.keepType != null && m.hasOwnProperty("keepType")) {
+d.keepType = o.enums === String ? $root.proto.KeepType[m.keepType] === undefined ? m.keepType : $root.proto.KeepType[m.keepType] : m.keepType;
+if (o.oneofs)
+d._keepType = "keepType";
+}
+if (m.serverTimestamp != null && m.hasOwnProperty("serverTimestamp")) {
+if (typeof m.serverTimestamp === "number")
+d.serverTimestamp = o.longs === String ? String(m.serverTimestamp) : m.serverTimestamp;
+else
+d.serverTimestamp = o.longs === String ? longToString(m.serverTimestamp) : o.longs === Number ? longToNumber(m.serverTimestamp) : m.serverTimestamp;
+if (o.oneofs)
+d._serverTimestamp = "serverTimestamp";
+}
+if (m.key != null && m.hasOwnProperty("key")) {
+d.key = $root.proto.MessageKey.toObject(m.key, o);
+if (o.oneofs)
+d._key = "key";
+}
+if (m.deviceJid != null && m.hasOwnProperty("deviceJid")) {
+d.deviceJid = m.deviceJid;
+if (o.oneofs)
+d._deviceJid = "deviceJid";
+}
+if (m.clientTimestampMs != null && m.hasOwnProperty("clientTimestampMs")) {
+if (typeof m.clientTimestampMs === "number")
+d.clientTimestampMs = o.longs === String ? String(m.clientTimestampMs) : m.clientTimestampMs;
+else
+d.clientTimestampMs = o.longs === String ? longToString(m.clientTimestampMs) : o.longs === Number ? longToNumber(m.clientTimestampMs) : m.clientTimestampMs;
+if (o.oneofs)
+d._clientTimestampMs = "clientTimestampMs";
+}
+if (m.serverTimestampMs != null && m.hasOwnProperty("serverTimestampMs")) {
+if (typeof m.serverTimestampMs === "number")
+d.serverTimestampMs = o.longs === String ? String(m.serverTimestampMs) : m.serverTimestampMs;
+else
+d.serverTimestampMs = o.longs === String ? longToString(m.serverTimestampMs) : o.longs === Number ? longToNumber(m.serverTimestampMs) : m.serverTimestampMs;
+if (o.oneofs)
+d._serverTimestampMs = "serverTimestampMs";
+}
+return d;
+};
+KeepInChat.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+KeepInChat.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.KeepInChat";
+};
+return KeepInChat;

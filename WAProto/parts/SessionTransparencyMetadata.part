@@ -1,0 +1,132 @@
+"use strict";
+function SessionTransparencyMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SessionTransparencyMetadata.prototype.disclaimerText = null;
+SessionTransparencyMetadata.prototype.hcaId = null;
+SessionTransparencyMetadata.prototype.sessionTransparencyType = null;
+let $oneOfFields;
+Object.defineProperty(SessionTransparencyMetadata.prototype, "_disclaimerText", {
+get: $util.oneOfGetter($oneOfFields = ["disclaimerText"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SessionTransparencyMetadata.prototype, "_hcaId", {
+get: $util.oneOfGetter($oneOfFields = ["hcaId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SessionTransparencyMetadata.prototype, "_sessionTransparencyType", {
+get: $util.oneOfGetter($oneOfFields = ["sessionTransparencyType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SessionTransparencyMetadata.create = function create(properties) {
+return new SessionTransparencyMetadata(properties);
+};
+SessionTransparencyMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.disclaimerText != null && Object.hasOwnProperty.call(m, "disclaimerText"))
+w.uint32(10).string(m.disclaimerText);
+if (m.hcaId != null && Object.hasOwnProperty.call(m, "hcaId"))
+w.uint32(18).string(m.hcaId);
+if (m.sessionTransparencyType != null && Object.hasOwnProperty.call(m, "sessionTransparencyType"))
+w.uint32(24).int32(m.sessionTransparencyType);
+return w;
+};
+SessionTransparencyMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.SessionTransparencyMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.disclaimerText = r.string();
+break;
+}
+case 2: {
+m.hcaId = r.string();
+break;
+}
+case 3: {
+m.sessionTransparencyType = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SessionTransparencyMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.SessionTransparencyMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.SessionTransparencyMetadata();
+if (d.disclaimerText != null) {
+m.disclaimerText = String(d.disclaimerText);
+}
+if (d.hcaId != null) {
+m.hcaId = String(d.hcaId);
+}
+switch (d.sessionTransparencyType) {
+default:
+if (typeof d.sessionTransparencyType === "number") {
+m.sessionTransparencyType = d.sessionTransparencyType;
+break;
+}
+break;
+case "UNKNOWN_TYPE":
+case 0:
+m.sessionTransparencyType = 0;
+break;
+case "NY_AI_SAFETY_DISCLAIMER":
+case 1:
+m.sessionTransparencyType = 1;
+break;
+}
+return m;
+};
+SessionTransparencyMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.disclaimerText != null && m.hasOwnProperty("disclaimerText")) {
+d.disclaimerText = m.disclaimerText;
+if (o.oneofs)
+d._disclaimerText = "disclaimerText";
+}
+if (m.hcaId != null && m.hasOwnProperty("hcaId")) {
+d.hcaId = m.hcaId;
+if (o.oneofs)
+d._hcaId = "hcaId";
+}
+if (m.sessionTransparencyType != null && m.hasOwnProperty("sessionTransparencyType")) {
+d.sessionTransparencyType = o.enums === String ? $root.proto.SessionTransparencyType[m.sessionTransparencyType] === undefined ? m.sessionTransparencyType : $root.proto.SessionTransparencyType[m.sessionTransparencyType] : m.sessionTransparencyType;
+if (o.oneofs)
+d._sessionTransparencyType = "sessionTransparencyType";
+}
+return d;
+};
+SessionTransparencyMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SessionTransparencyMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.SessionTransparencyMetadata";
+};
+return SessionTransparencyMetadata;

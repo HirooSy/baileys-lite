@@ -1,0 +1,151 @@
+"use strict";
+function BotModeSelectionMetadata(p) {
+this.mode = [];
+this.overrideMode = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotModeSelectionMetadata.prototype.mode = $util.emptyArray;
+BotModeSelectionMetadata.prototype.overrideMode = $util.emptyArray;
+BotModeSelectionMetadata.create = function create(properties) {
+return new BotModeSelectionMetadata(properties);
+};
+BotModeSelectionMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.mode != null && m.mode.length) {
+w.uint32(10).fork();
+for (var i = 0; i < m.mode.length; ++i)
+w.int32(m.mode[i]);
+w.ldelim();
+}
+if (m.overrideMode != null && m.overrideMode.length) {
+w.uint32(18).fork();
+for (var i = 0; i < m.overrideMode.length; ++i)
+w.uint32(m.overrideMode[i]);
+w.ldelim();
+}
+return w;
+};
+BotModeSelectionMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotModeSelectionMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+if (!(m.mode && m.mode.length))
+m.mode = [];
+if ((t & 7) === 2) {
+var c2 = r.uint32() + r.pos;
+while (r.pos < c2)
+m.mode.push(r.int32());
+} else
+m.mode.push(r.int32());
+break;
+}
+case 2: {
+if (!(m.overrideMode && m.overrideMode.length))
+m.overrideMode = [];
+if ((t & 7) === 2) {
+var c2 = r.uint32() + r.pos;
+while (r.pos < c2)
+m.overrideMode.push(r.uint32());
+} else
+m.overrideMode.push(r.uint32());
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotModeSelectionMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotModeSelectionMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotModeSelectionMetadata();
+if (d.mode) {
+if (!Array.isArray(d.mode))
+throw TypeError(".proto.BotModeSelectionMetadata.mode: array expected");
+m.mode = [];
+for (var i = 0; i < d.mode.length; ++i) {
+switch (d.mode[i]) {
+default:
+if (typeof d.mode[i] === "number") {
+m.mode[i] = d.mode[i];
+break;
+}
+case "DEFAULT_MODE":
+case 0:
+m.mode[i] = 0;
+break;
+case "THINK_HARD_MODE":
+case 1:
+m.mode[i] = 1;
+break;
+}
+}
+}
+if (d.overrideMode) {
+if (!Array.isArray(d.overrideMode))
+throw TypeError(".proto.BotModeSelectionMetadata.overrideMode: array expected");
+m.overrideMode = [];
+for (var i = 0; i < d.overrideMode.length; ++i) {
+m.overrideMode[i] = d.overrideMode[i] >>> 0;
+}
+}
+return m;
+};
+BotModeSelectionMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.mode = [];
+d.overrideMode = [];
+}
+if (m.mode && m.mode.length) {
+d.mode = [];
+for (var j = 0; j < m.mode.length; ++j) {
+d.mode[j] = o.enums === String ? $root.proto.BotModeSelectionMetadata.BotUserSelectionMode[m.mode[j]] === undefined ? m.mode[j] : $root.proto.BotModeSelectionMetadata.BotUserSelectionMode[m.mode[j]] : m.mode[j];
+}
+}
+if (m.overrideMode && m.overrideMode.length) {
+d.overrideMode = [];
+for (var j = 0; j < m.overrideMode.length; ++j) {
+d.overrideMode[j] = m.overrideMode[j];
+}
+}
+return d;
+};
+BotModeSelectionMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotModeSelectionMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotModeSelectionMetadata";
+};
+$lazy(BotModeSelectionMetadata, "BotUserSelectionMode", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "DEFAULT_MODE"] = 0;
+values[valuesById[1] = "THINK_HARD_MODE"] = 1;
+return values;
+});
+return BotModeSelectionMetadata;

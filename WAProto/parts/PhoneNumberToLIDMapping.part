@@ -1,0 +1,100 @@
+"use strict";
+function PhoneNumberToLIDMapping(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+PhoneNumberToLIDMapping.prototype.pnJid = null;
+PhoneNumberToLIDMapping.prototype.lidJid = null;
+let $oneOfFields;
+Object.defineProperty(PhoneNumberToLIDMapping.prototype, "_pnJid", {
+get: $util.oneOfGetter($oneOfFields = ["pnJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PhoneNumberToLIDMapping.prototype, "_lidJid", {
+get: $util.oneOfGetter($oneOfFields = ["lidJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+PhoneNumberToLIDMapping.create = function create(properties) {
+return new PhoneNumberToLIDMapping(properties);
+};
+PhoneNumberToLIDMapping.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.pnJid != null && Object.hasOwnProperty.call(m, "pnJid"))
+w.uint32(10).string(m.pnJid);
+if (m.lidJid != null && Object.hasOwnProperty.call(m, "lidJid"))
+w.uint32(18).string(m.lidJid);
+return w;
+};
+PhoneNumberToLIDMapping.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.PhoneNumberToLIDMapping();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.pnJid = r.string();
+break;
+}
+case 2: {
+m.lidJid = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+PhoneNumberToLIDMapping.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.PhoneNumberToLIDMapping)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.PhoneNumberToLIDMapping();
+if (d.pnJid != null) {
+m.pnJid = String(d.pnJid);
+}
+if (d.lidJid != null) {
+m.lidJid = String(d.lidJid);
+}
+return m;
+};
+PhoneNumberToLIDMapping.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.pnJid != null && m.hasOwnProperty("pnJid")) {
+d.pnJid = m.pnJid;
+if (o.oneofs)
+d._pnJid = "pnJid";
+}
+if (m.lidJid != null && m.hasOwnProperty("lidJid")) {
+d.lidJid = m.lidJid;
+if (o.oneofs)
+d._lidJid = "lidJid";
+}
+return d;
+};
+PhoneNumberToLIDMapping.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+PhoneNumberToLIDMapping.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.PhoneNumberToLIDMapping";
+};
+return PhoneNumberToLIDMapping;

@@ -1,0 +1,339 @@
+"use strict";
+function BotUnifiedResponseMutation(p) {
+this.mediaDetailsMetadataList = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotUnifiedResponseMutation.prototype.sbsMetadata = null;
+BotUnifiedResponseMutation.prototype.mediaDetailsMetadataList = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(BotUnifiedResponseMutation.prototype, "_sbsMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["sbsMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotUnifiedResponseMutation.create = function create(properties) {
+return new BotUnifiedResponseMutation(properties);
+};
+BotUnifiedResponseMutation.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.sbsMetadata != null && Object.hasOwnProperty.call(m, "sbsMetadata"))
+$root.proto.BotUnifiedResponseMutation.SideBySideMetadata.encode(m.sbsMetadata, w.uint32(10).fork()).ldelim();
+if (m.mediaDetailsMetadataList != null && m.mediaDetailsMetadataList.length) {
+for (var i = 0; i < m.mediaDetailsMetadataList.length; ++i)
+$root.proto.BotUnifiedResponseMutation.MediaDetailsMetadata.encode(m.mediaDetailsMetadataList[i], w.uint32(18).fork()).ldelim();
+}
+return w;
+};
+BotUnifiedResponseMutation.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotUnifiedResponseMutation();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.sbsMetadata = $root.proto.BotUnifiedResponseMutation.SideBySideMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+if (!(m.mediaDetailsMetadataList && m.mediaDetailsMetadataList.length))
+m.mediaDetailsMetadataList = [];
+m.mediaDetailsMetadataList.push($root.proto.BotUnifiedResponseMutation.MediaDetailsMetadata.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotUnifiedResponseMutation.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotUnifiedResponseMutation)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotUnifiedResponseMutation();
+if (d.sbsMetadata != null) {
+if (typeof d.sbsMetadata !== "object")
+throw TypeError(".proto.BotUnifiedResponseMutation.sbsMetadata: object expected");
+m.sbsMetadata = $root.proto.BotUnifiedResponseMutation.SideBySideMetadata.fromObject(d.sbsMetadata, n + 1);
+}
+if (d.mediaDetailsMetadataList) {
+if (!Array.isArray(d.mediaDetailsMetadataList))
+throw TypeError(".proto.BotUnifiedResponseMutation.mediaDetailsMetadataList: array expected");
+m.mediaDetailsMetadataList = [];
+for (var i = 0; i < d.mediaDetailsMetadataList.length; ++i) {
+if (typeof d.mediaDetailsMetadataList[i] !== "object")
+throw TypeError(".proto.BotUnifiedResponseMutation.mediaDetailsMetadataList: object expected");
+m.mediaDetailsMetadataList[i] = $root.proto.BotUnifiedResponseMutation.MediaDetailsMetadata.fromObject(d.mediaDetailsMetadataList[i], n + 1);
+}
+}
+return m;
+};
+BotUnifiedResponseMutation.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.mediaDetailsMetadataList = [];
+}
+if (m.sbsMetadata != null && m.hasOwnProperty("sbsMetadata")) {
+d.sbsMetadata = $root.proto.BotUnifiedResponseMutation.SideBySideMetadata.toObject(m.sbsMetadata, o);
+if (o.oneofs)
+d._sbsMetadata = "sbsMetadata";
+}
+if (m.mediaDetailsMetadataList && m.mediaDetailsMetadataList.length) {
+d.mediaDetailsMetadataList = [];
+for (var j = 0; j < m.mediaDetailsMetadataList.length; ++j) {
+d.mediaDetailsMetadataList[j] = $root.proto.BotUnifiedResponseMutation.MediaDetailsMetadata.toObject(m.mediaDetailsMetadataList[j], o);
+}
+}
+return d;
+};
+BotUnifiedResponseMutation.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotUnifiedResponseMutation.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotUnifiedResponseMutation";
+};
+$lazy(BotUnifiedResponseMutation, "MediaDetailsMetadata", function() {
+function MediaDetailsMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+MediaDetailsMetadata.prototype.id = null;
+MediaDetailsMetadata.prototype.highResMedia = null;
+MediaDetailsMetadata.prototype.previewMedia = null;
+let $oneOfFields;
+Object.defineProperty(MediaDetailsMetadata.prototype, "_id", {
+get: $util.oneOfGetter($oneOfFields = ["id"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MediaDetailsMetadata.prototype, "_highResMedia", {
+get: $util.oneOfGetter($oneOfFields = ["highResMedia"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(MediaDetailsMetadata.prototype, "_previewMedia", {
+get: $util.oneOfGetter($oneOfFields = ["previewMedia"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+MediaDetailsMetadata.create = function create(properties) {
+return new MediaDetailsMetadata(properties);
+};
+MediaDetailsMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.id != null && Object.hasOwnProperty.call(m, "id"))
+w.uint32(10).string(m.id);
+if (m.highResMedia != null && Object.hasOwnProperty.call(m, "highResMedia"))
+$root.proto.BotMediaMetadata.encode(m.highResMedia, w.uint32(18).fork()).ldelim();
+if (m.previewMedia != null && Object.hasOwnProperty.call(m, "previewMedia"))
+$root.proto.BotMediaMetadata.encode(m.previewMedia, w.uint32(26).fork()).ldelim();
+return w;
+};
+MediaDetailsMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotUnifiedResponseMutation.MediaDetailsMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.id = r.string();
+break;
+}
+case 2: {
+m.highResMedia = $root.proto.BotMediaMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 3: {
+m.previewMedia = $root.proto.BotMediaMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+MediaDetailsMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotUnifiedResponseMutation.MediaDetailsMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotUnifiedResponseMutation.MediaDetailsMetadata();
+if (d.id != null) {
+m.id = String(d.id);
+}
+if (d.highResMedia != null) {
+if (typeof d.highResMedia !== "object")
+throw TypeError(".proto.BotUnifiedResponseMutation.MediaDetailsMetadata.highResMedia: object expected");
+m.highResMedia = $root.proto.BotMediaMetadata.fromObject(d.highResMedia, n + 1);
+}
+if (d.previewMedia != null) {
+if (typeof d.previewMedia !== "object")
+throw TypeError(".proto.BotUnifiedResponseMutation.MediaDetailsMetadata.previewMedia: object expected");
+m.previewMedia = $root.proto.BotMediaMetadata.fromObject(d.previewMedia, n + 1);
+}
+return m;
+};
+MediaDetailsMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.id != null && m.hasOwnProperty("id")) {
+d.id = m.id;
+if (o.oneofs)
+d._id = "id";
+}
+if (m.highResMedia != null && m.hasOwnProperty("highResMedia")) {
+d.highResMedia = $root.proto.BotMediaMetadata.toObject(m.highResMedia, o);
+if (o.oneofs)
+d._highResMedia = "highResMedia";
+}
+if (m.previewMedia != null && m.hasOwnProperty("previewMedia")) {
+d.previewMedia = $root.proto.BotMediaMetadata.toObject(m.previewMedia, o);
+if (o.oneofs)
+d._previewMedia = "previewMedia";
+}
+return d;
+};
+MediaDetailsMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+MediaDetailsMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotUnifiedResponseMutation.MediaDetailsMetadata";
+};
+return MediaDetailsMetadata;
+});
+$lazy(BotUnifiedResponseMutation, "SideBySideMetadata", function() {
+function SideBySideMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SideBySideMetadata.prototype.primaryResponseId = null;
+SideBySideMetadata.prototype.surveyCtaHasRendered = null;
+let $oneOfFields;
+Object.defineProperty(SideBySideMetadata.prototype, "_primaryResponseId", {
+get: $util.oneOfGetter($oneOfFields = ["primaryResponseId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SideBySideMetadata.prototype, "_surveyCtaHasRendered", {
+get: $util.oneOfGetter($oneOfFields = ["surveyCtaHasRendered"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SideBySideMetadata.create = function create(properties) {
+return new SideBySideMetadata(properties);
+};
+SideBySideMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.primaryResponseId != null && Object.hasOwnProperty.call(m, "primaryResponseId"))
+w.uint32(10).string(m.primaryResponseId);
+if (m.surveyCtaHasRendered != null && Object.hasOwnProperty.call(m, "surveyCtaHasRendered"))
+w.uint32(16).bool(m.surveyCtaHasRendered);
+return w;
+};
+SideBySideMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotUnifiedResponseMutation.SideBySideMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.primaryResponseId = r.string();
+break;
+}
+case 2: {
+m.surveyCtaHasRendered = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SideBySideMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotUnifiedResponseMutation.SideBySideMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotUnifiedResponseMutation.SideBySideMetadata();
+if (d.primaryResponseId != null) {
+m.primaryResponseId = String(d.primaryResponseId);
+}
+if (d.surveyCtaHasRendered != null) {
+m.surveyCtaHasRendered = Boolean(d.surveyCtaHasRendered);
+}
+return m;
+};
+SideBySideMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.primaryResponseId != null && m.hasOwnProperty("primaryResponseId")) {
+d.primaryResponseId = m.primaryResponseId;
+if (o.oneofs)
+d._primaryResponseId = "primaryResponseId";
+}
+if (m.surveyCtaHasRendered != null && m.hasOwnProperty("surveyCtaHasRendered")) {
+d.surveyCtaHasRendered = m.surveyCtaHasRendered;
+if (o.oneofs)
+d._surveyCtaHasRendered = "surveyCtaHasRendered";
+}
+return d;
+};
+SideBySideMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SideBySideMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotUnifiedResponseMutation.SideBySideMetadata";
+};
+return SideBySideMetadata;
+});
+return BotUnifiedResponseMutation;

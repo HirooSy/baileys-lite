@@ -1,0 +1,142 @@
+"use strict";
+function ADVSignedDeviceIdentityHMAC(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ADVSignedDeviceIdentityHMAC.prototype.details = null;
+ADVSignedDeviceIdentityHMAC.prototype.hmac = null;
+ADVSignedDeviceIdentityHMAC.prototype.accountType = null;
+let $oneOfFields;
+Object.defineProperty(ADVSignedDeviceIdentityHMAC.prototype, "_details", {
+get: $util.oneOfGetter($oneOfFields = ["details"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ADVSignedDeviceIdentityHMAC.prototype, "_hmac", {
+get: $util.oneOfGetter($oneOfFields = ["hmac"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ADVSignedDeviceIdentityHMAC.prototype, "_accountType", {
+get: $util.oneOfGetter($oneOfFields = ["accountType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ADVSignedDeviceIdentityHMAC.create = function create(properties) {
+return new ADVSignedDeviceIdentityHMAC(properties);
+};
+ADVSignedDeviceIdentityHMAC.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.details != null && Object.hasOwnProperty.call(m, "details"))
+w.uint32(10).bytes(m.details);
+if (m.hmac != null && Object.hasOwnProperty.call(m, "hmac"))
+w.uint32(18).bytes(m.hmac);
+if (m.accountType != null && Object.hasOwnProperty.call(m, "accountType"))
+w.uint32(24).int32(m.accountType);
+return w;
+};
+ADVSignedDeviceIdentityHMAC.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ADVSignedDeviceIdentityHMAC();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.details = r.bytes();
+break;
+}
+case 2: {
+m.hmac = r.bytes();
+break;
+}
+case 3: {
+m.accountType = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ADVSignedDeviceIdentityHMAC.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ADVSignedDeviceIdentityHMAC)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ADVSignedDeviceIdentityHMAC();
+if (d.details != null) {
+if (typeof d.details === "string")
+$util.base64.decode(d.details, m.details = $util.newBuffer($util.base64.length(d.details)), 0);
+else if (d.details.length >= 0)
+m.details = d.details;
+}
+if (d.hmac != null) {
+if (typeof d.hmac === "string")
+$util.base64.decode(d.hmac, m.hmac = $util.newBuffer($util.base64.length(d.hmac)), 0);
+else if (d.hmac.length >= 0)
+m.hmac = d.hmac;
+}
+switch (d.accountType) {
+default:
+if (typeof d.accountType === "number") {
+m.accountType = d.accountType;
+break;
+}
+break;
+case "E2EE":
+case 0:
+m.accountType = 0;
+break;
+case "HOSTED":
+case 1:
+m.accountType = 1;
+break;
+case "NON_E2EE":
+case 2:
+m.accountType = 2;
+break;
+}
+return m;
+};
+ADVSignedDeviceIdentityHMAC.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.details != null && m.hasOwnProperty("details")) {
+d.details = o.bytes === String ? $util.base64.encode(m.details, 0, m.details.length) : o.bytes === Array ? Array.prototype.slice.call(m.details) : m.details;
+if (o.oneofs)
+d._details = "details";
+}
+if (m.hmac != null && m.hasOwnProperty("hmac")) {
+d.hmac = o.bytes === String ? $util.base64.encode(m.hmac, 0, m.hmac.length) : o.bytes === Array ? Array.prototype.slice.call(m.hmac) : m.hmac;
+if (o.oneofs)
+d._hmac = "hmac";
+}
+if (m.accountType != null && m.hasOwnProperty("accountType")) {
+d.accountType = o.enums === String ? $root.proto.ADVEncryptionType[m.accountType] === undefined ? m.accountType : $root.proto.ADVEncryptionType[m.accountType] : m.accountType;
+if (o.oneofs)
+d._accountType = "accountType";
+}
+return d;
+};
+ADVSignedDeviceIdentityHMAC.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ADVSignedDeviceIdentityHMAC.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ADVSignedDeviceIdentityHMAC";
+};
+return ADVSignedDeviceIdentityHMAC;

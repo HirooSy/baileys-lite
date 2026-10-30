@@ -1,0 +1,125 @@
+"use strict";
+function PreKeyRecordStructure(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+PreKeyRecordStructure.prototype.id = null;
+PreKeyRecordStructure.prototype.publicKey = null;
+PreKeyRecordStructure.prototype.privateKey = null;
+let $oneOfFields;
+Object.defineProperty(PreKeyRecordStructure.prototype, "_id", {
+get: $util.oneOfGetter($oneOfFields = ["id"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PreKeyRecordStructure.prototype, "_publicKey", {
+get: $util.oneOfGetter($oneOfFields = ["publicKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PreKeyRecordStructure.prototype, "_privateKey", {
+get: $util.oneOfGetter($oneOfFields = ["privateKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+PreKeyRecordStructure.create = function create(properties) {
+return new PreKeyRecordStructure(properties);
+};
+PreKeyRecordStructure.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.id != null && Object.hasOwnProperty.call(m, "id"))
+w.uint32(8).uint32(m.id);
+if (m.publicKey != null && Object.hasOwnProperty.call(m, "publicKey"))
+w.uint32(18).bytes(m.publicKey);
+if (m.privateKey != null && Object.hasOwnProperty.call(m, "privateKey"))
+w.uint32(26).bytes(m.privateKey);
+return w;
+};
+PreKeyRecordStructure.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.PreKeyRecordStructure();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.id = r.uint32();
+break;
+}
+case 2: {
+m.publicKey = r.bytes();
+break;
+}
+case 3: {
+m.privateKey = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+PreKeyRecordStructure.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.PreKeyRecordStructure)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.PreKeyRecordStructure();
+if (d.id != null) {
+m.id = d.id >>> 0;
+}
+if (d.publicKey != null) {
+if (typeof d.publicKey === "string")
+$util.base64.decode(d.publicKey, m.publicKey = $util.newBuffer($util.base64.length(d.publicKey)), 0);
+else if (d.publicKey.length >= 0)
+m.publicKey = d.publicKey;
+}
+if (d.privateKey != null) {
+if (typeof d.privateKey === "string")
+$util.base64.decode(d.privateKey, m.privateKey = $util.newBuffer($util.base64.length(d.privateKey)), 0);
+else if (d.privateKey.length >= 0)
+m.privateKey = d.privateKey;
+}
+return m;
+};
+PreKeyRecordStructure.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.id != null && m.hasOwnProperty("id")) {
+d.id = m.id;
+if (o.oneofs)
+d._id = "id";
+}
+if (m.publicKey != null && m.hasOwnProperty("publicKey")) {
+d.publicKey = o.bytes === String ? $util.base64.encode(m.publicKey, 0, m.publicKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.publicKey) : m.publicKey;
+if (o.oneofs)
+d._publicKey = "publicKey";
+}
+if (m.privateKey != null && m.hasOwnProperty("privateKey")) {
+d.privateKey = o.bytes === String ? $util.base64.encode(m.privateKey, 0, m.privateKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.privateKey) : m.privateKey;
+if (o.oneofs)
+d._privateKey = "privateKey";
+}
+return d;
+};
+PreKeyRecordStructure.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+PreKeyRecordStructure.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.PreKeyRecordStructure";
+};
+return PreKeyRecordStructure;

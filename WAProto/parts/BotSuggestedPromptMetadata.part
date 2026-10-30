@@ -1,0 +1,150 @@
+"use strict";
+function BotSuggestedPromptMetadata(p) {
+this.suggestedPrompts = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BotSuggestedPromptMetadata.prototype.suggestedPrompts = $util.emptyArray;
+BotSuggestedPromptMetadata.prototype.selectedPromptIndex = null;
+BotSuggestedPromptMetadata.prototype.promptSuggestions = null;
+BotSuggestedPromptMetadata.prototype.selectedPromptId = null;
+let $oneOfFields;
+Object.defineProperty(BotSuggestedPromptMetadata.prototype, "_selectedPromptIndex", {
+get: $util.oneOfGetter($oneOfFields = ["selectedPromptIndex"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotSuggestedPromptMetadata.prototype, "_promptSuggestions", {
+get: $util.oneOfGetter($oneOfFields = ["promptSuggestions"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BotSuggestedPromptMetadata.prototype, "_selectedPromptId", {
+get: $util.oneOfGetter($oneOfFields = ["selectedPromptId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BotSuggestedPromptMetadata.create = function create(properties) {
+return new BotSuggestedPromptMetadata(properties);
+};
+BotSuggestedPromptMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.suggestedPrompts != null && m.suggestedPrompts.length) {
+for (var i = 0; i < m.suggestedPrompts.length; ++i)
+w.uint32(10).string(m.suggestedPrompts[i]);
+}
+if (m.selectedPromptIndex != null && Object.hasOwnProperty.call(m, "selectedPromptIndex"))
+w.uint32(16).uint32(m.selectedPromptIndex);
+if (m.promptSuggestions != null && Object.hasOwnProperty.call(m, "promptSuggestions"))
+$root.proto.BotPromptSuggestions.encode(m.promptSuggestions, w.uint32(26).fork()).ldelim();
+if (m.selectedPromptId != null && Object.hasOwnProperty.call(m, "selectedPromptId"))
+w.uint32(34).string(m.selectedPromptId);
+return w;
+};
+BotSuggestedPromptMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.BotSuggestedPromptMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+if (!(m.suggestedPrompts && m.suggestedPrompts.length))
+m.suggestedPrompts = [];
+m.suggestedPrompts.push(r.string());
+break;
+}
+case 2: {
+m.selectedPromptIndex = r.uint32();
+break;
+}
+case 3: {
+m.promptSuggestions = $root.proto.BotPromptSuggestions.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 4: {
+m.selectedPromptId = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BotSuggestedPromptMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.BotSuggestedPromptMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.BotSuggestedPromptMetadata();
+if (d.suggestedPrompts) {
+if (!Array.isArray(d.suggestedPrompts))
+throw TypeError(".proto.BotSuggestedPromptMetadata.suggestedPrompts: array expected");
+m.suggestedPrompts = [];
+for (var i = 0; i < d.suggestedPrompts.length; ++i) {
+m.suggestedPrompts[i] = String(d.suggestedPrompts[i]);
+}
+}
+if (d.selectedPromptIndex != null) {
+m.selectedPromptIndex = d.selectedPromptIndex >>> 0;
+}
+if (d.promptSuggestions != null) {
+if (typeof d.promptSuggestions !== "object")
+throw TypeError(".proto.BotSuggestedPromptMetadata.promptSuggestions: object expected");
+m.promptSuggestions = $root.proto.BotPromptSuggestions.fromObject(d.promptSuggestions, n + 1);
+}
+if (d.selectedPromptId != null) {
+m.selectedPromptId = String(d.selectedPromptId);
+}
+return m;
+};
+BotSuggestedPromptMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.suggestedPrompts = [];
+}
+if (m.suggestedPrompts && m.suggestedPrompts.length) {
+d.suggestedPrompts = [];
+for (var j = 0; j < m.suggestedPrompts.length; ++j) {
+d.suggestedPrompts[j] = m.suggestedPrompts[j];
+}
+}
+if (m.selectedPromptIndex != null && m.hasOwnProperty("selectedPromptIndex")) {
+d.selectedPromptIndex = m.selectedPromptIndex;
+if (o.oneofs)
+d._selectedPromptIndex = "selectedPromptIndex";
+}
+if (m.promptSuggestions != null && m.hasOwnProperty("promptSuggestions")) {
+d.promptSuggestions = $root.proto.BotPromptSuggestions.toObject(m.promptSuggestions, o);
+if (o.oneofs)
+d._promptSuggestions = "promptSuggestions";
+}
+if (m.selectedPromptId != null && m.hasOwnProperty("selectedPromptId")) {
+d.selectedPromptId = m.selectedPromptId;
+if (o.oneofs)
+d._selectedPromptId = "selectedPromptId";
+}
+return d;
+};
+BotSuggestedPromptMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BotSuggestedPromptMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.BotSuggestedPromptMetadata";
+};
+return BotSuggestedPromptMetadata;

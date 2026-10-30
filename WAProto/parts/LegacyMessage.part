@@ -1,0 +1,104 @@
+"use strict";
+function LegacyMessage(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+LegacyMessage.prototype.eventResponseMessage = null;
+LegacyMessage.prototype.pollVote = null;
+let $oneOfFields;
+Object.defineProperty(LegacyMessage.prototype, "_eventResponseMessage", {
+get: $util.oneOfGetter($oneOfFields = ["eventResponseMessage"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(LegacyMessage.prototype, "_pollVote", {
+get: $util.oneOfGetter($oneOfFields = ["pollVote"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+LegacyMessage.create = function create(properties) {
+return new LegacyMessage(properties);
+};
+LegacyMessage.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.eventResponseMessage != null && Object.hasOwnProperty.call(m, "eventResponseMessage"))
+$root.proto.Message.EventResponseMessage.encode(m.eventResponseMessage, w.uint32(10).fork()).ldelim();
+if (m.pollVote != null && Object.hasOwnProperty.call(m, "pollVote"))
+$root.proto.Message.PollVoteMessage.encode(m.pollVote, w.uint32(18).fork()).ldelim();
+return w;
+};
+LegacyMessage.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.LegacyMessage();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.eventResponseMessage = $root.proto.Message.EventResponseMessage.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.pollVote = $root.proto.Message.PollVoteMessage.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+LegacyMessage.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.LegacyMessage)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.LegacyMessage();
+if (d.eventResponseMessage != null) {
+if (typeof d.eventResponseMessage !== "object")
+throw TypeError(".proto.LegacyMessage.eventResponseMessage: object expected");
+m.eventResponseMessage = $root.proto.Message.EventResponseMessage.fromObject(d.eventResponseMessage, n + 1);
+}
+if (d.pollVote != null) {
+if (typeof d.pollVote !== "object")
+throw TypeError(".proto.LegacyMessage.pollVote: object expected");
+m.pollVote = $root.proto.Message.PollVoteMessage.fromObject(d.pollVote, n + 1);
+}
+return m;
+};
+LegacyMessage.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.eventResponseMessage != null && m.hasOwnProperty("eventResponseMessage")) {
+d.eventResponseMessage = $root.proto.Message.EventResponseMessage.toObject(m.eventResponseMessage, o);
+if (o.oneofs)
+d._eventResponseMessage = "eventResponseMessage";
+}
+if (m.pollVote != null && m.hasOwnProperty("pollVote")) {
+d.pollVote = $root.proto.Message.PollVoteMessage.toObject(m.pollVote, o);
+if (o.oneofs)
+d._pollVote = "pollVote";
+}
+return d;
+};
+LegacyMessage.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+LegacyMessage.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.LegacyMessage";
+};
+return LegacyMessage;

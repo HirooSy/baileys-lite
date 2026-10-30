@@ -1,0 +1,176 @@
+"use strict";
+function SignedPreKeyRecordStructure(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SignedPreKeyRecordStructure.prototype.id = null;
+SignedPreKeyRecordStructure.prototype.publicKey = null;
+SignedPreKeyRecordStructure.prototype.privateKey = null;
+SignedPreKeyRecordStructure.prototype.signature = null;
+SignedPreKeyRecordStructure.prototype.timestamp = null;
+let $oneOfFields;
+Object.defineProperty(SignedPreKeyRecordStructure.prototype, "_id", {
+get: $util.oneOfGetter($oneOfFields = ["id"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SignedPreKeyRecordStructure.prototype, "_publicKey", {
+get: $util.oneOfGetter($oneOfFields = ["publicKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SignedPreKeyRecordStructure.prototype, "_privateKey", {
+get: $util.oneOfGetter($oneOfFields = ["privateKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SignedPreKeyRecordStructure.prototype, "_signature", {
+get: $util.oneOfGetter($oneOfFields = ["signature"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(SignedPreKeyRecordStructure.prototype, "_timestamp", {
+get: $util.oneOfGetter($oneOfFields = ["timestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SignedPreKeyRecordStructure.create = function create(properties) {
+return new SignedPreKeyRecordStructure(properties);
+};
+SignedPreKeyRecordStructure.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.id != null && Object.hasOwnProperty.call(m, "id"))
+w.uint32(8).uint32(m.id);
+if (m.publicKey != null && Object.hasOwnProperty.call(m, "publicKey"))
+w.uint32(18).bytes(m.publicKey);
+if (m.privateKey != null && Object.hasOwnProperty.call(m, "privateKey"))
+w.uint32(26).bytes(m.privateKey);
+if (m.signature != null && Object.hasOwnProperty.call(m, "signature"))
+w.uint32(34).bytes(m.signature);
+if (m.timestamp != null && Object.hasOwnProperty.call(m, "timestamp"))
+w.uint32(41).fixed64(m.timestamp);
+return w;
+};
+SignedPreKeyRecordStructure.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.SignedPreKeyRecordStructure();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.id = r.uint32();
+break;
+}
+case 2: {
+m.publicKey = r.bytes();
+break;
+}
+case 3: {
+m.privateKey = r.bytes();
+break;
+}
+case 4: {
+m.signature = r.bytes();
+break;
+}
+case 5: {
+m.timestamp = r.fixed64();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SignedPreKeyRecordStructure.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.SignedPreKeyRecordStructure)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.SignedPreKeyRecordStructure();
+if (d.id != null) {
+m.id = d.id >>> 0;
+}
+if (d.publicKey != null) {
+if (typeof d.publicKey === "string")
+$util.base64.decode(d.publicKey, m.publicKey = $util.newBuffer($util.base64.length(d.publicKey)), 0);
+else if (d.publicKey.length >= 0)
+m.publicKey = d.publicKey;
+}
+if (d.privateKey != null) {
+if (typeof d.privateKey === "string")
+$util.base64.decode(d.privateKey, m.privateKey = $util.newBuffer($util.base64.length(d.privateKey)), 0);
+else if (d.privateKey.length >= 0)
+m.privateKey = d.privateKey;
+}
+if (d.signature != null) {
+if (typeof d.signature === "string")
+$util.base64.decode(d.signature, m.signature = $util.newBuffer($util.base64.length(d.signature)), 0);
+else if (d.signature.length >= 0)
+m.signature = d.signature;
+}
+if (d.timestamp != null) {
+if ($util.Long)
+(m.timestamp = $util.Long.fromValue(d.timestamp)).unsigned = false;
+else if (typeof d.timestamp === "string")
+m.timestamp = parseInt(d.timestamp, 10);
+else if (typeof d.timestamp === "number")
+m.timestamp = d.timestamp;
+else if (typeof d.timestamp === "object")
+m.timestamp = new $util.LongBits(d.timestamp.low >>> 0, d.timestamp.high >>> 0).toNumber();
+}
+return m;
+};
+SignedPreKeyRecordStructure.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.id != null && m.hasOwnProperty("id")) {
+d.id = m.id;
+if (o.oneofs)
+d._id = "id";
+}
+if (m.publicKey != null && m.hasOwnProperty("publicKey")) {
+d.publicKey = o.bytes === String ? $util.base64.encode(m.publicKey, 0, m.publicKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.publicKey) : m.publicKey;
+if (o.oneofs)
+d._publicKey = "publicKey";
+}
+if (m.privateKey != null && m.hasOwnProperty("privateKey")) {
+d.privateKey = o.bytes === String ? $util.base64.encode(m.privateKey, 0, m.privateKey.length) : o.bytes === Array ? Array.prototype.slice.call(m.privateKey) : m.privateKey;
+if (o.oneofs)
+d._privateKey = "privateKey";
+}
+if (m.signature != null && m.hasOwnProperty("signature")) {
+d.signature = o.bytes === String ? $util.base64.encode(m.signature, 0, m.signature.length) : o.bytes === Array ? Array.prototype.slice.call(m.signature) : m.signature;
+if (o.oneofs)
+d._signature = "signature";
+}
+if (m.timestamp != null && m.hasOwnProperty("timestamp")) {
+if (typeof m.timestamp === "number")
+d.timestamp = o.longs === String ? String(m.timestamp) : m.timestamp;
+else
+d.timestamp = o.longs === String ? longToString(m.timestamp) : o.longs === Number ? longToNumber(m.timestamp) : m.timestamp;
+if (o.oneofs)
+d._timestamp = "timestamp";
+}
+return d;
+};
+SignedPreKeyRecordStructure.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SignedPreKeyRecordStructure.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.SignedPreKeyRecordStructure";
+};
+return SignedPreKeyRecordStructure;

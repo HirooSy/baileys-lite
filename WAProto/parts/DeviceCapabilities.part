@@ -1,0 +1,670 @@
+"use strict";
+function DeviceCapabilities(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+DeviceCapabilities.prototype.chatLockSupportLevel = null;
+DeviceCapabilities.prototype.lidMigration = null;
+DeviceCapabilities.prototype.businessBroadcast = null;
+DeviceCapabilities.prototype.userHasAvatar = null;
+DeviceCapabilities.prototype.memberNameTagPrimarySupport = null;
+DeviceCapabilities.prototype.aiThread = null;
+let $oneOfFields;
+Object.defineProperty(DeviceCapabilities.prototype, "_chatLockSupportLevel", {
+get: $util.oneOfGetter($oneOfFields = ["chatLockSupportLevel"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DeviceCapabilities.prototype, "_lidMigration", {
+get: $util.oneOfGetter($oneOfFields = ["lidMigration"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DeviceCapabilities.prototype, "_businessBroadcast", {
+get: $util.oneOfGetter($oneOfFields = ["businessBroadcast"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DeviceCapabilities.prototype, "_userHasAvatar", {
+get: $util.oneOfGetter($oneOfFields = ["userHasAvatar"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DeviceCapabilities.prototype, "_memberNameTagPrimarySupport", {
+get: $util.oneOfGetter($oneOfFields = ["memberNameTagPrimarySupport"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DeviceCapabilities.prototype, "_aiThread", {
+get: $util.oneOfGetter($oneOfFields = ["aiThread"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+DeviceCapabilities.create = function create(properties) {
+return new DeviceCapabilities(properties);
+};
+DeviceCapabilities.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.chatLockSupportLevel != null && Object.hasOwnProperty.call(m, "chatLockSupportLevel"))
+w.uint32(8).int32(m.chatLockSupportLevel);
+if (m.lidMigration != null && Object.hasOwnProperty.call(m, "lidMigration"))
+$root.proto.DeviceCapabilities.LIDMigration.encode(m.lidMigration, w.uint32(18).fork()).ldelim();
+if (m.businessBroadcast != null && Object.hasOwnProperty.call(m, "businessBroadcast"))
+$root.proto.DeviceCapabilities.BusinessBroadcast.encode(m.businessBroadcast, w.uint32(26).fork()).ldelim();
+if (m.userHasAvatar != null && Object.hasOwnProperty.call(m, "userHasAvatar"))
+$root.proto.DeviceCapabilities.UserHasAvatar.encode(m.userHasAvatar, w.uint32(34).fork()).ldelim();
+if (m.memberNameTagPrimarySupport != null && Object.hasOwnProperty.call(m, "memberNameTagPrimarySupport"))
+w.uint32(40).int32(m.memberNameTagPrimarySupport);
+if (m.aiThread != null && Object.hasOwnProperty.call(m, "aiThread"))
+$root.proto.DeviceCapabilities.AiThread.encode(m.aiThread, w.uint32(50).fork()).ldelim();
+return w;
+};
+DeviceCapabilities.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.DeviceCapabilities();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.chatLockSupportLevel = r.int32();
+break;
+}
+case 2: {
+m.lidMigration = $root.proto.DeviceCapabilities.LIDMigration.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 3: {
+m.businessBroadcast = $root.proto.DeviceCapabilities.BusinessBroadcast.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 4: {
+m.userHasAvatar = $root.proto.DeviceCapabilities.UserHasAvatar.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 5: {
+m.memberNameTagPrimarySupport = r.int32();
+break;
+}
+case 6: {
+m.aiThread = $root.proto.DeviceCapabilities.AiThread.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+DeviceCapabilities.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.DeviceCapabilities)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.DeviceCapabilities();
+switch (d.chatLockSupportLevel) {
+default:
+if (typeof d.chatLockSupportLevel === "number") {
+m.chatLockSupportLevel = d.chatLockSupportLevel;
+break;
+}
+break;
+case "NONE":
+case 0:
+m.chatLockSupportLevel = 0;
+break;
+case "MINIMAL":
+case 1:
+m.chatLockSupportLevel = 1;
+break;
+case "FULL":
+case 2:
+m.chatLockSupportLevel = 2;
+break;
+}
+if (d.lidMigration != null) {
+if (typeof d.lidMigration !== "object")
+throw TypeError(".proto.DeviceCapabilities.lidMigration: object expected");
+m.lidMigration = $root.proto.DeviceCapabilities.LIDMigration.fromObject(d.lidMigration, n + 1);
+}
+if (d.businessBroadcast != null) {
+if (typeof d.businessBroadcast !== "object")
+throw TypeError(".proto.DeviceCapabilities.businessBroadcast: object expected");
+m.businessBroadcast = $root.proto.DeviceCapabilities.BusinessBroadcast.fromObject(d.businessBroadcast, n + 1);
+}
+if (d.userHasAvatar != null) {
+if (typeof d.userHasAvatar !== "object")
+throw TypeError(".proto.DeviceCapabilities.userHasAvatar: object expected");
+m.userHasAvatar = $root.proto.DeviceCapabilities.UserHasAvatar.fromObject(d.userHasAvatar, n + 1);
+}
+switch (d.memberNameTagPrimarySupport) {
+default:
+if (typeof d.memberNameTagPrimarySupport === "number") {
+m.memberNameTagPrimarySupport = d.memberNameTagPrimarySupport;
+break;
+}
+break;
+case "DISABLED":
+case 0:
+m.memberNameTagPrimarySupport = 0;
+break;
+case "RECEIVER_ENABLED":
+case 1:
+m.memberNameTagPrimarySupport = 1;
+break;
+case "SENDER_ENABLED":
+case 2:
+m.memberNameTagPrimarySupport = 2;
+break;
+}
+if (d.aiThread != null) {
+if (typeof d.aiThread !== "object")
+throw TypeError(".proto.DeviceCapabilities.aiThread: object expected");
+m.aiThread = $root.proto.DeviceCapabilities.AiThread.fromObject(d.aiThread, n + 1);
+}
+return m;
+};
+DeviceCapabilities.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.chatLockSupportLevel != null && m.hasOwnProperty("chatLockSupportLevel")) {
+d.chatLockSupportLevel = o.enums === String ? $root.proto.DeviceCapabilities.ChatLockSupportLevel[m.chatLockSupportLevel] === undefined ? m.chatLockSupportLevel : $root.proto.DeviceCapabilities.ChatLockSupportLevel[m.chatLockSupportLevel] : m.chatLockSupportLevel;
+if (o.oneofs)
+d._chatLockSupportLevel = "chatLockSupportLevel";
+}
+if (m.lidMigration != null && m.hasOwnProperty("lidMigration")) {
+d.lidMigration = $root.proto.DeviceCapabilities.LIDMigration.toObject(m.lidMigration, o);
+if (o.oneofs)
+d._lidMigration = "lidMigration";
+}
+if (m.businessBroadcast != null && m.hasOwnProperty("businessBroadcast")) {
+d.businessBroadcast = $root.proto.DeviceCapabilities.BusinessBroadcast.toObject(m.businessBroadcast, o);
+if (o.oneofs)
+d._businessBroadcast = "businessBroadcast";
+}
+if (m.userHasAvatar != null && m.hasOwnProperty("userHasAvatar")) {
+d.userHasAvatar = $root.proto.DeviceCapabilities.UserHasAvatar.toObject(m.userHasAvatar, o);
+if (o.oneofs)
+d._userHasAvatar = "userHasAvatar";
+}
+if (m.memberNameTagPrimarySupport != null && m.hasOwnProperty("memberNameTagPrimarySupport")) {
+d.memberNameTagPrimarySupport = o.enums === String ? $root.proto.DeviceCapabilities.MemberNameTagPrimarySupport[m.memberNameTagPrimarySupport] === undefined ? m.memberNameTagPrimarySupport : $root.proto.DeviceCapabilities.MemberNameTagPrimarySupport[m.memberNameTagPrimarySupport] : m.memberNameTagPrimarySupport;
+if (o.oneofs)
+d._memberNameTagPrimarySupport = "memberNameTagPrimarySupport";
+}
+if (m.aiThread != null && m.hasOwnProperty("aiThread")) {
+d.aiThread = $root.proto.DeviceCapabilities.AiThread.toObject(m.aiThread, o);
+if (o.oneofs)
+d._aiThread = "aiThread";
+}
+return d;
+};
+DeviceCapabilities.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+DeviceCapabilities.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.DeviceCapabilities";
+};
+$lazy(DeviceCapabilities, "AiThread", function() {
+function AiThread(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AiThread.prototype.supportLevel = null;
+let $oneOfFields;
+Object.defineProperty(AiThread.prototype, "_supportLevel", {
+get: $util.oneOfGetter($oneOfFields = ["supportLevel"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AiThread.create = function create(properties) {
+return new AiThread(properties);
+};
+AiThread.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.supportLevel != null && Object.hasOwnProperty.call(m, "supportLevel"))
+w.uint32(8).int32(m.supportLevel);
+return w;
+};
+AiThread.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.DeviceCapabilities.AiThread();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.supportLevel = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AiThread.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.DeviceCapabilities.AiThread)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.DeviceCapabilities.AiThread();
+switch (d.supportLevel) {
+default:
+if (typeof d.supportLevel === "number") {
+m.supportLevel = d.supportLevel;
+break;
+}
+break;
+case "NONE":
+case 0:
+m.supportLevel = 0;
+break;
+case "INFRA":
+case 1:
+m.supportLevel = 1;
+break;
+case "FULL":
+case 2:
+m.supportLevel = 2;
+break;
+}
+return m;
+};
+AiThread.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.supportLevel != null && m.hasOwnProperty("supportLevel")) {
+d.supportLevel = o.enums === String ? $root.proto.DeviceCapabilities.AiThread.SupportLevel[m.supportLevel] === undefined ? m.supportLevel : $root.proto.DeviceCapabilities.AiThread.SupportLevel[m.supportLevel] : m.supportLevel;
+if (o.oneofs)
+d._supportLevel = "supportLevel";
+}
+return d;
+};
+AiThread.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AiThread.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.DeviceCapabilities.AiThread";
+};
+$lazy(AiThread, "SupportLevel", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "NONE"] = 0;
+values[valuesById[1] = "INFRA"] = 1;
+values[valuesById[2] = "FULL"] = 2;
+return values;
+});
+return AiThread;
+});
+$lazy(DeviceCapabilities, "BusinessBroadcast", function() {
+function BusinessBroadcast(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BusinessBroadcast.prototype.importListEnabled = null;
+BusinessBroadcast.prototype.companionSupportEnabled = null;
+BusinessBroadcast.prototype.campaignSyncEnabled = null;
+BusinessBroadcast.prototype.insightsSyncEnabled = null;
+BusinessBroadcast.prototype.recipientLimit = null;
+let $oneOfFields;
+Object.defineProperty(BusinessBroadcast.prototype, "_importListEnabled", {
+get: $util.oneOfGetter($oneOfFields = ["importListEnabled"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BusinessBroadcast.prototype, "_companionSupportEnabled", {
+get: $util.oneOfGetter($oneOfFields = ["companionSupportEnabled"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BusinessBroadcast.prototype, "_campaignSyncEnabled", {
+get: $util.oneOfGetter($oneOfFields = ["campaignSyncEnabled"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BusinessBroadcast.prototype, "_insightsSyncEnabled", {
+get: $util.oneOfGetter($oneOfFields = ["insightsSyncEnabled"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BusinessBroadcast.prototype, "_recipientLimit", {
+get: $util.oneOfGetter($oneOfFields = ["recipientLimit"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BusinessBroadcast.create = function create(properties) {
+return new BusinessBroadcast(properties);
+};
+BusinessBroadcast.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.importListEnabled != null && Object.hasOwnProperty.call(m, "importListEnabled"))
+w.uint32(8).bool(m.importListEnabled);
+if (m.companionSupportEnabled != null && Object.hasOwnProperty.call(m, "companionSupportEnabled"))
+w.uint32(16).bool(m.companionSupportEnabled);
+if (m.campaignSyncEnabled != null && Object.hasOwnProperty.call(m, "campaignSyncEnabled"))
+w.uint32(24).bool(m.campaignSyncEnabled);
+if (m.insightsSyncEnabled != null && Object.hasOwnProperty.call(m, "insightsSyncEnabled"))
+w.uint32(32).bool(m.insightsSyncEnabled);
+if (m.recipientLimit != null && Object.hasOwnProperty.call(m, "recipientLimit"))
+w.uint32(40).int32(m.recipientLimit);
+return w;
+};
+BusinessBroadcast.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.DeviceCapabilities.BusinessBroadcast();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.importListEnabled = r.bool();
+break;
+}
+case 2: {
+m.companionSupportEnabled = r.bool();
+break;
+}
+case 3: {
+m.campaignSyncEnabled = r.bool();
+break;
+}
+case 4: {
+m.insightsSyncEnabled = r.bool();
+break;
+}
+case 5: {
+m.recipientLimit = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BusinessBroadcast.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.DeviceCapabilities.BusinessBroadcast)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.DeviceCapabilities.BusinessBroadcast();
+if (d.importListEnabled != null) {
+m.importListEnabled = Boolean(d.importListEnabled);
+}
+if (d.companionSupportEnabled != null) {
+m.companionSupportEnabled = Boolean(d.companionSupportEnabled);
+}
+if (d.campaignSyncEnabled != null) {
+m.campaignSyncEnabled = Boolean(d.campaignSyncEnabled);
+}
+if (d.insightsSyncEnabled != null) {
+m.insightsSyncEnabled = Boolean(d.insightsSyncEnabled);
+}
+if (d.recipientLimit != null) {
+m.recipientLimit = d.recipientLimit | 0;
+}
+return m;
+};
+BusinessBroadcast.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.importListEnabled != null && m.hasOwnProperty("importListEnabled")) {
+d.importListEnabled = m.importListEnabled;
+if (o.oneofs)
+d._importListEnabled = "importListEnabled";
+}
+if (m.companionSupportEnabled != null && m.hasOwnProperty("companionSupportEnabled")) {
+d.companionSupportEnabled = m.companionSupportEnabled;
+if (o.oneofs)
+d._companionSupportEnabled = "companionSupportEnabled";
+}
+if (m.campaignSyncEnabled != null && m.hasOwnProperty("campaignSyncEnabled")) {
+d.campaignSyncEnabled = m.campaignSyncEnabled;
+if (o.oneofs)
+d._campaignSyncEnabled = "campaignSyncEnabled";
+}
+if (m.insightsSyncEnabled != null && m.hasOwnProperty("insightsSyncEnabled")) {
+d.insightsSyncEnabled = m.insightsSyncEnabled;
+if (o.oneofs)
+d._insightsSyncEnabled = "insightsSyncEnabled";
+}
+if (m.recipientLimit != null && m.hasOwnProperty("recipientLimit")) {
+d.recipientLimit = m.recipientLimit;
+if (o.oneofs)
+d._recipientLimit = "recipientLimit";
+}
+return d;
+};
+BusinessBroadcast.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BusinessBroadcast.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.DeviceCapabilities.BusinessBroadcast";
+};
+return BusinessBroadcast;
+});
+$lazy(DeviceCapabilities, "ChatLockSupportLevel", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "NONE"] = 0;
+values[valuesById[1] = "MINIMAL"] = 1;
+values[valuesById[2] = "FULL"] = 2;
+return values;
+});
+$lazy(DeviceCapabilities, "LIDMigration", function() {
+function LIDMigration(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+LIDMigration.prototype.chatDbMigrationTimestamp = null;
+let $oneOfFields;
+Object.defineProperty(LIDMigration.prototype, "_chatDbMigrationTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["chatDbMigrationTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+LIDMigration.create = function create(properties) {
+return new LIDMigration(properties);
+};
+LIDMigration.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.chatDbMigrationTimestamp != null && Object.hasOwnProperty.call(m, "chatDbMigrationTimestamp"))
+w.uint32(8).uint64(m.chatDbMigrationTimestamp);
+return w;
+};
+LIDMigration.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.DeviceCapabilities.LIDMigration();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.chatDbMigrationTimestamp = r.uint64();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+LIDMigration.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.DeviceCapabilities.LIDMigration)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.DeviceCapabilities.LIDMigration();
+if (d.chatDbMigrationTimestamp != null) {
+if ($util.Long)
+(m.chatDbMigrationTimestamp = $util.Long.fromValue(d.chatDbMigrationTimestamp)).unsigned = true;
+else if (typeof d.chatDbMigrationTimestamp === "string")
+m.chatDbMigrationTimestamp = parseInt(d.chatDbMigrationTimestamp, 10);
+else if (typeof d.chatDbMigrationTimestamp === "number")
+m.chatDbMigrationTimestamp = d.chatDbMigrationTimestamp;
+else if (typeof d.chatDbMigrationTimestamp === "object")
+m.chatDbMigrationTimestamp = new $util.LongBits(d.chatDbMigrationTimestamp.low >>> 0, d.chatDbMigrationTimestamp.high >>> 0).toNumber(true);
+}
+return m;
+};
+LIDMigration.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.chatDbMigrationTimestamp != null && m.hasOwnProperty("chatDbMigrationTimestamp")) {
+if (typeof m.chatDbMigrationTimestamp === "number")
+d.chatDbMigrationTimestamp = o.longs === String ? String(m.chatDbMigrationTimestamp) : m.chatDbMigrationTimestamp;
+else
+d.chatDbMigrationTimestamp = o.longs === String ? longToString(m.chatDbMigrationTimestamp, true) : o.longs === Number ? longToNumber(m.chatDbMigrationTimestamp, true) : m.chatDbMigrationTimestamp;
+if (o.oneofs)
+d._chatDbMigrationTimestamp = "chatDbMigrationTimestamp";
+}
+return d;
+};
+LIDMigration.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+LIDMigration.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.DeviceCapabilities.LIDMigration";
+};
+return LIDMigration;
+});
+$lazy(DeviceCapabilities, "MemberNameTagPrimarySupport", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "DISABLED"] = 0;
+values[valuesById[1] = "RECEIVER_ENABLED"] = 1;
+values[valuesById[2] = "SENDER_ENABLED"] = 2;
+return values;
+});
+$lazy(DeviceCapabilities, "UserHasAvatar", function() {
+function UserHasAvatar(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+UserHasAvatar.prototype.userHasAvatar = null;
+let $oneOfFields;
+Object.defineProperty(UserHasAvatar.prototype, "_userHasAvatar", {
+get: $util.oneOfGetter($oneOfFields = ["userHasAvatar"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+UserHasAvatar.create = function create(properties) {
+return new UserHasAvatar(properties);
+};
+UserHasAvatar.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.userHasAvatar != null && Object.hasOwnProperty.call(m, "userHasAvatar"))
+w.uint32(8).bool(m.userHasAvatar);
+return w;
+};
+UserHasAvatar.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.DeviceCapabilities.UserHasAvatar();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.userHasAvatar = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+UserHasAvatar.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.DeviceCapabilities.UserHasAvatar)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.DeviceCapabilities.UserHasAvatar();
+if (d.userHasAvatar != null) {
+m.userHasAvatar = Boolean(d.userHasAvatar);
+}
+return m;
+};
+UserHasAvatar.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.userHasAvatar != null && m.hasOwnProperty("userHasAvatar")) {
+d.userHasAvatar = m.userHasAvatar;
+if (o.oneofs)
+d._userHasAvatar = "userHasAvatar";
+}
+return d;
+};
+UserHasAvatar.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+UserHasAvatar.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.DeviceCapabilities.UserHasAvatar";
+};
+return UserHasAvatar;
+});
+return DeviceCapabilities;

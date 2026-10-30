@@ -1,0 +1,4137 @@
+"use strict";
+function ContextInfo(p) {
+this.mentionedJid = [];
+this.groupMentions = [];
+this.statusAttributions = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ContextInfo.prototype.stanzaId = null;
+ContextInfo.prototype.participant = null;
+ContextInfo.prototype.quotedMessage = null;
+ContextInfo.prototype.remoteJid = null;
+ContextInfo.prototype.mentionedJid = $util.emptyArray;
+ContextInfo.prototype.conversionSource = null;
+ContextInfo.prototype.conversionData = null;
+ContextInfo.prototype.conversionDelaySeconds = null;
+ContextInfo.prototype.forwardingScore = null;
+ContextInfo.prototype.isForwarded = null;
+ContextInfo.prototype.quotedAd = null;
+ContextInfo.prototype.placeholderKey = null;
+ContextInfo.prototype.expiration = null;
+ContextInfo.prototype.ephemeralSettingTimestamp = null;
+ContextInfo.prototype.ephemeralSharedSecret = null;
+ContextInfo.prototype.externalAdReply = null;
+ContextInfo.prototype.entryPointConversionSource = null;
+ContextInfo.prototype.entryPointConversionApp = null;
+ContextInfo.prototype.entryPointConversionDelaySeconds = null;
+ContextInfo.prototype.disappearingMode = null;
+ContextInfo.prototype.actionLink = null;
+ContextInfo.prototype.groupSubject = null;
+ContextInfo.prototype.parentGroupJid = null;
+ContextInfo.prototype.trustBannerType = null;
+ContextInfo.prototype.trustBannerAction = null;
+ContextInfo.prototype.isSampled = null;
+ContextInfo.prototype.groupMentions = $util.emptyArray;
+ContextInfo.prototype.utm = null;
+ContextInfo.prototype.forwardedNewsletterMessageInfo = null;
+ContextInfo.prototype.businessMessageForwardInfo = null;
+ContextInfo.prototype.smbClientCampaignId = null;
+ContextInfo.prototype.smbServerCampaignId = null;
+ContextInfo.prototype.dataSharingContext = null;
+ContextInfo.prototype.alwaysShowAdAttribution = null;
+ContextInfo.prototype.featureEligibilities = null;
+ContextInfo.prototype.entryPointConversionExternalSource = null;
+ContextInfo.prototype.entryPointConversionExternalMedium = null;
+ContextInfo.prototype.ctwaSignals = null;
+ContextInfo.prototype.ctwaPayload = null;
+ContextInfo.prototype.forwardedAiBotMessageInfo = null;
+ContextInfo.prototype.statusAttributionType = null;
+ContextInfo.prototype.urlTrackingMap = null;
+ContextInfo.prototype.pairedMediaType = null;
+ContextInfo.prototype.rankingVersion = null;
+ContextInfo.prototype.memberLabel = null;
+ContextInfo.prototype.isQuestion = null;
+ContextInfo.prototype.statusSourceType = null;
+ContextInfo.prototype.statusAttributions = $util.emptyArray;
+ContextInfo.prototype.isGroupStatus = null;
+ContextInfo.prototype.forwardOrigin = null;
+ContextInfo.prototype.questionReplyQuotedMessage = null;
+ContextInfo.prototype.statusAudienceMetadata = null;
+ContextInfo.prototype.nonJidMentions = null;
+ContextInfo.prototype.quotedType = null;
+ContextInfo.prototype.botMessageSharingInfo = null;
+ContextInfo.prototype.isSpoiler = null;
+ContextInfo.prototype.mediaDomainInfo = null;
+ContextInfo.prototype.partiallySelectedContent = null;
+ContextInfo.prototype.afterReadDuration = null;
+ContextInfo.prototype.crossAppSource = null;
+ContextInfo.prototype.businessInteractionPills = null;
+ContextInfo.prototype.posterStatusId = null;
+let $oneOfFields;
+Object.defineProperty(ContextInfo.prototype, "_stanzaId", {
+get: $util.oneOfGetter($oneOfFields = ["stanzaId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_participant", {
+get: $util.oneOfGetter($oneOfFields = ["participant"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_quotedMessage", {
+get: $util.oneOfGetter($oneOfFields = ["quotedMessage"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_remoteJid", {
+get: $util.oneOfGetter($oneOfFields = ["remoteJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_conversionSource", {
+get: $util.oneOfGetter($oneOfFields = ["conversionSource"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_conversionData", {
+get: $util.oneOfGetter($oneOfFields = ["conversionData"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_conversionDelaySeconds", {
+get: $util.oneOfGetter($oneOfFields = ["conversionDelaySeconds"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_forwardingScore", {
+get: $util.oneOfGetter($oneOfFields = ["forwardingScore"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_isForwarded", {
+get: $util.oneOfGetter($oneOfFields = ["isForwarded"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_quotedAd", {
+get: $util.oneOfGetter($oneOfFields = ["quotedAd"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_placeholderKey", {
+get: $util.oneOfGetter($oneOfFields = ["placeholderKey"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_expiration", {
+get: $util.oneOfGetter($oneOfFields = ["expiration"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_ephemeralSettingTimestamp", {
+get: $util.oneOfGetter($oneOfFields = ["ephemeralSettingTimestamp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_ephemeralSharedSecret", {
+get: $util.oneOfGetter($oneOfFields = ["ephemeralSharedSecret"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_externalAdReply", {
+get: $util.oneOfGetter($oneOfFields = ["externalAdReply"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_entryPointConversionSource", {
+get: $util.oneOfGetter($oneOfFields = ["entryPointConversionSource"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_entryPointConversionApp", {
+get: $util.oneOfGetter($oneOfFields = ["entryPointConversionApp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_entryPointConversionDelaySeconds", {
+get: $util.oneOfGetter($oneOfFields = ["entryPointConversionDelaySeconds"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_disappearingMode", {
+get: $util.oneOfGetter($oneOfFields = ["disappearingMode"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_actionLink", {
+get: $util.oneOfGetter($oneOfFields = ["actionLink"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_groupSubject", {
+get: $util.oneOfGetter($oneOfFields = ["groupSubject"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_parentGroupJid", {
+get: $util.oneOfGetter($oneOfFields = ["parentGroupJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_trustBannerType", {
+get: $util.oneOfGetter($oneOfFields = ["trustBannerType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_trustBannerAction", {
+get: $util.oneOfGetter($oneOfFields = ["trustBannerAction"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_isSampled", {
+get: $util.oneOfGetter($oneOfFields = ["isSampled"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_utm", {
+get: $util.oneOfGetter($oneOfFields = ["utm"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_forwardedNewsletterMessageInfo", {
+get: $util.oneOfGetter($oneOfFields = ["forwardedNewsletterMessageInfo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_businessMessageForwardInfo", {
+get: $util.oneOfGetter($oneOfFields = ["businessMessageForwardInfo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_smbClientCampaignId", {
+get: $util.oneOfGetter($oneOfFields = ["smbClientCampaignId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_smbServerCampaignId", {
+get: $util.oneOfGetter($oneOfFields = ["smbServerCampaignId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_dataSharingContext", {
+get: $util.oneOfGetter($oneOfFields = ["dataSharingContext"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_alwaysShowAdAttribution", {
+get: $util.oneOfGetter($oneOfFields = ["alwaysShowAdAttribution"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_featureEligibilities", {
+get: $util.oneOfGetter($oneOfFields = ["featureEligibilities"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_entryPointConversionExternalSource", {
+get: $util.oneOfGetter($oneOfFields = ["entryPointConversionExternalSource"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_entryPointConversionExternalMedium", {
+get: $util.oneOfGetter($oneOfFields = ["entryPointConversionExternalMedium"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_ctwaSignals", {
+get: $util.oneOfGetter($oneOfFields = ["ctwaSignals"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_ctwaPayload", {
+get: $util.oneOfGetter($oneOfFields = ["ctwaPayload"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_forwardedAiBotMessageInfo", {
+get: $util.oneOfGetter($oneOfFields = ["forwardedAiBotMessageInfo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_statusAttributionType", {
+get: $util.oneOfGetter($oneOfFields = ["statusAttributionType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_urlTrackingMap", {
+get: $util.oneOfGetter($oneOfFields = ["urlTrackingMap"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_pairedMediaType", {
+get: $util.oneOfGetter($oneOfFields = ["pairedMediaType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_rankingVersion", {
+get: $util.oneOfGetter($oneOfFields = ["rankingVersion"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_memberLabel", {
+get: $util.oneOfGetter($oneOfFields = ["memberLabel"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_isQuestion", {
+get: $util.oneOfGetter($oneOfFields = ["isQuestion"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_statusSourceType", {
+get: $util.oneOfGetter($oneOfFields = ["statusSourceType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_isGroupStatus", {
+get: $util.oneOfGetter($oneOfFields = ["isGroupStatus"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_forwardOrigin", {
+get: $util.oneOfGetter($oneOfFields = ["forwardOrigin"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_questionReplyQuotedMessage", {
+get: $util.oneOfGetter($oneOfFields = ["questionReplyQuotedMessage"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_statusAudienceMetadata", {
+get: $util.oneOfGetter($oneOfFields = ["statusAudienceMetadata"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_nonJidMentions", {
+get: $util.oneOfGetter($oneOfFields = ["nonJidMentions"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_quotedType", {
+get: $util.oneOfGetter($oneOfFields = ["quotedType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_botMessageSharingInfo", {
+get: $util.oneOfGetter($oneOfFields = ["botMessageSharingInfo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_isSpoiler", {
+get: $util.oneOfGetter($oneOfFields = ["isSpoiler"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_mediaDomainInfo", {
+get: $util.oneOfGetter($oneOfFields = ["mediaDomainInfo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_partiallySelectedContent", {
+get: $util.oneOfGetter($oneOfFields = ["partiallySelectedContent"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_afterReadDuration", {
+get: $util.oneOfGetter($oneOfFields = ["afterReadDuration"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_crossAppSource", {
+get: $util.oneOfGetter($oneOfFields = ["crossAppSource"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_businessInteractionPills", {
+get: $util.oneOfGetter($oneOfFields = ["businessInteractionPills"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ContextInfo.prototype, "_posterStatusId", {
+get: $util.oneOfGetter($oneOfFields = ["posterStatusId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ContextInfo.create = function create(properties) {
+return new ContextInfo(properties);
+};
+ContextInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.stanzaId != null && Object.hasOwnProperty.call(m, "stanzaId"))
+w.uint32(10).string(m.stanzaId);
+if (m.participant != null && Object.hasOwnProperty.call(m, "participant"))
+w.uint32(18).string(m.participant);
+if (m.quotedMessage != null && Object.hasOwnProperty.call(m, "quotedMessage"))
+$root.proto.Message.encode(m.quotedMessage, w.uint32(26).fork()).ldelim();
+if (m.remoteJid != null && Object.hasOwnProperty.call(m, "remoteJid"))
+w.uint32(34).string(m.remoteJid);
+if (m.mentionedJid != null && m.mentionedJid.length) {
+for (var i = 0; i < m.mentionedJid.length; ++i)
+w.uint32(122).string(m.mentionedJid[i]);
+}
+if (m.conversionSource != null && Object.hasOwnProperty.call(m, "conversionSource"))
+w.uint32(146).string(m.conversionSource);
+if (m.conversionData != null && Object.hasOwnProperty.call(m, "conversionData"))
+w.uint32(154).bytes(m.conversionData);
+if (m.conversionDelaySeconds != null && Object.hasOwnProperty.call(m, "conversionDelaySeconds"))
+w.uint32(160).uint32(m.conversionDelaySeconds);
+if (m.forwardingScore != null && Object.hasOwnProperty.call(m, "forwardingScore"))
+w.uint32(168).uint32(m.forwardingScore);
+if (m.isForwarded != null && Object.hasOwnProperty.call(m, "isForwarded"))
+w.uint32(176).bool(m.isForwarded);
+if (m.quotedAd != null && Object.hasOwnProperty.call(m, "quotedAd"))
+$root.proto.ContextInfo.AdReplyInfo.encode(m.quotedAd, w.uint32(186).fork()).ldelim();
+if (m.placeholderKey != null && Object.hasOwnProperty.call(m, "placeholderKey"))
+$root.proto.MessageKey.encode(m.placeholderKey, w.uint32(194).fork()).ldelim();
+if (m.expiration != null && Object.hasOwnProperty.call(m, "expiration"))
+w.uint32(200).uint32(m.expiration);
+if (m.ephemeralSettingTimestamp != null && Object.hasOwnProperty.call(m, "ephemeralSettingTimestamp"))
+w.uint32(208).int64(m.ephemeralSettingTimestamp);
+if (m.ephemeralSharedSecret != null && Object.hasOwnProperty.call(m, "ephemeralSharedSecret"))
+w.uint32(218).bytes(m.ephemeralSharedSecret);
+if (m.externalAdReply != null && Object.hasOwnProperty.call(m, "externalAdReply"))
+$root.proto.ContextInfo.ExternalAdReplyInfo.encode(m.externalAdReply, w.uint32(226).fork()).ldelim();
+if (m.entryPointConversionSource != null && Object.hasOwnProperty.call(m, "entryPointConversionSource"))
+w.uint32(234).string(m.entryPointConversionSource);
+if (m.entryPointConversionApp != null && Object.hasOwnProperty.call(m, "entryPointConversionApp"))
+w.uint32(242).string(m.entryPointConversionApp);
+if (m.entryPointConversionDelaySeconds != null && Object.hasOwnProperty.call(m, "entryPointConversionDelaySeconds"))
+w.uint32(248).uint32(m.entryPointConversionDelaySeconds);
+if (m.disappearingMode != null && Object.hasOwnProperty.call(m, "disappearingMode"))
+$root.proto.DisappearingMode.encode(m.disappearingMode, w.uint32(258).fork()).ldelim();
+if (m.actionLink != null && Object.hasOwnProperty.call(m, "actionLink"))
+$root.proto.ActionLink.encode(m.actionLink, w.uint32(266).fork()).ldelim();
+if (m.groupSubject != null && Object.hasOwnProperty.call(m, "groupSubject"))
+w.uint32(274).string(m.groupSubject);
+if (m.parentGroupJid != null && Object.hasOwnProperty.call(m, "parentGroupJid"))
+w.uint32(282).string(m.parentGroupJid);
+if (m.trustBannerType != null && Object.hasOwnProperty.call(m, "trustBannerType"))
+w.uint32(298).string(m.trustBannerType);
+if (m.trustBannerAction != null && Object.hasOwnProperty.call(m, "trustBannerAction"))
+w.uint32(304).uint32(m.trustBannerAction);
+if (m.isSampled != null && Object.hasOwnProperty.call(m, "isSampled"))
+w.uint32(312).bool(m.isSampled);
+if (m.groupMentions != null && m.groupMentions.length) {
+for (var i = 0; i < m.groupMentions.length; ++i)
+$root.proto.GroupMention.encode(m.groupMentions[i], w.uint32(322).fork()).ldelim();
+}
+if (m.utm != null && Object.hasOwnProperty.call(m, "utm"))
+$root.proto.ContextInfo.UTMInfo.encode(m.utm, w.uint32(330).fork()).ldelim();
+if (m.forwardedNewsletterMessageInfo != null && Object.hasOwnProperty.call(m, "forwardedNewsletterMessageInfo"))
+$root.proto.ContextInfo.ForwardedNewsletterMessageInfo.encode(m.forwardedNewsletterMessageInfo, w.uint32(346).fork()).ldelim();
+if (m.businessMessageForwardInfo != null && Object.hasOwnProperty.call(m, "businessMessageForwardInfo"))
+$root.proto.ContextInfo.BusinessMessageForwardInfo.encode(m.businessMessageForwardInfo, w.uint32(354).fork()).ldelim();
+if (m.smbClientCampaignId != null && Object.hasOwnProperty.call(m, "smbClientCampaignId"))
+w.uint32(362).string(m.smbClientCampaignId);
+if (m.smbServerCampaignId != null && Object.hasOwnProperty.call(m, "smbServerCampaignId"))
+w.uint32(370).string(m.smbServerCampaignId);
+if (m.dataSharingContext != null && Object.hasOwnProperty.call(m, "dataSharingContext"))
+$root.proto.ContextInfo.DataSharingContext.encode(m.dataSharingContext, w.uint32(378).fork()).ldelim();
+if (m.alwaysShowAdAttribution != null && Object.hasOwnProperty.call(m, "alwaysShowAdAttribution"))
+w.uint32(384).bool(m.alwaysShowAdAttribution);
+if (m.featureEligibilities != null && Object.hasOwnProperty.call(m, "featureEligibilities"))
+$root.proto.ContextInfo.FeatureEligibilities.encode(m.featureEligibilities, w.uint32(394).fork()).ldelim();
+if (m.entryPointConversionExternalSource != null && Object.hasOwnProperty.call(m, "entryPointConversionExternalSource"))
+w.uint32(402).string(m.entryPointConversionExternalSource);
+if (m.entryPointConversionExternalMedium != null && Object.hasOwnProperty.call(m, "entryPointConversionExternalMedium"))
+w.uint32(410).string(m.entryPointConversionExternalMedium);
+if (m.ctwaSignals != null && Object.hasOwnProperty.call(m, "ctwaSignals"))
+w.uint32(434).string(m.ctwaSignals);
+if (m.ctwaPayload != null && Object.hasOwnProperty.call(m, "ctwaPayload"))
+w.uint32(442).bytes(m.ctwaPayload);
+if (m.forwardedAiBotMessageInfo != null && Object.hasOwnProperty.call(m, "forwardedAiBotMessageInfo"))
+$root.proto.ForwardedAIBotMessageInfo.encode(m.forwardedAiBotMessageInfo, w.uint32(450).fork()).ldelim();
+if (m.statusAttributionType != null && Object.hasOwnProperty.call(m, "statusAttributionType"))
+w.uint32(456).int32(m.statusAttributionType);
+if (m.urlTrackingMap != null && Object.hasOwnProperty.call(m, "urlTrackingMap"))
+$root.proto.UrlTrackingMap.encode(m.urlTrackingMap, w.uint32(466).fork()).ldelim();
+if (m.pairedMediaType != null && Object.hasOwnProperty.call(m, "pairedMediaType"))
+w.uint32(472).int32(m.pairedMediaType);
+if (m.rankingVersion != null && Object.hasOwnProperty.call(m, "rankingVersion"))
+w.uint32(480).uint32(m.rankingVersion);
+if (m.memberLabel != null && Object.hasOwnProperty.call(m, "memberLabel"))
+$root.proto.MemberLabel.encode(m.memberLabel, w.uint32(498).fork()).ldelim();
+if (m.isQuestion != null && Object.hasOwnProperty.call(m, "isQuestion"))
+w.uint32(504).bool(m.isQuestion);
+if (m.statusSourceType != null && Object.hasOwnProperty.call(m, "statusSourceType"))
+w.uint32(512).int32(m.statusSourceType);
+if (m.statusAttributions != null && m.statusAttributions.length) {
+for (var i = 0; i < m.statusAttributions.length; ++i)
+$root.proto.StatusAttribution.encode(m.statusAttributions[i], w.uint32(522).fork()).ldelim();
+}
+if (m.isGroupStatus != null && Object.hasOwnProperty.call(m, "isGroupStatus"))
+w.uint32(528).bool(m.isGroupStatus);
+if (m.forwardOrigin != null && Object.hasOwnProperty.call(m, "forwardOrigin"))
+w.uint32(536).int32(m.forwardOrigin);
+if (m.questionReplyQuotedMessage != null && Object.hasOwnProperty.call(m, "questionReplyQuotedMessage"))
+$root.proto.ContextInfo.QuestionReplyQuotedMessage.encode(m.questionReplyQuotedMessage, w.uint32(546).fork()).ldelim();
+if (m.statusAudienceMetadata != null && Object.hasOwnProperty.call(m, "statusAudienceMetadata"))
+$root.proto.ContextInfo.StatusAudienceMetadata.encode(m.statusAudienceMetadata, w.uint32(554).fork()).ldelim();
+if (m.nonJidMentions != null && Object.hasOwnProperty.call(m, "nonJidMentions"))
+w.uint32(560).uint32(m.nonJidMentions);
+if (m.quotedType != null && Object.hasOwnProperty.call(m, "quotedType"))
+w.uint32(568).int32(m.quotedType);
+if (m.botMessageSharingInfo != null && Object.hasOwnProperty.call(m, "botMessageSharingInfo"))
+$root.proto.BotMessageSharingInfo.encode(m.botMessageSharingInfo, w.uint32(578).fork()).ldelim();
+if (m.isSpoiler != null && Object.hasOwnProperty.call(m, "isSpoiler"))
+w.uint32(584).bool(m.isSpoiler);
+if (m.mediaDomainInfo != null && Object.hasOwnProperty.call(m, "mediaDomainInfo"))
+$root.proto.MediaDomainInfo.encode(m.mediaDomainInfo, w.uint32(594).fork()).ldelim();
+if (m.partiallySelectedContent != null && Object.hasOwnProperty.call(m, "partiallySelectedContent"))
+$root.proto.ContextInfo.PartiallySelectedContent.encode(m.partiallySelectedContent, w.uint32(602).fork()).ldelim();
+if (m.afterReadDuration != null && Object.hasOwnProperty.call(m, "afterReadDuration"))
+w.uint32(608).uint32(m.afterReadDuration);
+if (m.crossAppSource != null && Object.hasOwnProperty.call(m, "crossAppSource"))
+w.uint32(616).int32(m.crossAppSource);
+if (m.businessInteractionPills != null && Object.hasOwnProperty.call(m, "businessInteractionPills"))
+$root.proto.ContextInfo.BusinessInteractionPills.encode(m.businessInteractionPills, w.uint32(626).fork()).ldelim();
+if (m.posterStatusId != null && Object.hasOwnProperty.call(m, "posterStatusId"))
+w.uint32(634).string(m.posterStatusId);
+return w;
+};
+ContextInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ContextInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.stanzaId = r.string();
+break;
+}
+case 2: {
+m.participant = r.string();
+break;
+}
+case 3: {
+m.quotedMessage = $root.proto.Message.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 4: {
+m.remoteJid = r.string();
+break;
+}
+case 15: {
+if (!(m.mentionedJid && m.mentionedJid.length))
+m.mentionedJid = [];
+m.mentionedJid.push(r.string());
+break;
+}
+case 18: {
+m.conversionSource = r.string();
+break;
+}
+case 19: {
+m.conversionData = r.bytes();
+break;
+}
+case 20: {
+m.conversionDelaySeconds = r.uint32();
+break;
+}
+case 21: {
+m.forwardingScore = r.uint32();
+break;
+}
+case 22: {
+m.isForwarded = r.bool();
+break;
+}
+case 23: {
+m.quotedAd = $root.proto.ContextInfo.AdReplyInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 24: {
+m.placeholderKey = $root.proto.MessageKey.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 25: {
+m.expiration = r.uint32();
+break;
+}
+case 26: {
+m.ephemeralSettingTimestamp = r.int64();
+break;
+}
+case 27: {
+m.ephemeralSharedSecret = r.bytes();
+break;
+}
+case 28: {
+m.externalAdReply = $root.proto.ContextInfo.ExternalAdReplyInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 29: {
+m.entryPointConversionSource = r.string();
+break;
+}
+case 30: {
+m.entryPointConversionApp = r.string();
+break;
+}
+case 31: {
+m.entryPointConversionDelaySeconds = r.uint32();
+break;
+}
+case 32: {
+m.disappearingMode = $root.proto.DisappearingMode.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 33: {
+m.actionLink = $root.proto.ActionLink.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 34: {
+m.groupSubject = r.string();
+break;
+}
+case 35: {
+m.parentGroupJid = r.string();
+break;
+}
+case 37: {
+m.trustBannerType = r.string();
+break;
+}
+case 38: {
+m.trustBannerAction = r.uint32();
+break;
+}
+case 39: {
+m.isSampled = r.bool();
+break;
+}
+case 40: {
+if (!(m.groupMentions && m.groupMentions.length))
+m.groupMentions = [];
+m.groupMentions.push($root.proto.GroupMention.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 41: {
+m.utm = $root.proto.ContextInfo.UTMInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 43: {
+m.forwardedNewsletterMessageInfo = $root.proto.ContextInfo.ForwardedNewsletterMessageInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 44: {
+m.businessMessageForwardInfo = $root.proto.ContextInfo.BusinessMessageForwardInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 45: {
+m.smbClientCampaignId = r.string();
+break;
+}
+case 46: {
+m.smbServerCampaignId = r.string();
+break;
+}
+case 47: {
+m.dataSharingContext = $root.proto.ContextInfo.DataSharingContext.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 48: {
+m.alwaysShowAdAttribution = r.bool();
+break;
+}
+case 49: {
+m.featureEligibilities = $root.proto.ContextInfo.FeatureEligibilities.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 50: {
+m.entryPointConversionExternalSource = r.string();
+break;
+}
+case 51: {
+m.entryPointConversionExternalMedium = r.string();
+break;
+}
+case 54: {
+m.ctwaSignals = r.string();
+break;
+}
+case 55: {
+m.ctwaPayload = r.bytes();
+break;
+}
+case 56: {
+m.forwardedAiBotMessageInfo = $root.proto.ForwardedAIBotMessageInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 57: {
+m.statusAttributionType = r.int32();
+break;
+}
+case 58: {
+m.urlTrackingMap = $root.proto.UrlTrackingMap.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 59: {
+m.pairedMediaType = r.int32();
+break;
+}
+case 60: {
+m.rankingVersion = r.uint32();
+break;
+}
+case 62: {
+m.memberLabel = $root.proto.MemberLabel.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 63: {
+m.isQuestion = r.bool();
+break;
+}
+case 64: {
+m.statusSourceType = r.int32();
+break;
+}
+case 65: {
+if (!(m.statusAttributions && m.statusAttributions.length))
+m.statusAttributions = [];
+m.statusAttributions.push($root.proto.StatusAttribution.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 66: {
+m.isGroupStatus = r.bool();
+break;
+}
+case 67: {
+m.forwardOrigin = r.int32();
+break;
+}
+case 68: {
+m.questionReplyQuotedMessage = $root.proto.ContextInfo.QuestionReplyQuotedMessage.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 69: {
+m.statusAudienceMetadata = $root.proto.ContextInfo.StatusAudienceMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 70: {
+m.nonJidMentions = r.uint32();
+break;
+}
+case 71: {
+m.quotedType = r.int32();
+break;
+}
+case 72: {
+m.botMessageSharingInfo = $root.proto.BotMessageSharingInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 73: {
+m.isSpoiler = r.bool();
+break;
+}
+case 74: {
+m.mediaDomainInfo = $root.proto.MediaDomainInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 75: {
+m.partiallySelectedContent = $root.proto.ContextInfo.PartiallySelectedContent.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 76: {
+m.afterReadDuration = r.uint32();
+break;
+}
+case 77: {
+m.crossAppSource = r.int32();
+break;
+}
+case 78: {
+m.businessInteractionPills = $root.proto.ContextInfo.BusinessInteractionPills.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 79: {
+m.posterStatusId = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ContextInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ContextInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ContextInfo();
+if (d.stanzaId != null) {
+m.stanzaId = String(d.stanzaId);
+}
+if (d.participant != null) {
+m.participant = String(d.participant);
+}
+if (d.quotedMessage != null) {
+if (typeof d.quotedMessage !== "object")
+throw TypeError(".proto.ContextInfo.quotedMessage: object expected");
+m.quotedMessage = $root.proto.Message.fromObject(d.quotedMessage, n + 1);
+}
+if (d.remoteJid != null) {
+m.remoteJid = String(d.remoteJid);
+}
+if (d.mentionedJid) {
+if (!Array.isArray(d.mentionedJid))
+throw TypeError(".proto.ContextInfo.mentionedJid: array expected");
+m.mentionedJid = [];
+for (var i = 0; i < d.mentionedJid.length; ++i) {
+m.mentionedJid[i] = String(d.mentionedJid[i]);
+}
+}
+if (d.conversionSource != null) {
+m.conversionSource = String(d.conversionSource);
+}
+if (d.conversionData != null) {
+if (typeof d.conversionData === "string")
+$util.base64.decode(d.conversionData, m.conversionData = $util.newBuffer($util.base64.length(d.conversionData)), 0);
+else if (d.conversionData.length >= 0)
+m.conversionData = d.conversionData;
+}
+if (d.conversionDelaySeconds != null) {
+m.conversionDelaySeconds = d.conversionDelaySeconds >>> 0;
+}
+if (d.forwardingScore != null) {
+m.forwardingScore = d.forwardingScore >>> 0;
+}
+if (d.isForwarded != null) {
+m.isForwarded = Boolean(d.isForwarded);
+}
+if (d.quotedAd != null) {
+if (typeof d.quotedAd !== "object")
+throw TypeError(".proto.ContextInfo.quotedAd: object expected");
+m.quotedAd = $root.proto.ContextInfo.AdReplyInfo.fromObject(d.quotedAd, n + 1);
+}
+if (d.placeholderKey != null) {
+if (typeof d.placeholderKey !== "object")
+throw TypeError(".proto.ContextInfo.placeholderKey: object expected");
+m.placeholderKey = $root.proto.MessageKey.fromObject(d.placeholderKey, n + 1);
+}
+if (d.expiration != null) {
+m.expiration = d.expiration >>> 0;
+}
+if (d.ephemeralSettingTimestamp != null) {
+if ($util.Long)
+(m.ephemeralSettingTimestamp = $util.Long.fromValue(d.ephemeralSettingTimestamp)).unsigned = false;
+else if (typeof d.ephemeralSettingTimestamp === "string")
+m.ephemeralSettingTimestamp = parseInt(d.ephemeralSettingTimestamp, 10);
+else if (typeof d.ephemeralSettingTimestamp === "number")
+m.ephemeralSettingTimestamp = d.ephemeralSettingTimestamp;
+else if (typeof d.ephemeralSettingTimestamp === "object")
+m.ephemeralSettingTimestamp = new $util.LongBits(d.ephemeralSettingTimestamp.low >>> 0, d.ephemeralSettingTimestamp.high >>> 0).toNumber();
+}
+if (d.ephemeralSharedSecret != null) {
+if (typeof d.ephemeralSharedSecret === "string")
+$util.base64.decode(d.ephemeralSharedSecret, m.ephemeralSharedSecret = $util.newBuffer($util.base64.length(d.ephemeralSharedSecret)), 0);
+else if (d.ephemeralSharedSecret.length >= 0)
+m.ephemeralSharedSecret = d.ephemeralSharedSecret;
+}
+if (d.externalAdReply != null) {
+if (typeof d.externalAdReply !== "object")
+throw TypeError(".proto.ContextInfo.externalAdReply: object expected");
+m.externalAdReply = $root.proto.ContextInfo.ExternalAdReplyInfo.fromObject(d.externalAdReply, n + 1);
+}
+if (d.entryPointConversionSource != null) {
+m.entryPointConversionSource = String(d.entryPointConversionSource);
+}
+if (d.entryPointConversionApp != null) {
+m.entryPointConversionApp = String(d.entryPointConversionApp);
+}
+if (d.entryPointConversionDelaySeconds != null) {
+m.entryPointConversionDelaySeconds = d.entryPointConversionDelaySeconds >>> 0;
+}
+if (d.disappearingMode != null) {
+if (typeof d.disappearingMode !== "object")
+throw TypeError(".proto.ContextInfo.disappearingMode: object expected");
+m.disappearingMode = $root.proto.DisappearingMode.fromObject(d.disappearingMode, n + 1);
+}
+if (d.actionLink != null) {
+if (typeof d.actionLink !== "object")
+throw TypeError(".proto.ContextInfo.actionLink: object expected");
+m.actionLink = $root.proto.ActionLink.fromObject(d.actionLink, n + 1);
+}
+if (d.groupSubject != null) {
+m.groupSubject = String(d.groupSubject);
+}
+if (d.parentGroupJid != null) {
+m.parentGroupJid = String(d.parentGroupJid);
+}
+if (d.trustBannerType != null) {
+m.trustBannerType = String(d.trustBannerType);
+}
+if (d.trustBannerAction != null) {
+m.trustBannerAction = d.trustBannerAction >>> 0;
+}
+if (d.isSampled != null) {
+m.isSampled = Boolean(d.isSampled);
+}
+if (d.groupMentions) {
+if (!Array.isArray(d.groupMentions))
+throw TypeError(".proto.ContextInfo.groupMentions: array expected");
+m.groupMentions = [];
+for (var i = 0; i < d.groupMentions.length; ++i) {
+if (typeof d.groupMentions[i] !== "object")
+throw TypeError(".proto.ContextInfo.groupMentions: object expected");
+m.groupMentions[i] = $root.proto.GroupMention.fromObject(d.groupMentions[i], n + 1);
+}
+}
+if (d.utm != null) {
+if (typeof d.utm !== "object")
+throw TypeError(".proto.ContextInfo.utm: object expected");
+m.utm = $root.proto.ContextInfo.UTMInfo.fromObject(d.utm, n + 1);
+}
+if (d.forwardedNewsletterMessageInfo != null) {
+if (typeof d.forwardedNewsletterMessageInfo !== "object")
+throw TypeError(".proto.ContextInfo.forwardedNewsletterMessageInfo: object expected");
+m.forwardedNewsletterMessageInfo = $root.proto.ContextInfo.ForwardedNewsletterMessageInfo.fromObject(d.forwardedNewsletterMessageInfo, n + 1);
+}
+if (d.businessMessageForwardInfo != null) {
+if (typeof d.businessMessageForwardInfo !== "object")
+throw TypeError(".proto.ContextInfo.businessMessageForwardInfo: object expected");
+m.businessMessageForwardInfo = $root.proto.ContextInfo.BusinessMessageForwardInfo.fromObject(d.businessMessageForwardInfo, n + 1);
+}
+if (d.smbClientCampaignId != null) {
+m.smbClientCampaignId = String(d.smbClientCampaignId);
+}
+if (d.smbServerCampaignId != null) {
+m.smbServerCampaignId = String(d.smbServerCampaignId);
+}
+if (d.dataSharingContext != null) {
+if (typeof d.dataSharingContext !== "object")
+throw TypeError(".proto.ContextInfo.dataSharingContext: object expected");
+m.dataSharingContext = $root.proto.ContextInfo.DataSharingContext.fromObject(d.dataSharingContext, n + 1);
+}
+if (d.alwaysShowAdAttribution != null) {
+m.alwaysShowAdAttribution = Boolean(d.alwaysShowAdAttribution);
+}
+if (d.featureEligibilities != null) {
+if (typeof d.featureEligibilities !== "object")
+throw TypeError(".proto.ContextInfo.featureEligibilities: object expected");
+m.featureEligibilities = $root.proto.ContextInfo.FeatureEligibilities.fromObject(d.featureEligibilities, n + 1);
+}
+if (d.entryPointConversionExternalSource != null) {
+m.entryPointConversionExternalSource = String(d.entryPointConversionExternalSource);
+}
+if (d.entryPointConversionExternalMedium != null) {
+m.entryPointConversionExternalMedium = String(d.entryPointConversionExternalMedium);
+}
+if (d.ctwaSignals != null) {
+m.ctwaSignals = String(d.ctwaSignals);
+}
+if (d.ctwaPayload != null) {
+if (typeof d.ctwaPayload === "string")
+$util.base64.decode(d.ctwaPayload, m.ctwaPayload = $util.newBuffer($util.base64.length(d.ctwaPayload)), 0);
+else if (d.ctwaPayload.length >= 0)
+m.ctwaPayload = d.ctwaPayload;
+}
+if (d.forwardedAiBotMessageInfo != null) {
+if (typeof d.forwardedAiBotMessageInfo !== "object")
+throw TypeError(".proto.ContextInfo.forwardedAiBotMessageInfo: object expected");
+m.forwardedAiBotMessageInfo = $root.proto.ForwardedAIBotMessageInfo.fromObject(d.forwardedAiBotMessageInfo, n + 1);
+}
+switch (d.statusAttributionType) {
+default:
+if (typeof d.statusAttributionType === "number") {
+m.statusAttributionType = d.statusAttributionType;
+break;
+}
+break;
+case "NONE":
+case 0:
+m.statusAttributionType = 0;
+break;
+case "RESHARED_FROM_MENTION":
+case 1:
+m.statusAttributionType = 1;
+break;
+case "RESHARED_FROM_POST":
+case 2:
+m.statusAttributionType = 2;
+break;
+case "RESHARED_FROM_POST_MANY_TIMES":
+case 3:
+m.statusAttributionType = 3;
+break;
+case "FORWARDED_FROM_STATUS":
+case 4:
+m.statusAttributionType = 4;
+break;
+}
+if (d.urlTrackingMap != null) {
+if (typeof d.urlTrackingMap !== "object")
+throw TypeError(".proto.ContextInfo.urlTrackingMap: object expected");
+m.urlTrackingMap = $root.proto.UrlTrackingMap.fromObject(d.urlTrackingMap, n + 1);
+}
+switch (d.pairedMediaType) {
+default:
+if (typeof d.pairedMediaType === "number") {
+m.pairedMediaType = d.pairedMediaType;
+break;
+}
+break;
+case "NOT_PAIRED_MEDIA":
+case 0:
+m.pairedMediaType = 0;
+break;
+case "SD_VIDEO_PARENT":
+case 1:
+m.pairedMediaType = 1;
+break;
+case "HD_VIDEO_CHILD":
+case 2:
+m.pairedMediaType = 2;
+break;
+case "SD_IMAGE_PARENT":
+case 3:
+m.pairedMediaType = 3;
+break;
+case "HD_IMAGE_CHILD":
+case 4:
+m.pairedMediaType = 4;
+break;
+case "MOTION_PHOTO_PARENT":
+case 5:
+m.pairedMediaType = 5;
+break;
+case "MOTION_PHOTO_CHILD":
+case 6:
+m.pairedMediaType = 6;
+break;
+case "HEVC_VIDEO_PARENT":
+case 7:
+m.pairedMediaType = 7;
+break;
+case "HEVC_VIDEO_CHILD":
+case 8:
+m.pairedMediaType = 8;
+break;
+}
+if (d.rankingVersion != null) {
+m.rankingVersion = d.rankingVersion >>> 0;
+}
+if (d.memberLabel != null) {
+if (typeof d.memberLabel !== "object")
+throw TypeError(".proto.ContextInfo.memberLabel: object expected");
+m.memberLabel = $root.proto.MemberLabel.fromObject(d.memberLabel, n + 1);
+}
+if (d.isQuestion != null) {
+m.isQuestion = Boolean(d.isQuestion);
+}
+switch (d.statusSourceType) {
+default:
+if (typeof d.statusSourceType === "number") {
+m.statusSourceType = d.statusSourceType;
+break;
+}
+break;
+case "IMAGE":
+case 0:
+m.statusSourceType = 0;
+break;
+case "VIDEO":
+case 1:
+m.statusSourceType = 1;
+break;
+case "GIF":
+case 2:
+m.statusSourceType = 2;
+break;
+case "AUDIO":
+case 3:
+m.statusSourceType = 3;
+break;
+case "TEXT":
+case 4:
+m.statusSourceType = 4;
+break;
+case "MUSIC_STANDALONE":
+case 5:
+m.statusSourceType = 5;
+break;
+}
+if (d.statusAttributions) {
+if (!Array.isArray(d.statusAttributions))
+throw TypeError(".proto.ContextInfo.statusAttributions: array expected");
+m.statusAttributions = [];
+for (var i = 0; i < d.statusAttributions.length; ++i) {
+if (typeof d.statusAttributions[i] !== "object")
+throw TypeError(".proto.ContextInfo.statusAttributions: object expected");
+m.statusAttributions[i] = $root.proto.StatusAttribution.fromObject(d.statusAttributions[i], n + 1);
+}
+}
+if (d.isGroupStatus != null) {
+m.isGroupStatus = Boolean(d.isGroupStatus);
+}
+switch (d.forwardOrigin) {
+default:
+if (typeof d.forwardOrigin === "number") {
+m.forwardOrigin = d.forwardOrigin;
+break;
+}
+break;
+case "UNKNOWN":
+case 0:
+m.forwardOrigin = 0;
+break;
+case "CHAT":
+case 1:
+m.forwardOrigin = 1;
+break;
+case "STATUS":
+case 2:
+m.forwardOrigin = 2;
+break;
+case "CHANNELS":
+case 3:
+m.forwardOrigin = 3;
+break;
+case "META_AI":
+case 4:
+m.forwardOrigin = 4;
+break;
+case "UGC":
+case 5:
+m.forwardOrigin = 5;
+break;
+}
+if (d.questionReplyQuotedMessage != null) {
+if (typeof d.questionReplyQuotedMessage !== "object")
+throw TypeError(".proto.ContextInfo.questionReplyQuotedMessage: object expected");
+m.questionReplyQuotedMessage = $root.proto.ContextInfo.QuestionReplyQuotedMessage.fromObject(d.questionReplyQuotedMessage, n + 1);
+}
+if (d.statusAudienceMetadata != null) {
+if (typeof d.statusAudienceMetadata !== "object")
+throw TypeError(".proto.ContextInfo.statusAudienceMetadata: object expected");
+m.statusAudienceMetadata = $root.proto.ContextInfo.StatusAudienceMetadata.fromObject(d.statusAudienceMetadata, n + 1);
+}
+if (d.nonJidMentions != null) {
+m.nonJidMentions = d.nonJidMentions >>> 0;
+}
+switch (d.quotedType) {
+default:
+if (typeof d.quotedType === "number") {
+m.quotedType = d.quotedType;
+break;
+}
+break;
+case "EXPLICIT":
+case 0:
+m.quotedType = 0;
+break;
+case "AUTO":
+case 1:
+m.quotedType = 1;
+break;
+}
+if (d.botMessageSharingInfo != null) {
+if (typeof d.botMessageSharingInfo !== "object")
+throw TypeError(".proto.ContextInfo.botMessageSharingInfo: object expected");
+m.botMessageSharingInfo = $root.proto.BotMessageSharingInfo.fromObject(d.botMessageSharingInfo, n + 1);
+}
+if (d.isSpoiler != null) {
+m.isSpoiler = Boolean(d.isSpoiler);
+}
+if (d.mediaDomainInfo != null) {
+if (typeof d.mediaDomainInfo !== "object")
+throw TypeError(".proto.ContextInfo.mediaDomainInfo: object expected");
+m.mediaDomainInfo = $root.proto.MediaDomainInfo.fromObject(d.mediaDomainInfo, n + 1);
+}
+if (d.partiallySelectedContent != null) {
+if (typeof d.partiallySelectedContent !== "object")
+throw TypeError(".proto.ContextInfo.partiallySelectedContent: object expected");
+m.partiallySelectedContent = $root.proto.ContextInfo.PartiallySelectedContent.fromObject(d.partiallySelectedContent, n + 1);
+}
+if (d.afterReadDuration != null) {
+m.afterReadDuration = d.afterReadDuration >>> 0;
+}
+switch (d.crossAppSource) {
+default:
+if (typeof d.crossAppSource === "number") {
+m.crossAppSource = d.crossAppSource;
+break;
+}
+break;
+case "CROSS_APP_SOURCE_UNKNOWN":
+case 0:
+m.crossAppSource = 0;
+break;
+case "CROSS_APP_SOURCE_INSTAGRAM":
+case 1:
+m.crossAppSource = 1;
+break;
+case "CROSS_APP_SOURCE_FACEBOOK":
+case 2:
+m.crossAppSource = 2;
+break;
+}
+if (d.businessInteractionPills != null) {
+if (typeof d.businessInteractionPills !== "object")
+throw TypeError(".proto.ContextInfo.businessInteractionPills: object expected");
+m.businessInteractionPills = $root.proto.ContextInfo.BusinessInteractionPills.fromObject(d.businessInteractionPills, n + 1);
+}
+if (d.posterStatusId != null) {
+m.posterStatusId = String(d.posterStatusId);
+}
+return m;
+};
+ContextInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.mentionedJid = [];
+d.groupMentions = [];
+d.statusAttributions = [];
+}
+if (m.stanzaId != null && m.hasOwnProperty("stanzaId")) {
+d.stanzaId = m.stanzaId;
+if (o.oneofs)
+d._stanzaId = "stanzaId";
+}
+if (m.participant != null && m.hasOwnProperty("participant")) {
+d.participant = m.participant;
+if (o.oneofs)
+d._participant = "participant";
+}
+if (m.quotedMessage != null && m.hasOwnProperty("quotedMessage")) {
+d.quotedMessage = $root.proto.Message.toObject(m.quotedMessage, o);
+if (o.oneofs)
+d._quotedMessage = "quotedMessage";
+}
+if (m.remoteJid != null && m.hasOwnProperty("remoteJid")) {
+d.remoteJid = m.remoteJid;
+if (o.oneofs)
+d._remoteJid = "remoteJid";
+}
+if (m.mentionedJid && m.mentionedJid.length) {
+d.mentionedJid = [];
+for (var j = 0; j < m.mentionedJid.length; ++j) {
+d.mentionedJid[j] = m.mentionedJid[j];
+}
+}
+if (m.conversionSource != null && m.hasOwnProperty("conversionSource")) {
+d.conversionSource = m.conversionSource;
+if (o.oneofs)
+d._conversionSource = "conversionSource";
+}
+if (m.conversionData != null && m.hasOwnProperty("conversionData")) {
+d.conversionData = o.bytes === String ? $util.base64.encode(m.conversionData, 0, m.conversionData.length) : o.bytes === Array ? Array.prototype.slice.call(m.conversionData) : m.conversionData;
+if (o.oneofs)
+d._conversionData = "conversionData";
+}
+if (m.conversionDelaySeconds != null && m.hasOwnProperty("conversionDelaySeconds")) {
+d.conversionDelaySeconds = m.conversionDelaySeconds;
+if (o.oneofs)
+d._conversionDelaySeconds = "conversionDelaySeconds";
+}
+if (m.forwardingScore != null && m.hasOwnProperty("forwardingScore")) {
+d.forwardingScore = m.forwardingScore;
+if (o.oneofs)
+d._forwardingScore = "forwardingScore";
+}
+if (m.isForwarded != null && m.hasOwnProperty("isForwarded")) {
+d.isForwarded = m.isForwarded;
+if (o.oneofs)
+d._isForwarded = "isForwarded";
+}
+if (m.quotedAd != null && m.hasOwnProperty("quotedAd")) {
+d.quotedAd = $root.proto.ContextInfo.AdReplyInfo.toObject(m.quotedAd, o);
+if (o.oneofs)
+d._quotedAd = "quotedAd";
+}
+if (m.placeholderKey != null && m.hasOwnProperty("placeholderKey")) {
+d.placeholderKey = $root.proto.MessageKey.toObject(m.placeholderKey, o);
+if (o.oneofs)
+d._placeholderKey = "placeholderKey";
+}
+if (m.expiration != null && m.hasOwnProperty("expiration")) {
+d.expiration = m.expiration;
+if (o.oneofs)
+d._expiration = "expiration";
+}
+if (m.ephemeralSettingTimestamp != null && m.hasOwnProperty("ephemeralSettingTimestamp")) {
+if (typeof m.ephemeralSettingTimestamp === "number")
+d.ephemeralSettingTimestamp = o.longs === String ? String(m.ephemeralSettingTimestamp) : m.ephemeralSettingTimestamp;
+else
+d.ephemeralSettingTimestamp = o.longs === String ? longToString(m.ephemeralSettingTimestamp) : o.longs === Number ? longToNumber(m.ephemeralSettingTimestamp) : m.ephemeralSettingTimestamp;
+if (o.oneofs)
+d._ephemeralSettingTimestamp = "ephemeralSettingTimestamp";
+}
+if (m.ephemeralSharedSecret != null && m.hasOwnProperty("ephemeralSharedSecret")) {
+d.ephemeralSharedSecret = o.bytes === String ? $util.base64.encode(m.ephemeralSharedSecret, 0, m.ephemeralSharedSecret.length) : o.bytes === Array ? Array.prototype.slice.call(m.ephemeralSharedSecret) : m.ephemeralSharedSecret;
+if (o.oneofs)
+d._ephemeralSharedSecret = "ephemeralSharedSecret";
+}
+if (m.externalAdReply != null && m.hasOwnProperty("externalAdReply")) {
+d.externalAdReply = $root.proto.ContextInfo.ExternalAdReplyInfo.toObject(m.externalAdReply, o);
+if (o.oneofs)
+d._externalAdReply = "externalAdReply";
+}
+if (m.entryPointConversionSource != null && m.hasOwnProperty("entryPointConversionSource")) {
+d.entryPointConversionSource = m.entryPointConversionSource;
+if (o.oneofs)
+d._entryPointConversionSource = "entryPointConversionSource";
+}
+if (m.entryPointConversionApp != null && m.hasOwnProperty("entryPointConversionApp")) {
+d.entryPointConversionApp = m.entryPointConversionApp;
+if (o.oneofs)
+d._entryPointConversionApp = "entryPointConversionApp";
+}
+if (m.entryPointConversionDelaySeconds != null && m.hasOwnProperty("entryPointConversionDelaySeconds")) {
+d.entryPointConversionDelaySeconds = m.entryPointConversionDelaySeconds;
+if (o.oneofs)
+d._entryPointConversionDelaySeconds = "entryPointConversionDelaySeconds";
+}
+if (m.disappearingMode != null && m.hasOwnProperty("disappearingMode")) {
+d.disappearingMode = $root.proto.DisappearingMode.toObject(m.disappearingMode, o);
+if (o.oneofs)
+d._disappearingMode = "disappearingMode";
+}
+if (m.actionLink != null && m.hasOwnProperty("actionLink")) {
+d.actionLink = $root.proto.ActionLink.toObject(m.actionLink, o);
+if (o.oneofs)
+d._actionLink = "actionLink";
+}
+if (m.groupSubject != null && m.hasOwnProperty("groupSubject")) {
+d.groupSubject = m.groupSubject;
+if (o.oneofs)
+d._groupSubject = "groupSubject";
+}
+if (m.parentGroupJid != null && m.hasOwnProperty("parentGroupJid")) {
+d.parentGroupJid = m.parentGroupJid;
+if (o.oneofs)
+d._parentGroupJid = "parentGroupJid";
+}
+if (m.trustBannerType != null && m.hasOwnProperty("trustBannerType")) {
+d.trustBannerType = m.trustBannerType;
+if (o.oneofs)
+d._trustBannerType = "trustBannerType";
+}
+if (m.trustBannerAction != null && m.hasOwnProperty("trustBannerAction")) {
+d.trustBannerAction = m.trustBannerAction;
+if (o.oneofs)
+d._trustBannerAction = "trustBannerAction";
+}
+if (m.isSampled != null && m.hasOwnProperty("isSampled")) {
+d.isSampled = m.isSampled;
+if (o.oneofs)
+d._isSampled = "isSampled";
+}
+if (m.groupMentions && m.groupMentions.length) {
+d.groupMentions = [];
+for (var j = 0; j < m.groupMentions.length; ++j) {
+d.groupMentions[j] = $root.proto.GroupMention.toObject(m.groupMentions[j], o);
+}
+}
+if (m.utm != null && m.hasOwnProperty("utm")) {
+d.utm = $root.proto.ContextInfo.UTMInfo.toObject(m.utm, o);
+if (o.oneofs)
+d._utm = "utm";
+}
+if (m.forwardedNewsletterMessageInfo != null && m.hasOwnProperty("forwardedNewsletterMessageInfo")) {
+d.forwardedNewsletterMessageInfo = $root.proto.ContextInfo.ForwardedNewsletterMessageInfo.toObject(m.forwardedNewsletterMessageInfo, o);
+if (o.oneofs)
+d._forwardedNewsletterMessageInfo = "forwardedNewsletterMessageInfo";
+}
+if (m.businessMessageForwardInfo != null && m.hasOwnProperty("businessMessageForwardInfo")) {
+d.businessMessageForwardInfo = $root.proto.ContextInfo.BusinessMessageForwardInfo.toObject(m.businessMessageForwardInfo, o);
+if (o.oneofs)
+d._businessMessageForwardInfo = "businessMessageForwardInfo";
+}
+if (m.smbClientCampaignId != null && m.hasOwnProperty("smbClientCampaignId")) {
+d.smbClientCampaignId = m.smbClientCampaignId;
+if (o.oneofs)
+d._smbClientCampaignId = "smbClientCampaignId";
+}
+if (m.smbServerCampaignId != null && m.hasOwnProperty("smbServerCampaignId")) {
+d.smbServerCampaignId = m.smbServerCampaignId;
+if (o.oneofs)
+d._smbServerCampaignId = "smbServerCampaignId";
+}
+if (m.dataSharingContext != null && m.hasOwnProperty("dataSharingContext")) {
+d.dataSharingContext = $root.proto.ContextInfo.DataSharingContext.toObject(m.dataSharingContext, o);
+if (o.oneofs)
+d._dataSharingContext = "dataSharingContext";
+}
+if (m.alwaysShowAdAttribution != null && m.hasOwnProperty("alwaysShowAdAttribution")) {
+d.alwaysShowAdAttribution = m.alwaysShowAdAttribution;
+if (o.oneofs)
+d._alwaysShowAdAttribution = "alwaysShowAdAttribution";
+}
+if (m.featureEligibilities != null && m.hasOwnProperty("featureEligibilities")) {
+d.featureEligibilities = $root.proto.ContextInfo.FeatureEligibilities.toObject(m.featureEligibilities, o);
+if (o.oneofs)
+d._featureEligibilities = "featureEligibilities";
+}
+if (m.entryPointConversionExternalSource != null && m.hasOwnProperty("entryPointConversionExternalSource")) {
+d.entryPointConversionExternalSource = m.entryPointConversionExternalSource;
+if (o.oneofs)
+d._entryPointConversionExternalSource = "entryPointConversionExternalSource";
+}
+if (m.entryPointConversionExternalMedium != null && m.hasOwnProperty("entryPointConversionExternalMedium")) {
+d.entryPointConversionExternalMedium = m.entryPointConversionExternalMedium;
+if (o.oneofs)
+d._entryPointConversionExternalMedium = "entryPointConversionExternalMedium";
+}
+if (m.ctwaSignals != null && m.hasOwnProperty("ctwaSignals")) {
+d.ctwaSignals = m.ctwaSignals;
+if (o.oneofs)
+d._ctwaSignals = "ctwaSignals";
+}
+if (m.ctwaPayload != null && m.hasOwnProperty("ctwaPayload")) {
+d.ctwaPayload = o.bytes === String ? $util.base64.encode(m.ctwaPayload, 0, m.ctwaPayload.length) : o.bytes === Array ? Array.prototype.slice.call(m.ctwaPayload) : m.ctwaPayload;
+if (o.oneofs)
+d._ctwaPayload = "ctwaPayload";
+}
+if (m.forwardedAiBotMessageInfo != null && m.hasOwnProperty("forwardedAiBotMessageInfo")) {
+d.forwardedAiBotMessageInfo = $root.proto.ForwardedAIBotMessageInfo.toObject(m.forwardedAiBotMessageInfo, o);
+if (o.oneofs)
+d._forwardedAiBotMessageInfo = "forwardedAiBotMessageInfo";
+}
+if (m.statusAttributionType != null && m.hasOwnProperty("statusAttributionType")) {
+d.statusAttributionType = o.enums === String ? $root.proto.ContextInfo.StatusAttributionType[m.statusAttributionType] === undefined ? m.statusAttributionType : $root.proto.ContextInfo.StatusAttributionType[m.statusAttributionType] : m.statusAttributionType;
+if (o.oneofs)
+d._statusAttributionType = "statusAttributionType";
+}
+if (m.urlTrackingMap != null && m.hasOwnProperty("urlTrackingMap")) {
+d.urlTrackingMap = $root.proto.UrlTrackingMap.toObject(m.urlTrackingMap, o);
+if (o.oneofs)
+d._urlTrackingMap = "urlTrackingMap";
+}
+if (m.pairedMediaType != null && m.hasOwnProperty("pairedMediaType")) {
+d.pairedMediaType = o.enums === String ? $root.proto.ContextInfo.PairedMediaType[m.pairedMediaType] === undefined ? m.pairedMediaType : $root.proto.ContextInfo.PairedMediaType[m.pairedMediaType] : m.pairedMediaType;
+if (o.oneofs)
+d._pairedMediaType = "pairedMediaType";
+}
+if (m.rankingVersion != null && m.hasOwnProperty("rankingVersion")) {
+d.rankingVersion = m.rankingVersion;
+if (o.oneofs)
+d._rankingVersion = "rankingVersion";
+}
+if (m.memberLabel != null && m.hasOwnProperty("memberLabel")) {
+d.memberLabel = $root.proto.MemberLabel.toObject(m.memberLabel, o);
+if (o.oneofs)
+d._memberLabel = "memberLabel";
+}
+if (m.isQuestion != null && m.hasOwnProperty("isQuestion")) {
+d.isQuestion = m.isQuestion;
+if (o.oneofs)
+d._isQuestion = "isQuestion";
+}
+if (m.statusSourceType != null && m.hasOwnProperty("statusSourceType")) {
+d.statusSourceType = o.enums === String ? $root.proto.ContextInfo.StatusSourceType[m.statusSourceType] === undefined ? m.statusSourceType : $root.proto.ContextInfo.StatusSourceType[m.statusSourceType] : m.statusSourceType;
+if (o.oneofs)
+d._statusSourceType = "statusSourceType";
+}
+if (m.statusAttributions && m.statusAttributions.length) {
+d.statusAttributions = [];
+for (var j = 0; j < m.statusAttributions.length; ++j) {
+d.statusAttributions[j] = $root.proto.StatusAttribution.toObject(m.statusAttributions[j], o);
+}
+}
+if (m.isGroupStatus != null && m.hasOwnProperty("isGroupStatus")) {
+d.isGroupStatus = m.isGroupStatus;
+if (o.oneofs)
+d._isGroupStatus = "isGroupStatus";
+}
+if (m.forwardOrigin != null && m.hasOwnProperty("forwardOrigin")) {
+d.forwardOrigin = o.enums === String ? $root.proto.ContextInfo.ForwardOrigin[m.forwardOrigin] === undefined ? m.forwardOrigin : $root.proto.ContextInfo.ForwardOrigin[m.forwardOrigin] : m.forwardOrigin;
+if (o.oneofs)
+d._forwardOrigin = "forwardOrigin";
+}
+if (m.questionReplyQuotedMessage != null && m.hasOwnProperty("questionReplyQuotedMessage")) {
+d.questionReplyQuotedMessage = $root.proto.ContextInfo.QuestionReplyQuotedMessage.toObject(m.questionReplyQuotedMessage, o);
+if (o.oneofs)
+d._questionReplyQuotedMessage = "questionReplyQuotedMessage";
+}
+if (m.statusAudienceMetadata != null && m.hasOwnProperty("statusAudienceMetadata")) {
+d.statusAudienceMetadata = $root.proto.ContextInfo.StatusAudienceMetadata.toObject(m.statusAudienceMetadata, o);
+if (o.oneofs)
+d._statusAudienceMetadata = "statusAudienceMetadata";
+}
+if (m.nonJidMentions != null && m.hasOwnProperty("nonJidMentions")) {
+d.nonJidMentions = m.nonJidMentions;
+if (o.oneofs)
+d._nonJidMentions = "nonJidMentions";
+}
+if (m.quotedType != null && m.hasOwnProperty("quotedType")) {
+d.quotedType = o.enums === String ? $root.proto.ContextInfo.QuotedType[m.quotedType] === undefined ? m.quotedType : $root.proto.ContextInfo.QuotedType[m.quotedType] : m.quotedType;
+if (o.oneofs)
+d._quotedType = "quotedType";
+}
+if (m.botMessageSharingInfo != null && m.hasOwnProperty("botMessageSharingInfo")) {
+d.botMessageSharingInfo = $root.proto.BotMessageSharingInfo.toObject(m.botMessageSharingInfo, o);
+if (o.oneofs)
+d._botMessageSharingInfo = "botMessageSharingInfo";
+}
+if (m.isSpoiler != null && m.hasOwnProperty("isSpoiler")) {
+d.isSpoiler = m.isSpoiler;
+if (o.oneofs)
+d._isSpoiler = "isSpoiler";
+}
+if (m.mediaDomainInfo != null && m.hasOwnProperty("mediaDomainInfo")) {
+d.mediaDomainInfo = $root.proto.MediaDomainInfo.toObject(m.mediaDomainInfo, o);
+if (o.oneofs)
+d._mediaDomainInfo = "mediaDomainInfo";
+}
+if (m.partiallySelectedContent != null && m.hasOwnProperty("partiallySelectedContent")) {
+d.partiallySelectedContent = $root.proto.ContextInfo.PartiallySelectedContent.toObject(m.partiallySelectedContent, o);
+if (o.oneofs)
+d._partiallySelectedContent = "partiallySelectedContent";
+}
+if (m.afterReadDuration != null && m.hasOwnProperty("afterReadDuration")) {
+d.afterReadDuration = m.afterReadDuration;
+if (o.oneofs)
+d._afterReadDuration = "afterReadDuration";
+}
+if (m.crossAppSource != null && m.hasOwnProperty("crossAppSource")) {
+d.crossAppSource = o.enums === String ? $root.proto.ContextInfo.CrossAppSource[m.crossAppSource] === undefined ? m.crossAppSource : $root.proto.ContextInfo.CrossAppSource[m.crossAppSource] : m.crossAppSource;
+if (o.oneofs)
+d._crossAppSource = "crossAppSource";
+}
+if (m.businessInteractionPills != null && m.hasOwnProperty("businessInteractionPills")) {
+d.businessInteractionPills = $root.proto.ContextInfo.BusinessInteractionPills.toObject(m.businessInteractionPills, o);
+if (o.oneofs)
+d._businessInteractionPills = "businessInteractionPills";
+}
+if (m.posterStatusId != null && m.hasOwnProperty("posterStatusId")) {
+d.posterStatusId = m.posterStatusId;
+if (o.oneofs)
+d._posterStatusId = "posterStatusId";
+}
+return d;
+};
+ContextInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ContextInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ContextInfo";
+};
+$lazy(ContextInfo, "AdReplyInfo", function() {
+function AdReplyInfo(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AdReplyInfo.prototype.advertiserName = null;
+AdReplyInfo.prototype.mediaType = null;
+AdReplyInfo.prototype.jpegThumbnail = null;
+AdReplyInfo.prototype.caption = null;
+let $oneOfFields;
+Object.defineProperty(AdReplyInfo.prototype, "_advertiserName", {
+get: $util.oneOfGetter($oneOfFields = ["advertiserName"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AdReplyInfo.prototype, "_mediaType", {
+get: $util.oneOfGetter($oneOfFields = ["mediaType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AdReplyInfo.prototype, "_jpegThumbnail", {
+get: $util.oneOfGetter($oneOfFields = ["jpegThumbnail"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AdReplyInfo.prototype, "_caption", {
+get: $util.oneOfGetter($oneOfFields = ["caption"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AdReplyInfo.create = function create(properties) {
+return new AdReplyInfo(properties);
+};
+AdReplyInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.advertiserName != null && Object.hasOwnProperty.call(m, "advertiserName"))
+w.uint32(10).string(m.advertiserName);
+if (m.mediaType != null && Object.hasOwnProperty.call(m, "mediaType"))
+w.uint32(16).int32(m.mediaType);
+if (m.jpegThumbnail != null && Object.hasOwnProperty.call(m, "jpegThumbnail"))
+w.uint32(130).bytes(m.jpegThumbnail);
+if (m.caption != null && Object.hasOwnProperty.call(m, "caption"))
+w.uint32(138).string(m.caption);
+return w;
+};
+AdReplyInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ContextInfo.AdReplyInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.advertiserName = r.string();
+break;
+}
+case 2: {
+m.mediaType = r.int32();
+break;
+}
+case 16: {
+m.jpegThumbnail = r.bytes();
+break;
+}
+case 17: {
+m.caption = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AdReplyInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ContextInfo.AdReplyInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ContextInfo.AdReplyInfo();
+if (d.advertiserName != null) {
+m.advertiserName = String(d.advertiserName);
+}
+switch (d.mediaType) {
+default:
+if (typeof d.mediaType === "number") {
+m.mediaType = d.mediaType;
+break;
+}
+break;
+case "NONE":
+case 0:
+m.mediaType = 0;
+break;
+case "IMAGE":
+case 1:
+m.mediaType = 1;
+break;
+case "VIDEO":
+case 2:
+m.mediaType = 2;
+break;
+}
+if (d.jpegThumbnail != null) {
+if (typeof d.jpegThumbnail === "string")
+$util.base64.decode(d.jpegThumbnail, m.jpegThumbnail = $util.newBuffer($util.base64.length(d.jpegThumbnail)), 0);
+else if (d.jpegThumbnail.length >= 0)
+m.jpegThumbnail = d.jpegThumbnail;
+}
+if (d.caption != null) {
+m.caption = String(d.caption);
+}
+return m;
+};
+AdReplyInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.advertiserName != null && m.hasOwnProperty("advertiserName")) {
+d.advertiserName = m.advertiserName;
+if (o.oneofs)
+d._advertiserName = "advertiserName";
+}
+if (m.mediaType != null && m.hasOwnProperty("mediaType")) {
+d.mediaType = o.enums === String ? $root.proto.ContextInfo.AdReplyInfo.MediaType[m.mediaType] === undefined ? m.mediaType : $root.proto.ContextInfo.AdReplyInfo.MediaType[m.mediaType] : m.mediaType;
+if (o.oneofs)
+d._mediaType = "mediaType";
+}
+if (m.jpegThumbnail != null && m.hasOwnProperty("jpegThumbnail")) {
+d.jpegThumbnail = o.bytes === String ? $util.base64.encode(m.jpegThumbnail, 0, m.jpegThumbnail.length) : o.bytes === Array ? Array.prototype.slice.call(m.jpegThumbnail) : m.jpegThumbnail;
+if (o.oneofs)
+d._jpegThumbnail = "jpegThumbnail";
+}
+if (m.caption != null && m.hasOwnProperty("caption")) {
+d.caption = m.caption;
+if (o.oneofs)
+d._caption = "caption";
+}
+return d;
+};
+AdReplyInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AdReplyInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ContextInfo.AdReplyInfo";
+};
+$lazy(AdReplyInfo, "MediaType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "NONE"] = 0;
+values[valuesById[1] = "IMAGE"] = 1;
+values[valuesById[2] = "VIDEO"] = 2;
+return values;
+});
+return AdReplyInfo;
+});
+$lazy(ContextInfo, "BusinessInteractionPills", function() {
+function BusinessInteractionPills(p) {
+this.pills = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BusinessInteractionPills.prototype.businessJid = null;
+BusinessInteractionPills.prototype.pills = $util.emptyArray;
+BusinessInteractionPills.prototype.entryPoint = null;
+BusinessInteractionPills.prototype.signedPayload = null;
+BusinessInteractionPills.prototype.signatureEnvelope = null;
+let $oneOfFields;
+Object.defineProperty(BusinessInteractionPills.prototype, "_businessJid", {
+get: $util.oneOfGetter($oneOfFields = ["businessJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BusinessInteractionPills.prototype, "_entryPoint", {
+get: $util.oneOfGetter($oneOfFields = ["entryPoint"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BusinessInteractionPills.prototype, "_signedPayload", {
+get: $util.oneOfGetter($oneOfFields = ["signedPayload"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(BusinessInteractionPills.prototype, "_signatureEnvelope", {
+get: $util.oneOfGetter($oneOfFields = ["signatureEnvelope"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BusinessInteractionPills.create = function create(properties) {
+return new BusinessInteractionPills(properties);
+};
+BusinessInteractionPills.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.businessJid != null && Object.hasOwnProperty.call(m, "businessJid"))
+w.uint32(10).string(m.businessJid);
+if (m.pills != null && m.pills.length) {
+for (var i = 0; i < m.pills.length; ++i)
+$root.proto.ContextInfo.BusinessInteractionPills.Pill.encode(m.pills[i], w.uint32(18).fork()).ldelim();
+}
+if (m.entryPoint != null && Object.hasOwnProperty.call(m, "entryPoint"))
+w.uint32(24).int32(m.entryPoint);
+if (m.signedPayload != null && Object.hasOwnProperty.call(m, "signedPayload"))
+w.uint32(34).bytes(m.signedPayload);
+if (m.signatureEnvelope != null && Object.hasOwnProperty.call(m, "signatureEnvelope"))
+$root.proto.BotSignatureVerificationMetadata.encode(m.signatureEnvelope, w.uint32(42).fork()).ldelim();
+return w;
+};
+BusinessInteractionPills.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ContextInfo.BusinessInteractionPills();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.businessJid = r.string();
+break;
+}
+case 2: {
+if (!(m.pills && m.pills.length))
+m.pills = [];
+m.pills.push($root.proto.ContextInfo.BusinessInteractionPills.Pill.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 3: {
+m.entryPoint = r.int32();
+break;
+}
+case 4: {
+m.signedPayload = r.bytes();
+break;
+}
+case 5: {
+m.signatureEnvelope = $root.proto.BotSignatureVerificationMetadata.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BusinessInteractionPills.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ContextInfo.BusinessInteractionPills)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ContextInfo.BusinessInteractionPills();
+if (d.businessJid != null) {
+m.businessJid = String(d.businessJid);
+}
+if (d.pills) {
+if (!Array.isArray(d.pills))
+throw TypeError(".proto.ContextInfo.BusinessInteractionPills.pills: array expected");
+m.pills = [];
+for (var i = 0; i < d.pills.length; ++i) {
+if (typeof d.pills[i] !== "object")
+throw TypeError(".proto.ContextInfo.BusinessInteractionPills.pills: object expected");
+m.pills[i] = $root.proto.ContextInfo.BusinessInteractionPills.Pill.fromObject(d.pills[i], n + 1);
+}
+}
+switch (d.entryPoint) {
+default:
+if (typeof d.entryPoint === "number") {
+m.entryPoint = d.entryPoint;
+break;
+}
+break;
+case "ENTRY_POINT_UNKNOWN":
+case 0:
+m.entryPoint = 0;
+break;
+case "P2P_LINK_SHARE":
+case 1:
+m.entryPoint = 1;
+break;
+case "CONTACT_CARD_SHARING":
+case 2:
+m.entryPoint = 2;
+break;
+case "PHONE_NUMBER":
+case 3:
+m.entryPoint = 3;
+break;
+case "STATUS":
+case 4:
+m.entryPoint = 4;
+break;
+case "IN_THREAD_CONTEXT_CARD":
+case 5:
+m.entryPoint = 5;
+break;
+}
+if (d.signedPayload != null) {
+if (typeof d.signedPayload === "string")
+$util.base64.decode(d.signedPayload, m.signedPayload = $util.newBuffer($util.base64.length(d.signedPayload)), 0);
+else if (d.signedPayload.length >= 0)
+m.signedPayload = d.signedPayload;
+}
+if (d.signatureEnvelope != null) {
+if (typeof d.signatureEnvelope !== "object")
+throw TypeError(".proto.ContextInfo.BusinessInteractionPills.signatureEnvelope: object expected");
+m.signatureEnvelope = $root.proto.BotSignatureVerificationMetadata.fromObject(d.signatureEnvelope, n + 1);
+}
+return m;
+};
+BusinessInteractionPills.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.pills = [];
+}
+if (m.businessJid != null && m.hasOwnProperty("businessJid")) {
+d.businessJid = m.businessJid;
+if (o.oneofs)
+d._businessJid = "businessJid";
+}
+if (m.pills && m.pills.length) {
+d.pills = [];
+for (var j = 0; j < m.pills.length; ++j) {
+d.pills[j] = $root.proto.ContextInfo.BusinessInteractionPills.Pill.toObject(m.pills[j], o);
+}
+}
+if (m.entryPoint != null && m.hasOwnProperty("entryPoint")) {
+d.entryPoint = o.enums === String ? $root.proto.ContextInfo.BusinessInteractionPills.EntryPoint[m.entryPoint] === undefined ? m.entryPoint : $root.proto.ContextInfo.BusinessInteractionPills.EntryPoint[m.entryPoint] : m.entryPoint;
+if (o.oneofs)
+d._entryPoint = "entryPoint";
+}
+if (m.signedPayload != null && m.hasOwnProperty("signedPayload")) {
+d.signedPayload = o.bytes === String ? $util.base64.encode(m.signedPayload, 0, m.signedPayload.length) : o.bytes === Array ? Array.prototype.slice.call(m.signedPayload) : m.signedPayload;
+if (o.oneofs)
+d._signedPayload = "signedPayload";
+}
+if (m.signatureEnvelope != null && m.hasOwnProperty("signatureEnvelope")) {
+d.signatureEnvelope = $root.proto.BotSignatureVerificationMetadata.toObject(m.signatureEnvelope, o);
+if (o.oneofs)
+d._signatureEnvelope = "signatureEnvelope";
+}
+return d;
+};
+BusinessInteractionPills.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BusinessInteractionPills.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ContextInfo.BusinessInteractionPills";
+};
+$lazy(BusinessInteractionPills, "EntryPoint", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "ENTRY_POINT_UNKNOWN"] = 0;
+values[valuesById[1] = "P2P_LINK_SHARE"] = 1;
+values[valuesById[2] = "CONTACT_CARD_SHARING"] = 2;
+values[valuesById[3] = "PHONE_NUMBER"] = 3;
+values[valuesById[4] = "STATUS"] = 4;
+values[valuesById[5] = "IN_THREAD_CONTEXT_CARD"] = 5;
+return values;
+});
+$lazy(BusinessInteractionPills, "Pill", function() {
+function Pill(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+Pill.prototype.pillType = null;
+Pill.prototype.actionUrl = null;
+let $oneOfFields;
+Object.defineProperty(Pill.prototype, "_pillType", {
+get: $util.oneOfGetter($oneOfFields = ["pillType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Pill.prototype, "_actionUrl", {
+get: $util.oneOfGetter($oneOfFields = ["actionUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Pill.create = function create(properties) {
+return new Pill(properties);
+};
+Pill.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.pillType != null && Object.hasOwnProperty.call(m, "pillType"))
+w.uint32(8).int32(m.pillType);
+if (m.actionUrl != null && Object.hasOwnProperty.call(m, "actionUrl"))
+w.uint32(18).string(m.actionUrl);
+return w;
+};
+Pill.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ContextInfo.BusinessInteractionPills.Pill();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.pillType = r.int32();
+break;
+}
+case 2: {
+m.actionUrl = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+Pill.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ContextInfo.BusinessInteractionPills.Pill)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ContextInfo.BusinessInteractionPills.Pill();
+switch (d.pillType) {
+default:
+if (typeof d.pillType === "number") {
+m.pillType = d.pillType;
+break;
+}
+break;
+case "UNKNOWN":
+case 0:
+m.pillType = 0;
+break;
+case "VIEW_BUSINESS":
+case 1:
+m.pillType = 1;
+break;
+case "CHAT":
+case 2:
+m.pillType = 2;
+break;
+case "CALL":
+case 3:
+m.pillType = 3;
+break;
+case "CATALOG":
+case 4:
+m.pillType = 4;
+break;
+case "CHANNEL":
+case 5:
+m.pillType = 5;
+break;
+case "BOOK_APPOINTMENT":
+case 6:
+m.pillType = 6;
+break;
+case "OFFERS":
+case 7:
+m.pillType = 7;
+break;
+case "BESTSELLERS":
+case 8:
+m.pillType = 8;
+break;
+case "MENU":
+case 9:
+m.pillType = 9;
+break;
+case "ABOUT":
+case 10:
+m.pillType = 10;
+break;
+case "SHOP":
+case 11:
+m.pillType = 11;
+break;
+case "ORDER":
+case 12:
+m.pillType = 12;
+break;
+}
+if (d.actionUrl != null) {
+m.actionUrl = String(d.actionUrl);
+}
+return m;
+};
+Pill.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.pillType != null && m.hasOwnProperty("pillType")) {
+d.pillType = o.enums === String ? $root.proto.ContextInfo.BusinessInteractionPills.PillType[m.pillType] === undefined ? m.pillType : $root.proto.ContextInfo.BusinessInteractionPills.PillType[m.pillType] : m.pillType;
+if (o.oneofs)
+d._pillType = "pillType";
+}
+if (m.actionUrl != null && m.hasOwnProperty("actionUrl")) {
+d.actionUrl = m.actionUrl;
+if (o.oneofs)
+d._actionUrl = "actionUrl";
+}
+return d;
+};
+Pill.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+Pill.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ContextInfo.BusinessInteractionPills.Pill";
+};
+return Pill;
+});
+$lazy(BusinessInteractionPills, "PillType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN"] = 0;
+values[valuesById[1] = "VIEW_BUSINESS"] = 1;
+values[valuesById[2] = "CHAT"] = 2;
+values[valuesById[3] = "CALL"] = 3;
+values[valuesById[4] = "CATALOG"] = 4;
+values[valuesById[5] = "CHANNEL"] = 5;
+values[valuesById[6] = "BOOK_APPOINTMENT"] = 6;
+values[valuesById[7] = "OFFERS"] = 7;
+values[valuesById[8] = "BESTSELLERS"] = 8;
+values[valuesById[9] = "MENU"] = 9;
+values[valuesById[10] = "ABOUT"] = 10;
+values[valuesById[11] = "SHOP"] = 11;
+values[valuesById[12] = "ORDER"] = 12;
+return values;
+});
+$lazy(BusinessInteractionPills, "SignedPayload", function() {
+function SignedPayload(p) {
+this.pills = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+SignedPayload.prototype.verifiedName = null;
+SignedPayload.prototype.pills = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(SignedPayload.prototype, "_verifiedName", {
+get: $util.oneOfGetter($oneOfFields = ["verifiedName"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+SignedPayload.create = function create(properties) {
+return new SignedPayload(properties);
+};
+SignedPayload.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.verifiedName != null && Object.hasOwnProperty.call(m, "verifiedName"))
+w.uint32(10).string(m.verifiedName);
+if (m.pills != null && m.pills.length) {
+for (var i = 0; i < m.pills.length; ++i)
+$root.proto.ContextInfo.BusinessInteractionPills.Pill.encode(m.pills[i], w.uint32(18).fork()).ldelim();
+}
+return w;
+};
+SignedPayload.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ContextInfo.BusinessInteractionPills.SignedPayload();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.verifiedName = r.string();
+break;
+}
+case 2: {
+if (!(m.pills && m.pills.length))
+m.pills = [];
+m.pills.push($root.proto.ContextInfo.BusinessInteractionPills.Pill.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+SignedPayload.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ContextInfo.BusinessInteractionPills.SignedPayload)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ContextInfo.BusinessInteractionPills.SignedPayload();
+if (d.verifiedName != null) {
+m.verifiedName = String(d.verifiedName);
+}
+if (d.pills) {
+if (!Array.isArray(d.pills))
+throw TypeError(".proto.ContextInfo.BusinessInteractionPills.SignedPayload.pills: array expected");
+m.pills = [];
+for (var i = 0; i < d.pills.length; ++i) {
+if (typeof d.pills[i] !== "object")
+throw TypeError(".proto.ContextInfo.BusinessInteractionPills.SignedPayload.pills: object expected");
+m.pills[i] = $root.proto.ContextInfo.BusinessInteractionPills.Pill.fromObject(d.pills[i], n + 1);
+}
+}
+return m;
+};
+SignedPayload.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.pills = [];
+}
+if (m.verifiedName != null && m.hasOwnProperty("verifiedName")) {
+d.verifiedName = m.verifiedName;
+if (o.oneofs)
+d._verifiedName = "verifiedName";
+}
+if (m.pills && m.pills.length) {
+d.pills = [];
+for (var j = 0; j < m.pills.length; ++j) {
+d.pills[j] = $root.proto.ContextInfo.BusinessInteractionPills.Pill.toObject(m.pills[j], o);
+}
+}
+return d;
+};
+SignedPayload.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+SignedPayload.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ContextInfo.BusinessInteractionPills.SignedPayload";
+};
+return SignedPayload;
+});
+return BusinessInteractionPills;
+});
+$lazy(ContextInfo, "BusinessMessageForwardInfo", function() {
+function BusinessMessageForwardInfo(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+BusinessMessageForwardInfo.prototype.businessOwnerJid = null;
+let $oneOfFields;
+Object.defineProperty(BusinessMessageForwardInfo.prototype, "_businessOwnerJid", {
+get: $util.oneOfGetter($oneOfFields = ["businessOwnerJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+BusinessMessageForwardInfo.create = function create(properties) {
+return new BusinessMessageForwardInfo(properties);
+};
+BusinessMessageForwardInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.businessOwnerJid != null && Object.hasOwnProperty.call(m, "businessOwnerJid"))
+w.uint32(10).string(m.businessOwnerJid);
+return w;
+};
+BusinessMessageForwardInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ContextInfo.BusinessMessageForwardInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.businessOwnerJid = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+BusinessMessageForwardInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ContextInfo.BusinessMessageForwardInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ContextInfo.BusinessMessageForwardInfo();
+if (d.businessOwnerJid != null) {
+m.businessOwnerJid = String(d.businessOwnerJid);
+}
+return m;
+};
+BusinessMessageForwardInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.businessOwnerJid != null && m.hasOwnProperty("businessOwnerJid")) {
+d.businessOwnerJid = m.businessOwnerJid;
+if (o.oneofs)
+d._businessOwnerJid = "businessOwnerJid";
+}
+return d;
+};
+BusinessMessageForwardInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+BusinessMessageForwardInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ContextInfo.BusinessMessageForwardInfo";
+};
+return BusinessMessageForwardInfo;
+});
+$lazy(ContextInfo, "CrossAppSource", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "CROSS_APP_SOURCE_UNKNOWN"] = 0;
+values[valuesById[1] = "CROSS_APP_SOURCE_INSTAGRAM"] = 1;
+values[valuesById[2] = "CROSS_APP_SOURCE_FACEBOOK"] = 2;
+return values;
+});
+$lazy(ContextInfo, "DataSharingContext", function() {
+function DataSharingContext(p) {
+this.parameters = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+DataSharingContext.prototype.showMmDisclosure = null;
+DataSharingContext.prototype.encryptedSignalTokenConsented = null;
+DataSharingContext.prototype.parameters = $util.emptyArray;
+DataSharingContext.prototype.dataSharingFlags = null;
+let $oneOfFields;
+Object.defineProperty(DataSharingContext.prototype, "_showMmDisclosure", {
+get: $util.oneOfGetter($oneOfFields = ["showMmDisclosure"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DataSharingContext.prototype, "_encryptedSignalTokenConsented", {
+get: $util.oneOfGetter($oneOfFields = ["encryptedSignalTokenConsented"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(DataSharingContext.prototype, "_dataSharingFlags", {
+get: $util.oneOfGetter($oneOfFields = ["dataSharingFlags"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+DataSharingContext.create = function create(properties) {
+return new DataSharingContext(properties);
+};
+DataSharingContext.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.showMmDisclosure != null && Object.hasOwnProperty.call(m, "showMmDisclosure"))
+w.uint32(8).bool(m.showMmDisclosure);
+if (m.encryptedSignalTokenConsented != null && Object.hasOwnProperty.call(m, "encryptedSignalTokenConsented"))
+w.uint32(18).string(m.encryptedSignalTokenConsented);
+if (m.parameters != null && m.parameters.length) {
+for (var i = 0; i < m.parameters.length; ++i)
+$root.proto.ContextInfo.DataSharingContext.Parameters.encode(m.parameters[i], w.uint32(26).fork()).ldelim();
+}
+if (m.dataSharingFlags != null && Object.hasOwnProperty.call(m, "dataSharingFlags"))
+w.uint32(32).int32(m.dataSharingFlags);
+return w;
+};
+DataSharingContext.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ContextInfo.DataSharingContext();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.showMmDisclosure = r.bool();
+break;
+}
+case 2: {
+m.encryptedSignalTokenConsented = r.string();
+break;
+}
+case 3: {
+if (!(m.parameters && m.parameters.length))
+m.parameters = [];
+m.parameters.push($root.proto.ContextInfo.DataSharingContext.Parameters.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 4: {
+m.dataSharingFlags = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+DataSharingContext.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ContextInfo.DataSharingContext)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ContextInfo.DataSharingContext();
+if (d.showMmDisclosure != null) {
+m.showMmDisclosure = Boolean(d.showMmDisclosure);
+}
+if (d.encryptedSignalTokenConsented != null) {
+m.encryptedSignalTokenConsented = String(d.encryptedSignalTokenConsented);
+}
+if (d.parameters) {
+if (!Array.isArray(d.parameters))
+throw TypeError(".proto.ContextInfo.DataSharingContext.parameters: array expected");
+m.parameters = [];
+for (var i = 0; i < d.parameters.length; ++i) {
+if (typeof d.parameters[i] !== "object")
+throw TypeError(".proto.ContextInfo.DataSharingContext.parameters: object expected");
+m.parameters[i] = $root.proto.ContextInfo.DataSharingContext.Parameters.fromObject(d.parameters[i], n + 1);
+}
+}
+if (d.dataSharingFlags != null) {
+m.dataSharingFlags = d.dataSharingFlags | 0;
+}
+return m;
+};
+DataSharingContext.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.parameters = [];
+}
+if (m.showMmDisclosure != null && m.hasOwnProperty("showMmDisclosure")) {
+d.showMmDisclosure = m.showMmDisclosure;
+if (o.oneofs)
+d._showMmDisclosure = "showMmDisclosure";
+}
+if (m.encryptedSignalTokenConsented != null && m.hasOwnProperty("encryptedSignalTokenConsented")) {
+d.encryptedSignalTokenConsented = m.encryptedSignalTokenConsented;
+if (o.oneofs)
+d._encryptedSignalTokenConsented = "encryptedSignalTokenConsented";
+}
+if (m.parameters && m.parameters.length) {
+d.parameters = [];
+for (var j = 0; j < m.parameters.length; ++j) {
+d.parameters[j] = $root.proto.ContextInfo.DataSharingContext.Parameters.toObject(m.parameters[j], o);
+}
+}
+if (m.dataSharingFlags != null && m.hasOwnProperty("dataSharingFlags")) {
+d.dataSharingFlags = m.dataSharingFlags;
+if (o.oneofs)
+d._dataSharingFlags = "dataSharingFlags";
+}
+return d;
+};
+DataSharingContext.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+DataSharingContext.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ContextInfo.DataSharingContext";
+};
+$lazy(DataSharingContext, "DataSharingFlags", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[1] = "SHOW_MM_DISCLOSURE_ON_CLICK"] = 1;
+values[valuesById[2] = "SHOW_MM_DISCLOSURE_ON_READ"] = 2;
+return values;
+});
+$lazy(DataSharingContext, "Parameters", function() {
+function Parameters(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+Parameters.prototype.key = null;
+Parameters.prototype.stringData = null;
+Parameters.prototype.intData = null;
+Parameters.prototype.floatData = null;
+Parameters.prototype.contents = null;
+let $oneOfFields;
+Object.defineProperty(Parameters.prototype, "_key", {
+get: $util.oneOfGetter($oneOfFields = ["key"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Parameters.prototype, "_stringData", {
+get: $util.oneOfGetter($oneOfFields = ["stringData"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Parameters.prototype, "_intData", {
+get: $util.oneOfGetter($oneOfFields = ["intData"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Parameters.prototype, "_floatData", {
+get: $util.oneOfGetter($oneOfFields = ["floatData"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Parameters.prototype, "_contents", {
+get: $util.oneOfGetter($oneOfFields = ["contents"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Parameters.create = function create(properties) {
+return new Parameters(properties);
+};
+Parameters.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.key != null && Object.hasOwnProperty.call(m, "key"))
+w.uint32(10).string(m.key);
+if (m.stringData != null && Object.hasOwnProperty.call(m, "stringData"))
+w.uint32(18).string(m.stringData);
+if (m.intData != null && Object.hasOwnProperty.call(m, "intData"))
+w.uint32(24).int64(m.intData);
+if (m.floatData != null && Object.hasOwnProperty.call(m, "floatData"))
+w.uint32(37).float(m.floatData);
+if (m.contents != null && Object.hasOwnProperty.call(m, "contents"))
+$root.proto.ContextInfo.DataSharingContext.Parameters.encode(m.contents, w.uint32(42).fork()).ldelim();
+return w;
+};
+Parameters.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ContextInfo.DataSharingContext.Parameters();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.key = r.string();
+break;
+}
+case 2: {
+m.stringData = r.string();
+break;
+}
+case 3: {
+m.intData = r.int64();
+break;
+}
+case 4: {
+m.floatData = r.float();
+break;
+}
+case 5: {
+m.contents = $root.proto.ContextInfo.DataSharingContext.Parameters.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+Parameters.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ContextInfo.DataSharingContext.Parameters)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ContextInfo.DataSharingContext.Parameters();
+if (d.key != null) {
+m.key = String(d.key);
+}
+if (d.stringData != null) {
+m.stringData = String(d.stringData);
+}
+if (d.intData != null) {
+if ($util.Long)
+(m.intData = $util.Long.fromValue(d.intData)).unsigned = false;
+else if (typeof d.intData === "string")
+m.intData = parseInt(d.intData, 10);
+else if (typeof d.intData === "number")
+m.intData = d.intData;
+else if (typeof d.intData === "object")
+m.intData = new $util.LongBits(d.intData.low >>> 0, d.intData.high >>> 0).toNumber();
+}
+if (d.floatData != null) {
+m.floatData = Number(d.floatData);
+}
+if (d.contents != null) {
+if (typeof d.contents !== "object")
+throw TypeError(".proto.ContextInfo.DataSharingContext.Parameters.contents: object expected");
+m.contents = $root.proto.ContextInfo.DataSharingContext.Parameters.fromObject(d.contents, n + 1);
+}
+return m;
+};
+Parameters.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.key != null && m.hasOwnProperty("key")) {
+d.key = m.key;
+if (o.oneofs)
+d._key = "key";
+}
+if (m.stringData != null && m.hasOwnProperty("stringData")) {
+d.stringData = m.stringData;
+if (o.oneofs)
+d._stringData = "stringData";
+}
+if (m.intData != null && m.hasOwnProperty("intData")) {
+if (typeof m.intData === "number")
+d.intData = o.longs === String ? String(m.intData) : m.intData;
+else
+d.intData = o.longs === String ? longToString(m.intData) : o.longs === Number ? longToNumber(m.intData) : m.intData;
+if (o.oneofs)
+d._intData = "intData";
+}
+if (m.floatData != null && m.hasOwnProperty("floatData")) {
+d.floatData = o.json && !isFinite(m.floatData) ? String(m.floatData) : m.floatData;
+if (o.oneofs)
+d._floatData = "floatData";
+}
+if (m.contents != null && m.hasOwnProperty("contents")) {
+d.contents = $root.proto.ContextInfo.DataSharingContext.Parameters.toObject(m.contents, o);
+if (o.oneofs)
+d._contents = "contents";
+}
+return d;
+};
+Parameters.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+Parameters.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ContextInfo.DataSharingContext.Parameters";
+};
+return Parameters;
+});
+return DataSharingContext;
+});
+$lazy(ContextInfo, "ExternalAdReplyInfo", function() {
+function ExternalAdReplyInfo(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ExternalAdReplyInfo.prototype.title = null;
+ExternalAdReplyInfo.prototype.body = null;
+ExternalAdReplyInfo.prototype.mediaType = null;
+ExternalAdReplyInfo.prototype.thumbnailUrl = null;
+ExternalAdReplyInfo.prototype.mediaUrl = null;
+ExternalAdReplyInfo.prototype.thumbnail = null;
+ExternalAdReplyInfo.prototype.sourceType = null;
+ExternalAdReplyInfo.prototype.sourceId = null;
+ExternalAdReplyInfo.prototype.sourceUrl = null;
+ExternalAdReplyInfo.prototype.containsAutoReply = null;
+ExternalAdReplyInfo.prototype.renderLargerThumbnail = null;
+ExternalAdReplyInfo.prototype.showAdAttribution = null;
+ExternalAdReplyInfo.prototype.ctwaClid = null;
+ExternalAdReplyInfo.prototype.ref = null;
+ExternalAdReplyInfo.prototype.clickToWhatsappCall = null;
+ExternalAdReplyInfo.prototype.adContextPreviewDismissed = null;
+ExternalAdReplyInfo.prototype.sourceApp = null;
+ExternalAdReplyInfo.prototype.automatedGreetingMessageShown = null;
+ExternalAdReplyInfo.prototype.greetingMessageBody = null;
+ExternalAdReplyInfo.prototype.ctaPayload = null;
+ExternalAdReplyInfo.prototype.disableNudge = null;
+ExternalAdReplyInfo.prototype.originalImageUrl = null;
+ExternalAdReplyInfo.prototype.automatedGreetingMessageCtaType = null;
+ExternalAdReplyInfo.prototype.wtwaAdFormat = null;
+ExternalAdReplyInfo.prototype.adType = null;
+ExternalAdReplyInfo.prototype.wtwaWebsiteUrl = null;
+ExternalAdReplyInfo.prototype.adPreviewUrl = null;
+ExternalAdReplyInfo.prototype.containsCtwaFlowsAutoReply = null;
+ExternalAdReplyInfo.prototype.agmThumbnailStrategy = null;
+ExternalAdReplyInfo.prototype.agmTitleStrategy = null;
+ExternalAdReplyInfo.prototype.agmSubtitleStrategy = null;
+ExternalAdReplyInfo.prototype.agmHeaderInteractionStrategy = null;
+let $oneOfFields;
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_title", {
+get: $util.oneOfGetter($oneOfFields = ["title"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_body", {
+get: $util.oneOfGetter($oneOfFields = ["body"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_mediaType", {
+get: $util.oneOfGetter($oneOfFields = ["mediaType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_thumbnailUrl", {
+get: $util.oneOfGetter($oneOfFields = ["thumbnailUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_mediaUrl", {
+get: $util.oneOfGetter($oneOfFields = ["mediaUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_thumbnail", {
+get: $util.oneOfGetter($oneOfFields = ["thumbnail"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_sourceType", {
+get: $util.oneOfGetter($oneOfFields = ["sourceType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_sourceId", {
+get: $util.oneOfGetter($oneOfFields = ["sourceId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_sourceUrl", {
+get: $util.oneOfGetter($oneOfFields = ["sourceUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_containsAutoReply", {
+get: $util.oneOfGetter($oneOfFields = ["containsAutoReply"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_renderLargerThumbnail", {
+get: $util.oneOfGetter($oneOfFields = ["renderLargerThumbnail"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_showAdAttribution", {
+get: $util.oneOfGetter($oneOfFields = ["showAdAttribution"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_ctwaClid", {
+get: $util.oneOfGetter($oneOfFields = ["ctwaClid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_ref", {
+get: $util.oneOfGetter($oneOfFields = ["ref"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_clickToWhatsappCall", {
+get: $util.oneOfGetter($oneOfFields = ["clickToWhatsappCall"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_adContextPreviewDismissed", {
+get: $util.oneOfGetter($oneOfFields = ["adContextPreviewDismissed"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_sourceApp", {
+get: $util.oneOfGetter($oneOfFields = ["sourceApp"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_automatedGreetingMessageShown", {
+get: $util.oneOfGetter($oneOfFields = ["automatedGreetingMessageShown"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_greetingMessageBody", {
+get: $util.oneOfGetter($oneOfFields = ["greetingMessageBody"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_ctaPayload", {
+get: $util.oneOfGetter($oneOfFields = ["ctaPayload"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_disableNudge", {
+get: $util.oneOfGetter($oneOfFields = ["disableNudge"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_originalImageUrl", {
+get: $util.oneOfGetter($oneOfFields = ["originalImageUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_automatedGreetingMessageCtaType", {
+get: $util.oneOfGetter($oneOfFields = ["automatedGreetingMessageCtaType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_wtwaAdFormat", {
+get: $util.oneOfGetter($oneOfFields = ["wtwaAdFormat"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_adType", {
+get: $util.oneOfGetter($oneOfFields = ["adType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_wtwaWebsiteUrl", {
+get: $util.oneOfGetter($oneOfFields = ["wtwaWebsiteUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_adPreviewUrl", {
+get: $util.oneOfGetter($oneOfFields = ["adPreviewUrl"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_containsCtwaFlowsAutoReply", {
+get: $util.oneOfGetter($oneOfFields = ["containsCtwaFlowsAutoReply"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_agmThumbnailStrategy", {
+get: $util.oneOfGetter($oneOfFields = ["agmThumbnailStrategy"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_agmTitleStrategy", {
+get: $util.oneOfGetter($oneOfFields = ["agmTitleStrategy"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_agmSubtitleStrategy", {
+get: $util.oneOfGetter($oneOfFields = ["agmSubtitleStrategy"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ExternalAdReplyInfo.prototype, "_agmHeaderInteractionStrategy", {
+get: $util.oneOfGetter($oneOfFields = ["agmHeaderInteractionStrategy"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ExternalAdReplyInfo.create = function create(properties) {
+return new ExternalAdReplyInfo(properties);
+};
+ExternalAdReplyInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.title != null && Object.hasOwnProperty.call(m, "title"))
+w.uint32(10).string(m.title);
+if (m.body != null && Object.hasOwnProperty.call(m, "body"))
+w.uint32(18).string(m.body);
+if (m.mediaType != null && Object.hasOwnProperty.call(m, "mediaType"))
+w.uint32(24).int32(m.mediaType);
+if (m.thumbnailUrl != null && Object.hasOwnProperty.call(m, "thumbnailUrl"))
+w.uint32(34).string(m.thumbnailUrl);
+if (m.mediaUrl != null && Object.hasOwnProperty.call(m, "mediaUrl"))
+w.uint32(42).string(m.mediaUrl);
+if (m.thumbnail != null && Object.hasOwnProperty.call(m, "thumbnail"))
+w.uint32(50).bytes(m.thumbnail);
+if (m.sourceType != null && Object.hasOwnProperty.call(m, "sourceType"))
+w.uint32(58).string(m.sourceType);
+if (m.sourceId != null && Object.hasOwnProperty.call(m, "sourceId"))
+w.uint32(66).string(m.sourceId);
+if (m.sourceUrl != null && Object.hasOwnProperty.call(m, "sourceUrl"))
+w.uint32(74).string(m.sourceUrl);
+if (m.containsAutoReply != null && Object.hasOwnProperty.call(m, "containsAutoReply"))
+w.uint32(80).bool(m.containsAutoReply);
+if (m.renderLargerThumbnail != null && Object.hasOwnProperty.call(m, "renderLargerThumbnail"))
+w.uint32(88).bool(m.renderLargerThumbnail);
+if (m.showAdAttribution != null && Object.hasOwnProperty.call(m, "showAdAttribution"))
+w.uint32(96).bool(m.showAdAttribution);
+if (m.ctwaClid != null && Object.hasOwnProperty.call(m, "ctwaClid"))
+w.uint32(106).string(m.ctwaClid);
+if (m.ref != null && Object.hasOwnProperty.call(m, "ref"))
+w.uint32(114).string(m.ref);
+if (m.clickToWhatsappCall != null && Object.hasOwnProperty.call(m, "clickToWhatsappCall"))
+w.uint32(120).bool(m.clickToWhatsappCall);
+if (m.adContextPreviewDismissed != null && Object.hasOwnProperty.call(m, "adContextPreviewDismissed"))
+w.uint32(128).bool(m.adContextPreviewDismissed);
+if (m.sourceApp != null && Object.hasOwnProperty.call(m, "sourceApp"))
+w.uint32(138).string(m.sourceApp);
+if (m.automatedGreetingMessageShown != null && Object.hasOwnProperty.call(m, "automatedGreetingMessageShown"))
+w.uint32(144).bool(m.automatedGreetingMessageShown);
+if (m.greetingMessageBody != null && Object.hasOwnProperty.call(m, "greetingMessageBody"))
+w.uint32(154).string(m.greetingMessageBody);
+if (m.ctaPayload != null && Object.hasOwnProperty.call(m, "ctaPayload"))
+w.uint32(162).string(m.ctaPayload);
+if (m.disableNudge != null && Object.hasOwnProperty.call(m, "disableNudge"))
+w.uint32(168).bool(m.disableNudge);
+if (m.originalImageUrl != null && Object.hasOwnProperty.call(m, "originalImageUrl"))
+w.uint32(178).string(m.originalImageUrl);
+if (m.automatedGreetingMessageCtaType != null && Object.hasOwnProperty.call(m, "automatedGreetingMessageCtaType"))
+w.uint32(186).string(m.automatedGreetingMessageCtaType);
+if (m.wtwaAdFormat != null && Object.hasOwnProperty.call(m, "wtwaAdFormat"))
+w.uint32(192).bool(m.wtwaAdFormat);
+if (m.adType != null && Object.hasOwnProperty.call(m, "adType"))
+w.uint32(200).int32(m.adType);
+if (m.wtwaWebsiteUrl != null && Object.hasOwnProperty.call(m, "wtwaWebsiteUrl"))
+w.uint32(210).string(m.wtwaWebsiteUrl);
+if (m.adPreviewUrl != null && Object.hasOwnProperty.call(m, "adPreviewUrl"))
+w.uint32(218).string(m.adPreviewUrl);
+if (m.containsCtwaFlowsAutoReply != null && Object.hasOwnProperty.call(m, "containsCtwaFlowsAutoReply"))
+w.uint32(224).bool(m.containsCtwaFlowsAutoReply);
+if (m.agmThumbnailStrategy != null && Object.hasOwnProperty.call(m, "agmThumbnailStrategy"))
+w.uint32(232).int32(m.agmThumbnailStrategy);
+if (m.agmTitleStrategy != null && Object.hasOwnProperty.call(m, "agmTitleStrategy"))
+w.uint32(240).int32(m.agmTitleStrategy);
+if (m.agmSubtitleStrategy != null && Object.hasOwnProperty.call(m, "agmSubtitleStrategy"))
+w.uint32(248).int32(m.agmSubtitleStrategy);
+if (m.agmHeaderInteractionStrategy != null && Object.hasOwnProperty.call(m, "agmHeaderInteractionStrategy"))
+w.uint32(256).int32(m.agmHeaderInteractionStrategy);
+return w;
+};
+ExternalAdReplyInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ContextInfo.ExternalAdReplyInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.title = r.string();
+break;
+}
+case 2: {
+m.body = r.string();
+break;
+}
+case 3: {
+m.mediaType = r.int32();
+break;
+}
+case 4: {
+m.thumbnailUrl = r.string();
+break;
+}
+case 5: {
+m.mediaUrl = r.string();
+break;
+}
+case 6: {
+m.thumbnail = r.bytes();
+break;
+}
+case 7: {
+m.sourceType = r.string();
+break;
+}
+case 8: {
+m.sourceId = r.string();
+break;
+}
+case 9: {
+m.sourceUrl = r.string();
+break;
+}
+case 10: {
+m.containsAutoReply = r.bool();
+break;
+}
+case 11: {
+m.renderLargerThumbnail = r.bool();
+break;
+}
+case 12: {
+m.showAdAttribution = r.bool();
+break;
+}
+case 13: {
+m.ctwaClid = r.string();
+break;
+}
+case 14: {
+m.ref = r.string();
+break;
+}
+case 15: {
+m.clickToWhatsappCall = r.bool();
+break;
+}
+case 16: {
+m.adContextPreviewDismissed = r.bool();
+break;
+}
+case 17: {
+m.sourceApp = r.string();
+break;
+}
+case 18: {
+m.automatedGreetingMessageShown = r.bool();
+break;
+}
+case 19: {
+m.greetingMessageBody = r.string();
+break;
+}
+case 20: {
+m.ctaPayload = r.string();
+break;
+}
+case 21: {
+m.disableNudge = r.bool();
+break;
+}
+case 22: {
+m.originalImageUrl = r.string();
+break;
+}
+case 23: {
+m.automatedGreetingMessageCtaType = r.string();
+break;
+}
+case 24: {
+m.wtwaAdFormat = r.bool();
+break;
+}
+case 25: {
+m.adType = r.int32();
+break;
+}
+case 26: {
+m.wtwaWebsiteUrl = r.string();
+break;
+}
+case 27: {
+m.adPreviewUrl = r.string();
+break;
+}
+case 28: {
+m.containsCtwaFlowsAutoReply = r.bool();
+break;
+}
+case 29: {
+m.agmThumbnailStrategy = r.int32();
+break;
+}
+case 30: {
+m.agmTitleStrategy = r.int32();
+break;
+}
+case 31: {
+m.agmSubtitleStrategy = r.int32();
+break;
+}
+case 32: {
+m.agmHeaderInteractionStrategy = r.int32();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ExternalAdReplyInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ContextInfo.ExternalAdReplyInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ContextInfo.ExternalAdReplyInfo();
+if (d.title != null) {
+m.title = String(d.title);
+}
+if (d.body != null) {
+m.body = String(d.body);
+}
+switch (d.mediaType) {
+default:
+if (typeof d.mediaType === "number") {
+m.mediaType = d.mediaType;
+break;
+}
+break;
+case "NONE":
+case 0:
+m.mediaType = 0;
+break;
+case "IMAGE":
+case 1:
+m.mediaType = 1;
+break;
+case "VIDEO":
+case 2:
+m.mediaType = 2;
+break;
+}
+if (d.thumbnailUrl != null) {
+m.thumbnailUrl = String(d.thumbnailUrl);
+}
+if (d.mediaUrl != null) {
+m.mediaUrl = String(d.mediaUrl);
+}
+if (d.thumbnail != null) {
+if (typeof d.thumbnail === "string")
+$util.base64.decode(d.thumbnail, m.thumbnail = $util.newBuffer($util.base64.length(d.thumbnail)), 0);
+else if (d.thumbnail.length >= 0)
+m.thumbnail = d.thumbnail;
+}
+if (d.sourceType != null) {
+m.sourceType = String(d.sourceType);
+}
+if (d.sourceId != null) {
+m.sourceId = String(d.sourceId);
+}
+if (d.sourceUrl != null) {
+m.sourceUrl = String(d.sourceUrl);
+}
+if (d.containsAutoReply != null) {
+m.containsAutoReply = Boolean(d.containsAutoReply);
+}
+if (d.renderLargerThumbnail != null) {
+m.renderLargerThumbnail = Boolean(d.renderLargerThumbnail);
+}
+if (d.showAdAttribution != null) {
+m.showAdAttribution = Boolean(d.showAdAttribution);
+}
+if (d.ctwaClid != null) {
+m.ctwaClid = String(d.ctwaClid);
+}
+if (d.ref != null) {
+m.ref = String(d.ref);
+}
+if (d.clickToWhatsappCall != null) {
+m.clickToWhatsappCall = Boolean(d.clickToWhatsappCall);
+}
+if (d.adContextPreviewDismissed != null) {
+m.adContextPreviewDismissed = Boolean(d.adContextPreviewDismissed);
+}
+if (d.sourceApp != null) {
+m.sourceApp = String(d.sourceApp);
+}
+if (d.automatedGreetingMessageShown != null) {
+m.automatedGreetingMessageShown = Boolean(d.automatedGreetingMessageShown);
+}
+if (d.greetingMessageBody != null) {
+m.greetingMessageBody = String(d.greetingMessageBody);
+}
+if (d.ctaPayload != null) {
+m.ctaPayload = String(d.ctaPayload);
+}
+if (d.disableNudge != null) {
+m.disableNudge = Boolean(d.disableNudge);
+}
+if (d.originalImageUrl != null) {
+m.originalImageUrl = String(d.originalImageUrl);
+}
+if (d.automatedGreetingMessageCtaType != null) {
+m.automatedGreetingMessageCtaType = String(d.automatedGreetingMessageCtaType);
+}
+if (d.wtwaAdFormat != null) {
+m.wtwaAdFormat = Boolean(d.wtwaAdFormat);
+}
+switch (d.adType) {
+default:
+if (typeof d.adType === "number") {
+m.adType = d.adType;
+break;
+}
+break;
+case "CTWA":
+case 0:
+m.adType = 0;
+break;
+case "CAWC":
+case 1:
+m.adType = 1;
+break;
+}
+if (d.wtwaWebsiteUrl != null) {
+m.wtwaWebsiteUrl = String(d.wtwaWebsiteUrl);
+}
+if (d.adPreviewUrl != null) {
+m.adPreviewUrl = String(d.adPreviewUrl);
+}
+if (d.containsCtwaFlowsAutoReply != null) {
+m.containsCtwaFlowsAutoReply = Boolean(d.containsCtwaFlowsAutoReply);
+}
+if (d.agmThumbnailStrategy != null) {
+m.agmThumbnailStrategy = d.agmThumbnailStrategy | 0;
+}
+if (d.agmTitleStrategy != null) {
+m.agmTitleStrategy = d.agmTitleStrategy | 0;
+}
+if (d.agmSubtitleStrategy != null) {
+m.agmSubtitleStrategy = d.agmSubtitleStrategy | 0;
+}
+if (d.agmHeaderInteractionStrategy != null) {
+m.agmHeaderInteractionStrategy = d.agmHeaderInteractionStrategy | 0;
+}
+return m;
+};
+ExternalAdReplyInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.title != null && m.hasOwnProperty("title")) {
+d.title = m.title;
+if (o.oneofs)
+d._title = "title";
+}
+if (m.body != null && m.hasOwnProperty("body")) {
+d.body = m.body;
+if (o.oneofs)
+d._body = "body";
+}
+if (m.mediaType != null && m.hasOwnProperty("mediaType")) {
+d.mediaType = o.enums === String ? $root.proto.ContextInfo.ExternalAdReplyInfo.MediaType[m.mediaType] === undefined ? m.mediaType : $root.proto.ContextInfo.ExternalAdReplyInfo.MediaType[m.mediaType] : m.mediaType;
+if (o.oneofs)
+d._mediaType = "mediaType";
+}
+if (m.thumbnailUrl != null && m.hasOwnProperty("thumbnailUrl")) {
+d.thumbnailUrl = m.thumbnailUrl;
+if (o.oneofs)
+d._thumbnailUrl = "thumbnailUrl";
+}
+if (m.mediaUrl != null && m.hasOwnProperty("mediaUrl")) {
+d.mediaUrl = m.mediaUrl;
+if (o.oneofs)
+d._mediaUrl = "mediaUrl";
+}
+if (m.thumbnail != null && m.hasOwnProperty("thumbnail")) {
+d.thumbnail = o.bytes === String ? $util.base64.encode(m.thumbnail, 0, m.thumbnail.length) : o.bytes === Array ? Array.prototype.slice.call(m.thumbnail) : m.thumbnail;
+if (o.oneofs)
+d._thumbnail = "thumbnail";
+}
+if (m.sourceType != null && m.hasOwnProperty("sourceType")) {
+d.sourceType = m.sourceType;
+if (o.oneofs)
+d._sourceType = "sourceType";
+}
+if (m.sourceId != null && m.hasOwnProperty("sourceId")) {
+d.sourceId = m.sourceId;
+if (o.oneofs)
+d._sourceId = "sourceId";
+}
+if (m.sourceUrl != null && m.hasOwnProperty("sourceUrl")) {
+d.sourceUrl = m.sourceUrl;
+if (o.oneofs)
+d._sourceUrl = "sourceUrl";
+}
+if (m.containsAutoReply != null && m.hasOwnProperty("containsAutoReply")) {
+d.containsAutoReply = m.containsAutoReply;
+if (o.oneofs)
+d._containsAutoReply = "containsAutoReply";
+}
+if (m.renderLargerThumbnail != null && m.hasOwnProperty("renderLargerThumbnail")) {
+d.renderLargerThumbnail = m.renderLargerThumbnail;
+if (o.oneofs)
+d._renderLargerThumbnail = "renderLargerThumbnail";
+}
+if (m.showAdAttribution != null && m.hasOwnProperty("showAdAttribution")) {
+d.showAdAttribution = m.showAdAttribution;
+if (o.oneofs)
+d._showAdAttribution = "showAdAttribution";
+}
+if (m.ctwaClid != null && m.hasOwnProperty("ctwaClid")) {
+d.ctwaClid = m.ctwaClid;
+if (o.oneofs)
+d._ctwaClid = "ctwaClid";
+}
+if (m.ref != null && m.hasOwnProperty("ref")) {
+d.ref = m.ref;
+if (o.oneofs)
+d._ref = "ref";
+}
+if (m.clickToWhatsappCall != null && m.hasOwnProperty("clickToWhatsappCall")) {
+d.clickToWhatsappCall = m.clickToWhatsappCall;
+if (o.oneofs)
+d._clickToWhatsappCall = "clickToWhatsappCall";
+}
+if (m.adContextPreviewDismissed != null && m.hasOwnProperty("adContextPreviewDismissed")) {
+d.adContextPreviewDismissed = m.adContextPreviewDismissed;
+if (o.oneofs)
+d._adContextPreviewDismissed = "adContextPreviewDismissed";
+}
+if (m.sourceApp != null && m.hasOwnProperty("sourceApp")) {
+d.sourceApp = m.sourceApp;
+if (o.oneofs)
+d._sourceApp = "sourceApp";
+}
+if (m.automatedGreetingMessageShown != null && m.hasOwnProperty("automatedGreetingMessageShown")) {
+d.automatedGreetingMessageShown = m.automatedGreetingMessageShown;
+if (o.oneofs)
+d._automatedGreetingMessageShown = "automatedGreetingMessageShown";
+}
+if (m.greetingMessageBody != null && m.hasOwnProperty("greetingMessageBody")) {
+d.greetingMessageBody = m.greetingMessageBody;
+if (o.oneofs)
+d._greetingMessageBody = "greetingMessageBody";
+}
+if (m.ctaPayload != null && m.hasOwnProperty("ctaPayload")) {
+d.ctaPayload = m.ctaPayload;
+if (o.oneofs)
+d._ctaPayload = "ctaPayload";
+}
+if (m.disableNudge != null && m.hasOwnProperty("disableNudge")) {
+d.disableNudge = m.disableNudge;
+if (o.oneofs)
+d._disableNudge = "disableNudge";
+}
+if (m.originalImageUrl != null && m.hasOwnProperty("originalImageUrl")) {
+d.originalImageUrl = m.originalImageUrl;
+if (o.oneofs)
+d._originalImageUrl = "originalImageUrl";
+}
+if (m.automatedGreetingMessageCtaType != null && m.hasOwnProperty("automatedGreetingMessageCtaType")) {
+d.automatedGreetingMessageCtaType = m.automatedGreetingMessageCtaType;
+if (o.oneofs)
+d._automatedGreetingMessageCtaType = "automatedGreetingMessageCtaType";
+}
+if (m.wtwaAdFormat != null && m.hasOwnProperty("wtwaAdFormat")) {
+d.wtwaAdFormat = m.wtwaAdFormat;
+if (o.oneofs)
+d._wtwaAdFormat = "wtwaAdFormat";
+}
+if (m.adType != null && m.hasOwnProperty("adType")) {
+d.adType = o.enums === String ? $root.proto.ContextInfo.ExternalAdReplyInfo.AdType[m.adType] === undefined ? m.adType : $root.proto.ContextInfo.ExternalAdReplyInfo.AdType[m.adType] : m.adType;
+if (o.oneofs)
+d._adType = "adType";
+}
+if (m.wtwaWebsiteUrl != null && m.hasOwnProperty("wtwaWebsiteUrl")) {
+d.wtwaWebsiteUrl = m.wtwaWebsiteUrl;
+if (o.oneofs)
+d._wtwaWebsiteUrl = "wtwaWebsiteUrl";
+}
+if (m.adPreviewUrl != null && m.hasOwnProperty("adPreviewUrl")) {
+d.adPreviewUrl = m.adPreviewUrl;
+if (o.oneofs)
+d._adPreviewUrl = "adPreviewUrl";
+}
+if (m.containsCtwaFlowsAutoReply != null && m.hasOwnProperty("containsCtwaFlowsAutoReply")) {
+d.containsCtwaFlowsAutoReply = m.containsCtwaFlowsAutoReply;
+if (o.oneofs)
+d._containsCtwaFlowsAutoReply = "containsCtwaFlowsAutoReply";
+}
+if (m.agmThumbnailStrategy != null && m.hasOwnProperty("agmThumbnailStrategy")) {
+d.agmThumbnailStrategy = m.agmThumbnailStrategy;
+if (o.oneofs)
+d._agmThumbnailStrategy = "agmThumbnailStrategy";
+}
+if (m.agmTitleStrategy != null && m.hasOwnProperty("agmTitleStrategy")) {
+d.agmTitleStrategy = m.agmTitleStrategy;
+if (o.oneofs)
+d._agmTitleStrategy = "agmTitleStrategy";
+}
+if (m.agmSubtitleStrategy != null && m.hasOwnProperty("agmSubtitleStrategy")) {
+d.agmSubtitleStrategy = m.agmSubtitleStrategy;
+if (o.oneofs)
+d._agmSubtitleStrategy = "agmSubtitleStrategy";
+}
+if (m.agmHeaderInteractionStrategy != null && m.hasOwnProperty("agmHeaderInteractionStrategy")) {
+d.agmHeaderInteractionStrategy = m.agmHeaderInteractionStrategy;
+if (o.oneofs)
+d._agmHeaderInteractionStrategy = "agmHeaderInteractionStrategy";
+}
+return d;
+};
+ExternalAdReplyInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ExternalAdReplyInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ContextInfo.ExternalAdReplyInfo";
+};
+$lazy(ExternalAdReplyInfo, "AdType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "CTWA"] = 0;
+values[valuesById[1] = "CAWC"] = 1;
+return values;
+});
+$lazy(ExternalAdReplyInfo, "MediaType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "NONE"] = 0;
+values[valuesById[1] = "IMAGE"] = 1;
+values[valuesById[2] = "VIDEO"] = 2;
+return values;
+});
+return ExternalAdReplyInfo;
+});
+$lazy(ContextInfo, "FeatureEligibilities", function() {
+function FeatureEligibilities(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+FeatureEligibilities.prototype.cannotBeReactedTo = null;
+FeatureEligibilities.prototype.cannotBeRanked = null;
+FeatureEligibilities.prototype.canRequestFeedback = null;
+FeatureEligibilities.prototype.canBeReshared = null;
+FeatureEligibilities.prototype.canReceiveMultiReact = null;
+let $oneOfFields;
+Object.defineProperty(FeatureEligibilities.prototype, "_cannotBeReactedTo", {
+get: $util.oneOfGetter($oneOfFields = ["cannotBeReactedTo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(FeatureEligibilities.prototype, "_cannotBeRanked", {
+get: $util.oneOfGetter($oneOfFields = ["cannotBeRanked"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(FeatureEligibilities.prototype, "_canRequestFeedback", {
+get: $util.oneOfGetter($oneOfFields = ["canRequestFeedback"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(FeatureEligibilities.prototype, "_canBeReshared", {
+get: $util.oneOfGetter($oneOfFields = ["canBeReshared"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(FeatureEligibilities.prototype, "_canReceiveMultiReact", {
+get: $util.oneOfGetter($oneOfFields = ["canReceiveMultiReact"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+FeatureEligibilities.create = function create(properties) {
+return new FeatureEligibilities(properties);
+};
+FeatureEligibilities.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.cannotBeReactedTo != null && Object.hasOwnProperty.call(m, "cannotBeReactedTo"))
+w.uint32(8).bool(m.cannotBeReactedTo);
+if (m.cannotBeRanked != null && Object.hasOwnProperty.call(m, "cannotBeRanked"))
+w.uint32(16).bool(m.cannotBeRanked);
+if (m.canRequestFeedback != null && Object.hasOwnProperty.call(m, "canRequestFeedback"))
+w.uint32(24).bool(m.canRequestFeedback);
+if (m.canBeReshared != null && Object.hasOwnProperty.call(m, "canBeReshared"))
+w.uint32(32).bool(m.canBeReshared);
+if (m.canReceiveMultiReact != null && Object.hasOwnProperty.call(m, "canReceiveMultiReact"))
+w.uint32(40).bool(m.canReceiveMultiReact);
+return w;
+};
+FeatureEligibilities.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ContextInfo.FeatureEligibilities();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.cannotBeReactedTo = r.bool();
+break;
+}
+case 2: {
+m.cannotBeRanked = r.bool();
+break;
+}
+case 3: {
+m.canRequestFeedback = r.bool();
+break;
+}
+case 4: {
+m.canBeReshared = r.bool();
+break;
+}
+case 5: {
+m.canReceiveMultiReact = r.bool();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+FeatureEligibilities.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ContextInfo.FeatureEligibilities)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ContextInfo.FeatureEligibilities();
+if (d.cannotBeReactedTo != null) {
+m.cannotBeReactedTo = Boolean(d.cannotBeReactedTo);
+}
+if (d.cannotBeRanked != null) {
+m.cannotBeRanked = Boolean(d.cannotBeRanked);
+}
+if (d.canRequestFeedback != null) {
+m.canRequestFeedback = Boolean(d.canRequestFeedback);
+}
+if (d.canBeReshared != null) {
+m.canBeReshared = Boolean(d.canBeReshared);
+}
+if (d.canReceiveMultiReact != null) {
+m.canReceiveMultiReact = Boolean(d.canReceiveMultiReact);
+}
+return m;
+};
+FeatureEligibilities.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.cannotBeReactedTo != null && m.hasOwnProperty("cannotBeReactedTo")) {
+d.cannotBeReactedTo = m.cannotBeReactedTo;
+if (o.oneofs)
+d._cannotBeReactedTo = "cannotBeReactedTo";
+}
+if (m.cannotBeRanked != null && m.hasOwnProperty("cannotBeRanked")) {
+d.cannotBeRanked = m.cannotBeRanked;
+if (o.oneofs)
+d._cannotBeRanked = "cannotBeRanked";
+}
+if (m.canRequestFeedback != null && m.hasOwnProperty("canRequestFeedback")) {
+d.canRequestFeedback = m.canRequestFeedback;
+if (o.oneofs)
+d._canRequestFeedback = "canRequestFeedback";
+}
+if (m.canBeReshared != null && m.hasOwnProperty("canBeReshared")) {
+d.canBeReshared = m.canBeReshared;
+if (o.oneofs)
+d._canBeReshared = "canBeReshared";
+}
+if (m.canReceiveMultiReact != null && m.hasOwnProperty("canReceiveMultiReact")) {
+d.canReceiveMultiReact = m.canReceiveMultiReact;
+if (o.oneofs)
+d._canReceiveMultiReact = "canReceiveMultiReact";
+}
+return d;
+};
+FeatureEligibilities.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+FeatureEligibilities.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ContextInfo.FeatureEligibilities";
+};
+return FeatureEligibilities;
+});
+$lazy(ContextInfo, "ForwardOrigin", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN"] = 0;
+values[valuesById[1] = "CHAT"] = 1;
+values[valuesById[2] = "STATUS"] = 2;
+values[valuesById[3] = "CHANNELS"] = 3;
+values[valuesById[4] = "META_AI"] = 4;
+values[valuesById[5] = "UGC"] = 5;
+return values;
+});
+$lazy(ContextInfo, "ForwardedNewsletterMessageInfo", function() {
+function ForwardedNewsletterMessageInfo(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+ForwardedNewsletterMessageInfo.prototype.newsletterJid = null;
+ForwardedNewsletterMessageInfo.prototype.serverMessageId = null;
+ForwardedNewsletterMessageInfo.prototype.newsletterName = null;
+ForwardedNewsletterMessageInfo.prototype.contentType = null;
+ForwardedNewsletterMessageInfo.prototype.accessibilityText = null;
+ForwardedNewsletterMessageInfo.prototype.profileName = null;
+let $oneOfFields;
+Object.defineProperty(ForwardedNewsletterMessageInfo.prototype, "_newsletterJid", {
+get: $util.oneOfGetter($oneOfFields = ["newsletterJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ForwardedNewsletterMessageInfo.prototype, "_serverMessageId", {
+get: $util.oneOfGetter($oneOfFields = ["serverMessageId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ForwardedNewsletterMessageInfo.prototype, "_newsletterName", {
+get: $util.oneOfGetter($oneOfFields = ["newsletterName"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ForwardedNewsletterMessageInfo.prototype, "_contentType", {
+get: $util.oneOfGetter($oneOfFields = ["contentType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ForwardedNewsletterMessageInfo.prototype, "_accessibilityText", {
+get: $util.oneOfGetter($oneOfFields = ["accessibilityText"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(ForwardedNewsletterMessageInfo.prototype, "_profileName", {
+get: $util.oneOfGetter($oneOfFields = ["profileName"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+ForwardedNewsletterMessageInfo.create = function create(properties) {
+return new ForwardedNewsletterMessageInfo(properties);
+};
+ForwardedNewsletterMessageInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.newsletterJid != null && Object.hasOwnProperty.call(m, "newsletterJid"))
+w.uint32(10).string(m.newsletterJid);
+if (m.serverMessageId != null && Object.hasOwnProperty.call(m, "serverMessageId"))
+w.uint32(16).int32(m.serverMessageId);
+if (m.newsletterName != null && Object.hasOwnProperty.call(m, "newsletterName"))
+w.uint32(26).string(m.newsletterName);
+if (m.contentType != null && Object.hasOwnProperty.call(m, "contentType"))
+w.uint32(32).int32(m.contentType);
+if (m.accessibilityText != null && Object.hasOwnProperty.call(m, "accessibilityText"))
+w.uint32(42).string(m.accessibilityText);
+if (m.profileName != null && Object.hasOwnProperty.call(m, "profileName"))
+w.uint32(50).string(m.profileName);
+return w;
+};
+ForwardedNewsletterMessageInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ContextInfo.ForwardedNewsletterMessageInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.newsletterJid = r.string();
+break;
+}
+case 2: {
+m.serverMessageId = r.int32();
+break;
+}
+case 3: {
+m.newsletterName = r.string();
+break;
+}
+case 4: {
+m.contentType = r.int32();
+break;
+}
+case 5: {
+m.accessibilityText = r.string();
+break;
+}
+case 6: {
+m.profileName = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+ForwardedNewsletterMessageInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ContextInfo.ForwardedNewsletterMessageInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ContextInfo.ForwardedNewsletterMessageInfo();
+if (d.newsletterJid != null) {
+m.newsletterJid = String(d.newsletterJid);
+}
+if (d.serverMessageId != null) {
+m.serverMessageId = d.serverMessageId | 0;
+}
+if (d.newsletterName != null) {
+m.newsletterName = String(d.newsletterName);
+}
+switch (d.contentType) {
+default:
+if (typeof d.contentType === "number") {
+m.contentType = d.contentType;
+break;
+}
+break;
+case "UPDATE":
+case 1:
+m.contentType = 1;
+break;
+case "UPDATE_CARD":
+case 2:
+m.contentType = 2;
+break;
+case "LINK_CARD":
+case 3:
+m.contentType = 3;
+break;
+}
+if (d.accessibilityText != null) {
+m.accessibilityText = String(d.accessibilityText);
+}
+if (d.profileName != null) {
+m.profileName = String(d.profileName);
+}
+return m;
+};
+ForwardedNewsletterMessageInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.newsletterJid != null && m.hasOwnProperty("newsletterJid")) {
+d.newsletterJid = m.newsletterJid;
+if (o.oneofs)
+d._newsletterJid = "newsletterJid";
+}
+if (m.serverMessageId != null && m.hasOwnProperty("serverMessageId")) {
+d.serverMessageId = m.serverMessageId;
+if (o.oneofs)
+d._serverMessageId = "serverMessageId";
+}
+if (m.newsletterName != null && m.hasOwnProperty("newsletterName")) {
+d.newsletterName = m.newsletterName;
+if (o.oneofs)
+d._newsletterName = "newsletterName";
+}
+if (m.contentType != null && m.hasOwnProperty("contentType")) {
+d.contentType = o.enums === String ? $root.proto.ContextInfo.ForwardedNewsletterMessageInfo.ContentType[m.contentType] === undefined ? m.contentType : $root.proto.ContextInfo.ForwardedNewsletterMessageInfo.ContentType[m.contentType] : m.contentType;
+if (o.oneofs)
+d._contentType = "contentType";
+}
+if (m.accessibilityText != null && m.hasOwnProperty("accessibilityText")) {
+d.accessibilityText = m.accessibilityText;
+if (o.oneofs)
+d._accessibilityText = "accessibilityText";
+}
+if (m.profileName != null && m.hasOwnProperty("profileName")) {
+d.profileName = m.profileName;
+if (o.oneofs)
+d._profileName = "profileName";
+}
+return d;
+};
+ForwardedNewsletterMessageInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+ForwardedNewsletterMessageInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ContextInfo.ForwardedNewsletterMessageInfo";
+};
+$lazy(ForwardedNewsletterMessageInfo, "ContentType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[1] = "UPDATE"] = 1;
+values[valuesById[2] = "UPDATE_CARD"] = 2;
+values[valuesById[3] = "LINK_CARD"] = 3;
+return values;
+});
+return ForwardedNewsletterMessageInfo;
+});
+$lazy(ContextInfo, "PairedMediaType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "NOT_PAIRED_MEDIA"] = 0;
+values[valuesById[1] = "SD_VIDEO_PARENT"] = 1;
+values[valuesById[2] = "HD_VIDEO_CHILD"] = 2;
+values[valuesById[3] = "SD_IMAGE_PARENT"] = 3;
+values[valuesById[4] = "HD_IMAGE_CHILD"] = 4;
+values[valuesById[5] = "MOTION_PHOTO_PARENT"] = 5;
+values[valuesById[6] = "MOTION_PHOTO_CHILD"] = 6;
+values[valuesById[7] = "HEVC_VIDEO_PARENT"] = 7;
+values[valuesById[8] = "HEVC_VIDEO_CHILD"] = 8;
+return values;
+});
+$lazy(ContextInfo, "PartiallySelectedContent", function() {
+function PartiallySelectedContent(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+PartiallySelectedContent.prototype.text = null;
+let $oneOfFields;
+Object.defineProperty(PartiallySelectedContent.prototype, "_text", {
+get: $util.oneOfGetter($oneOfFields = ["text"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+PartiallySelectedContent.create = function create(properties) {
+return new PartiallySelectedContent(properties);
+};
+PartiallySelectedContent.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.text != null && Object.hasOwnProperty.call(m, "text"))
+w.uint32(10).string(m.text);
+return w;
+};
+PartiallySelectedContent.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ContextInfo.PartiallySelectedContent();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.text = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+PartiallySelectedContent.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ContextInfo.PartiallySelectedContent)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ContextInfo.PartiallySelectedContent();
+if (d.text != null) {
+m.text = String(d.text);
+}
+return m;
+};
+PartiallySelectedContent.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.text != null && m.hasOwnProperty("text")) {
+d.text = m.text;
+if (o.oneofs)
+d._text = "text";
+}
+return d;
+};
+PartiallySelectedContent.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+PartiallySelectedContent.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ContextInfo.PartiallySelectedContent";
+};
+return PartiallySelectedContent;
+});
+$lazy(ContextInfo, "QuestionReplyQuotedMessage", function() {
+function QuestionReplyQuotedMessage(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+QuestionReplyQuotedMessage.prototype.serverQuestionId = null;
+QuestionReplyQuotedMessage.prototype.quotedQuestion = null;
+QuestionReplyQuotedMessage.prototype.quotedResponse = null;
+let $oneOfFields;
+Object.defineProperty(QuestionReplyQuotedMessage.prototype, "_serverQuestionId", {
+get: $util.oneOfGetter($oneOfFields = ["serverQuestionId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(QuestionReplyQuotedMessage.prototype, "_quotedQuestion", {
+get: $util.oneOfGetter($oneOfFields = ["quotedQuestion"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(QuestionReplyQuotedMessage.prototype, "_quotedResponse", {
+get: $util.oneOfGetter($oneOfFields = ["quotedResponse"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+QuestionReplyQuotedMessage.create = function create(properties) {
+return new QuestionReplyQuotedMessage(properties);
+};
+QuestionReplyQuotedMessage.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.serverQuestionId != null && Object.hasOwnProperty.call(m, "serverQuestionId"))
+w.uint32(8).int32(m.serverQuestionId);
+if (m.quotedQuestion != null && Object.hasOwnProperty.call(m, "quotedQuestion"))
+$root.proto.Message.encode(m.quotedQuestion, w.uint32(18).fork()).ldelim();
+if (m.quotedResponse != null && Object.hasOwnProperty.call(m, "quotedResponse"))
+$root.proto.Message.encode(m.quotedResponse, w.uint32(26).fork()).ldelim();
+return w;
+};
+QuestionReplyQuotedMessage.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ContextInfo.QuestionReplyQuotedMessage();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.serverQuestionId = r.int32();
+break;
+}
+case 2: {
+m.quotedQuestion = $root.proto.Message.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 3: {
+m.quotedResponse = $root.proto.Message.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+QuestionReplyQuotedMessage.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ContextInfo.QuestionReplyQuotedMessage)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ContextInfo.QuestionReplyQuotedMessage();
+if (d.serverQuestionId != null) {
+m.serverQuestionId = d.serverQuestionId | 0;
+}
+if (d.quotedQuestion != null) {
+if (typeof d.quotedQuestion !== "object")
+throw TypeError(".proto.ContextInfo.QuestionReplyQuotedMessage.quotedQuestion: object expected");
+m.quotedQuestion = $root.proto.Message.fromObject(d.quotedQuestion, n + 1);
+}
+if (d.quotedResponse != null) {
+if (typeof d.quotedResponse !== "object")
+throw TypeError(".proto.ContextInfo.QuestionReplyQuotedMessage.quotedResponse: object expected");
+m.quotedResponse = $root.proto.Message.fromObject(d.quotedResponse, n + 1);
+}
+return m;
+};
+QuestionReplyQuotedMessage.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.serverQuestionId != null && m.hasOwnProperty("serverQuestionId")) {
+d.serverQuestionId = m.serverQuestionId;
+if (o.oneofs)
+d._serverQuestionId = "serverQuestionId";
+}
+if (m.quotedQuestion != null && m.hasOwnProperty("quotedQuestion")) {
+d.quotedQuestion = $root.proto.Message.toObject(m.quotedQuestion, o);
+if (o.oneofs)
+d._quotedQuestion = "quotedQuestion";
+}
+if (m.quotedResponse != null && m.hasOwnProperty("quotedResponse")) {
+d.quotedResponse = $root.proto.Message.toObject(m.quotedResponse, o);
+if (o.oneofs)
+d._quotedResponse = "quotedResponse";
+}
+return d;
+};
+QuestionReplyQuotedMessage.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+QuestionReplyQuotedMessage.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ContextInfo.QuestionReplyQuotedMessage";
+};
+return QuestionReplyQuotedMessage;
+});
+$lazy(ContextInfo, "QuotedType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "EXPLICIT"] = 0;
+values[valuesById[1] = "AUTO"] = 1;
+return values;
+});
+$lazy(ContextInfo, "StatusAttributionType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "NONE"] = 0;
+values[valuesById[1] = "RESHARED_FROM_MENTION"] = 1;
+values[valuesById[2] = "RESHARED_FROM_POST"] = 2;
+values[valuesById[3] = "RESHARED_FROM_POST_MANY_TIMES"] = 3;
+values[valuesById[4] = "FORWARDED_FROM_STATUS"] = 4;
+return values;
+});
+$lazy(ContextInfo, "StatusAudienceMetadata", function() {
+function StatusAudienceMetadata(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+StatusAudienceMetadata.prototype.audienceType = null;
+StatusAudienceMetadata.prototype.listName = null;
+StatusAudienceMetadata.prototype.listEmoji = null;
+let $oneOfFields;
+Object.defineProperty(StatusAudienceMetadata.prototype, "_audienceType", {
+get: $util.oneOfGetter($oneOfFields = ["audienceType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(StatusAudienceMetadata.prototype, "_listName", {
+get: $util.oneOfGetter($oneOfFields = ["listName"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(StatusAudienceMetadata.prototype, "_listEmoji", {
+get: $util.oneOfGetter($oneOfFields = ["listEmoji"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+StatusAudienceMetadata.create = function create(properties) {
+return new StatusAudienceMetadata(properties);
+};
+StatusAudienceMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.audienceType != null && Object.hasOwnProperty.call(m, "audienceType"))
+w.uint32(8).int32(m.audienceType);
+if (m.listName != null && Object.hasOwnProperty.call(m, "listName"))
+w.uint32(18).string(m.listName);
+if (m.listEmoji != null && Object.hasOwnProperty.call(m, "listEmoji"))
+w.uint32(26).string(m.listEmoji);
+return w;
+};
+StatusAudienceMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ContextInfo.StatusAudienceMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.audienceType = r.int32();
+break;
+}
+case 2: {
+m.listName = r.string();
+break;
+}
+case 3: {
+m.listEmoji = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+StatusAudienceMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ContextInfo.StatusAudienceMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ContextInfo.StatusAudienceMetadata();
+switch (d.audienceType) {
+default:
+if (typeof d.audienceType === "number") {
+m.audienceType = d.audienceType;
+break;
+}
+break;
+case "UNKNOWN":
+case 0:
+m.audienceType = 0;
+break;
+case "CLOSE_FRIENDS":
+case 1:
+m.audienceType = 1;
+break;
+}
+if (d.listName != null) {
+m.listName = String(d.listName);
+}
+if (d.listEmoji != null) {
+m.listEmoji = String(d.listEmoji);
+}
+return m;
+};
+StatusAudienceMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.audienceType != null && m.hasOwnProperty("audienceType")) {
+d.audienceType = o.enums === String ? $root.proto.ContextInfo.StatusAudienceMetadata.AudienceType[m.audienceType] === undefined ? m.audienceType : $root.proto.ContextInfo.StatusAudienceMetadata.AudienceType[m.audienceType] : m.audienceType;
+if (o.oneofs)
+d._audienceType = "audienceType";
+}
+if (m.listName != null && m.hasOwnProperty("listName")) {
+d.listName = m.listName;
+if (o.oneofs)
+d._listName = "listName";
+}
+if (m.listEmoji != null && m.hasOwnProperty("listEmoji")) {
+d.listEmoji = m.listEmoji;
+if (o.oneofs)
+d._listEmoji = "listEmoji";
+}
+return d;
+};
+StatusAudienceMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+StatusAudienceMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ContextInfo.StatusAudienceMetadata";
+};
+$lazy(StatusAudienceMetadata, "AudienceType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN"] = 0;
+values[valuesById[1] = "CLOSE_FRIENDS"] = 1;
+return values;
+});
+return StatusAudienceMetadata;
+});
+$lazy(ContextInfo, "StatusSourceType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "IMAGE"] = 0;
+values[valuesById[1] = "VIDEO"] = 1;
+values[valuesById[2] = "GIF"] = 2;
+values[valuesById[3] = "AUDIO"] = 3;
+values[valuesById[4] = "TEXT"] = 4;
+values[valuesById[5] = "MUSIC_STANDALONE"] = 5;
+return values;
+});
+$lazy(ContextInfo, "UTMInfo", function() {
+function UTMInfo(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+UTMInfo.prototype.utmSource = null;
+UTMInfo.prototype.utmCampaign = null;
+let $oneOfFields;
+Object.defineProperty(UTMInfo.prototype, "_utmSource", {
+get: $util.oneOfGetter($oneOfFields = ["utmSource"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(UTMInfo.prototype, "_utmCampaign", {
+get: $util.oneOfGetter($oneOfFields = ["utmCampaign"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+UTMInfo.create = function create(properties) {
+return new UTMInfo(properties);
+};
+UTMInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.utmSource != null && Object.hasOwnProperty.call(m, "utmSource"))
+w.uint32(10).string(m.utmSource);
+if (m.utmCampaign != null && Object.hasOwnProperty.call(m, "utmCampaign"))
+w.uint32(18).string(m.utmCampaign);
+return w;
+};
+UTMInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.ContextInfo.UTMInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.utmSource = r.string();
+break;
+}
+case 2: {
+m.utmCampaign = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+UTMInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.ContextInfo.UTMInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.ContextInfo.UTMInfo();
+if (d.utmSource != null) {
+m.utmSource = String(d.utmSource);
+}
+if (d.utmCampaign != null) {
+m.utmCampaign = String(d.utmCampaign);
+}
+return m;
+};
+UTMInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.utmSource != null && m.hasOwnProperty("utmSource")) {
+d.utmSource = m.utmSource;
+if (o.oneofs)
+d._utmSource = "utmSource";
+}
+if (m.utmCampaign != null && m.hasOwnProperty("utmCampaign")) {
+d.utmCampaign = m.utmCampaign;
+if (o.oneofs)
+d._utmCampaign = "utmCampaign";
+}
+return d;
+};
+UTMInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+UTMInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.ContextInfo.UTMInfo";
+};
+return UTMInfo;
+});
+return ContextInfo;

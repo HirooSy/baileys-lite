@@ -1,0 +1,216 @@
+"use strict";
+function PollAdditionalMetadata(p) {
+this.pollNameHashHistory = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+PollAdditionalMetadata.prototype.pollInvalidated = null;
+PollAdditionalMetadata.prototype.pollNameHashHistory = $util.emptyArray;
+let $oneOfFields;
+Object.defineProperty(PollAdditionalMetadata.prototype, "_pollInvalidated", {
+get: $util.oneOfGetter($oneOfFields = ["pollInvalidated"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+PollAdditionalMetadata.create = function create(properties) {
+return new PollAdditionalMetadata(properties);
+};
+PollAdditionalMetadata.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.pollInvalidated != null && Object.hasOwnProperty.call(m, "pollInvalidated"))
+w.uint32(8).bool(m.pollInvalidated);
+if (m.pollNameHashHistory != null && m.pollNameHashHistory.length) {
+for (var i = 0; i < m.pollNameHashHistory.length; ++i)
+$root.proto.PollAdditionalMetadata.PollNameHashHistoryEntry.encode(m.pollNameHashHistory[i], w.uint32(18).fork()).ldelim();
+}
+return w;
+};
+PollAdditionalMetadata.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.PollAdditionalMetadata();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.pollInvalidated = r.bool();
+break;
+}
+case 2: {
+if (!(m.pollNameHashHistory && m.pollNameHashHistory.length))
+m.pollNameHashHistory = [];
+m.pollNameHashHistory.push($root.proto.PollAdditionalMetadata.PollNameHashHistoryEntry.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+PollAdditionalMetadata.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.PollAdditionalMetadata)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.PollAdditionalMetadata();
+if (d.pollInvalidated != null) {
+m.pollInvalidated = Boolean(d.pollInvalidated);
+}
+if (d.pollNameHashHistory) {
+if (!Array.isArray(d.pollNameHashHistory))
+throw TypeError(".proto.PollAdditionalMetadata.pollNameHashHistory: array expected");
+m.pollNameHashHistory = [];
+for (var i = 0; i < d.pollNameHashHistory.length; ++i) {
+if (typeof d.pollNameHashHistory[i] !== "object")
+throw TypeError(".proto.PollAdditionalMetadata.pollNameHashHistory: object expected");
+m.pollNameHashHistory[i] = $root.proto.PollAdditionalMetadata.PollNameHashHistoryEntry.fromObject(d.pollNameHashHistory[i], n + 1);
+}
+}
+return m;
+};
+PollAdditionalMetadata.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.pollNameHashHistory = [];
+}
+if (m.pollInvalidated != null && m.hasOwnProperty("pollInvalidated")) {
+d.pollInvalidated = m.pollInvalidated;
+if (o.oneofs)
+d._pollInvalidated = "pollInvalidated";
+}
+if (m.pollNameHashHistory && m.pollNameHashHistory.length) {
+d.pollNameHashHistory = [];
+for (var j = 0; j < m.pollNameHashHistory.length; ++j) {
+d.pollNameHashHistory[j] = $root.proto.PollAdditionalMetadata.PollNameHashHistoryEntry.toObject(m.pollNameHashHistory[j], o);
+}
+}
+return d;
+};
+PollAdditionalMetadata.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+PollAdditionalMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.PollAdditionalMetadata";
+};
+$lazy(PollAdditionalMetadata, "PollNameHashHistoryEntry", function() {
+function PollNameHashHistoryEntry(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+PollNameHashHistoryEntry.prototype.editStanzaId = null;
+PollNameHashHistoryEntry.prototype.pollNameHash = null;
+let $oneOfFields;
+Object.defineProperty(PollNameHashHistoryEntry.prototype, "_editStanzaId", {
+get: $util.oneOfGetter($oneOfFields = ["editStanzaId"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(PollNameHashHistoryEntry.prototype, "_pollNameHash", {
+get: $util.oneOfGetter($oneOfFields = ["pollNameHash"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+PollNameHashHistoryEntry.create = function create(properties) {
+return new PollNameHashHistoryEntry(properties);
+};
+PollNameHashHistoryEntry.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.editStanzaId != null && Object.hasOwnProperty.call(m, "editStanzaId"))
+w.uint32(10).string(m.editStanzaId);
+if (m.pollNameHash != null && Object.hasOwnProperty.call(m, "pollNameHash"))
+w.uint32(18).bytes(m.pollNameHash);
+return w;
+};
+PollNameHashHistoryEntry.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.PollAdditionalMetadata.PollNameHashHistoryEntry();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.editStanzaId = r.string();
+break;
+}
+case 2: {
+m.pollNameHash = r.bytes();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+PollNameHashHistoryEntry.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.PollAdditionalMetadata.PollNameHashHistoryEntry)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.PollAdditionalMetadata.PollNameHashHistoryEntry();
+if (d.editStanzaId != null) {
+m.editStanzaId = String(d.editStanzaId);
+}
+if (d.pollNameHash != null) {
+if (typeof d.pollNameHash === "string")
+$util.base64.decode(d.pollNameHash, m.pollNameHash = $util.newBuffer($util.base64.length(d.pollNameHash)), 0);
+else if (d.pollNameHash.length >= 0)
+m.pollNameHash = d.pollNameHash;
+}
+return m;
+};
+PollNameHashHistoryEntry.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.editStanzaId != null && m.hasOwnProperty("editStanzaId")) {
+d.editStanzaId = m.editStanzaId;
+if (o.oneofs)
+d._editStanzaId = "editStanzaId";
+}
+if (m.pollNameHash != null && m.hasOwnProperty("pollNameHash")) {
+d.pollNameHash = o.bytes === String ? $util.base64.encode(m.pollNameHash, 0, m.pollNameHash.length) : o.bytes === Array ? Array.prototype.slice.call(m.pollNameHash) : m.pollNameHash;
+if (o.oneofs)
+d._pollNameHash = "pollNameHash";
+}
+return d;
+};
+PollNameHashHistoryEntry.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+PollNameHashHistoryEntry.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.PollAdditionalMetadata.PollNameHashHistoryEntry";
+};
+return PollNameHashHistoryEntry;
+});
+return PollAdditionalMetadata;

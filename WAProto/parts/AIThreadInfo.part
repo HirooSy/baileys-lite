@@ -1,0 +1,316 @@
+"use strict";
+function AIThreadInfo(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIThreadInfo.prototype.serverInfo = null;
+AIThreadInfo.prototype.clientInfo = null;
+let $oneOfFields;
+Object.defineProperty(AIThreadInfo.prototype, "_serverInfo", {
+get: $util.oneOfGetter($oneOfFields = ["serverInfo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIThreadInfo.prototype, "_clientInfo", {
+get: $util.oneOfGetter($oneOfFields = ["clientInfo"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIThreadInfo.create = function create(properties) {
+return new AIThreadInfo(properties);
+};
+AIThreadInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.serverInfo != null && Object.hasOwnProperty.call(m, "serverInfo"))
+$root.proto.AIThreadInfo.AIThreadServerInfo.encode(m.serverInfo, w.uint32(10).fork()).ldelim();
+if (m.clientInfo != null && Object.hasOwnProperty.call(m, "clientInfo"))
+$root.proto.AIThreadInfo.AIThreadClientInfo.encode(m.clientInfo, w.uint32(18).fork()).ldelim();
+return w;
+};
+AIThreadInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIThreadInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.serverInfo = $root.proto.AIThreadInfo.AIThreadServerInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 2: {
+m.clientInfo = $root.proto.AIThreadInfo.AIThreadClientInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIThreadInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIThreadInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIThreadInfo();
+if (d.serverInfo != null) {
+if (typeof d.serverInfo !== "object")
+throw TypeError(".proto.AIThreadInfo.serverInfo: object expected");
+m.serverInfo = $root.proto.AIThreadInfo.AIThreadServerInfo.fromObject(d.serverInfo, n + 1);
+}
+if (d.clientInfo != null) {
+if (typeof d.clientInfo !== "object")
+throw TypeError(".proto.AIThreadInfo.clientInfo: object expected");
+m.clientInfo = $root.proto.AIThreadInfo.AIThreadClientInfo.fromObject(d.clientInfo, n + 1);
+}
+return m;
+};
+AIThreadInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.serverInfo != null && m.hasOwnProperty("serverInfo")) {
+d.serverInfo = $root.proto.AIThreadInfo.AIThreadServerInfo.toObject(m.serverInfo, o);
+if (o.oneofs)
+d._serverInfo = "serverInfo";
+}
+if (m.clientInfo != null && m.hasOwnProperty("clientInfo")) {
+d.clientInfo = $root.proto.AIThreadInfo.AIThreadClientInfo.toObject(m.clientInfo, o);
+if (o.oneofs)
+d._clientInfo = "clientInfo";
+}
+return d;
+};
+AIThreadInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIThreadInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIThreadInfo";
+};
+$lazy(AIThreadInfo, "AIThreadClientInfo", function() {
+function AIThreadClientInfo(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIThreadClientInfo.prototype.type = null;
+AIThreadClientInfo.prototype.sourceChatJid = null;
+let $oneOfFields;
+Object.defineProperty(AIThreadClientInfo.prototype, "_type", {
+get: $util.oneOfGetter($oneOfFields = ["type"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(AIThreadClientInfo.prototype, "_sourceChatJid", {
+get: $util.oneOfGetter($oneOfFields = ["sourceChatJid"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIThreadClientInfo.create = function create(properties) {
+return new AIThreadClientInfo(properties);
+};
+AIThreadClientInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.type != null && Object.hasOwnProperty.call(m, "type"))
+w.uint32(8).int32(m.type);
+if (m.sourceChatJid != null && Object.hasOwnProperty.call(m, "sourceChatJid"))
+w.uint32(18).string(m.sourceChatJid);
+return w;
+};
+AIThreadClientInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIThreadInfo.AIThreadClientInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.type = r.int32();
+break;
+}
+case 2: {
+m.sourceChatJid = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIThreadClientInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIThreadInfo.AIThreadClientInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIThreadInfo.AIThreadClientInfo();
+switch (d.type) {
+default:
+if (typeof d.type === "number") {
+m.type = d.type;
+break;
+}
+break;
+case "UNKNOWN":
+case 0:
+m.type = 0;
+break;
+case "DEFAULT":
+case 1:
+m.type = 1;
+break;
+case "INCOGNITO":
+case 2:
+m.type = 2;
+break;
+case "SIDE_CHAT":
+case 3:
+m.type = 3;
+break;
+}
+if (d.sourceChatJid != null) {
+m.sourceChatJid = String(d.sourceChatJid);
+}
+return m;
+};
+AIThreadClientInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.type != null && m.hasOwnProperty("type")) {
+d.type = o.enums === String ? $root.proto.AIThreadInfo.AIThreadClientInfo.AIThreadType[m.type] === undefined ? m.type : $root.proto.AIThreadInfo.AIThreadClientInfo.AIThreadType[m.type] : m.type;
+if (o.oneofs)
+d._type = "type";
+}
+if (m.sourceChatJid != null && m.hasOwnProperty("sourceChatJid")) {
+d.sourceChatJid = m.sourceChatJid;
+if (o.oneofs)
+d._sourceChatJid = "sourceChatJid";
+}
+return d;
+};
+AIThreadClientInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIThreadClientInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIThreadInfo.AIThreadClientInfo";
+};
+$lazy(AIThreadClientInfo, "AIThreadType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[0] = "UNKNOWN"] = 0;
+values[valuesById[1] = "DEFAULT"] = 1;
+values[valuesById[2] = "INCOGNITO"] = 2;
+values[valuesById[3] = "SIDE_CHAT"] = 3;
+return values;
+});
+return AIThreadClientInfo;
+});
+$lazy(AIThreadInfo, "AIThreadServerInfo", function() {
+function AIThreadServerInfo(p) {
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+AIThreadServerInfo.prototype.title = null;
+let $oneOfFields;
+Object.defineProperty(AIThreadServerInfo.prototype, "_title", {
+get: $util.oneOfGetter($oneOfFields = ["title"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+AIThreadServerInfo.create = function create(properties) {
+return new AIThreadServerInfo(properties);
+};
+AIThreadServerInfo.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.title != null && Object.hasOwnProperty.call(m, "title"))
+w.uint32(10).string(m.title);
+return w;
+};
+AIThreadServerInfo.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.AIThreadInfo.AIThreadServerInfo();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+m.title = r.string();
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+AIThreadServerInfo.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.AIThreadInfo.AIThreadServerInfo)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.AIThreadInfo.AIThreadServerInfo();
+if (d.title != null) {
+m.title = String(d.title);
+}
+return m;
+};
+AIThreadServerInfo.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (m.title != null && m.hasOwnProperty("title")) {
+d.title = m.title;
+if (o.oneofs)
+d._title = "title";
+}
+return d;
+};
+AIThreadServerInfo.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+AIThreadServerInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.AIThreadInfo.AIThreadServerInfo";
+};
+return AIThreadServerInfo;
+});
+return AIThreadInfo;

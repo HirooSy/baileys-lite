@@ -1,0 +1,246 @@
+"use strict";
+function InteractiveAnnotation(p) {
+this.polygonVertices = [];
+if (p)
+for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+if (p[ks[i]] != null && ks[i] !== "__proto__")
+this[ks[i]] = p[ks[i]];
+}
+InteractiveAnnotation.prototype.polygonVertices = $util.emptyArray;
+InteractiveAnnotation.prototype.shouldSkipConfirmation = null;
+InteractiveAnnotation.prototype.embeddedContent = null;
+InteractiveAnnotation.prototype.statusLinkType = null;
+InteractiveAnnotation.prototype.location = null;
+InteractiveAnnotation.prototype.newsletter = null;
+InteractiveAnnotation.prototype.embeddedAction = null;
+InteractiveAnnotation.prototype.tapAction = null;
+let $oneOfFields;
+Object.defineProperty(InteractiveAnnotation.prototype, "_shouldSkipConfirmation", {
+get: $util.oneOfGetter($oneOfFields = ["shouldSkipConfirmation"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InteractiveAnnotation.prototype, "_embeddedContent", {
+get: $util.oneOfGetter($oneOfFields = ["embeddedContent"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InteractiveAnnotation.prototype, "_statusLinkType", {
+get: $util.oneOfGetter($oneOfFields = ["statusLinkType"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(InteractiveAnnotation.prototype, "action", {
+get: $util.oneOfGetter($oneOfFields = ["location", "newsletter", "embeddedAction", "tapAction"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+InteractiveAnnotation.create = function create(properties) {
+return new InteractiveAnnotation(properties);
+};
+InteractiveAnnotation.encode = function encode(m, w) {
+if (!w)
+w = $Writer.create();
+if (m.polygonVertices != null && m.polygonVertices.length) {
+for (var i = 0; i < m.polygonVertices.length; ++i)
+$root.proto.Point.encode(m.polygonVertices[i], w.uint32(10).fork()).ldelim();
+}
+if (m.location != null && Object.hasOwnProperty.call(m, "location"))
+$root.proto.Location.encode(m.location, w.uint32(18).fork()).ldelim();
+if (m.newsletter != null && Object.hasOwnProperty.call(m, "newsletter"))
+$root.proto.ContextInfo.ForwardedNewsletterMessageInfo.encode(m.newsletter, w.uint32(26).fork()).ldelim();
+if (m.shouldSkipConfirmation != null && Object.hasOwnProperty.call(m, "shouldSkipConfirmation"))
+w.uint32(32).bool(m.shouldSkipConfirmation);
+if (m.embeddedContent != null && Object.hasOwnProperty.call(m, "embeddedContent"))
+$root.proto.EmbeddedContent.encode(m.embeddedContent, w.uint32(42).fork()).ldelim();
+if (m.embeddedAction != null && Object.hasOwnProperty.call(m, "embeddedAction"))
+w.uint32(48).bool(m.embeddedAction);
+if (m.tapAction != null && Object.hasOwnProperty.call(m, "tapAction"))
+$root.proto.TapLinkAction.encode(m.tapAction, w.uint32(58).fork()).ldelim();
+if (m.statusLinkType != null && Object.hasOwnProperty.call(m, "statusLinkType"))
+w.uint32(64).int32(m.statusLinkType);
+return w;
+};
+InteractiveAnnotation.decode = function decode(r, l, e, n) {
+if (!(r instanceof $Reader))
+r = $Reader.create(r);
+if (n === undefined)
+n = 0;
+if (n > $Reader.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var c = l === undefined ? r.len : r.pos + l, m = new $root.proto.InteractiveAnnotation();
+while (r.pos < c) {
+var t = r.uint32();
+if (t === e)
+break;
+switch (t >>> 3) {
+case 1: {
+if (!(m.polygonVertices && m.polygonVertices.length))
+m.polygonVertices = [];
+m.polygonVertices.push($root.proto.Point.decode(r, r.uint32(), undefined, n + 1));
+break;
+}
+case 4: {
+m.shouldSkipConfirmation = r.bool();
+break;
+}
+case 5: {
+m.embeddedContent = $root.proto.EmbeddedContent.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 8: {
+m.statusLinkType = r.int32();
+break;
+}
+case 2: {
+m.location = $root.proto.Location.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 3: {
+m.newsletter = $root.proto.ContextInfo.ForwardedNewsletterMessageInfo.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 6: {
+m.embeddedAction = r.bool();
+break;
+}
+case 7: {
+m.tapAction = $root.proto.TapLinkAction.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+default:
+r.skipType(t & 7, n);
+break;
+}
+}
+return m;
+};
+InteractiveAnnotation.fromObject = function fromObject(d, n) {
+if (d instanceof $root.proto.InteractiveAnnotation)
+return d;
+if (n === undefined)
+n = 0;
+if (n > $util.recursionLimit)
+throw Error("maximum nesting depth exceeded");
+var m = new $root.proto.InteractiveAnnotation();
+if (d.polygonVertices) {
+if (!Array.isArray(d.polygonVertices))
+throw TypeError(".proto.InteractiveAnnotation.polygonVertices: array expected");
+m.polygonVertices = [];
+for (var i = 0; i < d.polygonVertices.length; ++i) {
+if (typeof d.polygonVertices[i] !== "object")
+throw TypeError(".proto.InteractiveAnnotation.polygonVertices: object expected");
+m.polygonVertices[i] = $root.proto.Point.fromObject(d.polygonVertices[i], n + 1);
+}
+}
+if (d.shouldSkipConfirmation != null) {
+m.shouldSkipConfirmation = Boolean(d.shouldSkipConfirmation);
+}
+if (d.embeddedContent != null) {
+if (typeof d.embeddedContent !== "object")
+throw TypeError(".proto.InteractiveAnnotation.embeddedContent: object expected");
+m.embeddedContent = $root.proto.EmbeddedContent.fromObject(d.embeddedContent, n + 1);
+}
+switch (d.statusLinkType) {
+default:
+if (typeof d.statusLinkType === "number") {
+m.statusLinkType = d.statusLinkType;
+break;
+}
+break;
+case "RASTERIZED_LINK_PREVIEW":
+case 1:
+m.statusLinkType = 1;
+break;
+case "RASTERIZED_LINK_TRUNCATED":
+case 2:
+m.statusLinkType = 2;
+break;
+case "RASTERIZED_LINK_FULL_URL":
+case 3:
+m.statusLinkType = 3;
+break;
+}
+if (d.location != null) {
+if (typeof d.location !== "object")
+throw TypeError(".proto.InteractiveAnnotation.location: object expected");
+m.location = $root.proto.Location.fromObject(d.location, n + 1);
+}
+if (d.newsletter != null) {
+if (typeof d.newsletter !== "object")
+throw TypeError(".proto.InteractiveAnnotation.newsletter: object expected");
+m.newsletter = $root.proto.ContextInfo.ForwardedNewsletterMessageInfo.fromObject(d.newsletter, n + 1);
+}
+if (d.embeddedAction != null) {
+m.embeddedAction = Boolean(d.embeddedAction);
+}
+if (d.tapAction != null) {
+if (typeof d.tapAction !== "object")
+throw TypeError(".proto.InteractiveAnnotation.tapAction: object expected");
+m.tapAction = $root.proto.TapLinkAction.fromObject(d.tapAction, n + 1);
+}
+return m;
+};
+InteractiveAnnotation.toObject = function toObject(m, o) {
+if (!o)
+o = {};
+var d = {};
+if (o.arrays || o.defaults) {
+d.polygonVertices = [];
+}
+if (m.polygonVertices && m.polygonVertices.length) {
+d.polygonVertices = [];
+for (var j = 0; j < m.polygonVertices.length; ++j) {
+d.polygonVertices[j] = $root.proto.Point.toObject(m.polygonVertices[j], o);
+}
+}
+if (m.location != null && m.hasOwnProperty("location")) {
+d.location = $root.proto.Location.toObject(m.location, o);
+if (o.oneofs)
+d.action = "location";
+}
+if (m.newsletter != null && m.hasOwnProperty("newsletter")) {
+d.newsletter = $root.proto.ContextInfo.ForwardedNewsletterMessageInfo.toObject(m.newsletter, o);
+if (o.oneofs)
+d.action = "newsletter";
+}
+if (m.shouldSkipConfirmation != null && m.hasOwnProperty("shouldSkipConfirmation")) {
+d.shouldSkipConfirmation = m.shouldSkipConfirmation;
+if (o.oneofs)
+d._shouldSkipConfirmation = "shouldSkipConfirmation";
+}
+if (m.embeddedContent != null && m.hasOwnProperty("embeddedContent")) {
+d.embeddedContent = $root.proto.EmbeddedContent.toObject(m.embeddedContent, o);
+if (o.oneofs)
+d._embeddedContent = "embeddedContent";
+}
+if (m.embeddedAction != null && m.hasOwnProperty("embeddedAction")) {
+d.embeddedAction = m.embeddedAction;
+if (o.oneofs)
+d.action = "embeddedAction";
+}
+if (m.tapAction != null && m.hasOwnProperty("tapAction")) {
+d.tapAction = $root.proto.TapLinkAction.toObject(m.tapAction, o);
+if (o.oneofs)
+d.action = "tapAction";
+}
+if (m.statusLinkType != null && m.hasOwnProperty("statusLinkType")) {
+d.statusLinkType = o.enums === String ? $root.proto.InteractiveAnnotation.StatusLinkType[m.statusLinkType] === undefined ? m.statusLinkType : $root.proto.InteractiveAnnotation.StatusLinkType[m.statusLinkType] : m.statusLinkType;
+if (o.oneofs)
+d._statusLinkType = "statusLinkType";
+}
+return d;
+};
+InteractiveAnnotation.prototype.toJSON = function toJSON() {
+return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+};
+InteractiveAnnotation.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+if (typeUrlPrefix === undefined) {
+typeUrlPrefix = "type.googleapis.com";
+}
+return typeUrlPrefix + "/proto.InteractiveAnnotation";
+};
+$lazy(InteractiveAnnotation, "StatusLinkType", function() {
+const valuesById = {}, values = Object.create(valuesById);
+values[valuesById[1] = "RASTERIZED_LINK_PREVIEW"] = 1;
+values[valuesById[2] = "RASTERIZED_LINK_TRUNCATED"] = 2;
+values[valuesById[3] = "RASTERIZED_LINK_FULL_URL"] = 3;
+return values;
+});
+return InteractiveAnnotation;
