@@ -348,8 +348,6 @@ export const getErrorCodeFromStreamError = node => {
 	const [reasonNode] = getAllBinaryNodeChildren(node)
 	let reason = reasonNode?.tag || 'unknown'
 	let statusCode = +(node.attrs.code || CODE_MAP[reason] || DisconnectReason.badSession)
-	// <conflict type="replaced"/> = sesi tergantikan koneksi lain (440, jangan reconnect otomatis).
-	// conflict dengan type lain = device dicabut dari ponsel -> sesi tidak valid lagi (401).
 	if (reason === 'conflict' && !node.attrs.code) {
 		if (reasonNode?.attrs?.type === 'replaced') {
 			statusCode = DisconnectReason.connectionReplaced
@@ -726,7 +724,7 @@ export const makeNoiseHandler = ({ keyPair: { private: privateKey, public: publi
 	let destroyed = false
 	let decodeChain = Promise.resolve()
 
-	const MAX_IN_BYTES = 10 * 1024 * 1024
+	const MAX_IN_BYTES = 32 * 1024 * 1024
 
 	if (routingInfo) {
 		introHeader = Buffer.alloc(7 + routingInfo.byteLength + NOISE_HEADER.length)
@@ -788,7 +786,7 @@ export const makeNoiseHandler = ({ keyPair: { private: privateKey, public: publi
 			let frame = inBytes.subarray(3, size + 3)
 			inBytes = inBytes.length === size + 3 ? EMPTY_BYTES : inBytes.subarray(size + 3)
 			if (transport) {
-				const result = transport.decrypt(frame) // gagal decrypt = counter tidak sinkron lagi -> biarkan melempar (fatal)
+				const result = transport.decrypt(frame)
 				try {
 					frame = await decodeBinaryNode(result)
 				} catch (err) {
@@ -798,7 +796,6 @@ export const makeNoiseHandler = ({ keyPair: { private: privateKey, public: publi
 				if (destroyed) return
 			}
 			if (logger.level === 'trace') logger.trace({ msg: frame?.attrs?.id }, 'recv frame')
-			// listener sinkron yang melempar tidak boleh membuang sisa frame yang sudah terbaca dari buffer
 			try {
 				onFrame(frame)
 			} catch (err) {
@@ -867,15 +864,12 @@ export const makeNoiseHandler = ({ keyPair: { private: privateKey, public: publi
 					inBytes = inBytes.length === 0 ? newData : Buffer.concat([inBytes, newData])
 				}
 				if (inBytes.length > MAX_IN_BYTES) {
-					logger.error({ bufferedBytes: inBytes.length, max: MAX_IN_BYTES }, 'noise handler inBytes buffer exceeded cap, clearing')
 					inBytes = EMPTY_BYTES
 					pendingOnFrame = null
-					return
+					throw new Boom('Noise inbound buffer limit exceeded', { statusCode: DisconnectReason.connectionLost })
 				}
 				if (!isWaitingForTransport) await processData(onFrame)
 			}
-			// rantai: tiap pemanggilan menunggu yang sebelumnya selesai; error tidak meracuni rantai,
-			// tapi tetap diteruntukkan ke pemanggil lewat promise yang dikembalikan
 			const result = decodeChain.then(run)
 			decodeChain = result.catch(() => {})
 			return result

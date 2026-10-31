@@ -60,8 +60,6 @@ export const executeWMexQuery = async (variables, queryId, dataPath, query, gene
 	throw new Boom(`Failed to ${action}, unexpected response structure.`, { statusCode: 400, data: result })
 }
 
-// requestPairingCode() menaruh me = { id, name: '~' } sebagai penanda sementara; pair-success menggantinya dengan identitas asli
-// sekaligus mengisi creds.account. Selama account belum ada, me itu hanyalah sisa pairing yang belum selesai.
 const isUnfinishedPairing = creds => creds?.me?.name === '~' && !creds.account
 
 export const makeSocket = config => {
@@ -80,7 +78,7 @@ export const makeSocket = config => {
 		logger.warn('⚠️ DANGER: DISABLING ALL SYNC BY shouldSyncHistoryMsg PREVENTS BAILEYS FROM ACCESSING INITIAL LID MAPPINGS, LEADING TO INSTABILIY AND SESSION ERRORS')
 	}
 
-	const url = new URL(typeof waWebSocketUrl === 'string' ? waWebSocketUrl : waWebSocketUrl.href) // salinan: jangan mutasi URL milik pemanggil
+	const url = new URL(typeof waWebSocketUrl === 'string' ? waWebSocketUrl : waWebSocketUrl.href)
 	if (config.mobile || url.protocol === 'tcp:') throw new Boom('Mobile API is not supported anymore', { statusCode: DisconnectReason.loggedOut })
 	const routingInfo = authState?.creds?.routingInfo
 	let wsConfig = config
@@ -122,42 +120,48 @@ export const makeSocket = config => {
 		return sendRawMessage(buff)
 	}
 
+	const connectionClosedError = () => new Boom('Connection Closed', { statusCode: DisconnectReason.connectionClosed })
+
+	const listenForResponse = (msgId, timeoutMs) => {
+		let cleanup = () => {}
+		let abort = () => {}
+		const promise = promiseTimeout(timeoutMs, (resolve, reject) => {
+			const onRecv = data => resolve(data)
+			const onClose = () => reject(connectionClosedError())
+			const onError = err => reject(err instanceof Error ? err : connectionClosedError())
+			ws.on(`${DEF_TAG_PREFIX}${msgId}`, onRecv)
+			ws.on('close', onClose)
+			ws.on('error', onError)
+			abort = reject
+			cleanup = () => {
+				ws.off(`${DEF_TAG_PREFIX}${msgId}`, onRecv)
+				ws.off('close', onClose)
+				ws.off('error', onError)
+			}
+		}).finally(() => cleanup())
+		return { promise, abort: error => abort(error) }
+	}
+
 	const waitForMessage = async (msgId, timeoutMs = defaultQueryTimeoutMs) => {
-		let onRecv
-		let onErr
 		try {
-			return await promiseTimeout(timeoutMs, (resolve, reject) => {
-				onRecv = data => resolve(data)
-				onErr = err => reject(err || new Boom('Connection Closed', { statusCode: DisconnectReason.connectionClosed }))
-				ws.on(`TAG:${msgId}`, onRecv)
-				ws.on('close', onErr)
-				ws.on('error', onErr)
-				return () => reject(new Boom('Query Cancelled'))
-			})
+			return await listenForResponse(msgId, timeoutMs).promise
 		} catch (error) {
-			if (error instanceof Boom && error.output?.statusCode === DisconnectReason.timedOut) {
-				logger?.warn?.({ msgId }, 'timed out waiting for message')
-				return undefined
-			}
+			if (error instanceof Boom && error.output?.statusCode === DisconnectReason.timedOut) return undefined
 			throw error
-		} finally {
-			if (onRecv) ws.off(`TAG:${msgId}`, onRecv)
-			if (onErr) {
-				ws.off('close', onErr)
-				ws.off('error', onErr)
-			}
 		}
 	}
 
 	const query = async (node, timeoutMs) => {
 		if (!node.attrs.id) node.attrs.id = generateMessageTag()
-		const msgId = node.attrs.id
-		const result = await promiseTimeout(timeoutMs, async (resolve, reject) => {
-			const result_ = waitForMessage(msgId, timeoutMs).catch(reject)
-			sendNode(node)
-				.then(async () => resolve(await result_))
-				.catch(reject)
-		})
+		const listener = listenForResponse(node.attrs.id, timeoutMs || defaultQueryTimeoutMs)
+		listener.promise.catch(() => {})
+		try {
+			await sendNode(node)
+		} catch (error) {
+			listener.abort(error)
+			throw error
+		}
+		const result = await listener.promise
 		if (result && 'tag' in result) assertNodeErrorFree(result)
 		return result
 	}
@@ -289,9 +293,6 @@ export const makeSocket = config => {
 	const ev = makeEventBuffer(logger)
 	const { creds } = authState
 
-	// Sisa pairing yang tidak pernah selesai bukan sesi login: requestPairingCode() mengisi creds.me sementara (name '~')
-	// dan itu ikut tersimpan. Kalau dibiarkan, validateConnection() mengirim LOGIN untuk nomor yang belum terdaftar,
-	// server membalas 401 (loggedOut) dan sesi macet selamanya tanpa pernah meminta pairing lagi.
 	if (isUnfinishedPairing(creds)) {
 		logger.info({ me: creds.me?.id }, 'discarding unfinished pairing state from a previous attempt')
 		creds.me = undefined
@@ -315,18 +316,20 @@ export const makeSocket = config => {
 		if (!ws.isOpen) throw new Boom('Connection Closed', { statusCode: DisconnectReason.connectionClosed })
 		let onOpen
 		let onClose
+		let onError
 		const result = promiseTimeout(connectTimeoutMs, (resolve, reject) => {
 			onOpen = resolve
-			onClose = mapWebSocketError(reject)
+			onClose = () => reject(connectionClosedError())
+			onError = mapWebSocketError(reject)
 			ws.on('frame', onOpen)
 			ws.on('close', onClose)
-			ws.on('error', onClose)
+			ws.on('error', onError)
 		}).finally(() => {
 			ws.off('frame', onOpen)
 			ws.off('close', onClose)
-			ws.off('error', onClose)
+			ws.off('error', onError)
 		})
-		if (sendMsg) sendRawMessage(sendMsg).catch(onClose)
+		if (sendMsg) sendRawMessage(sendMsg).catch(error => onError(error))
 		return result
 	}
 
@@ -390,13 +393,15 @@ export const makeSocket = config => {
 				throw uploadError
 			}
 		}
-		uploadPreKeysPromise = Promise.race([
-			uploadLogic(0),
-			new Promise((_, reject) => setTimeout(() => reject(new Boom('Pre-key upload timeout', { statusCode: 408 })), UPLOAD_TIMEOUT))
-		])
+		let uploadTimer
+		const uploadTimeout = new Promise((_, reject) => {
+			uploadTimer = setTimeout(() => reject(new Boom('Pre-key upload timeout', { statusCode: 408 })), UPLOAD_TIMEOUT)
+		})
+		uploadPreKeysPromise = Promise.race([uploadLogic(0), uploadTimeout])
 		try {
 			await uploadPreKeysPromise
 		} finally {
+			clearTimeout(uploadTimer)
 			uploadPreKeysPromise = null
 		}
 	}
@@ -458,8 +463,6 @@ export const makeSocket = config => {
 			}
 		})
 		} catch (err) {
-			// satu-satunya error yang sampai sini: gagal decrypt frame (counter noise tidak sinkron) -> koneksi tidak bisa dipakai lagi.
-			// ditangani agar tidak jadi unhandled rejection yang mematikan proses.
 			if (closed) return
 			logger.error({ err }, 'failed to process inbound frame, closing connection')
 			void end(new Boom('Connection Terminated (inbound frame failed)', { statusCode: DisconnectReason.connectionLost, data: { cause: err } }))
@@ -479,7 +482,7 @@ export const makeSocket = config => {
 		consecutivePingFailures = 0
 
 		ws.removeAllListeners()
-		ws.on('error', () => {}) // error telat dari socket yang sedang ditutup tidak boleh jadi uncaught exception
+		ws.on('error', () => {})
 
 		noise.destroy?.()
 		signalRepository.close?.()
@@ -509,16 +512,18 @@ export const makeSocket = config => {
 		if (ws.isClosed || ws.isClosing) throw new Boom('Connection Closed', { statusCode: DisconnectReason.connectionClosed })
 		let onOpen
 		let onClose
+		let onError
 		await new Promise((resolve, reject) => {
 			onOpen = () => resolve(undefined)
-			onClose = mapWebSocketError(reject)
+			onClose = () => reject(connectionClosedError())
+			onError = mapWebSocketError(reject)
 			ws.on('open', onOpen)
 			ws.on('close', onClose)
-			ws.on('error', onClose)
+			ws.on('error', onError)
 		}).finally(() => {
 			ws.off('open', onOpen)
 			ws.off('close', onClose)
-			ws.off('error', onClose)
+			ws.off('error', onError)
 		})
 	}
 
@@ -568,7 +573,6 @@ export const makeSocket = config => {
 			})
 	}
 
-	// Timer yang telat lebih dari ini berarti event loop sempat macet, bukan jaringan yang diam.
 	const KEEPALIVE_STALL_TOLERANCE_MS = 1000
 	let lastKeepAliveTick = 0
 	const startKeepAliveRequest = () => {
@@ -579,13 +583,9 @@ export const makeSocket = config => {
 			lastKeepAliveTick = now
 			if (!lastDateRecv) lastDateRecv = new Date()
 			if (stalledMs > KEEPALIVE_STALL_TOLERANCE_MS) {
-				// Event loop sempat macet (mis. penulisan DB sinkron saat login pertama: ratusan pre-key + sync awal).
-				// Selama macet frame dari server tidak bisa dibaca, jadi lamanya macet tidak boleh dihitung sebagai "server diam";
-				// kalau dihitung, koneksi yang sehat diputus dengan "Connection was lost" (408) begitu loop bebas lagi.
 				lastDateRecv = new Date(Math.min(now, lastDateRecv.getTime() + stalledMs))
 				logger.warn({ stalledMs, keepAliveIntervalMs }, 'event loop was blocked, keep-alive silence window shifted')
 			}
-			// Penilaian ditunda ke fase check supaya frame yang sudah menumpuk di socket terbaca (fase poll) lebih dulu.
 			setImmediate(runKeepAliveCheck)
 		}, keepAliveIntervalMs)
 	}
@@ -607,12 +607,9 @@ export const makeSocket = config => {
 	const requestPairingCode = async (phoneNumber, customPairingCode) => {
 		const customCode = customPairingCode == null ? '' : String(customPairingCode)
 		if (customCode && customCode.length !== 8) throw new Error('Custom pairing code must be exactly 8 characters')
-		// "+62 812-3456-7890" / "0812..." dll: jid hanya boleh berisi digit nomor internasional
 		const phone = String(phoneNumber ?? '').replace(/\D/g, '')
 		if (phone.length < 7 || phone.length > 15) throw new Error('Invalid phone number: use the international format, digits only (e.g. 6281234567890)')
 		if (authState.creds.account) throw new Boom('Session is already paired, log out before requesting a new pairing code', { statusCode: 400 })
-		// Socket yang sudah mati (mis. user terlalu lama mengetik nomor sampai refs QR habis & koneksi ditutup) tidak boleh
-		// menyentuh creds: creds.me sementara yang ikut tersimpan membuat start berikutnya LOGIN dan ditolak 401.
 		if (closed || !ws.isOpen) throw new Boom('Connection Closed', { statusCode: DisconnectReason.connectionClosed })
 
 		const previous = { me: authState.creds.me, pairingCode: authState.creds.pairingCode }
@@ -639,7 +636,6 @@ export const makeSocket = config => {
 				]
 			})
 		} catch (error) {
-			// permintaan tidak sampai ke server: kembalikan creds seperti sebelum dipanggil
 			authState.creds.me = previous.me
 			authState.creds.pairingCode = previous.pairingCode
 			ev.emit('creds.update', authState.creds)
@@ -806,7 +802,7 @@ export const makeSocket = config => {
 
 	ev.on('creds.update', update => {
 		const name = update.me?.name
-		if (creds.me?.name !== name) {
+		if (name && name !== '~' && creds.me?.name !== name) {
 			logger.debug({ name }, 'updated pushName')
 			sendNode({ tag: 'presence', attrs: { name } }).catch(err => logger.warn({ trace: err.stack }, 'error in sending presence update on name change'))
 		}

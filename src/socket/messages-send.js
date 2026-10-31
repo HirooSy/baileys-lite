@@ -78,9 +78,16 @@ export const makeMessagesSocket = (config) => {
 
     let mediaHost = DEF_MEDIA_HOST;
     const refreshMediaConn = async (forceGet = false) => {
-        const media = await mediaConn;
+        let media;
+        try {
+            media = await mediaConn;
+        }
+        catch {
+            media = undefined;
+            mediaConn = undefined;
+        }
         if (!media || forceGet || new Date().getTime() - media.fetchDate.getTime() > media.ttl * 1000) {
-            mediaConn = (async () => {
+            const pending = (async () => {
                 const result = await query({
                     tag: 'iq',
                     attrs: {
@@ -107,8 +114,15 @@ export const makeMessagesSocket = (config) => {
                 }
                 return node;
             })();
+            mediaConn = pending;
+            pending.catch(() => {
+                if (mediaConn === pending) {
+                    mediaConn = undefined;
+                }
+            });
+            return pending;
         }
-        return mediaConn;
+        return media;
     };
 
     const sendReceipt = async (jid, participant, messageIds, type) => {
@@ -453,7 +467,6 @@ export const makeMessagesSocket = (config) => {
             }
             catch (err) {
                 logger.error({ jid, err }, 'Failed to encrypt for recipient');
-                console.error('[sPR-DEBUG] encrypt failed for', jid, err?.message, err?.stack?.split('\n')[1]);
                 return null;
             }
         });
@@ -629,7 +642,6 @@ export const makeMessagesSocket = (config) => {
                         if ((!senderKeyMap[deviceJid] || !!participant) &&
                             !isHostedLidUser(deviceJid) && !isHostedPnUser(deviceJid) && device.device !== 99) {
                             senderKeyRecipients.push(deviceJid);
-                            senderKeyMap[deviceJid] = true;
                         }
                     }
                     if (senderKeyRecipients.length) {
@@ -638,6 +650,9 @@ export const makeMessagesSocket = (config) => {
                         const r = await createParticipantNodes(senderKeyRecipients, senderKeyMsg, extraAttrs);
                         shouldIncludeDeviceIdentity = shouldIncludeDeviceIdentity || r.shouldIncludeDeviceIdentity;
                         participants.push(...r.nodes);
+                        for (const node of r.nodes) {
+                            senderKeyMap[node.attrs.jid] = true;
+                        }
                     }
                     binaryNodeContent.push({ tag: 'enc', attrs: { v: '2', type: 'skmsg', ...extraAttrs }, content: ciphertext });
                     await authState.keys.set({ 'sender-key-memory': { [jid]: senderKeyMap } });
@@ -670,9 +685,7 @@ export const makeMessagesSocket = (config) => {
                             !isHostedLidUser(deviceJid) &&
                             !isHostedPnUser(deviceJid) &&
                             device.device !== 99) {
-
                             senderKeyRecipients.push(deviceJid);
-                            senderKeyMap[deviceJid] = true;
                         }
                     }
                     if (senderKeyRecipients.length) {
@@ -688,6 +701,9 @@ export const makeMessagesSocket = (config) => {
                         const result = await createParticipantNodes(senderKeyRecipients, senderKeyMsg, extraAttrs);
                         shouldIncludeDeviceIdentity = shouldIncludeDeviceIdentity || result.shouldIncludeDeviceIdentity;
                         participants.push(...result.nodes);
+                        for (const node of result.nodes) {
+                            senderKeyMap[node.attrs.jid] = true;
+                        }
                     }
                     binaryNodeContent.push({
                         tag: 'enc',
@@ -1312,8 +1328,8 @@ export const makeMessagesSocket = (config) => {
                 const isQuizMsg = 'poll' in content && !!content.poll?.pollType;
                 const isAiMsg = 'ai' in content && !!content.ai;
                 const isNeedBizAttrs = 'secureMetaServiceLabel' in content && !!content.secureMetaServiceLabel;
-                const additionalAttributes = options.additionalAttributes || {};
-                const additionalNodes = options.additionalNodes || [];
+                const additionalAttributes = { ...(options.additionalAttributes || {}) };
+                const additionalNodes = [...(options.additionalNodes || [])];
 
                 if (isDeleteMsg || isKeepMsg) {
 
@@ -1367,7 +1383,6 @@ export const makeMessagesSocket = (config) => {
                         },
                         content: undefined
                     });
-                    delete content.ai;
                 }
                 await relayMessage(jid, fullMsg.message, {
                     messageId: fullMsg.key.id,

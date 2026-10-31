@@ -1252,7 +1252,6 @@ export const makeMessagesRecvSocket = (config) => {
                         if (ids[0] && key.participant && (await willSendMessageAgain(ids[0], key.participant))) {
                             if (key.fromMe) {
                                 try {
-                                    await updateSendMessageAgainCount(ids[0], key.participant);
                                     logger.debug({ attrs, key }, 'recv retry request');
                                     await sendMessagesAgain(key, ids, retryNode, node);
                                 }
@@ -1586,6 +1585,9 @@ export const makeMessagesRecvSocket = (config) => {
                     }
                 }
             ]);
+        }
+        else if (attrs.id && attrs.from) {
+            ev.emit('messages.update', [{ key, update: { status: WAMessageStatus.SERVER_ACK } }]);
         }
     };
 
