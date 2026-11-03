@@ -483,8 +483,8 @@ const processMessage = async (message, { shouldProcessHistoryMsg, placeholderRes
 
 export default processMessage
 
-const RECENT_MESSAGES_SIZE = 512
-const RECENT_MESSAGES_BYTES = 4 * 1024 * 1024
+const RECENT_MESSAGES_SIZE = 256
+const RECENT_MESSAGES_BYTES = 1024 * 1024
 const MESSAGE_KEY_SEPARATOR = '\u0000'
 const RECREATE_SESSION_TIMEOUT = 60 * 60 * 1000
 const PHONE_REQUEST_DELAY = 3000

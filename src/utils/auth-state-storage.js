@@ -89,7 +89,7 @@ const SIGNAL_STORE_TTL_MS = 5 * 60 * 1000
 const FLUSH_TIMEOUT_MS = 3000
 
 export const useSingleFileAuthState = async fileName => {
-	const cache = new Cache({ max: 20000, ttl: SIGNAL_STORE_TTL_MS })
+	const cache = new Cache({ max: 4096, ttl: SIGNAL_STORE_TTL_MS })
 	const mutex = makeKeyedMutex()
 	let fileData = {}
 	let isLoaded = false

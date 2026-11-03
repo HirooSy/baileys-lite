@@ -100,7 +100,7 @@ export class PreKeyManager {
 }
 
 const txStorage = new AsyncLocalStorage()
-const SIGNAL_CACHE_BYTES = 6 * 1024 * 1024
+const SIGNAL_CACHE_BYTES = 1024 * 1024
 
 export function makeCacheableSignalKeyStore(store, logger, _cache) {
 

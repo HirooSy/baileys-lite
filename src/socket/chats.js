@@ -61,7 +61,7 @@ export const makeChatsSocket = config => {
 	const historySyncStatus = { initialBootstrapComplete: false, recentSyncComplete: false }
 	let historySyncPausedTimeout
 	const blockedCollections = new Set()
-	const placeholderResendCache = config.placeholderResendCache || new Cache({ ttl: DEFAULT_CACHE_TTLS.MSG_RETRY * 1000 })
+	const placeholderResendCache = config.placeholderResendCache || new Cache({ max: 1024, ttl: DEFAULT_CACHE_TTLS.MSG_RETRY * 1000 })
 
 	const getAppStateSyncKey = async keyId => {
 		const { [keyId]: key } = await authState.keys.get('app-state-sync-key', [keyId])
