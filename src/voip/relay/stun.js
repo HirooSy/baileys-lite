@@ -175,11 +175,13 @@ function encodeXorRelayedAddress(ip, port) {
     return data;
 }
 
-export function buildAllocateForRelay(relayToken, streamDescriptors, hmacKey, relayIp, relayPort) {
-    const transactionId = generateTransactionId();
+export function buildAllocateForRelay(relayToken, streamDescriptors, hmacKey, relayIp, relayPort, username, transactionId = generateTransactionId()) {
     const parts = [];
     parts.push(encodeAttribute(ATTR_SENDER_SUBSCRIPTIONS, relayToken));
     parts.push(encodeAttribute(ATTR_SSRC_LIST, streamDescriptors));
+    parts.push(encodeAttribute(ATTR_REQUESTED_TRANSPORT, new Uint8Array([17, 0, 0, 0])));
+    if (username && username.length > 0)
+        parts.push(encodeAttribute(ATTR_USERNAME, username));
     parts.push(encodeAttribute(ATTR_XOR_RELAYED_ADDRESS, encodeXorRelayedAddress(relayIp, relayPort)));
     const attrs = concatBytes(parts);
     return buildStunMessage(STUN_ALLOCATE_REQUEST, attrs, transactionId, hmacKey, false);
@@ -236,8 +238,7 @@ export function buildBindingSuccessResponse(transactionId, mappedIp, mappedPort,
     const STUN_BINDING_SUCCESS_RESPONSE = 0x0101;
     return buildStunMessage(STUN_BINDING_SUCCESS_RESPONSE, attrs, transactionId, hmacKey, true);
 }
-export function buildBindingRequestWithSubs(username, hmacKey, senderSubscriptions, includeIceControlling, includeFingerprint) {
-    const transactionId = generateTransactionId();
+export function buildBindingRequestWithSubs(username, hmacKey, senderSubscriptions, includeIceControlling, includeFingerprint, transactionId = generateTransactionId()) {
     const parts = [];
     if (username && username.length > 0) {
         parts.push(encodeAttribute(ATTR_USERNAME, username));
@@ -279,8 +280,7 @@ export function buildAllocateRequest(username, hmacKey, lifetime = 3600) {
 export function buildRelayBindingSuccess(transactionId, hmacKey) {
     return buildStunMessage(0x0101, new Uint8Array(0), transactionId, hmacKey, true);
 }
-export function buildWhatsAppPing() {
-    const transactionId = generateTransactionId();
+export function buildWhatsAppPing(transactionId = generateTransactionId()) {
     const header = new Uint8Array(20);
     writeUInt16BE(header, WHATSAPP_PING, 0);
     writeUInt16BE(header, 0, 2);

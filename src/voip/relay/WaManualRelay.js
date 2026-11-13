@@ -5,8 +5,7 @@ import { PreNegotiatedDataChannel } from './datachannel/pre-negotiated.js';
 import { createNoopLogger } from '../shim/core.js';
 import { toError } from '../shim/util.js';
 import { TEXT_ENCODER, toArrayBuffer } from '../bytes.js';
-import { buildAllocateForRelay, buildBindingRequest, buildRelayBindingSuccess, buildWhatsAppPing, createWasmStreamDescriptors, parseStunResponse } from './stun.js';
-import { randomBytes } from 'node:crypto';
+import { buildAllocateForRelay, buildBindingRequest, buildBindingRequestWithSubs, buildRelayBindingSuccess, buildSenderSubscriptions, buildSSRCSubscriptionList, buildWhatsAppPing, parseStunResponse } from './stun.js';
 import { PayloadType } from '../types.js';
 
 const CONFIG = {
@@ -47,12 +46,14 @@ export class WaManualRelay extends EventEmitter {
   audioSsrc = 0;
   videoSsrc = 0;
   subscriptionSsrc = 0;
-  streamSsrcs = null;
+  selfPid = 0;
+  peerPid = 0;
   rxStun = { bindReq: 0, bindAnswered: 0, allocOk: 0, allocErr: 0, pong: 0, other: 0 };
   configuring = false;
   globalBuffer = [];
   globalBufferedBytes = 0;
   stats = { sent: 0, received: 0, connected: 0 };
+  retrySchedule = [1000, 2000, 4000];
 
   constructor(options = {}) {
     super();
@@ -61,22 +62,11 @@ export class WaManualRelay extends EventEmitter {
 
   setSsrc(ssrc) {
     this.audioSsrc = ssrc;
-    this.logger.debug('manual relay ssrc set', { ssrc: `0x${ssrc.toString(16).padStart(8, '0')}` });
   }
 
-  setStreamSsrcs(streamSsrcs) {
-    const out = Array.from(streamSsrcs, (v) => v >>> 0);
-    const used = new Set(out.slice(0, 6).filter((v) => v !== 0));
-    for (let i = 6; i < 9; i++) {
-      for (let attempt = 0; attempt < 64; attempt++) {
-        const candidate = randomBytes(4).readUInt32LE(0);
-        if (candidate === 0 || used.has(candidate)) continue;
-        out[i] = candidate;
-        used.add(candidate);
-        break;
-      }
-    }
-    this.streamSsrcs = out;
+  setParticipantIds(selfPid, peerPid) {
+    this.selfPid = selfPid ?? 0;
+    this.peerPid = peerPid ?? 0;
   }
 
   getRxStunStats() {
@@ -85,14 +75,10 @@ export class WaManualRelay extends EventEmitter {
 
   setVideoSsrc(ssrc) {
     this.videoSsrc = ssrc;
-    this.logger.debug('manual relay video ssrc set', { ssrc: `0x${ssrc.toString(16).padStart(8, '0')}` });
   }
 
   setSubscriptionSsrc(ssrc) {
     this.subscriptionSsrc = ssrc;
-    this.logger.debug('manual relay subscription ssrc set', {
-      ssrc: `0x${ssrc.toString(16).padStart(8, '0')}`
-    });
   }
 
   makeConnectionId(ip, port, authTokenId) {
@@ -101,7 +87,6 @@ export class WaManualRelay extends EventEmitter {
   }
 
   async configureRelays(relays) {
-    this.logger.debug('manual relay configuring relays', { count: relays.length });
     this.configuring = true;
     for (const relay of relays) {
       const port = relay.port || CONFIG.TRUE_WEB_CLIENT_RELAY_PORT;
@@ -128,7 +113,6 @@ export class WaManualRelay extends EventEmitter {
       }
     }
     await Promise.all(connectionPromises);
-    this.logger.debug('manual relay configuration done', { connected: this.stats.connected });
     this.configuring = false;
     if (this.globalBuffer.length > 0) {
       for (const item of this.globalBuffer) this.sendToRelay(item.ip, item.port, item.data);
@@ -152,6 +136,10 @@ export class WaManualRelay extends EventEmitter {
         connectionTimeout: null,
         keepaliveTimer: null,
         iceConsentTimer: null,
+        retryTimer: null,
+        retryCount: 0,
+        recovering: false,
+        lastInboundAt: 0,
         localUfrag: randomUfrag(),
         stats: { sentPackets: 0, receivedPackets: 0, sentBytes: 0, receivedBytes: 0 }
       };
@@ -169,12 +157,7 @@ export class WaManualRelay extends EventEmitter {
     conn.connectPromise = promise;
     try {
       await promise;
-    } catch (err) {
-      this.logger.debug('manual relay connection attempt failed', {
-        connectionId: relayInfo.id,
-        message: toError(err).message
-      });
-    } finally {
+    } catch { } finally {
       conn.connectPromise = null;
     }
   };
@@ -199,11 +182,6 @@ export class WaManualRelay extends EventEmitter {
           settled = true;
           clearTimeout(timer);
           socket.removeListener('message', onMessage);
-          this.logger.debug('ice binding response', {
-            connectionId: relayInfo.id,
-            class: info.stunClass,
-            errorCode: info.errorCode
-          });
           resolve(info.isSuccess);
         }
       };
@@ -214,18 +192,13 @@ export class WaManualRelay extends EventEmitter {
         if (attempt >= CONFIG.ICE_BINDING_TIMEOUTS_MS.length) {
           settled = true;
           socket.removeListener('message', onMessage);
-          this.logger.debug('ice binding got no response, proceeding to dtls anyway', {
-            connectionId: relayInfo.id
-          });
           resolve(false);
           return;
         }
         const packet = buildBindingRequest(username, hmacKey, undefined, { iceRole: 'controlling' });
         try {
           socket.send(packet, relayInfo.port, relayInfo.ip);
-        } catch (err) {
-          this.logger.trace('ice binding send failed', { connectionId: relayInfo.id, message: toError(err).message });
-        }
+        } catch { }
         const wait = CONFIG.ICE_BINDING_TIMEOUTS_MS[attempt];
         attempt += 1;
         timer = setTimeout(sendAttempt, wait);
@@ -250,9 +223,7 @@ export class WaManualRelay extends EventEmitter {
       try {
         const packet = buildBindingRequest(username, hmacKey, undefined, { iceRole: 'controlling' });
         socket.send(packet, relayInfo.port, relayInfo.ip);
-      } catch (err) {
-        this.logger.trace('ice consent refresh send failed', { connectionId: relayInfo.id, message: toError(err).message });
-      }
+      } catch { }
     }, CONFIG.ICE_CONSENT_REFRESH_MS);
   }
 
@@ -287,7 +258,7 @@ export class WaManualRelay extends EventEmitter {
 
       const dtls = new DtlsClient({
         sendDatagram: (datagram) => {
-          try { socket.send(datagram, targetPort, targetIp); } catch {  }
+          try { socket.send(datagram, targetPort, targetIp); } catch { }
         },
         logger: connLogger
       });
@@ -297,7 +268,7 @@ export class WaManualRelay extends EventEmitter {
         sendDtlsPayload: (plaintext) => {
           if (!dtls.isConnected) return;
           const record = dtls.encryptApplicationData(plaintext);
-          try { socket.send(record, targetPort, targetIp); } catch {  }
+          try { socket.send(record, targetPort, targetIp); } catch { }
         },
         logger: connLogger
       });
@@ -317,44 +288,46 @@ export class WaManualRelay extends EventEmitter {
           const payloads = dtls.decryptApplicationData(datagram);
           for (const payload of payloads) dc.handleDtlsPayload(payload);
         } else {
-
           try {
             dtls.handleDatagram(datagram);
-          } catch (err) {
-            this.logger.trace('handleDatagram threw', {
-              connectionId: relayInfo.id, message: toError(err).message
-            });
-          }
+          } catch { }
         }
       });
-      socket.on('error', (err) => settle(err instanceof Error ? err : new Error(String(err))));
+      socket.on('error', (err) => {
+        if (conn.state === ConnectionState.Open) this.handleRelayLoss(conn);
+        settle(err instanceof Error ? err : new Error(String(err)));
+      });
 
       dtls.on('connected', () => {
-        this.logger.debug('dtls handshake complete', { connectionId: relayInfo.id });
         dc.start();
       });
       dtls.on('error', (err) => {
-        this.logger.debug('dtls error', { connectionId: relayInfo.id, message: toError(err).message });
         settle(err);
       });
       dc.on('open', () => {
-        this.logger.debug('datachannel open', { connectionId: relayInfo.id });
         conn.state = ConnectionState.Open;
         this.flushBufferedPackets(conn);
-        this.logger.warn('[RELAY] mode=meowcaller v3 ice_binding=off consent_refresh=off allocate_streams=' + (this.streamSsrcs ? 9 : 2), { connectionId: relayInfo.id });
+        conn.lastInboundAt = Date.now();
         this.startKeepalive(conn);
         if (CONFIG.ICE_CONSENT_REFRESH_ENABLED) this.startIceConsentRefresh(socket, relayInfo, conn);
         this.sendStunAllocateOnOpen(conn, relayInfo);
+        for (const delayMs of [50, 150, 500, 3000]) setTimeout(() => this.sendStunAllocateOnOpen(conn, conn.relayInfo), delayMs);
         this.sendToChannel(conn, toArrayBuffer(buildWhatsAppPing()));
         this.stats.connected++;
+        const wasRecovering = conn.recovering;
+        if (wasRecovering) {
+          conn.recovering = false;
+          conn.retryCount = 0;
+        }
         this.emit('relay_connected', { ip: relayInfo.ip, port: relayInfo.port });
+        if (wasRecovering) this.emit('relay_recovered', { connectionId: relayInfo.id });
         settle(null);
       });
       dc.on('error', (err) => {
-        this.logger.debug('datachannel error', { connectionId: relayInfo.id, message: toError(err).message });
         settle(err);
       });
       dc.on('message', (payload) => {
+        conn.lastInboundAt = Date.now();
         this.handleRelayStun(conn, relayInfo, payload);
         conn.stats.receivedPackets++;
         conn.stats.receivedBytes += byteLengthOf(payload);
@@ -367,22 +340,16 @@ export class WaManualRelay extends EventEmitter {
       }, CONFIG.CONNECTION_TIMEOUT_MS);
 
       socket.bind(0, async () => {
-        this.logger.warn('[DIAG] udp socket bound, starting ice binding check', {
-            connectionId: relayInfo.id, localPort: socket.address().port
-        });
-
         if (CONFIG.ICE_BINDING_ENABLED) {
           const bindingOk = await this.performIceBinding(socket, relayInfo, conn);
           if (settledConn) return;
           if (!bindingOk) {
-            this.logger.debug('ice binding failed, aborting before dtls', { connectionId: relayInfo.id });
             settle(new Error('ICE binding to relay failed or timed out'));
             return;
           }
         }
 
         iceBindingDone = true;
-        this.logger.debug('ice binding ok, starting dtls (client role)', { connectionId: relayInfo.id });
         dtls.start();
       });
     });
@@ -392,7 +359,6 @@ export class WaManualRelay extends EventEmitter {
     for (const [, conn] of this.connections) {
       if (conn.state === ConnectionState.Open && conn.dataChannel) {
         this.sendStunAllocateOnOpen(conn, conn.relayInfo);
-        this.logger.debug('manual relay subscriptions resent', { connectionId: conn.relayInfo.id });
       }
     }
   }
@@ -416,10 +382,10 @@ export class WaManualRelay extends EventEmitter {
       }
     }
     else if (type === 0x0103) {
-      if (this.rxStun.allocOk++ === 0) this.logger.warn('[RELAY] allocate success from relay', { connectionId: relayInfo.id });
+      this.rxStun.allocOk++;
     }
     else if (type === 0x0113 || type === 0x0111) {
-      if (this.rxStun.allocErr++ === 0) this.logger.warn('[RELAY] allocate/binding ERROR from relay', { connectionId: relayInfo.id, type: '0x' + type.toString(16), bytes: data.length });
+      if (this.rxStun.allocErr++ === 0) this.logger.warn('[RELAY] allocate/binding ERROR from relay', { connectionId: relayInfo.id, type: '0x' + type.toString(16), bytes: data.length, errorCode: parseStunResponse(data)?.errorCode });
     }
     else if (type === 0x0802) {
       this.rxStun.pong++;
@@ -430,30 +396,34 @@ export class WaManualRelay extends EventEmitter {
   }
 
   sendStunAllocateOnOpen(conn, relayInfo) {
-    const connectionId = relayInfo.id;
     if (!relayInfo.rawToken || relayInfo.rawToken.length === 0) {
-      this.logger.debug('allocate skipped, no relay token', { connectionId });
       return;
     }
     if (!relayInfo.key) {
-      this.logger.debug('allocate skipped, no relay key', { connectionId });
       return;
     }
     if (!this.audioSsrc) {
-      this.logger.debug('allocate skipped, no ssrc yet', { connectionId });
       return;
     }
     const hmacKey = TEXT_ENCODER.encode(relayInfo.key);
+    const subs = buildSenderSubscriptions(this.subscriptionSsrc || this.audioSsrc);
+    const remoteUfrag = relayInfo.authToken || relayInfo.token;
+    if (remoteUfrag) {
+      const username = TEXT_ENCODER.encode(`${remoteUfrag}:${conn.localUfrag}`);
+      this.sendToChannel(conn, toArrayBuffer(buildBindingRequestWithSubs(username, hmacKey, subs, true, true)));
+    }
+    if (relayInfo.token && relayInfo.token !== remoteUfrag) {
+      const username = TEXT_ENCODER.encode(`${relayInfo.token}:${conn.localUfrag}`);
+      this.sendToChannel(conn, toArrayBuffer(buildBindingRequestWithSubs(username, hmacKey, subs, true, true)));
+    }
+    this.sendToChannel(conn, toArrayBuffer(buildBindingRequestWithSubs(undefined, undefined, subs, false, false)));
 
-    const streamSsrcs = this.streamSsrcs
-      ? [...this.streamSsrcs]
-      : [this.audioSsrc, 0, 0, this.videoSsrc || 0, 0, 0, 0, 0, 0];
-    streamSsrcs[0] = this.audioSsrc;
-    const descriptors = createWasmStreamDescriptors(streamSsrcs);
-    const packet = buildAllocateForRelay(relayInfo.rawToken, descriptors, hmacKey, relayInfo.ip, relayInfo.port);
+    const peerSsrcs = this.subscriptionSsrc ? [this.subscriptionSsrc] : [];
+    const ssrcList = buildSSRCSubscriptionList([this.audioSsrc, this.videoSsrc], peerSsrcs, this.selfPid, this.peerPid);
+    const username = remoteUfrag ? TEXT_ENCODER.encode(`${remoteUfrag}:${conn.localUfrag}`) : undefined;
+    const packet = buildAllocateForRelay(relayInfo.rawToken, ssrcList, hmacKey, relayInfo.ip, relayInfo.port, username);
     conn.allocatePacket = toArrayBuffer(packet);
     this.sendToChannel(conn, conn.allocatePacket);
-    this.logger.trace('allocate sent', { connectionId, size: packet.length });
   }
 
   sendToChannel(conn, data) {
@@ -463,9 +433,7 @@ export class WaManualRelay extends EventEmitter {
       conn.stats.sentPackets++;
       conn.stats.sentBytes += byteLengthOf(data);
       this.stats.sent++;
-    } catch (err) {
-      this.logger.trace('sendToChannel failed', { connectionId: conn.relayInfo.id, message: toError(err).message });
-    }
+    } catch { }
   }
 
   closePeerObjects(conn) {
@@ -477,9 +445,9 @@ export class WaManualRelay extends EventEmitter {
       clearInterval(conn.iceConsentTimer);
       conn.iceConsentTimer = null;
     }
-    try { conn.dataChannel?.close?.(); } catch (err) { this.logger.trace('datachannel close failed', { message: toError(err).message }); }
-    try { conn.dtlsClient?.close?.(); } catch (err) { this.logger.trace('dtls close failed', { message: toError(err).message }); }
-    try { conn.socket?.close?.(); } catch (err) { this.logger.trace('socket close failed', { message: toError(err).message }); }
+    try { conn.dataChannel?.close?.(); } catch { }
+    try { conn.dtlsClient?.close?.(); } catch { }
+    try { conn.socket?.close?.(); } catch { }
     conn.socket = null;
     conn.dtlsClient = null;
     conn.dataChannel = null;
@@ -489,6 +457,10 @@ export class WaManualRelay extends EventEmitter {
     if (conn.keepaliveTimer) clearInterval(conn.keepaliveTimer);
     conn.keepaliveTimer = setInterval(() => {
       if (conn.state !== ConnectionState.Open || !conn.dataChannel) return;
+      if (Date.now() - conn.lastInboundAt > 15_000) {
+        this.handleRelayLoss(conn);
+        return;
+      }
 
       if (conn.allocatePacket) this.sendToChannel(conn, conn.allocatePacket);
       this.sendToChannel(conn, toArrayBuffer(buildWhatsAppPing()));
@@ -505,9 +477,7 @@ export class WaManualRelay extends EventEmitter {
         conn.stats.sentPackets++;
         conn.stats.sentBytes += byteLengthOf(packet);
         this.stats.sent++;
-      } catch (err) {
-        this.logger.trace('flush send failed', { connectionId: conn.relayInfo.id, message: toError(err).message });
-      }
+      } catch { }
     }
   }
 
@@ -537,12 +507,10 @@ export class WaManualRelay extends EventEmitter {
           conn.stats.sentPackets++;
           conn.stats.sentBytes += byteLengthOf(data);
           this.stats.sent++;
-        } catch (err) {
-          this.logger.trace('sendToRelay failed', { connectionId: conn.relayInfo.id, message: toError(err).message });
-        }
+        } catch { }
       } else {
         this.bufferPacket(conn, data);
-        void this.ensureConnection(conn.relayInfo);
+        if (!conn.recovering) void this.ensureConnection(conn.relayInfo);
       }
     }
   }
@@ -559,12 +527,37 @@ export class WaManualRelay extends EventEmitter {
           conn.stats.sentBytes += byteLengthOf(data);
           this.stats.sent++;
           sentAny = true;
-        } catch (err) {
-          this.logger.trace('broadcast send failed', { connectionId: conn.relayInfo.id, message: toError(err).message });
-        }
+        } catch { }
       }
     }
     return sentAny;
+  }
+
+  handleRelayLoss(conn) {
+    if (conn.state !== ConnectionState.Open) return;
+    this.closePeerObjects(conn);
+    conn.state = ConnectionState.Closed;
+    if (!conn.recovering) conn.retryCount = 0;
+    conn.recovering = true;
+    this.emit('relay_lost', { connectionId: conn.relayInfo.id, anyOpen: this.hasConnection(), max: this.retrySchedule.length });
+    this.scheduleRelayRetry(conn);
+  }
+
+  scheduleRelayRetry(conn) {
+    if (conn.retryCount >= this.retrySchedule.length) {
+      this.emit('relay_failed', { connectionId: conn.relayInfo.id, anyOpen: this.hasConnection(), max: this.retrySchedule.length });
+      return;
+    }
+    const delay = this.retrySchedule[conn.retryCount];
+    conn.retryCount += 1;
+    conn.retryTimer = setTimeout(async () => {
+      conn.retryTimer = null;
+      if (this.connections.get(conn.relayInfo.id) !== conn) return;
+      this.emit('relay_retrying', { connectionId: conn.relayInfo.id, attempt: conn.retryCount, anyOpen: this.hasConnection(), max: this.retrySchedule.length });
+      await this.ensureConnection(conn.relayInfo);
+      if (conn.state !== ConnectionState.Open) this.scheduleRelayRetry(conn);
+    }, delay);
+    conn.retryTimer.unref?.();
   }
 
   hasConnection() {
@@ -600,7 +593,11 @@ export class WaManualRelay extends EventEmitter {
   }
 
   cleanup() {
-    for (const [, conn] of this.connections) this.closePeerObjects(conn);
+    for (const [, conn] of this.connections) {
+      if (conn.retryTimer) clearTimeout(conn.retryTimer);
+      conn.retryTimer = null;
+      this.closePeerObjects(conn);
+    }
     this.connections.clear();
     this.relayMap.clear();
     this.globalBuffer = [];

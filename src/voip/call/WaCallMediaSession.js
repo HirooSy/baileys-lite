@@ -16,11 +16,9 @@ import { WaAudioEngine } from '../media/WaAudioEngine.js';
 import { WaVideoEngine } from '../media/WaVideoEngine.js';
 import { parseRelayFromAck } from '../relay/relay-ack.js';
 import { isRtpPacket, isStunPacket } from '../relay/stun.js';
-import { deriveWasmRelayStreamSsrcs } from '../crypto/ssrc.js';
 import { WaManualRelay } from '../relay/WaManualRelay.js';
 import { buildAcceptReceiptStanza, buildAcceptStanza, buildMuteV2Stanza, buildPreacceptStanza, buildRaiseHandStanza, buildRejectStanza, buildRelaylatencyForwardStanza, buildRelayLatencyStanza, buildTerminateStanza, buildTransportStanza, buildVideoStateStanza, decryptCallKey, extractNodeInfo, extractRelayEndpoints, needsDecryption, parseMuteV2, parseRaiseHandState, VideoDecAccept, VideoDecRequest, VideoState } from '../signaling/signaling.js';
 import { CallDirection, CallMediaType, CallState, EndCallReason, PayloadType, SRTP_AUTH_TAG_LEN, SRTP_RECV_AUTH_TAG_LEN, SRTP_SEND_AUTH_TAG_LEN } from '../types.js';
-
 
 export class WaCallMediaSession {
     info;
@@ -58,10 +56,9 @@ export class WaCallMediaSession {
     selfEchoCount = 0;
     lastRecvSeq = -1;
     recvSeqGaps = 0;
-    lastCapturedAtMs = undefined;
-    qLog = { n: 0, tiny: 0, sent: 0, octets: 0, retx: 0, rx: 0, plc: 0, late: 0, fec: 0, errors: 0 };
     actualPeerSsrc = null;
     ssrcResubscribed = false;
+    reconnecting = false;
 
     videoSsrc = 0;
     videoRtpStream = null;
@@ -116,9 +113,31 @@ export class WaCallMediaSession {
         this.sctpRelay.on('relay_receive', (relayInfo) => {
             this.onRelayData(relayInfo.data);
         });
+        this.sctpRelay.on('relay_lost', (detail) => {
+            if (!detail.anyOpen)
+                this.markReconnecting({ attempt: 0, max: detail.max });
+        });
+        this.sctpRelay.on('relay_retrying', (detail) => {
+            if (!detail.anyOpen)
+                this.markReconnecting({ attempt: detail.attempt, max: detail.max });
+        });
+        this.sctpRelay.on('relay_recovered', () => {
+            if (!this.reconnecting || !this.sctpRelay.hasConnection())
+                return;
+            this.reconnecting = false;
+            this.delegate.emitReconnected(this.info);
+        });
+        this.sctpRelay.on('relay_failed', (detail) => {
+            if (!detail.anyOpen)
+                this.endCall(EndCallReason.Failed).catch(() => { });
+        });
     }
     get callId() {
         return this.info.callId;
+    }
+    markReconnecting(detail) {
+        this.reconnecting = true;
+        this.delegate.emitReconnecting(this.info, detail);
     }
     onDecodedAudio = (pcm) => {
         this.audioEngine.onPlaybackData(pcm);
@@ -131,31 +150,11 @@ export class WaCallMediaSession {
         this.selfSsrcJid = this.ensureDeviceJid(selfLid);
         const peerSsrc = generateSecureSsrc(this.info.callId, this.ensureDeviceJid(peerJid));
         this.peerSsrcs = [peerSsrc];
-        this.logger.media('call media initialized', {
-            callId: this.info.callId,
-            selfSsrc: `0x${ssrc.toString(16).toUpperCase()}`,
-            peerSsrc: `0x${peerSsrc.toString(16).toUpperCase()}`
-        });
-        this.logger.warn('[DIAG] initMedia called', {
-            callId: this.info.callId,
-            selfSsrc: `0x${ssrc.toString(16).toUpperCase()}`,
-            peerSsrc: `0x${peerSsrc.toString(16).toUpperCase()}`,
-            videoEngineIsFresh: this.videoEngine?.proc === null
-        });
         this.opusCodec = await MLowCodec.create({ logger: this.logger.child({ component: 'mlow' }) });
         if (this.info.mediaType === CallMediaType.Video) {
-
             this.videoSsrc = generateSecureSsrc(this.info.callId, this.ensureDeviceJid(selfLid), 2);
             this.videoRtpStream = new VideoRtpStream(this.videoSsrc, videoRtpDurationSamples(this.videoEngine.frameDurationMs));
             this.videoAssembler = new H264AccessUnitAssembler();
-            this.logger.media('video media initialized', {
-                callId: this.info.callId,
-                videoSsrc: `0x${this.videoSsrc.toString(16).toUpperCase()}`
-            });
-            this.logger.warn('[DIAG] video media initialized', {
-                callId: this.info.callId,
-                videoSsrc: `0x${this.videoSsrc.toString(16).toUpperCase()}`
-            });
         }
     }
     resetOutgoingFlags() {
@@ -207,7 +206,6 @@ export class WaCallMediaSession {
         if (this.info.relayData) {
             await this.connectRelays(this.info.relayData.endpoints);
         }
-        this.logger.media('call accepted', { callId });
     }
     async rejectCall(reason = EndCallReason.Declined) {
         this.info.applyTransition({ type: 'local_rejected', reason });
@@ -255,15 +253,13 @@ export class WaCallMediaSession {
     }
     async loadAudio(audioPath) {
         this.audioEngine.setLoopMode(false);
-        await this.audioEngine.loadAudioFile(audioPath);
+        await this.audioEngine.loadSource(audioPath);
         this.resetEncodeState();
-        this.logger.media('audio loaded for call', { callId: this.info.callId });
     }
     setExternalAudioMode(enabled) {
         this.audioEngine.setExternalMode(enabled);
         if (enabled) {
             this.resetEncodeState();
-            this.logger.debug('external audio mode enabled', { callId: this.info.callId });
         }
     }
     feedLiveAudio(data) {
@@ -344,9 +340,6 @@ export class WaCallMediaSession {
                                 const recvKeying = derivePerJidSrtpKey(peerCallKey, this.ensureDeviceJid(peerJid));
                                 this.srtpSession = new SrtpSession(sendKeying, recvKeying, SRTP_SEND_AUTH_TAG_LEN, SRTP_RECV_AUTH_TAG_LEN);
                                 srtpFromPeerKey = true;
-                                this.logger.debug('srtp re-initialized with peer call_key', {
-                                    callId: this.info.callId
-                                });
                             }
                             catch (err) {
                                 this.logger.error('per-jid srtp re-derivation failed', {
@@ -367,9 +360,7 @@ export class WaCallMediaSession {
             this.info.applyTransition({ type: 'remote_accepted' });
             this.delegate.emitState(this.info);
         }
-        catch (err) {
-            this.logger.trace('call transition skipped', { message: toError(err).message });
-        }
+        catch { }
         const meId = this.deps.authClient.getCurrentCredentials()?.meJid ?? '';
         const meLid = this.deps.authClient.getCurrentCredentials()?.meLid;
         const ourJid = meLid || meId;
@@ -379,22 +370,12 @@ export class WaCallMediaSession {
         const acceptingDeviceJid = peerJid;
         this.acceptedByJid = acceptingDeviceJid;
         if (this.actualPeerSsrc !== null) {
-            const calculatedJid = this.ensureDeviceJid(acceptingDeviceJid);
-            this.logger.debug('accept keeping actual peer ssrc', {
-                callId,
-                actualPeerSsrc: `0x${this.actualPeerSsrc.toString(16)}`,
-                calculatedJid
-            });
+            this.ensureDeviceJid(acceptingDeviceJid);
         }
         else {
             const peerDeviceJidForSsrc = this.ensureDeviceJid(acceptingDeviceJid);
             const acceptSsrc = generateSecureSsrc(callId, peerDeviceJidForSsrc);
             this.peerSsrcs = [acceptSsrc];
-            this.logger.debug('accept ssrc assigned', {
-                callId,
-                jid: peerDeviceJidForSsrc,
-                ssrc: `0x${acceptSsrc.toString(16)}`
-            });
         }
         this.sctpRelay.setSubscriptionSsrc(this.peerSsrcs[0] ?? 0);
         this.sctpRelay.resendSubscriptions();
@@ -457,20 +438,14 @@ export class WaCallMediaSession {
             try {
                 this.info.applyTransition({ type: 'media_connected' });
                 this.delegate.emitState(this.info);
-                const MEDIA_START_DELAY_MS = 3000;
                 setTimeout(() => {
-                    this.logger.warn('[DIAG] delayed startMediaFlow firing (path B)', {
-                        callId: this.info.callId, state: this.info.stateData.state
-                    });
                     if (this.info.stateData.state === CallState.Ended) {
                         return;
                     }
                     this.startMediaFlow();
-                }, MEDIA_START_DELAY_MS);
+                }, 3000);
             }
-            catch (err) {
-                this.logger.trace('call transition skipped', { message: toError(err).message });
-            }
+            catch { }
         }
         else if (this.info.relayData) {
             await this.connectRelays(this.info.relayData.endpoints);
@@ -556,11 +531,6 @@ export class WaCallMediaSession {
                 peerPid,
                 hbhKey
             };
-            this.logger.debug('offer ack relays parsed', {
-                callId: this.info.callId,
-                relayCount: relays.length,
-                participantCount: participantJids.length
-            });
             const callKey = this.info.encryptionKey;
             if (participantJids.length > 0) {
                 const meLid = this.deps.authClient.getCurrentCredentials()?.meLid;
@@ -589,11 +559,6 @@ export class WaCallMediaSession {
                 }
                 if (callKey) {
                     this.initSrtpKeys();
-                }
-                else {
-                    this.logger.media('no call_key, srtp not initialized', {
-                        callId: this.info.callId
-                    });
                 }
             }
             if (this.info.isInitiator && !this.outgoingPreacceptSent) {
@@ -664,10 +629,6 @@ export class WaCallMediaSession {
         }
         if (electedRelayIdx !== undefined) {
             this.info.electedRelayIdx = electedRelayIdx;
-            this.logger.debug('elected relay index', {
-                callId: this.info.callId,
-                electedRelayIdx
-            });
         }
     }
     async handleCallMuteV2(node, peerJid) {
@@ -824,13 +785,7 @@ export class WaCallMediaSession {
                 this.delegate.emitCallReaction?.(this.info, reaction);
             }
         }
-        catch (err) {
-            this.logger.debug('app data packet dropped', {
-                callId: this.info.callId,
-                payloadType,
-                message: toError(err).message
-            });
-        }
+        catch { }
     }
 
     async handleCallVideo(node) {
@@ -854,7 +809,6 @@ export class WaCallMediaSession {
             this.peerVideoActive = this.peerVideoJids.size > 0;
             return { before, after: this.peerVideoJids.size };
         };
-        this.logger.media('inbound video state', { callId, state });
         switch (state) {
             case VideoState.UpgradeRequest:
             case VideoState.UpgradeRequestV2: {
@@ -956,11 +910,6 @@ export class WaCallMediaSession {
         if (this.sctpRelay.hasConnection()) {
             this.videoEngine.start();
         }
-        this.logger.media('video enabled mid-call', {
-            callId: this.info.callId,
-            videoSsrc: `0x${this.videoSsrc.toString(16).toUpperCase()}`,
-            source: this.videoEngine.sourceKind
-        });
     }
 
     async swapVideoSource(videoPath) {
@@ -971,7 +920,6 @@ export class WaCallMediaSession {
         await this.videoEngine.loadVideoFile(videoPath);
         this.audioEngine.setLoopMode(true);
         this.videoEngine.start();
-        this.logger.media('video source swapped', { callId: this.info.callId, videoPath });
     }
 
     async stopVideoMidCall({ keepSource = false } = {}) {
@@ -996,7 +944,6 @@ export class WaCallMediaSession {
         this.videoRtcpSession = null;
         this.videoAssembler = null;
         this.info.mediaType = CallMediaType.Audio;
-        this.logger.media('video disabled mid-call', { callId: this.info.callId, keptSource: keepSource });
     }
     handleCallTerminate() {
         try {
@@ -1005,46 +952,15 @@ export class WaCallMediaSession {
                 reason: EndCallReason.UserEnded
             });
         }
-        catch (err) {
-            this.logger.trace('call transition skipped', { message: toError(err).message });
-        }
+        catch { }
         this.delegate.emitEnded(this.info);
         this.delegate.emitState(this.info);
         this.cleanup();
     }
     sendCapturedAudio(data) {
-        const nowMs = Date.now();
-        if (this.lastCapturedAtMs !== undefined) {
-            const gapMs = nowMs - this.lastCapturedAtMs;
-
-            if (gapMs > 300) {
-                this.logger.warn('captured audio frame gap larger than expected', {
-                    callId: this.info.callId,
-                    gapMs,
-                    audioSendCount: this.audioSendCount,
-                    sctpBacklog: this.sctpRelay.getSendBacklog()
-                });
-            }
-        }
-        this.lastCapturedAtMs = nowMs;
         const hasRelay = this.sctpRelay.hasConnection();
         if (!this.rtpSession || !this.srtpSession || !this.opusCodec || !hasRelay) {
             this.audioDropCount++;
-            if (this.audioDropCount === 1 || this.audioDropCount % 500 === 0) {
-                const missing = [
-                    !this.rtpSession && 'rtpSession',
-                    !this.srtpSession && 'srtpSession',
-                    !this.opusCodec && 'opusCodec',
-                    !hasRelay && 'relayConnection'
-                ]
-                    .filter(Boolean)
-                    .join(', ');
-                this.logger.media('audio dropped', {
-                    callId: this.info.callId,
-                    dropCount: this.audioDropCount,
-                    missing
-                });
-            }
             return;
         }
         for (let i = 0; i < data.length; i++) {
@@ -1075,8 +991,6 @@ export class WaCallMediaSession {
             this.encodeBufferPos = 0;
             try {
                 const opusFrame = this.opusCodec.encode(frameData);
-                if (opusFrame.length <= 18)
-                    this.qLog.tiny++;
                 this.sendOpusFrame(opusFrame, false);
                 this.realAudioSendCount++;
             }
@@ -1105,16 +1019,6 @@ export class WaCallMediaSession {
         const hasRelay = this.sctpRelay.hasConnection();
         if (!this.videoRtpStream || !this.videoSrtpSession || !hasRelay) {
             this.videoDropCount++;
-            if (this.videoDropCount === 1 || this.videoDropCount % 150 === 0) {
-                const missing = [
-                    !this.videoRtpStream && 'videoRtpStream',
-                    !this.videoSrtpSession && 'videoSrtpSession',
-                    !hasRelay && 'relayConnection'
-                ].filter(Boolean).join(', ');
-                this.logger.media('video access unit dropped', {
-                    callId: this.info.callId, dropCount: this.videoDropCount, missing
-                });
-            }
             return;
         }
         try {
@@ -1149,13 +1053,6 @@ export class WaCallMediaSession {
             this.videoSendCount++;
             if (idr)
                 this.videoIdrSendCount++;
-            if (idr || this.videoSendCount === 1 || this.videoSendCount % 150 === 0) {
-                this.logger.media('video sent', {
-                    callId: this.info.callId, sendCount: this.videoSendCount,
-                    idrSentTotal: this.videoIdrSendCount,
-                    auBytes: au.length, packets: chunks.length, idr
-                });
-            }
         }
         catch (err) {
             this.logger.error('error sending video', {
@@ -1164,21 +1061,6 @@ export class WaCallMediaSession {
         }
     }
     cleanup() {
-        this.logger.warn('[DIAG] cleanup entered', { callId: this.info.callId, state: this.info.stateData.state });
-        const opusStats = this.opusCodec?.getStats();
-        this.logger.media('call stats', {
-            callId: this.info.callId,
-            relayPackets: this.relayPacketCount,
-            recvOk: this.audioRecvCount,
-            srtpErrors: this.srtpErrorCount,
-            sent: this.audioSendCount,
-            dropped: this.audioDropCount,
-            opusOk: opusStats?.success ?? 0,
-            opusErr: opusStats?.errors ?? 0,
-            videoSent: this.videoSendCount,
-            videoIdrSent: this.videoIdrSendCount,
-            videoDropped: this.videoDropCount
-        });
         this.audioEngine.setOnAudioFinished(null);
         this.audioEngine.stop();
         this.videoEngine.stop();
@@ -1268,16 +1150,6 @@ export class WaCallMediaSession {
             this.sctpRelay.broadcast(toArrayBuffer(srtpData));
             this.audioSendCount++;
             this.audioOctetsSent = (this.audioOctetsSent + rtpPayload.length) >>> 0;
-            if (this.audioSendCount === 1 || this.audioSendCount % 500 === 0) {
-                this.logger.media('audio sent', {
-                    callId: this.info.callId,
-                    sendCount: this.audioSendCount,
-                    opusBytes: opusFrame.length,
-                    srtpBytes: srtpData.length,
-                    silence: isSilence,
-                    sctpBacklog: this.sctpRelay.getSendBacklog()
-                });
-            }
         }
         catch (err) {
             this.logger.error('error sending audio', {
@@ -1294,7 +1166,6 @@ export class WaCallMediaSession {
     initSrtpKeys() {
         const callKey = this.info.encryptionKey;
         if (!callKey) {
-            this.logger.media('no call_key, srtp not initialized', { callId: this.info.callId });
             return;
         }
         const meLid = this.deps.authClient.getCurrentCredentials()?.meLid;
@@ -1326,23 +1197,12 @@ export class WaCallMediaSession {
             this.trackPeerAppDataSsrcs([peerDeviceJid, ...participants.filter((jid) => toUserJid(jid) !== ourBase)]);
             this.audioRtcpSession = new SrtcpSendContext(sendKeying);
             if (this.info.mediaType === CallMediaType.Video) {
-
                 this.videoSrtpSession = new SrtpSession(sendKeying, recvKeying, SRTP_SEND_AUTH_TAG_LEN, SRTP_RECV_AUTH_TAG_LEN);
                 this.videoRtcpSession = new SrtcpSendContext(sendKeying);
             }
             this.startRtcpSenderReports();
-            this.logger.debug('srtp per-jid keys initialized', {
-                callId: this.info.callId,
-                sendJid: ourDeviceJid,
-                recvJid: peerDeviceJid
-            });
         }
-        catch (err) {
-            this.logger.debug('srtp key derivation failed', {
-                callId: this.info.callId,
-                message: toError(err).message
-            });
-        }
+        catch { }
     }
 
     startRtcpSenderReports() {
@@ -1355,8 +1215,6 @@ export class WaCallMediaSession {
         this.rtcpTimer = setInterval(() => {
             if (!this.sctpRelay.hasConnection())
                 return;
-            if (++this.qLog.n % 3 === 0)
-                this.logVoipQuality();
             const nowMs = Date.now();
             try {
                 if (this.audioRtcpSession && this.selfSsrc) {
@@ -1379,27 +1237,8 @@ export class WaCallMediaSession {
                     const protectedPacket = this.videoRtcpSession.protect(this.videoSsrc, plain);
                     this.sctpRelay.broadcast(toArrayBuffer(protectedPacket));
                 }
-
-                if (this.mediaStartedAtMs) {
-                    const wallElapsedMs = nowMs - this.mediaStartedAtMs;
-                    const audioElapsedMs = this.audioSendCount * 60;
-                    const videoElapsedMs = this.videoSendCount * (1000 / this.videoEngine.frameRate);
-                    this.logger.media('av sync check', {
-                        callId: this.info.callId,
-                        wallElapsedMs,
-                        audioElapsedMs,
-                        videoElapsedMs,
-                        audioMinusWallMs: audioElapsedMs - wallElapsedMs,
-                        videoMinusWallMs: Math.round(videoElapsedMs - wallElapsedMs)
-                    });
-                }
             }
-            catch (err) {
-                this.logger.debug('rtcp sender report failed', {
-                    callId: this.info.callId,
-                    message: toError(err).message
-                });
-            }
+            catch { }
         }, 1500);
     }
     resetEncodeState() {
@@ -1412,29 +1251,17 @@ export class WaCallMediaSession {
             try {
                 this.info.applyTransition({ type: 'media_connected' });
                 this.delegate.emitState(this.info);
-                this.logger.media('relay connected', {
-                    callId: this.info.callId, acceptedByJid: this.acceptedByJid ?? null
-                });
                 if (!this.acceptedByJid) {
-                    this.logger.media('relay connected before accept, deferring media start', {
-                        callId: this.info.callId
-                    });
                     return;
                 }
-                const MEDIA_START_DELAY_MS = 3000;
                 setTimeout(() => {
-                    this.logger.warn('[DIAG] delayed startMediaFlow firing (path A)', {
-                        callId: this.info.callId, state: this.info.stateData.state
-                    });
                     if (this.info.stateData.state === CallState.Ended) {
                         return;
                     }
                     this.startMediaFlow();
-                }, MEDIA_START_DELAY_MS);
+                }, 3000);
             }
-            catch (err) {
-                this.logger.trace('call transition skipped', { message: toError(err).message });
-            }
+            catch { }
         }
     }
     onRelayData(data) {
@@ -1508,89 +1335,12 @@ export class WaCallMediaSession {
                 const lossPct = pkts + gaps > 0 ? Math.min(100, Math.round((100 * gaps) / (pkts + gaps))) : 0;
                 this.opusCodec.setExpectedPacketLossPercent(lossPct);
             }
-            if (this.audioRecvCount % 1500 === 0) {
-                const stats = this.opusCodec.getStats();
-
-                this.logger.trace('audio recv stats', {
-                    callId: this.info.callId,
-                    recvCount: this.audioRecvCount,
-                    real: this.recvRealCount,
-                    dtx: this.recvDtxCount,
-                    decodeOk: stats.success,
-                    decodeErr: stats.errors,
-                    plc: stats.plc,
-                    fec: stats.fec,
-                    late: stats.late
-                });
-            }
         }
         catch (err) {
             this.srtpErrorCount++;
-            if (this.srtpErrorCount <= 5) {
-                const ssrc = data.length >= 12 ? readUInt32BE(data, 8) : 0;
-                this.logger.debug('srtp recv error', {
-                    callId: this.info.callId,
-                    errorCount: this.srtpErrorCount,
-                    message: toError(err).message,
-                    ssrc: `0x${ssrc.toString(16)}`
-                });
-            }
         }
     }
 
-    logVoipQuality() {
-        try {
-            const q = this.qLog;
-            const pace = this.audioEngine.takePacingStats();
-            const bl = this.sctpRelay.getSendBacklog?.() ?? {};
-            const sent = this.audioSendCount - q.sent;
-            const octets = ((this.audioOctetsSent - q.octets) >>> 0);
-            const rs = this.opusCodec?.getStats() ?? { late: 0, plc: 0, fec: 0, errors: 0 };
-            const line = {
-                callId: this.info.callId,
-                tSec: this.mediaStartedAtMs ? Math.round((Date.now() - this.mediaStartedAtMs) / 1000) : 0,
-                txFrames: sent,
-                txAvgB: sent > 0 ? Math.round(octets / sent) : 0,
-                txTinyPct: sent > 0 ? Math.round((100 * (this.qLog.tiny)) / sent) : 0,
-                tickLate90: pace.late90,
-                tickLate200: pace.late200,
-                tickBurst: pace.burst20,
-                tickMaxGapMs: pace.maxGap,
-                loopP50ms: pace.loopP50,
-                loopP99ms: pace.loopP99,
-                loopMaxMs: pace.loopMax,
-                sctpInFlight: bl.inFlight ?? 0,
-                sctpQueuedAudio: bl.queuedAudio ?? 0,
-                sctpRetx: (bl.retransmits ?? 0) - q.retx,
-                aLagMs: this.mediaStartedAtMs ? this.audioSendCount * 60 - (Date.now() - this.mediaStartedAtMs) : 0,
-                vLagMs: this.mediaStartedAtMs && this.videoSendCount > 0 && this.videoEngine?.frameRate
-                    ? Math.round(this.videoSendCount * (1000 / this.videoEngine.frameRate) - (Date.now() - this.mediaStartedAtMs))
-                    : 0,
-                vRestarts: this.videoEngine?._restartCount ?? 0,
-                relayRx: this.relayPacketCount,
-                srtpErr: this.srtpErrorCount,
-                stun: this.sctpRelay.getRxStunStats?.() ?? {},
-                rxPkts: this.audioRecvCount - q.rx,
-                rxLate: rs.late - q.late,
-                rxPlc: rs.plc - q.plc,
-                rxFec: rs.fec - q.fec,
-                rxDecErr: rs.errors - q.errors
-            };
-            this.logger.warn('[VOIPQ] ' + JSON.stringify(line));
-            q.sent = this.audioSendCount;
-            q.octets = this.audioOctetsSent;
-            q.tiny = 0;
-            q.retx = bl.retransmits ?? 0;
-            q.rx = this.audioRecvCount;
-            q.late = rs.late;
-            q.plc = rs.plc;
-            q.fec = rs.fec;
-            q.errors = rs.errors;
-        }
-        catch (err) {
-            this.logger.trace('voip quality log failed', { message: toError(err).message });
-        }
-    }
     onRelayVideoData(data) {
         if (!this.videoSrtpSession || !this.videoAssembler)
             return;
@@ -1603,19 +1353,9 @@ export class WaCallMediaSession {
         }
         catch (err) {
             this.srtpErrorCount++;
-            if (this.srtpErrorCount <= 5) {
-                this.logger.debug('video srtp recv error', {
-                    callId: this.info.callId,
-                    message: toError(err).message
-                });
-            }
         }
     }
     async connectRelays(endpoints) {
-        this.logger.debug('connecting relays', {
-            callId: this.info.callId,
-            endpointCount: endpoints.length
-        });
         const seen = new Set();
         const uniqueEndpoints = [];
         for (const ep of endpoints) {
@@ -1663,16 +1403,7 @@ export class WaCallMediaSession {
             this.logger.error('no relay configs', { callId: this.info.callId });
             return;
         }
-        this.logger.media('relay selected', {
-            callId: this.info.callId,
-            inbound,
-            candidateCount: usable.length,
-            chosen: relays[0].name,
-            isFna: relays[0].isFna
-        });
-        if (this.selfSsrcJid) {
-            this.sctpRelay.setStreamSsrcs(deriveWasmRelayStreamSsrcs(this.info.callId, this.selfSsrcJid));
-        }
+        this.sctpRelay.setParticipantIds(this.info.relayData?.selfPid, this.info.relayData?.peerPid);
         this.sctpRelay.setSsrc(this.selfSsrc);
         if (this.info.mediaType === CallMediaType.Video) {
             this.sctpRelay.setVideoSsrc(this.videoSsrc);
@@ -1680,10 +1411,6 @@ export class WaCallMediaSession {
         this.sctpRelay.setSubscriptionSsrc(this.peerSsrcs[0] ?? 0);
         try {
             await this.sctpRelay.configureRelays(relays);
-            this.logger.debug('sctp relays configured', {
-                callId: this.info.callId,
-                connected: this.sctpRelay.getConnectedCount()
-            });
         }
         catch (err) {
             this.logger.error('sctp relay error', {
@@ -1695,7 +1422,6 @@ export class WaCallMediaSession {
     startMediaFlow() {
         this.mediaStartedAtMs = Date.now();
         this.mediaFlowStarted = true;
-        this.logger.warn('[DIAG] startMediaFlow entered', { callId: this.info.callId });
         this.resetEncodeState();
         this.audioEngine.startPlayback();
         this.audioEngine.startCapture();
