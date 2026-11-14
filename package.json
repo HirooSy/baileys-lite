@@ -1,7 +1,7 @@
 {
   "name": "@hiroosy/baileys-lite",
-  "version": "0.3.8",
-  "description": "A Lightweight Baileys built with NodeJs 18+",
+  "version": "0.3.9",
+  "description": "A Lightweight Baileys built with Pure NodeJs 18+",
   "repository": {
     "type": "git",
     "url": "https://github.com/HirooSy/baileys-lite.git"

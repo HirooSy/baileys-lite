@@ -101,6 +101,7 @@ export class WaAudioEngine {
         this.extMaxBuffer = Math.floor(this.sampleRate);
         this.streamPreBufferSize = Math.floor(this.sampleRate * 0.3);
         this.streamHighWater = Math.floor(this.sampleRate * 0.6);
+        this.streamMaxBacklog = Math.floor(this.sampleRate * 1);
     }
     setAudioSender(sender) {
         this.audioSender = sender;
@@ -267,6 +268,8 @@ export class WaAudioEngine {
         if (WaAudioEngine.isRemoteSource(source)) {
             args.push('-user_agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:152.0) Gecko/20100101 Firefox/152.0', '-reconnect', '1', '-reconnect_streamed', '1', '-reconnect_delay_max', '5');
         }
+        if (/\.m3u8/i.test(source))
+            args.push('-live_start_index', '-1');
         args.push('-i', source, '-vn', '-map', '0:a:0', '-ac', '1', '-ar', String(this.sampleRate), '-acodec', 'pcm_s16le', '-f', 's16le', 'pipe:1');
         const proc = spawn(FFMPEG_BIN, args, { stdio: ['ignore', 'pipe', 'ignore'] });
         this.streamProc = proc;
@@ -327,15 +330,14 @@ export class WaAudioEngine {
                 this.streamQueue.shift();
             }
         }
-        if (this.streamQueue.length > 0) {
-            if (!this.streamPaused) {
-                this.streamPaused = true;
-                proc.stdout.pause();
-            }
+        let queued = 0;
+        for (const chunk of this.streamQueue)
+            queued += chunk.length;
+        if (queued > this.streamMaxBacklog) {
+            proc.stdout?.pause();
         }
-        else if (this.streamPaused) {
-            this.streamPaused = false;
-            proc.stdout.resume();
+        else {
+            proc.stdout?.resume();
         }
     }
     isStreamFinished() {

@@ -5,7 +5,7 @@ import { concatBytes, EMPTY_BYTES, readUInt32BE, toArrayBuffer } from '../bytes.
 import { derivePerJidSrtpKey } from '../crypto/encryption.js';
 import { SrtpSession } from '../crypto/srtp.js';
 import { SrtcpSendContext } from '../crypto/rtcp.js';
-import { generateSecureSsrc } from '../crypto/ssrc.js';
+import { deriveWasmRelayStreamSsrcs, generateSecureSsrc } from '../crypto/ssrc.js';
 import { WaAppDataStream } from '../app-data/WaAppDataStream.js';
 import { buildScreenShareStanza, parseScreenShareNode, WA_SCREEN_SHARE_STATE } from '../signaling/screen-share.js';
 import { MLowCodec } from '../media/mlow-codec.js';
@@ -32,6 +32,9 @@ export class WaCallMediaSession {
     audioEngine;
     initialTransportSent = false;
     outgoingPreacceptSent = false;
+    answeredRelays = new Map();
+    announcedRelayNames = new Set();
+    relayLatencyOpened = false;
     selfSsrc = 0;
     selfSsrcJid = '';
     peerSsrcs = [];
@@ -109,6 +112,9 @@ export class WaCallMediaSession {
         this.videoEngine.setVideoSender(this);
         this.sctpRelay.on('relay_connected', () => {
             this.onRelayConnected();
+        });
+        this.sctpRelay.on('relay_answered', (detail) => {
+            this.onRelayAnswered(detail);
         });
         this.sctpRelay.on('relay_receive', (relayInfo) => {
             this.onRelayData(relayInfo.data);
@@ -279,24 +285,31 @@ export class WaCallMediaSession {
             });
         }
     }
-    async sendIncomingRelayLatency() {
+    onRelayAnswered(detail) {
+        if (!detail?.name || this.answeredRelays.has(detail.name))
+            return;
+        this.answeredRelays.set(detail.name, detail.rttMs);
+        if (this.relayLatencyOpened) {
+            void this.announceRelayLatency();
+        }
+    }
+    async announceRelayLatency(isEligible = (ep) => this.answeredRelays.has(ep.relayName)) {
         if (!this.info.relayData)
             return;
         const meId = this.deps.authClient.getCurrentCredentials()?.meJid ?? '';
         const callId = this.info.callId;
         const callCreator = this.info.callCreator;
         const destinationJids = this.info.relayData.participantJids || [];
-        const seenRelayNames = new Set();
         for (const ep of this.info.relayData.endpoints) {
             const name = ep.relayName || '';
-            if (!name || seenRelayNames.has(name))
+            if (!name || ep.ip.includes(':') || this.announcedRelayNames.has(name) || !isEligible(ep))
                 continue;
-            seenRelayNames.add(name);
+            this.announcedRelayNames.add(name);
             try {
                 const relayData = [
                     {
                         relayName: name,
-                        latency: ep.c2rRtt || 0,
+                        latency: ep.c2rRtt ?? this.answeredRelays.get(name) ?? 0,
                         addressBytes: ep.addressBytes
                     }
                 ];
@@ -304,12 +317,22 @@ export class WaCallMediaSession {
                 await this.deps.lowLevelCoordinator.sendNode(relayLatencyNode);
             }
             catch (err) {
-                this.logger.error('error sending incoming relaylatency', {
+                this.announcedRelayNames.delete(name);
+                this.logger.error('error sending relaylatency', {
                     relayName: name,
                     message: toError(err).message
                 });
             }
         }
+    }
+    async sendIncomingRelayLatency() {
+        if (!this.info.relayData)
+            return;
+        this.relayLatencyOpened = true;
+        const dialed = new Set(this.selectRelayEndpoints(this.info.relayData.endpoints)
+            .slice(0, this.sctpRelay.maxActiveRelays)
+            .map((ep) => ep.relayName));
+        await this.announceRelayLatency((ep) => dialed.size === 0 || dialed.has(ep.relayName) || this.answeredRelays.has(ep.relayName));
     }
     async handleCallAccept(node, peerJid) {
         const nodeInfo = extractNodeInfo(node);
@@ -459,31 +482,8 @@ export class WaCallMediaSession {
             const meId = this.deps.authClient.getCurrentCredentials()?.meJid ?? '';
             const callId = this.info.callId;
             const callCreator = this.info.callCreator;
-            const destinationJids = this.info.relayData.participantJids || [];
-            const seenRelayNames = new Set();
-            for (const ep of this.info.relayData.endpoints) {
-                const name = ep.relayName || '';
-                if (!name || seenRelayNames.has(name))
-                    continue;
-                seenRelayNames.add(name);
-                try {
-                    const relayData = [
-                        {
-                            relayName: name,
-                            latency: ep.c2rRtt || 0,
-                            addressBytes: ep.addressBytes
-                        }
-                    ];
-                    const relayLatencyNode = buildRelayLatencyStanza(this.info.peerJid, callId, callCreator, relayData, destinationJids, meId);
-                    await this.deps.lowLevelCoordinator.sendNode(relayLatencyNode);
-                }
-                catch (err) {
-                    this.logger.error('error sending relaylatency', {
-                        relayName: name,
-                        message: toError(err).message
-                    });
-                }
-            }
+            this.relayLatencyOpened = true;
+            await this.announceRelayLatency();
             if (!this.initialTransportSent) {
                 try {
                     const basePeerJid = toUserJid(peerJid);
@@ -1065,6 +1065,9 @@ export class WaCallMediaSession {
         this.audioEngine.stop();
         this.videoEngine.stop();
         this.sctpRelay.cleanup();
+        this.answeredRelays.clear();
+        this.announcedRelayNames.clear();
+        this.relayLatencyOpened = false;
         if (this.rtcpTimer) {
             clearInterval(this.rtcpTimer);
             this.rtcpTimer = null;
@@ -1355,11 +1358,11 @@ export class WaCallMediaSession {
             this.srtpErrorCount++;
         }
     }
-    async connectRelays(endpoints) {
+    selectRelayEndpoints(endpoints) {
         const seen = new Set();
         const uniqueEndpoints = [];
         for (const ep of endpoints) {
-            if ((ep.protocol ?? 0) !== 0)
+            if ((ep.protocol ?? 0) !== 0 || ep.ip.includes(':'))
                 continue;
             const key = `${ep.ip}:${ep.port}`;
             if (!seen.has(key)) {
@@ -1381,30 +1384,40 @@ export class WaCallMediaSession {
                 usable[0] ??
                 null;
         }
-        const WA_RELAY_PORT = 3478;
-        const relays = chosen
-            ? [
-                  {
-                      ip: chosen.ip,
-                      port: WA_RELAY_PORT,
-                      token: chosen.token,
-                      authToken: chosen.authToken,
-                      rawAuthToken: chosen.rawAuthToken,
-                      rawToken: chosen.rawToken,
-                      key: chosen.key,
-                      relayId: chosen.relayId,
-                      name: chosen.relayName || `${chosen.ip}:${WA_RELAY_PORT}`,
-                      authTokenId: chosen.authTokenId,
-                      isFna: chosen.isFna
-                  }
-              ]
-            : [];
+        const ordered = chosen ? [chosen] : [];
+        const orderedAddresses = new Set(chosen ? [chosen.ip] : []);
+        for (const ep of usable) {
+            if (ordered.length >= 4)
+                break;
+            if (orderedAddresses.has(ep.ip))
+                continue;
+            orderedAddresses.add(ep.ip);
+            ordered.push(ep);
+        }
+        return ordered;
+    }
+    async connectRelays(endpoints) {
+        const ordered = this.selectRelayEndpoints(endpoints);
+        const relays = ordered.map((ep) => ({
+            ip: ep.ip,
+            port: ep.port || 3478,
+            token: ep.token,
+            authToken: ep.authToken,
+            rawAuthToken: ep.rawAuthToken,
+            rawToken: ep.rawToken,
+            key: ep.key,
+            relayId: ep.relayId,
+            name: ep.relayName || `${ep.ip}:${ep.port || 3478}`,
+            authTokenId: ep.authTokenId,
+            isFna: ep.isFna
+        }));
         if (relays.length === 0) {
             this.logger.error('no relay configs', { callId: this.info.callId });
             return;
         }
         this.sctpRelay.setParticipantIds(this.info.relayData?.selfPid, this.info.relayData?.peerPid);
         this.sctpRelay.setSsrc(this.selfSsrc);
+        this.sctpRelay.setStreamSsrcs(this.selfSsrcJid ? deriveWasmRelayStreamSsrcs(this.info.callId, this.selfSsrcJid) : null);
         if (this.info.mediaType === CallMediaType.Video) {
             this.sctpRelay.setVideoSsrc(this.videoSsrc);
         }
