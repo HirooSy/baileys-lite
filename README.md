@@ -12,7 +12,7 @@
 - [x] High performance for multi sessions.
 - [x] Zero dependency.
 - [x] Low memory & CPU consumption.
-- [x] Calls: Video & Audio.
+- [x] Calls: Video & Audio, group calls, call links, and waiting rooms.
 
 ---
 
@@ -504,7 +504,7 @@ await sock.sendMessage([contactJid1, contactJid2], { text: 'Status update text' 
 
 ## Call
 
-Calls need `ffmpeg` and `ffprobe` in `PATH`. Create one `Voip` per socket once it is open. After a reconnect there is a new socket, so create a new `Voip`.
+Calls need `ffmpeg` and `ffprobe` in `PATH`. Create one `Voip` per socket once it is open. After a reconnect there is a new socket, so create a new `Voip`. The same `Voip` handles 1:1 calls, group calls, and call links.
 
 <details> <summary>Quick start</summary>
 
@@ -532,7 +532,7 @@ await voip.call('628123456789')
 
 ```javascript
 await voip.call(jid, './song.mp3')                    // local file
-await voip.call(jid, 'https://example.com/song.mp3')  // url, downloaded first (audio max 20MB, video max 50MB)
+await voip.call(jid, 'https://example.com/song.mp3')  // audio url is streamed, video url is downloaded first (max 50MB)
 await voip.call(jid, { audio: './voice.ogg' })
 await voip.call(jid, './clip.mp4', '720p')            // video call
 
@@ -603,6 +603,13 @@ call.on('peer_video', change => {})
 call.on('inbound_audio', pcm => {})     // Float32Array, 16 kHz mono, 60 ms
 call.on('inbound_video', frame => {})   // decoded H.264 frame
 call.on('audio_finished', () => {})     // current audio item reached its end
+call.on('reconnecting', detail => {})   // connection is recovering
+call.on('reconnected', () => {})
+
+call.on('group_state', state => {})     // group roster snapshot
+call.on('participants_changed', ({ added, removed }) => {})
+call.on('waiting_room', room => {})
+call.on('participant_audio', (jid, pcm) => {})  // audio from one participant
 ```
 
 </details>
@@ -625,10 +632,94 @@ await voip.hangup(callId)
 
 // events: call_incoming, call_state, call_ended, call_peer_mute, call_inbound_audio,
 // call_inbound_video, call_hand_raise, call_reaction, call_screen_share,
-// call_peer_video_state, call_outbound_audio_finished, call_error
+// call_video_state, call_outbound_audio_finished, call_error, call_reconnecting,
+// call_reconnected, call_group_state, call_waiting_room, call_participant_audio
 ```
 
+`voip.incoming()` returns the ringing incoming calls. It is a method, not a getter.
+
 `voip.coordinator` is the raw engine (`feedLiveAudio`, `feedLiveVideo`, `setExternalAudioMode`, ...).
+
+</details>
+
+<details> <summary>Participants & Approval</summary>
+
+```javascript
+call.participants                           // current group members
+call.waitingRoom                            // people waiting for approval, null if none
+call.link                                   // call link, null if the call has none
+
+await call.addParticipant('628111111111')   // invite into the call
+await call.ringParticipant('628111111111')  // invite and ring
+await call.setApprovalRequired(true)        // waiting room on or off
+await call.admit('628111111111')            // let a waiting person in
+await call.deny('628111111111')             // reject a waiting person
+```
+
+Targets can be a number or a jid. Numbers are converted to a LID before the request is sent.
+
+</details>
+
+<details> <summary>Group Calls</summary>
+
+```javascript
+const call = await voip.groupCall(
+  ['628111111111', '628222222222'],   // at least two numbers besides yourself
+  './song.mp3',
+  '480p',
+  { groupJid: '120363000000000000@g.us' } // group chat the call belongs to
+)
+
+call.on('participants_changed', ({ added, removed }) => {
+  console.log('joined:', added.map(p => p.number), 'left:', removed.map(p => p.number))
+})
+```
+
+A group call is one call with several participants, so it uses one slot in `maxConcurrentCalls`.
+
+</details>
+
+<details> <summary>Call Links & Rooms</summary>
+
+```javascript
+// create a room, the call stays open until you hang up
+const room = await voip.createRoom('./song.mp3', '480p', {
+  requireApproval: true,   // waiting room, approve people with call.admit()
+  loop: true
+})
+console.log(room.link)
+
+// join an existing link
+const joined = await voip.joinLink('https://call.whatsapp.com/voice/xxxx', './song.mp3')
+
+// read the link of a call, and check a link before joining
+const link = await voip.getLink(room)                 // or getLink(callId)
+const info = await voip.previewLink('https://call.whatsapp.com/voice/xxxx')
+```
+
+- `createRoom()` sets `autoEndCall: false` unless you pass your own.
+- `joinLink()` uses a 10 minute safety timeout by default (`safetyMs` changes it). See Multi Call for what happens when it fires.
+- `requireApproval` in `createRoom()` turns the waiting room on once the call is connected.
+
+</details>
+
+<details> <summary>Helpers by Call ID</summary>
+
+```javascript
+voip.activeCalls()                  // summaries of active calls
+voip.info(callId)                   // details of one call, or null
+voip.silent(callId, true)
+voip.mute(callId, true)
+voip.react(callId, '👍')
+voip.hand(callId, true)
+voip.add(callId, '628111111111')
+voip.admit(callId, '628111111111')
+voip.deny(callId, '628111111111')
+voip.approval(callId, true)
+voip.link(callId)
+```
+
+All helpers except `info()` throw `No active call with id ...` if the call is gone.
 
 </details>
 
@@ -665,9 +756,9 @@ await voip.end(true)        // only release the slots
 ```
 
 - `maxConcurrentCalls` defaults to `1`. Each call gets its own relay, codec and audio.
-- Incoming calls count toward the limit too.
+- Incoming calls, group calls, call links, and rooms count toward the limit too.
 - A call over the limit throws `Maximum concurrent calls reached`. In `callMany()` it is returned as `error` for that number and the rest still go through.
 - `callMany()` takes the same media and options as `call()` and calls duplicate numbers once.
-- A safety timeout emits `error` if a call never ends (starts at 105s).
+- A safety timeout emits `error` if a call never ends. It starts at 105s, or 10 minutes for `joinLink()` and `createRoom()`. When a playlist item starts, video items reset it to 10 minutes and audio items clear it. The call is not hung up by the timeout, so call `hangup()` yourself when you are done.
 
 </details>
