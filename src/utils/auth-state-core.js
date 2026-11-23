@@ -522,6 +522,34 @@ function isSessionRecordError(error) {
 	return DECRYPTION_RETRY_CONFIG.sessionRecordErrors.some(pattern => errorMessage.includes(pattern))
 }
 
+const UNAVAILABLE_SKIP_SUBTYPE_BY_KIND = {
+	bot: 'bot_unavailable_fanout',
+	hosted: 'hosted_unavailable_fanout',
+	view_once: 'view_once_unavailable_fanout',
+	sender_drop: 'acp_unavailable_fanout'
+}
+const UNAVAILABLE_SKIP_SUBTYPES = new Set(Object.values(UNAVAILABLE_SKIP_SUBTYPE_BY_KIND))
+
+export function resolveUnavailableKind(node) {
+	const content = Array.isArray(node?.content) ? node.content : []
+	const unavailable = content.find(child => child?.tag === 'unavailable')
+	if (!unavailable) return null
+	if (content.some(child => child?.tag === 'bot')) return 'bot'
+	if (unavailable.attrs?.hosted === 'true') return 'hosted'
+	const type = unavailable.attrs?.type
+	return type === 'view_once' || type === 'sender_drop' ? type : 'other'
+}
+
+export function resolvePlaceholderResendSkipSubtype(node) {
+	const subtype = node?.attrs?.subtype
+	if (typeof subtype === 'string' && UNAVAILABLE_SKIP_SUBTYPES.has(subtype)) return subtype
+	const unavailable = Array.isArray(node?.content) ? node.content.find(child => child?.tag === 'unavailable') : undefined
+	const legacyType = unavailable?.attrs?.type
+	if (typeof legacyType === 'string' && UNAVAILABLE_SKIP_SUBTYPES.has(legacyType)) return legacyType
+	const kind = resolveUnavailableKind(node)
+	return kind && kind !== 'other' ? UNAVAILABLE_SKIP_SUBTYPE_BY_KIND[kind] : null
+}
+
 export const decryptMessageNode = (stanza, meId, meLid, repository, logger) => {
 	const { fullMessage, author, sender } = decodeMessageNode(stanza, meId, meLid)
 	return {
@@ -530,15 +558,16 @@ export const decryptMessageNode = (stanza, meId, meLid, repository, logger) => {
 		author,
 		async decrypt() {
 			let decryptables = 0
+			let decryptedAny = false
+			let decryptFailed = false
+			let skmsgFailed = false
+			if (resolveUnavailableKind(stanza) === 'view_once') fullMessage.key.isViewOnce = true
 			if (Array.isArray(stanza.content)) {
 				for (const { tag, attrs, content } of stanza.content) {
 					if (tag === 'verified_name' && content instanceof Uint8Array) {
 						const cert = proto.VerifiedNameCertificate.decode(content)
 						const details = proto.VerifiedNameCertificate.Details.decode(cert.details)
 						fullMessage.verifiedBizName = details.verifiedName
-					}
-					if (tag === 'unavailable' && attrs.type === 'view_once') {
-						fullMessage.key.isViewOnce = true
 					}
 					if (attrs.count && tag === 'enc') fullMessage.retryCount = Number(attrs.count)
 					if (tag !== 'enc' && tag !== 'plaintext') continue
@@ -577,6 +606,7 @@ export const decryptMessageNode = (stanza, meId, meLid, repository, logger) => {
 						}
 						if (fullMessage.message) Object.assign(fullMessage.message, msg)
 						else fullMessage.message = msg
+						decryptedAny = true
 					} catch (err) {
 						logger.error(
 							{
@@ -589,6 +619,8 @@ export const decryptMessageNode = (stanza, meId, meLid, repository, logger) => {
 							},
 							'failed to decrypt message'
 						)
+						decryptFailed = true
+						if (attrs.type === 'skmsg') skmsgFailed = true
 						fullMessage.messageStubType = proto.WebMessageInfo.StubType.CIPHERTEXT
 						fullMessage.messageStubParameters = [err.message.toString()]
 					}
@@ -597,6 +629,9 @@ export const decryptMessageNode = (stanza, meId, meLid, repository, logger) => {
 			if (!decryptables && !fullMessage.key?.isViewOnce) {
 				fullMessage.messageStubType = proto.WebMessageInfo.StubType.CIPHERTEXT
 				fullMessage.messageStubParameters = [NO_MESSAGE_FOUND_ERROR_TEXT]
+			} else if (decryptFailed && decryptedAny && !skmsgFailed) {
+				delete fullMessage.messageStubType
+				delete fullMessage.messageStubParameters
 			}
 		}
 	}

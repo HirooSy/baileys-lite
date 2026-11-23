@@ -17,6 +17,7 @@ import {
 	isHostedLidUser,
 	isHostedPnUser,
 	isJidBroadcast,
+	isJidGroup,
 	isJidStatusBroadcast,
 	isLidUser,
 	isPnUser,
@@ -152,11 +153,57 @@ export function decryptMessageEdit({ encPayload, encIv }, { originalSenderJid, o
 	return proto.Message.decode(decrypted)
 }
 
+const orderLidFirst = jids => [...jids.filter(jid => isLidUser(jid)), ...jids.filter(jid => !isLidUser(jid))]
+
+const collectUserJids = (...candidates) => {
+	const out = []
+	for (const candidate of candidates) {
+		if (typeof candidate !== 'string' || !candidate) continue
+		const user = jidNormalizedUser(candidate)
+		if (user && !out.includes(user)) out.push(user)
+	}
+	return out
+}
+
+const resolveSenderJids = async (rawJid, alternates, lidMapping) => {
+	let lid
+	let pn
+	if (rawJid && isLidUser(rawJid)) {
+		lid = rawJid
+		pn = await lidMapping?.getPNForLID(rawJid).catch(() => null)
+	} else if (rawJid && isPnUser(rawJid)) {
+		pn = rawJid
+		lid = await lidMapping?.getLIDForPN(rawJid).catch(() => null)
+	}
+	return orderLidFirst(collectUserJids(lid, pn, rawJid, ...alternates))
+}
+
+const resolveEditParentJids = async (targetKey, meId, meLid, lidMapping) => {
+	if (targetKey?.fromMe) return orderLidFirst(collectUserJids(meLid, meId))
+	return resolveSenderJids(targetKey?.participant || targetKey?.remoteJid, [targetKey?.participantAlt, targetKey?.remoteJidAlt], lidMapping)
+}
+
+const resolveEditEditorJids = async (messageKey, meId, meLid, lidMapping) => {
+	if (messageKey?.fromMe) return orderLidFirst(collectUserJids(meLid, meId))
+	return resolveSenderJids(messageKey?.participant || messageKey?.remoteJid, [messageKey?.participantAlt, messageKey?.remoteJidAlt], lidMapping)
+}
+
+const decryptEditWithSenderFallback = ({ encPayload, encIv, editEncKey, originalMsgId, parentJids, editorJids }) => {
+	let lastError
+	for (const originalSenderJid of parentJids) {
+		for (const editorJid of editorJids) {
+			try {
+				return decryptMessageEdit({ encPayload, encIv }, { editEncKey, originalSenderJid, originalMsgId, editorJid })
+			} catch (err) {
+				lastError = err
+			}
+		}
+	}
+	throw lastError ?? new Error('no sender candidates for message edit')
+}
+
 const buildEditUpdate = args => {
-	const editedInner = decryptMessageEdit(
-		{ encPayload: args.encPayload, encIv: args.encIv },
-		{ editEncKey: args.editEncKey, originalSenderJid: args.originalSenderJid, originalMsgId: args.originalMsgId, editorJid: args.editorJid }
-	)
+	const editedInner = decryptEditWithSenderFallback(args)
 	const editProtocol = editedInner.protocolMessage
 	const innerEdited = editProtocol?.editedMessage
 	if (!innerEdited) {
@@ -212,7 +259,7 @@ const processMessage = async (message, { shouldProcessHistoryMsg, placeholderRes
 							processedHistoryMessages: [...(creds.processedHistoryMessages || []), { key: message.key, messageTimestamp: message.messageTimestamp }].slice(-MAX_PROCESSED_HISTORY_MESSAGES)
 						})
 					}
-					const data = await downloadAndProcessHistorySyncNotification(histNotification, options, logger)
+					const data = await downloadAndProcessHistorySyncNotification(histNotification, options, logger, meId)
 					if (data.lidPnMappings?.length) {
 						logger?.debug({ count: data.lidPnMappings.length }, 'processing LID-PN mappings from history sync')
 						await signalRepository.lidMapping.storeLIDPNMappings(data.lidPnMappings).catch(err => logger?.warn({ err }, 'failed to store LID-PN mappings from history sync'))
@@ -356,30 +403,29 @@ const processMessage = async (message, { shouldProcessHistoryMsg, placeholderRes
 		const targetMsg = await getMessage(targetKey)
 		if (targetMsg) {
 			try {
-				const meIdNormalised = jidNormalizedUser(meId)
-				const origSenderRaw = targetKey.participant || targetKey.remoteJid
-				const origSenderPn = isLidUser(origSenderRaw) ? await signalRepository.lidMapping.getPNForLID(origSenderRaw) : origSenderRaw
-				const originalSenderJid = getKeyAuthor({ remoteJid: jidNormalizedUser(origSenderPn), fromMe: meIdNormalised === origSenderPn }, meIdNormalised)
-				const editorJid = getKeyAuthor(message.key, meIdNormalised)
 				const editEncKey = targetMsg?.messageContextInfo?.messageSecret
 				if (!editEncKey) {
 					logger?.warn({ targetKey }, 'message edit: missing messageSecret on original message — cannot decrypt')
-					return
+				} else {
+					const meIdNormalised = jidNormalizedUser(meId)
+					const meLid = creds.me?.lid
+					const parentJids = await resolveEditParentJids(targetKey, meIdNormalised, meLid, signalRepository.lidMapping)
+					const editorJids = await resolveEditEditorJids(message.key, meIdNormalised, meLid, signalRepository.lidMapping)
+					const update = buildEditUpdate({
+						editEncKey,
+						encPayload: secEnc.encPayload,
+						encIv: secEnc.encIv,
+						parentJids,
+						editorJids,
+						originalMsgId: targetKey.id,
+						messageKey: message.key,
+						targetKeyId: targetKey.id,
+						fallbackTimestamp: toNumber(message.messageTimestamp),
+						logger,
+						targetKey
+					})
+					if (update) ev.emit('messages.update', [update])
 				}
-				const update = buildEditUpdate({
-					editEncKey,
-					encPayload: secEnc.encPayload,
-					encIv: secEnc.encIv,
-					originalSenderJid,
-					originalMsgId: targetKey.id,
-					editorJid,
-					messageKey: message.key,
-					targetKeyId: targetKey.id,
-					fallbackTimestamp: toNumber(message.messageTimestamp),
-					logger,
-					targetKey
-				})
-				if (update) ev.emit('messages.update', [update])
 			} catch (err) {
 				logger?.warn({ err, targetKey }, 'failed to decrypt secretEncryptedMessage MESSAGE_EDIT')
 			}
@@ -738,7 +784,15 @@ export const downloadHistory = async (msg, options) => {
 	return proto.HistorySync.decode(inflated)
 }
 
-export const processHistoryMessage = (item, logger) => {
+const applyHistoryMessageAuthor = (message, chatId, meId) => {
+	if (!isJidGroup(chatId) && !isJidBroadcast(chatId)) return
+	if (message.key.participant) return
+	const selfAuthor = message.originalSelfAuthorUserJidString || meId
+	const author = message.participant || (message.key.fromMe && selfAuthor ? jidNormalizedUser(selfAuthor) : undefined)
+	if (author) message.key.participant = author
+}
+
+export const processHistoryMessage = (item, logger, meId) => {
 	const messages = []
 	const contacts = []
 	const chats = []
@@ -747,18 +801,23 @@ export const processHistoryMessage = (item, logger) => {
 	for (const m of item.phoneNumberToLidMappings || []) {
 		if (m.lidJid && m.pnJid) lidPnMappings.push({ lid: m.lidJid, pn: m.pnJid })
 	}
+	for (const m of item.inlineContacts || []) {
+		if (m.lidJid && m.pnJid) lidPnMappings.push({ lid: m.lidJid, pn: m.pnJid })
+	}
 	switch (item.syncType) {
 		case proto.HistorySync.HistorySyncType.INITIAL_BOOTSTRAP:
 		case proto.HistorySync.HistorySyncType.RECENT:
 		case proto.HistorySync.HistorySyncType.FULL:
 		case proto.HistorySync.HistorySyncType.ON_DEMAND:
-			for (const chat of item.conversations) {
-				contacts.push({ id: chat.id, name: chat.displayName || chat.name || chat.username || undefined, username: chat.username || undefined, lid: chat.lidJid || chat.accountLid || undefined, phoneNumber: chat.pnJid || undefined })
+			for (const chat of item.conversations || []) {
+				if (!chat?.id) continue
+				const chatLid = chat.lidJid || chat.accountLid || undefined
+				contacts.push({ id: chat.id, name: chat.displayName || chat.name || chat.username || undefined, username: chat.username || undefined, lid: chatLid, phoneNumber: chat.pnJid || undefined })
 				const chatId = chat.id
 				const isLid = isLidUser(chatId) || isHostedLidUser(chatId)
 				const isPn = isPnUser(chatId) || isHostedPnUser(chatId)
 				if (isLid && chat.pnJid) lidPnMappings.push({ lid: chatId, pn: chat.pnJid })
-				else if (isPn && chat.lidJid) lidPnMappings.push({ lid: chat.lidJid, pn: chatId })
+				else if (isPn && chatLid) lidPnMappings.push({ lid: chatLid, pn: chatId })
 				else if (isLid && !chat.pnJid) {
 					const pnFromReceipt = extractPnFromMessages(chat.messages || [])
 					if (pnFromReceipt) lidPnMappings.push({ lid: chatId, pn: pnFromReceipt })
@@ -766,7 +825,9 @@ export const processHistoryMessage = (item, logger) => {
 				const msgs = chat.messages || []
 				delete chat.messages
 				for (const item_ of msgs) {
-					const message = item_.message
+					const message = item_?.message
+					if (!message?.key) continue
+					applyHistoryMessageAuthor(message, chatId, meId)
 					messages.push(message)
 					if (!chat.messages?.length) chat.messages = [{ message }]
 					if (!message.key.fromMe && !chat.lastMessageRecvTimestamp) chat.lastMessageRecvTimestamp = toNumber(message.messageTimestamp)
@@ -781,17 +842,17 @@ export const processHistoryMessage = (item, logger) => {
 			}
 			break
 		case proto.HistorySync.HistorySyncType.PUSH_NAME:
-			for (const c of item.pushnames) contacts.push({ id: c.id, notify: c.pushname })
+			for (const c of item.pushnames || []) contacts.push({ id: c.id, notify: c.pushname })
 			break
 	}
 	return { chats, contacts, messages, lidPnMappings, pastParticipants: item.pastParticipants, syncType: item.syncType, progress: item.progress }
 }
 
-export const downloadAndProcessHistorySyncNotification = async (msg, options, logger) => {
+export const downloadAndProcessHistorySyncNotification = async (msg, options, logger, meId) => {
 	const historyMsg = msg.initialHistBootstrapInlinePayload
 		? proto.HistorySync.decode(await inflatePromise(msg.initialHistBootstrapInlinePayload))
 		: await downloadHistory(msg, options)
-	return processHistoryMessage(historyMsg, logger)
+	return processHistoryMessage(historyMsg, logger, meId)
 }
 
 export const getHistoryMsg = message => {

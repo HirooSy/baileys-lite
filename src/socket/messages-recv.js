@@ -37,6 +37,7 @@ import {
 	NO_MESSAGE_FOUND_ERROR_TEXT,
 	readTcTokenIndex,
 	resolveIssuanceJid,
+	resolvePlaceholderResendSkipSubtype,
 	resolveTcTokenJid,
 	SERVER_ERROR_CODES,
 	storeTcTokensFromIqResult,
@@ -1346,12 +1347,9 @@ export const makeMessagesRecvSocket = (config) => {
                     }
                     if (msg.messageStubParameters?.[0] === NO_MESSAGE_FOUND_ERROR_TEXT) {
 
-                        const unavailableNode = getBinaryNodeChild(node, 'unavailable');
-                        const unavailableType = unavailableNode?.attrs?.type;
-                        if (unavailableType === 'bot_unavailable_fanout' ||
-                            unavailableType === 'hosted_unavailable_fanout' ||
-                            unavailableType === 'view_once_unavailable_fanout') {
-                            logger.debug({ msgId: msg.key.id, unavailableType }, 'skipping placeholder resend for excluded unavailable type');
+                        const skipSubtype = resolvePlaceholderResendSkipSubtype(node);
+                        if (skipSubtype) {
+                            logger.debug({ msgId: msg.key.id, subtype: skipSubtype }, 'skipping placeholder resend for excluded unavailable type');
                             acked = true;
                             return sendMessageAck(node);
                         }

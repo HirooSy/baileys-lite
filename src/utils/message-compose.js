@@ -1553,6 +1553,15 @@ export const normalizeMessageContent = content => {
 	return content
 }
 
+const VIEW_ONCE_MEDIA_KEYS = ['imageMessage', 'videoMessage', 'ptvMessage', 'audioMessage']
+
+export const isViewOnceMessage = message => {
+	if (!message) return false
+	if (message.viewOnceMessage || message.viewOnceMessageV2) return true
+	const inner = normalizeMessageContent(message)
+	return !!inner && VIEW_ONCE_MEDIA_KEYS.some(key => !!inner[key]?.viewOnce)
+}
+
 export const extractMessageContent = content => {
 	const extractFromTemplateMessage = msg => {
 		if (msg.imageMessage) return { imageMessage: msg.imageMessage }

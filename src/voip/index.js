@@ -196,7 +196,7 @@ class VoipCall extends EventEmitter {
         this.#loop = !!opts.loop;
         this.#onItemAdvance = opts.onItemAdvance;
         this.#target = opts.target ?? null;
-        this.#autoDowngrade = opts.autoDowngrade === undefined ? true : !!opts.autoDowngrade;
+        this.#autoDowngrade = opts.autoDowngrade === undefined ? false : !!opts.autoDowngrade;
         this.#startVideoOnFirst = !!opts.startVideoOnFirst;
         this.#normalize = opts.normalize ?? null;
     }

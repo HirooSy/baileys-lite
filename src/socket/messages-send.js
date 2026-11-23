@@ -26,6 +26,7 @@ import {
 	generateWAMessage,
 	generateWAMessageFromContent,
 	hasValidAlbumMedia,
+	isViewOnceMessage,
 	normalizeMessageContent,
 	shouldIncludeBizBinaryNode
 } from '../utils/message-compose.js'
@@ -550,8 +551,12 @@ export const makeMessagesSocket = (config) => {
             const isNeedMetaAttrs = innerMessage?.pinInChatMessage || innerMessage?.keepInChatMessage || innerMessage?.reactionMessage;
             const isGroupStatus = message?.groupStatusMessage || message?.groupStatusMessageV2;
             const isPollUpdate = innerMessage?.pollUpdateMessage;
-            if (isNeedMetaAttrs || isGroupStatus || isPollUpdate) {
+            const isViewOnce = isViewOnceMessage(message);
+            if (isNeedMetaAttrs || isGroupStatus || isPollUpdate || isViewOnce) {
                 const metaAttrs = {};
+                if (isViewOnce) {
+                    metaAttrs.view_once = 'true';
+                }
                 if (isNeedMetaAttrs) {
                     metaAttrs.content_type = 'add_on';
                 }
