@@ -69,10 +69,6 @@ export const makeSocket = config => {
 	const uqTagId = generateMdTagPrefix()
 	const generateMessageTag = () => `${uqTagId}${epoch++}`
 
-	if (browser[1].toLocaleLowerCase().includes('android')) {
-		logger.warn('⚠️ Using the Android browser is experimental and may lead to unexpected behavior. Use at your own risk.')
-	}
-
 	const syncDisabled = PROCESSABLE_HISTORY_TYPES.map(syncType => config.shouldSyncHistoryMessage({ syncType })).filter(x => x === false).length === PROCESSABLE_HISTORY_TYPES.length
 	if (syncDisabled) {
 		logger.warn('⚠️ DANGER: DISABLING ALL SYNC BY shouldSyncHistoryMsg PREVENTS BAILEYS FROM ACCESSING INITIAL LID MAPPINGS, LEADING TO INSTABILIY AND SESSION ERRORS')

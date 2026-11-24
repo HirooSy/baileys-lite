@@ -1,18 +1,22 @@
-<div align=center><img src="https://files.catbox.moe/bzw1x3.png"/></div>
+# Baileys-Lite
 
-<p align="center">
+<p align="left">
   <a href="https://www.npmjs.com/package/@hiroosy/baileys-lite"><img height="25" alt="npm version" src="https://img.shields.io/npm/v/@hiroosy/baileys-lite?color=CB3837&style=for-the-badge&logo=npm" /></a>
   <a href="https://www.npmjs.com/package/@hiroosy/baileys-lite"><img height="25" alt="npm package size" src="https://img.shields.io/npm/unpacked-size/@hiroosy/baileys-lite?label=size&color=2F855A&style=for-the-badge&logo=npm" /></a>
   <img height="25" alt="node version" src="https://img.shields.io/badge/NodeJS_>=18-000000.svg?&style=for-the-badge&logo=node.js&logoColor=green" />
 </p>
 
-**High-Performance Javascript Baileys**, built for high-scalability workloads, multi-session operation, and full user configurability.
+**High-Performance Javascript Baileys**, built for high-scalability workloads, built-in modules, multi-session operation, and full user configurability.
 
-- [x] Support LID/PN/Username.
-- [x] High performance for multi sessions.
-- [x] Zero dependency.
-- [x] Low memory & CPU consumption.
-- [x] Calls: Video & Audio, group calls, call links, and waiting rooms.
+| Feature | Baileys-Lite | Whiskeysockets |
+| --- | --- | --- |
+| RAM usage | 80 mb | 150mb+ |
+| Call | Yes | No |
+| Ping | 8 ms | 200 ms |
+| Multi sessions limit | 100+, still fast | 2-10, slow |
+| LID/PN/Username | Yes, all | Only LID and PN |
+| SQL session | Yes | No |
+| Node required | >=18 | >=20 |
 
 ---
 
