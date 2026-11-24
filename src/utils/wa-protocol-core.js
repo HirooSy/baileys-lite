@@ -890,7 +890,9 @@ const WA_ADV_HOSTED_ACCOUNT_SIG_PREFIX = Buffer.from([6, 5])
 
 const getUserAgent = config => ({
 	appVersion: { primary: config.version[0], secondary: config.version[1], tertiary: config.version[2] },
-	platform: proto.ClientPayload.UserAgent.Platform.WEB,
+	platform: config.browser[1].toLocaleLowerCase().includes('android')
+		? proto.ClientPayload.UserAgent.Platform.ANDROID
+		: proto.ClientPayload.UserAgent.Platform.WEB,
 	releaseChannel: proto.ClientPayload.UserAgent.ReleaseChannel.RELEASE,
 	osVersion: '0.1',
 	device: 'Desktop',
@@ -920,7 +922,7 @@ const getClientPayload = config => {
 		connectReason: proto.ClientPayload.ConnectReason.USER_ACTIVATED,
 		userAgent: getUserAgent(config)
 	}
-	payload.webInfo = getWebInfo(config)
+	if (!config.browser[1].toLocaleLowerCase().includes('android')) payload.webInfo = getWebInfo(config)
 	if (config.pushName) payload.pushName = config.pushName
 	return payload
 }
@@ -933,7 +935,7 @@ export const generateLoginNode = (userJid, config) => {
 
 const getPlatformType = platform => {
 	const platformType = platform.toUpperCase()
-	if (platformType === 'ANDROID') return proto.DeviceProps.PlatformType.UNKNOWN
+	if (platformType === 'ANDROID') return proto.DeviceProps.PlatformType.ANDROID_PHONE
 	return proto.DeviceProps.PlatformType[platformType] || proto.DeviceProps.PlatformType.CHROME
 }
 
