@@ -103,7 +103,8 @@ export const makeMessagesRecvSocket = (config) => {
                 oldestMsgFromMe: oldestMsgKey.fromMe,
                 oldestMsgId: oldestMsgKey.id,
                 oldestMsgTimestampMs: oldestMsgTimestamp,
-                onDemandMsgCount: count
+                onDemandMsgCount: count,
+                supportInlineResponse: true
             },
             peerDataOperationRequestType: proto.Message.PeerDataOperationRequestType.HISTORY_SYNC_ON_DEMAND
         };
@@ -1452,11 +1453,6 @@ export const makeMessagesRecvSocket = (config) => {
                         acked = true;
                         await sendReceipt(msg.key.remoteJid, participant, [msg.key.id], type);
 
-                        const isAnyHistoryMsg = getHistoryMsg(msg.message);
-                        if (isAnyHistoryMsg) {
-                            const jid = jidNormalizedUser(msg.key.remoteJid);
-                            await sendReceipt(jid, undefined, [msg.key.id], 'hist_sync');
-                        }
                     }
                     else {
                         acked = true;
@@ -1466,6 +1462,9 @@ export const makeMessagesRecvSocket = (config) => {
                 }
                 cleanMessage(msg, authState.creds.me.id, authState.creds.me.lid);
                 await upsertMessage(msg, node.attrs.offline ? 'append' : 'notify');
+                if (!isJidNewsletter(msg.key.remoteJid) && getHistoryMsg(msg.message)) {
+                    await sendReceipt(jidNormalizedUser(msg.key.remoteJid), undefined, [msg.key.id], 'hist_sync');
+                }
             });
         }
         catch (error) {

@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { EventEmitter } from 'node:events';
 import { VoipClient } from './voipClient.js';
+import { probeNative } from '../ffmpeg/index.js';
 import { CallDirection, CallMediaType } from './types.js';
 
 const RESOLUTION_PRESETS = {
@@ -82,46 +83,18 @@ async function downloadToTemp(url, extHint, maxBytes, tmpDirOverride) {
     return filePath;
 }
 
-async function probeMedia(filePath, ffprobePath) {
+async function probeMedia(filePath) {
     try {
-        const { execFile } = await import('node:child_process');
-        const { promisify } = await import('node:util');
-        const execFileAsync = promisify(execFile);
-        const { stdout } = await execFileAsync(ffprobePath, [
-            '-v', 'error', '-print_format', 'json', '-show_format', '-show_streams', filePath
-        ]);
-        const parsed = JSON.parse(stdout);
-        const duration = parsed?.format?.duration;
-        const durationMs = (!duration || isNaN(duration)) ? null : Math.ceil(parseFloat(duration) * 1000);
-        const videoStream = parsed?.streams?.find((s) => s.codec_type === 'video');
-        let width = videoStream?.width || null;
-        let height = videoStream?.height || null;
-        const rotation = getEffectiveRotation(videoStream);
-        if (width && height && Math.abs(rotation) % 180 === 90) {
-            [width, height] = [height, width];
-        }
-        return { durationMs, width, height };
+        const native = await probeNative(filePath);
+        const duration = native?.format.duration;
+        return duration > 0 ? Math.ceil(duration * 1000) : null;
     }
     catch {
-        return { durationMs: null, width: null, height: null };
+        return null;
     }
 }
 
-function getEffectiveRotation(videoStream) {
-    const tagRotate = videoStream?.tags?.rotate;
-    if (tagRotate !== undefined) {
-        const n = parseInt(tagRotate, 10);
-        if (!isNaN(n)) return ((n % 360) + 360) % 360;
-    }
-    const matrixSideData = videoStream?.side_data_list?.find((sd) => sd.rotation !== undefined);
-    if (matrixSideData) {
-        const n = Math.round(matrixSideData.rotation);
-        if (!isNaN(n)) return ((n % 360) + 360) % 360;
-    }
-    return 0;
-}
-
-async function normalizeItem(item, ffprobePath, tmpDir) {
+async function normalizeItem(item, tmpDir) {
     let kind;
     let rawSource;
     let autoAdvance = false;
@@ -146,26 +119,21 @@ async function normalizeItem(item, ffprobePath, tmpDir) {
     else {
         throw new Error('Playlist item must be a string or an object.');
     }
+    if (kind === 'video') {
+        throw new Error('Video is not supported by the built-in media engine.');
+    }
     let source = rawSource;
     let isTemp = false;
-    if (isUrl(rawSource) && kind === 'audio') {
-        return { kind, source: rawSource, isTemp: false, durationMs: undefined, autoAdvance };
-    }
     if (isUrl(rawSource)) {
-        source = await downloadToTemp(rawSource, '.mp4', 50 * 1024 * 1024, tmpDir);
+        const extHint = path.extname(new URL(rawSource).pathname) || '.bin';
+        source = await downloadToTemp(rawSource, extHint, 50 * 1024 * 1024, tmpDir);
         isTemp = true;
     }
     else if (!fs.existsSync(rawSource)) {
         throw new Error(`Media file not found: ${rawSource}`);
     }
-    const probed = await probeMedia(source, ffprobePath);
-    const durationMs = probed.durationMs ?? undefined;
-    const result = { kind, source, isTemp, durationMs, autoAdvance };
-    if (kind === 'video' && probed.width && probed.height) {
-        result.sourceWidth = probed.width;
-        result.sourceHeight = probed.height;
-    }
-    return result;
+    const durationMs = (await probeMedia(source)) ?? undefined;
+    return { kind, source, isTemp, durationMs, autoAdvance };
 }
 
 class VoipCall extends EventEmitter {
@@ -517,12 +485,10 @@ export class Voip {
     #calls = new Set();
     #pending = 0;
     #maxConcurrentCalls;
-    #ffprobePath;
     #tmpDir;
     #voipLogLevel;
     constructor(conn, opts = {}) {
         this.#conn = conn;
-        this.#ffprobePath = opts.ffprobePath || 'ffprobe';
         this.#voipLogLevel = opts.voipLogLevel ?? opts.level ?? 'warn';
         this.#maxConcurrentCalls = opts.maxConcurrentCalls ?? Number.MAX_SAFE_INTEGER;
         if (!Number.isSafeInteger(this.#maxConcurrentCalls) || this.#maxConcurrentCalls < 1)
@@ -633,7 +599,7 @@ export class Voip {
                     items.push({ kind: 'audio', source: 'silence', isTemp: false });
                     continue;
                 }
-                items.push(await normalizeItem(raw, this.#ffprobePath, this.#tmpDir));
+                items.push(await normalizeItem(raw, this.#tmpDir));
             }
             const first = items[0];
             const videoConfig = resolveVideoConfig(resolution, { width: first.sourceWidth, height: first.sourceHeight });
@@ -661,7 +627,7 @@ export class Voip {
                 startVideoOnFirst: options.startVideoOnFirst,
                 target: targetJid,
                 onItemAdvance: rescheduleSafetyForItem,
-                normalize: raw => normalizeItem(raw, this.#ffprobePath, this.#tmpDir),
+                normalize: raw => normalizeItem(raw, this.#tmpDir),
             });
             this.#calls.add(call);
             releaseReservation();

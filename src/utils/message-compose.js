@@ -1468,24 +1468,24 @@ export const generateWAMessageFromContent = (jid, message, options) => {
 	const isNewsletter = isJidNewsletter(jid)
 	const { quoted, userJid } = options
 
+	const mergeContextInfo = patch => {
+		message = mapInnerContent(message, inner => ({ ...inner, [key]: { ...inner[key], contextInfo: { ...inner[key]?.contextInfo, ...patch } } }))
+	}
+
 	if (quoted) {
 		const participant = quoted.key.fromMe ? userJid : quoted.participant || quoted.key.participant || quoted.key.remoteJid
 		let quotedMsg = normalizeMessageContent(quoted.message)
 		const msgType = getContentType(quotedMsg)
-		quotedMsg = proto.Message.create({ [msgType]: quotedMsg[msgType] })
-		const quotedContent = quotedMsg[msgType]
-		if (typeof quotedContent === 'object' && quotedContent && 'contextInfo' in quotedContent) delete quotedContent.contextInfo
-		const contextInfo = ('contextInfo' in innerMessage[key] && innerMessage[key]?.contextInfo) || {}
-		contextInfo.participant = jidNormalizedUser(participant)
-		contextInfo.stanzaId = quoted.key.id
-		contextInfo.quotedMessage = quotedMsg
-
-		if (!isNewsletter && jid !== quoted.key.remoteJid) contextInfo.remoteJid = quoted.key.remoteJid
-		if (contextInfo && innerMessage[key]) innerMessage[key].contextInfo = contextInfo
+		const quotedContent = { ...quotedMsg[msgType] }
+		delete quotedContent.contextInfo
+		quotedMsg = proto.Message.create({ [msgType]: quotedContent })
+		const patch = { participant: jidNormalizedUser(participant), stanzaId: quoted.key.id, quotedMessage: quotedMsg }
+		if (!isNewsletter && jid !== quoted.key.remoteJid) patch.remoteJid = quoted.key.remoteJid
+		mergeContextInfo(patch)
 	}
 
 	if (!!options?.ephemeralExpiration && key !== 'protocolMessage' && key !== 'ephemeralMessage' && !isNewsletter) {
-		innerMessage[key].contextInfo = { ...(innerMessage[key].contextInfo || {}), expiration: options.ephemeralExpiration || WA_DEFAULT_EPHEMERAL }
+		mergeContextInfo({ expiration: options.ephemeralExpiration || WA_DEFAULT_EPHEMERAL })
 	}
 
 	message = WAProto.Message.create(message)
@@ -1514,8 +1514,16 @@ export const getContentType = content => {
 	}
 }
 
+const mapInnerContent = (msg, transform) => {
+	const wrapper = getFutureProofMessage(msg)
+	if (!wrapper) return transform(msg)
+	const envelopeKey = Object.keys(msg).find(k => msg[k] === wrapper)
+	return { ...msg, [envelopeKey]: { ...wrapper, message: mapInnerContent(wrapper.message, transform) } }
+}
+
 const getFutureProofMessage = message =>
 	message?.associatedChildMessage ||
+	message?.audioStickerMessage ||
 	message?.botForwardedMessage ||
 	message?.botInvokeMessage ||
 	message?.botTaskMessage ||

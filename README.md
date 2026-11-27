@@ -22,8 +22,6 @@
 
 ## Install
 
-Needs **Node.js 18+** and FFmpeg. Calls also need `ffprobe` in `PATH`. No native or WebRTC dependencies are required.
-
 ```bash
 npm install @hiroosy/baileys-lite
 ```
@@ -508,7 +506,7 @@ await sock.sendMessage([contactJid1, contactJid2], { text: 'Status update text' 
 
 ## Call
 
-Calls need `ffmpeg` and `ffprobe` in `PATH`. Create one `Voip` per socket once it is open. After a reconnect there is a new socket, so create a new `Voip`. The same `Voip` handles 1:1 calls, group calls, and call links.
+Calls use the built-in media engine, so FFmpeg is not needed. Audio files and audio URLs work, but video does not: video files are rejected, and video calls start without outgoing video. Audio the engine cannot decode (AAC, Vorbis) is rejected too. Create one `Voip` per socket once it is open. After a reconnect there is a new socket, so create a new `Voip`. The same `Voip` handles 1:1 calls, group calls, and call links.
 
 <details> <summary>Quick start</summary>
 
@@ -516,7 +514,6 @@ Calls need `ffmpeg` and `ffprobe` in `PATH`. Create one `Voip` per socket once i
 import Voip from '@hiroosy/baileys-lite/voip'
 
 const voip = new Voip(sock, {
-  ffprobePath: 'ffprobe',
   voipLogLevel: 'warn',         // trace | debug | info | warn | error
   tmpDir: './tmp',              // temp folder for downloads
   maxConcurrentCalls: 1         // see Multi Call
@@ -536,25 +533,19 @@ await voip.call('628123456789')
 
 ```javascript
 await voip.call(jid, './song.mp3')                    // local file
-await voip.call(jid, 'https://example.com/song.mp3')  // audio url is streamed, video url is downloaded first (max 50MB)
+await voip.call(jid, 'https://example.com/song.mp3')  // audio url is downloaded first (max 50MB)
 await voip.call(jid, { audio: './voice.ogg' })
-await voip.call(jid, './clip.mp4', '720p')            // video call
 
-// audio: mp3 ogg opus wav m4a aac flac weba
-// video: mp4 mov webm mkv avi m4v 3gp
+// audio: mp3, wav, flac, opus. Video files are not supported.
 
-// resolution (third argument): '240p' | '360p' | '480p' | '720p' | '1080p'
-// or { width, height, frameRate }. Default is 480p, portrait sources are rotated automatically.
-
-// playlist, items play in order and can mix audio and video
+// playlist, items play in order
 const list = await voip.call(
   jid,
-  ['./intro.mp3', './clip.mp4', 'https://example.com/outro.mp3'],
-  '480p',
+  ['./intro.mp3', 'https://example.com/outro.mp3'],
+  null,
   {
     loop: false,           // repeat the playlist
-    autoEndCall: true,     // hang up when the playlist ends
-    autoDowngrade: true    // drop to audio when the peer turns every camera off
+    autoEndCall: true      // hang up when the playlist ends
   }
 )
 ```
@@ -763,6 +754,6 @@ await voip.end(true)        // only release the slots
 - Incoming calls, group calls, call links, and rooms count toward the limit too.
 - A call over the limit throws `Maximum concurrent calls reached`. In `callMany()` it is returned as `error` for that number and the rest still go through.
 - `callMany()` takes the same media and options as `call()` and calls duplicate numbers once.
-- A safety timeout emits `error` if a call never ends. It starts at 105s, or 10 minutes for `joinLink()` and `createRoom()`. When a playlist item starts, video items reset it to 10 minutes and audio items clear it. The call is not hung up by the timeout, so call `hangup()` yourself when you are done.
+- A safety timeout emits `error` if a call never ends. It starts at 105s, or 10 minutes for `joinLink()` and `createRoom()`. When a playlist item starts, audio items clear it. The call is not hung up by the timeout, so call `hangup()` yourself when you are done.
 
 </details>

@@ -1,4 +1,3 @@
-import { spawn } from 'node:child_process'
 import { audioDuration } from '../foundation/audio-duration.js'
 import { decodeChannel0, waveformFromSamples } from '../foundation/audio-samples.js'
 import { getLinkPreview } from '../foundation/link-preview.js'
@@ -11,6 +10,7 @@ import { Readable, Transform } from 'node:stream'
 import { proto } from '../../WAProto/index.js'
 import { Boom } from '../foundation/boom.js'
 import { extractImageThumbFallback } from '../foundation/image-thumb.js'
+import { decodeFirstChannel, probeNative } from '../ffmpeg/index.js'
 import { getBinaryNodeChild, getBinaryNodeChildBuffer, jidNormalizedUser } from '../binary/wa-binary.js'
 import { aesDecryptGCM, aesEncryptGCM, hkdf } from './wa-protocol-core.js'
 import { generateMessageIDV2 } from './wa-protocol-core.js'
@@ -58,7 +58,7 @@ export const MEDIA_PATH_MAP = {
 	'thumbnail-document': '/mms/document',
 	'product-catalog-image': '/product/image',
 	'md-app-state': '',
-	'md-msg-hist': '/mms/md-app-state',
+	'md-msg-hist': '/mms/md-msg-hist',
 	'biz-cover-photo': '/pps/biz-cover-photo'
 }
 
@@ -146,40 +146,8 @@ export async function getMediaKeys(buffer, mediaType) {
 	}
 }
 
-export const extractVideoThumb = async (path, time, size) => {
-	const ffmpeg = spawn(
-		'ffmpeg',
-		[
-			'-loglevel',
-			'error',
-			'-ss',
-			String(time),
-			'-i',
-			path,
-			'-an',
-			'-sn',
-			'-dn',
-			'-map_metadata',
-			'-1',
-			'-vf',
-			`scale=${size.width}:-1`,
-			'-frames:v',
-			'1',
-			'-c:v',
-			'mjpeg',
-			'-f',
-			'image2pipe',
-			'pipe:1'
-		],
-		{ stdio: ['ignore', 'pipe', 'pipe'] }
-	)
-	const stdoutChunks = []
-	const stderrChunks = []
-	ffmpeg.stdout.on('data', chunk => stdoutChunks.push(chunk))
-	ffmpeg.stderr.on('data', chunk => stderrChunks.push(chunk))
-	const [code] = await once(ffmpeg, 'close')
-	if (code !== 0) throw new Boom(`FFmpeg failed (code ${code}):\n` + Buffer.concat(stderrChunks).toString('utf8'))
-	return Buffer.concat(stdoutChunks)
+export const extractVideoThumb = async () => {
+	throw new Boom('video thumbnails are not supported by the built-in media engine')
 }
 
 const thumbWithLibrary = async (lib, bufferOrFilePath, width) => {
@@ -204,8 +172,6 @@ const thumbWithLibrary = async (lib, bufferOrFilePath, width) => {
 	}
 }
 
-// Never leave a media message without jpegThumbnail just because sharp / @napi-rs/image / jimp is not installed:
-// fall back to ffmpeg (see foundation/image-thumb.js).
 export const extractImageThumb = async (bufferOrFilePath, width = 32) => {
 	if (bufferOrFilePath instanceof Readable) bufferOrFilePath = await toBuffer(bufferOrFilePath)
 	let libraryError
@@ -259,52 +225,9 @@ export async function getAudioDuration(buffer) {
 	if (!Buffer.isBuffer(buffer) && typeof buffer !== 'string') buffer = await toBuffer(buffer)
 	const native = await audioDuration(buffer)
 	if (typeof native === 'number' && Number.isFinite(native)) return native
-	return ffprobeDuration(buffer)
+	const probed = (await probeNative(buffer))?.format.duration
+	return probed > 0 ? probed : undefined
 }
-
-async function ffprobeDuration(input) {
-	const usesStdin = Buffer.isBuffer(input)
-	const args = ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', usesStdin ? 'pipe:0' : input]
-	try {
-		const ffprobe = spawn('ffprobe', args, { stdio: [usesStdin ? 'pipe' : 'ignore', 'pipe', 'ignore'] })
-		const outChunks = []
-		ffprobe.stdout.on('data', chunk => outChunks.push(chunk))
-		if (usesStdin) ffprobe.stdin.end(input)
-		const [code] = await once(ffprobe, 'close')
-		if (code !== 0) return undefined
-		const seconds = parseFloat(Buffer.concat(outChunks).toString('utf8').trim())
-		return Number.isFinite(seconds) ? seconds : undefined
-	} catch {
-		return undefined
-	}
-}
-
-const decodeChannel0WithFfmpeg = audioData =>
-	new Promise(resolve => {
-		let child
-		try {
-			child = spawn('ffmpeg', ['-v', 'error', '-i', 'pipe:0', '-af', 'pan=mono|c0=c0', '-ar', '16000', '-f', 'f32le', 'pipe:1'], { stdio: ['pipe', 'pipe', 'ignore'] })
-		} catch {
-			return resolve(undefined)
-		}
-		const out = []
-		const timer = setTimeout(() => {
-			child.kill('SIGKILL')
-			resolve(undefined)
-		}, 60000)
-		child.on('error', () => resolve(undefined))
-		child.stdin.on('error', () => {})
-		child.stdout.on('data', c => out.push(c))
-		child.on('close', code => {
-			clearTimeout(timer)
-			const raw = Buffer.concat(out)
-			if (code !== 0 || raw.length < 4) return resolve(undefined)
-			const copy = new Float32Array(Math.floor(raw.length / 4))
-			for (let i = 0; i < copy.length; i++) copy[i] = raw.readFloatLE(i * 4)
-			resolve(copy)
-		})
-		child.stdin.end(audioData)
-	})
 
 export async function getAudioWaveform(buffer, logger) {
 	try {
@@ -312,9 +235,9 @@ export async function getAudioWaveform(buffer, logger) {
 		if (Buffer.isBuffer(buffer)) audioData = buffer
 		else if (typeof buffer === 'string') audioData = await toBuffer(createReadStream(buffer))
 		else audioData = await toBuffer(buffer)
-		const rawData = decodeChannel0(audioData) ?? (await decodeChannel0WithFfmpeg(audioData))
+		const rawData = decodeChannel0(audioData) ?? (await decodeFirstChannel(audioData))
 		if (!rawData || !rawData.length) {
-			logger?.debug('Failed to generate waveform: no decoder for this audio (built-in handles WAV/FLAC; other formats need ffmpeg)')
+			logger?.debug('Failed to generate waveform: no decoder for this audio')
 			return undefined
 		}
 		return waveformFromSamples(rawData)
