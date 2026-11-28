@@ -5921,6 +5921,7 @@ export namespace proto {
         encCommentMessage?: (proto.Message.IEncCommentMessage|null);
         bcallMessage?: (proto.Message.IBCallMessage|null);
         lottieStickerMessage?: (proto.Message.IFutureProofMessage|null);
+        audioStickerMessage?: (proto.Message.IFutureProofMessage|null);
         eventMessage?: (proto.Message.IEventMessage|null);
         encEventResponseMessage?: (proto.Message.IEncEventResponseMessage|null);
         commentMessage?: (proto.Message.ICommentMessage|null);
@@ -6032,6 +6033,7 @@ export namespace proto {
         public encCommentMessage?: (proto.Message.IEncCommentMessage|null);
         public bcallMessage?: (proto.Message.IBCallMessage|null);
         public lottieStickerMessage?: (proto.Message.IFutureProofMessage|null);
+        public audioStickerMessage?: (proto.Message.IFutureProofMessage|null);
         public eventMessage?: (proto.Message.IEventMessage|null);
         public encEventResponseMessage?: (proto.Message.IEncEventResponseMessage|null);
         public commentMessage?: (proto.Message.ICommentMessage|null);
@@ -10266,6 +10268,7 @@ export namespace proto {
             accessibilityLabel?: (string|null);
             premium?: (number|null);
             emojis?: (string|null);
+            audioMessage?: (proto.Message.IAudioMessage|null);
         }
 
         class StickerMessage implements IStickerMessage {
@@ -10292,6 +10295,7 @@ export namespace proto {
             public accessibilityLabel?: (string|null);
             public premium?: (number|null);
             public emojis?: (string|null);
+            public audioMessage?: (proto.Message.IAudioMessage|null);
             public static create(properties?: proto.Message.IStickerMessage): proto.Message.StickerMessage;
             public static encode(m: proto.Message.IStickerMessage, w?: $protobuf.Writer): $protobuf.Writer;
             public static decode(r: ($protobuf.Reader|Uint8Array), l?: number): proto.Message.StickerMessage;

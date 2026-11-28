@@ -484,6 +484,8 @@ export const getCompanionWebClientType = ([os, browserName]) => {
 
 export const getCompanionPlatformId = browser => getCompanionWebClientType(browser).toString()
 
+export const getPairingCodePlatformId = browser => (browser[1].toLocaleLowerCase().includes('android') ? 'e' : getCompanionPlatformId(browser))
+
 export const buildPairingQRData = (ref, noiseKeyB64, identityKeyB64, advB64, browser) =>
 	'https://wa.me/settings/linked_devices#' + [ref, noiseKeyB64, identityKeyB64, advB64, getCompanionPlatformId(browser)].join(',')
 
@@ -890,9 +892,7 @@ const WA_ADV_HOSTED_ACCOUNT_SIG_PREFIX = Buffer.from([6, 5])
 
 const getUserAgent = config => ({
 	appVersion: { primary: config.version[0], secondary: config.version[1], tertiary: config.version[2] },
-	platform: config.browser[1].toLocaleLowerCase().includes('android')
-		? proto.ClientPayload.UserAgent.Platform.ANDROID
-		: proto.ClientPayload.UserAgent.Platform.WEB,
+	platform: proto.ClientPayload.UserAgent.Platform.WEB,
 	releaseChannel: proto.ClientPayload.UserAgent.ReleaseChannel.RELEASE,
 	osVersion: '0.1',
 	device: 'Desktop',
@@ -920,9 +920,9 @@ const getClientPayload = config => {
 	const payload = {
 		connectType: proto.ClientPayload.ConnectType.WIFI_UNKNOWN,
 		connectReason: proto.ClientPayload.ConnectReason.USER_ACTIVATED,
-		userAgent: getUserAgent(config)
+		userAgent: getUserAgent(config),
+		webInfo: getWebInfo(config)
 	}
-	if (!config.browser[1].toLocaleLowerCase().includes('android')) payload.webInfo = getWebInfo(config)
 	if (config.pushName) payload.pushName = config.pushName
 	return payload
 }

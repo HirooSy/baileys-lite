@@ -17,9 +17,9 @@ import {
 	generateMdTagPrefix,
 	generateRegistrationNode,
 	getCodeFromWSError,
-	getCompanionPlatformId,
 	getErrorCodeFromStreamError,
 	getNextPreKeysNode,
+	getPairingCodePlatformId,
 	makeNoiseHandler,
 	promiseTimeout,
 	signedKeyPair,
@@ -618,7 +618,7 @@ export const makeSocket = config => {
 		authState.creds.me = { id: jidEncode(phone, 's.whatsapp.net'), name: '~' }
 		ev.emit('creds.update', authState.creds)
 		try {
-			await sendNode({
+			await query({
 				tag: 'iq',
 				attrs: { to: S_WHATSAPP_NET, type: 'set', id: generateMessageTag(), xmlns: 'md' },
 				content: [
@@ -628,7 +628,7 @@ export const makeSocket = config => {
 						content: [
 							{ tag: 'link_code_pairing_wrapped_companion_ephemeral_pub', attrs: {}, content: await generatePairingKey() },
 							{ tag: 'companion_server_auth_key_pub', attrs: {}, content: authState.creds.noiseKey.public },
-							{ tag: 'companion_platform_id', attrs: {}, content: getCompanionPlatformId(browser) },
+							{ tag: 'companion_platform_id', attrs: {}, content: getPairingCodePlatformId(browser) },
 							{ tag: 'companion_platform_display', attrs: {}, content: `${browser[1]} (${browser[0]})` },
 							{ tag: 'link_code_pairing_nonce', attrs: {}, content: '0' }
 						]

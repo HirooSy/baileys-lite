@@ -67,6 +67,7 @@ Message.prototype.messageHistoryBundle = null;
 Message.prototype.encCommentMessage = null;
 Message.prototype.bcallMessage = null;
 Message.prototype.lottieStickerMessage = null;
+Message.prototype.audioStickerMessage = null;
 Message.prototype.eventMessage = null;
 Message.prototype.encEventResponseMessage = null;
 Message.prototype.commentMessage = null;
@@ -359,6 +360,10 @@ set: $util.oneOfSetter($oneOfFields)
 });
 Object.defineProperty(Message.prototype, "_lottieStickerMessage", {
 get: $util.oneOfGetter($oneOfFields = ["lottieStickerMessage"]),
+set: $util.oneOfSetter($oneOfFields)
+});
+Object.defineProperty(Message.prototype, "_audioStickerMessage", {
+get: $util.oneOfGetter($oneOfFields = ["audioStickerMessage"]),
 set: $util.oneOfSetter($oneOfFields)
 });
 Object.defineProperty(Message.prototype, "_eventMessage", {
@@ -671,6 +676,8 @@ if (m.bcallMessage != null && Object.hasOwnProperty.call(m, "bcallMessage"))
 $root.proto.Message.BCallMessage.encode(m.bcallMessage, w.uint32(578).fork()).ldelim();
 if (m.lottieStickerMessage != null && Object.hasOwnProperty.call(m, "lottieStickerMessage"))
 $root.proto.Message.FutureProofMessage.encode(m.lottieStickerMessage, w.uint32(594).fork()).ldelim();
+if (m.audioStickerMessage != null && Object.hasOwnProperty.call(m, "audioStickerMessage"))
+$root.proto.Message.FutureProofMessage.encode(m.audioStickerMessage, w.uint32(1074).fork()).ldelim();
 if (m.eventMessage != null && Object.hasOwnProperty.call(m, "eventMessage"))
 $root.proto.Message.EventMessage.encode(m.eventMessage, w.uint32(602).fork()).ldelim();
 if (m.encEventResponseMessage != null && Object.hasOwnProperty.call(m, "encEventResponseMessage"))
@@ -1022,6 +1029,10 @@ break;
 }
 case 74: {
 m.lottieStickerMessage = $root.proto.Message.FutureProofMessage.decode(r, r.uint32(), undefined, n + 1);
+break;
+}
+case 134: {
+m.audioStickerMessage = $root.proto.Message.FutureProofMessage.decode(r, r.uint32(), undefined, n + 1);
 break;
 }
 case 75: {
@@ -1526,6 +1537,11 @@ if (d.lottieStickerMessage != null) {
 if (typeof d.lottieStickerMessage !== "object")
 throw TypeError(".proto.Message.lottieStickerMessage: object expected");
 m.lottieStickerMessage = $root.proto.Message.FutureProofMessage.fromObject(d.lottieStickerMessage, n + 1);
+}
+if (d.audioStickerMessage != null) {
+if (typeof d.audioStickerMessage !== "object")
+throw TypeError(".proto.Message.audioStickerMessage: object expected");
+m.audioStickerMessage = $root.proto.Message.FutureProofMessage.fromObject(d.audioStickerMessage, n + 1);
 }
 if (d.eventMessage != null) {
 if (typeof d.eventMessage !== "object")
@@ -2067,6 +2083,11 @@ if (m.lottieStickerMessage != null && m.hasOwnProperty("lottieStickerMessage")) 
 d.lottieStickerMessage = $root.proto.Message.FutureProofMessage.toObject(m.lottieStickerMessage, o);
 if (o.oneofs)
 d._lottieStickerMessage = "lottieStickerMessage";
+}
+if (m.audioStickerMessage != null && m.hasOwnProperty("audioStickerMessage")) {
+d.audioStickerMessage = $root.proto.Message.FutureProofMessage.toObject(m.audioStickerMessage, o);
+if (o.oneofs)
+d._audioStickerMessage = "audioStickerMessage";
 }
 if (m.eventMessage != null && m.hasOwnProperty("eventMessage")) {
 d.eventMessage = $root.proto.Message.EventMessage.toObject(m.eventMessage, o);
@@ -29175,6 +29196,7 @@ StickerMessage.prototype.isLottie = null;
 StickerMessage.prototype.accessibilityLabel = null;
 StickerMessage.prototype.premium = null;
 StickerMessage.prototype.emojis = null;
+StickerMessage.prototype.audioMessage = null;
 let $oneOfFields;
 Object.defineProperty(StickerMessage.prototype, "_url", {
 get: $util.oneOfGetter($oneOfFields = ["url"]),
@@ -29264,6 +29286,10 @@ Object.defineProperty(StickerMessage.prototype, "_emojis", {
 get: $util.oneOfGetter($oneOfFields = ["emojis"]),
 set: $util.oneOfSetter($oneOfFields)
 });
+Object.defineProperty(StickerMessage.prototype, "_audioMessage", {
+get: $util.oneOfGetter($oneOfFields = ["audioMessage"]),
+set: $util.oneOfSetter($oneOfFields)
+});
 StickerMessage.create = function create(properties) {
 return new StickerMessage(properties);
 };
@@ -29314,6 +29340,8 @@ if (m.premium != null && Object.hasOwnProperty.call(m, "premium"))
 w.uint32(192).int32(m.premium);
 if (m.emojis != null && Object.hasOwnProperty.call(m, "emojis"))
 w.uint32(202).string(m.emojis);
+if (m.audioMessage != null && Object.hasOwnProperty.call(m, "audioMessage"))
+$root.proto.Message.AudioMessage.encode(m.audioMessage, w.uint32(210).fork()).ldelim();
 return w;
 };
 StickerMessage.decode = function decode(r, l, e, n) {
@@ -29415,6 +29443,10 @@ break;
 }
 case 25: {
 m.emojis = r.string();
+break;
+}
+case 26: {
+m.audioMessage = $root.proto.Message.AudioMessage.decode(r, r.uint32(), undefined, n + 1);
 break;
 }
 default:
@@ -29535,6 +29567,11 @@ m.premium = d.premium | 0;
 }
 if (d.emojis != null) {
 m.emojis = String(d.emojis);
+}
+if (d.audioMessage != null) {
+if (typeof d.audioMessage !== "object")
+throw TypeError(".proto.Message.StickerMessage.audioMessage: object expected");
+m.audioMessage = $root.proto.Message.AudioMessage.fromObject(d.audioMessage, n + 1);
 }
 return m;
 };
@@ -29660,6 +29697,11 @@ if (m.emojis != null && m.hasOwnProperty("emojis")) {
 d.emojis = m.emojis;
 if (o.oneofs)
 d._emojis = "emojis";
+}
+if (m.audioMessage != null && m.hasOwnProperty("audioMessage")) {
+d.audioMessage = $root.proto.Message.AudioMessage.toObject(m.audioMessage, o);
+if (o.oneofs)
+d._audioMessage = "audioMessage";
 }
 return d;
 };
