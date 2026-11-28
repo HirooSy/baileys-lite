@@ -338,7 +338,7 @@ await sock.sendMessage(jid, { flowReply: { name: 'single_select', paramsJson: JS
 
 ```javascript
 await sock.sendMessage(jid, {
-  poll: { name: 'Favorite language?', values: ['JavaScript', 'Python', 'Rust'], selectableCount: 1 }
+  poll: { name: 'Favorite language?', values: ['JavaScript', 'Python', 'Rust'], selectableCount: 1, canAddOption: false}
 })
 
 // quiz polls: newsletter only, need correctAnswer
