@@ -549,6 +549,15 @@ export const makeMessagesSocket = (config) => {
                 return;
             }
             const isNeedMetaAttrs = innerMessage?.pinInChatMessage || innerMessage?.keepInChatMessage || innerMessage?.reactionMessage;
+            const isEventEdit = innerMessage?.secretEncryptedMessage?.secretEncType === proto.Message.SecretEncryptedMessage.SecretEncType.EVENT_EDIT;
+            if (isEventEdit) {
+                if (!additionalAttributes?.edit) {
+                    additionalAttributes = { ...additionalAttributes, edit: '1' };
+                }
+                if (!additionalNodes?.some(node => node.tag === 'meta' && node.attrs?.event_type)) {
+                    additionalNodes = [...(additionalNodes || []), { tag: 'meta', attrs: { event_type: 'edit' }, content: undefined }];
+                }
+            }
             const isGroupStatus = message?.groupStatusMessage || message?.groupStatusMessageV2;
             const isPollUpdate = innerMessage?.pollUpdateMessage;
             const isViewOnce = isViewOnceMessage(message);
@@ -572,7 +581,7 @@ export const makeMessagesSocket = (config) => {
                     content: undefined
                 });
             }
-            if (isNeedMetaAttrs || innerMessage?.protocolMessage?.memberLabel || innerMessage?.protocolMessage?.editedMessage || innerMessage?.protocolMessage?.mediaNotifyMessage) {
+            if (isNeedMetaAttrs || isPollUpdate || isEventEdit || innerMessage?.protocolMessage?.memberLabel || innerMessage?.protocolMessage?.editedMessage || innerMessage?.protocolMessage?.mediaNotifyMessage) {
                 extraAttrs['decrypt-fail'] = 'hide';
             }
             if (innerMessage?.interactiveResponseMessage?.nativeFlowResponseMessage) {
@@ -1033,7 +1042,7 @@ export const makeMessagesSocket = (config) => {
             normalizedMessage.pollUpdateMessage) {
             return 'poll';
         }
-        if (normalizedMessage.eventMessage) {
+        if (normalizedMessage.eventMessage || normalizedMessage.secretEncryptedMessage?.secretEncType === proto.Message.SecretEncryptedMessage.SecretEncType.EVENT_EDIT) {
             return 'event';
         }
         if (getMediaType(normalizedMessage) !== '') {

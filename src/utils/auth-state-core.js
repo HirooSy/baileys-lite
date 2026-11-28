@@ -596,7 +596,11 @@ export const decryptMessageNode = (stanza, meId, meLid, repository, logger) => {
 								throw new Error(`Unknown e2e type: ${e2eType}`)
 						}
 						let msg = proto.Message.decode(e2eType !== 'plaintext' ? unpadRandomMax16(msgBuffer) : msgBuffer)
-						msg = msg.deviceSentMessage?.message || msg
+						const deviceSentInner = msg.deviceSentMessage?.message
+						if (deviceSentInner) {
+							if (!deviceSentInner.messageContextInfo && msg.messageContextInfo) deviceSentInner.messageContextInfo = msg.messageContextInfo
+							msg = deviceSentInner
+						}
 						if (msg.senderKeyDistributionMessage) {
 							try {
 								await repository.processSenderKeyDistributionMessage({ authorJid: author, item: msg.senderKeyDistributionMessage })

@@ -26,7 +26,7 @@ import {
 	jidNormalizedUser
 } from '../binary/wa-binary.js'
 import { aesDecryptGCM, hmacSign, getKeyAuthor, toNumber, generateMessageIDV2 } from './wa-protocol-core.js'
-import { getContentType, normalizeMessageContent } from './message-compose.js'
+import { addPollOption, getContentType, getMessageSecret, normalizeMessageContent } from './message-compose.js'
 import { downloadContentFromMessage, getStream, getUrlFromDirectPath } from './media.js'
 import { buildMergedTcTokenIndexWrite, resolveTcTokenJid } from './auth-state-core.js'
 import { requestTrim } from '../foundation/memory.js'
@@ -88,6 +88,7 @@ export const cleanMessage = (message, meId, meLid) => {
 	const content = normalizeMessageContent(message.message)
 	if (content?.reactionMessage) normaliseKey(content.reactionMessage.key)
 	if (content?.pollUpdateMessage) normaliseKey(content.pollUpdateMessage.pollCreationMessageKey)
+	if (content?.secretEncryptedMessage?.targetMessageKey) normaliseKey(content.secretEncryptedMessage.targetMessageKey)
 
 	function normaliseKey(msgKey) {
 		if (!message.key.fromMe) {
@@ -108,7 +109,9 @@ export const isRealMessage = message => {
 		hasSomeContent &&
 		!normalizedContent?.protocolMessage &&
 		!normalizedContent?.reactionMessage &&
-		!normalizedContent?.pollUpdateMessage
+		!normalizedContent?.pollUpdateMessage &&
+		!normalizedContent?.pollAddOptionMessage &&
+		!(normalizedContent?.secretEncryptedMessage && getSecretEncUseCase(normalizedContent.secretEncryptedMessage.secretEncType))
 	)
 }
 
@@ -143,14 +146,30 @@ export function decryptEventResponse({ encPayload, encIv }, { eventCreatorJid, e
 	return proto.Message.EventResponseMessage.decode(decrypted)
 }
 
-export function decryptMessageEdit({ encPayload, encIv }, { originalSenderJid, originalMsgId, editEncKey, editorJid }) {
+export function decryptMessageEdit({ encPayload, encIv }, { originalSenderJid, originalMsgId, editEncKey, editorJid, useCase = 'Message Edit' }) {
 	const toBinary = txt => Buffer.from(txt)
-	const sign = Buffer.concat([toBinary(originalMsgId), toBinary(originalSenderJid), toBinary(editorJid), toBinary('Message Edit'), new Uint8Array([1])])
+	const sign = Buffer.concat([toBinary(originalMsgId), toBinary(originalSenderJid), toBinary(editorJid), toBinary(useCase), new Uint8Array([1])])
 	const key0 = hmacSign(editEncKey, new Uint8Array(32), 'sha256')
 	const decKey = hmacSign(sign, key0, 'sha256')
 	const aad = Buffer.alloc(0)
 	const decrypted = aesDecryptGCM(encPayload, decKey, encIv, aad)
 	return proto.Message.decode(decrypted)
+}
+
+const getSecretEncUseCase = secretEncType => {
+	const types = proto.Message.SecretEncryptedMessage.SecretEncType
+	switch (secretEncType) {
+		case types.MESSAGE_EDIT:
+			return 'Message Edit'
+		case types.EVENT_EDIT:
+			return 'Event Edit'
+		case types.POLL_EDIT:
+			return 'Poll Edit'
+		case types.POLL_ADD_OPTION:
+			return 'Poll Add Option'
+		default:
+			return undefined
+	}
 }
 
 const orderLidFirst = jids => [...jids.filter(jid => isLidUser(jid)), ...jids.filter(jid => !isLidUser(jid))]
@@ -188,26 +207,51 @@ const resolveEditEditorJids = async (messageKey, meId, meLid, lidMapping) => {
 	return resolveSenderJids(messageKey?.participant || messageKey?.remoteJid, [messageKey?.participantAlt, messageKey?.remoteJidAlt], lidMapping)
 }
 
-const decryptEditWithSenderFallback = ({ encPayload, encIv, editEncKey, originalMsgId, parentJids, editorJids }) => {
+const decryptEditWithSenderFallback = ({ encPayload, encIv, editEncKey, originalMsgId, parentJids, editorJids, useCase }) => {
 	let lastError
 	for (const originalSenderJid of parentJids) {
 		for (const editorJid of editorJids) {
 			try {
-				return decryptMessageEdit({ encPayload, encIv }, { editEncKey, originalSenderJid, originalMsgId, editorJid })
+				return decryptMessageEdit({ encPayload, encIv }, { editEncKey, originalSenderJid, originalMsgId, editorJid, useCase })
 			} catch (err) {
 				lastError = err
 			}
 		}
 	}
-	throw lastError ?? new Error('no sender candidates for message edit')
+	throw lastError ?? new Error('no sender candidates for secret encrypted message')
 }
 
-const buildEditUpdate = args => {
-	const editedInner = decryptEditWithSenderFallback(args)
-	const editProtocol = editedInner.protocolMessage
-	const innerEdited = editProtocol?.editedMessage
+const decryptPollVoteWithSenderFallback = ({ vote, pollEncKey, pollMsgId, creatorJids, voterJids }) => {
+	let lastError
+	for (const pollCreatorJid of creatorJids) {
+		for (const voterJid of voterJids) {
+			try {
+				return decryptPollVote(vote, { pollEncKey, pollCreatorJid, pollMsgId, voterJid })
+			} catch (err) {
+				lastError = err
+			}
+		}
+	}
+	throw lastError ?? new Error('no sender candidates for poll vote')
+}
+
+const buildSecretEncryptedUpdate = args => {
+	const decrypted = decryptEditWithSenderFallback(args)
+	const addOption = decrypted.pollAddOptionMessage?.addOption
+	if (addOption) {
+		const updatedPoll = addPollOption(args.targetMsg, addOption)
+		if (!updatedPoll) return null
+		const { remoteJid, fromMe, participant } = args.targetKey
+		return { key: { remoteJid, fromMe, participant, id: args.targetKeyId }, update: { message: updatedPoll } }
+	}
+	const editProtocol = decrypted.protocolMessage
+	let innerEdited = editProtocol?.editedMessage
+	if (!innerEdited && !editProtocol && getContentType(normalizeMessageContent(decrypted))) {
+		if (!decrypted.messageContextInfo && args.outerContextInfo) decrypted.messageContextInfo = args.outerContextInfo
+		innerEdited = decrypted
+	}
 	if (!innerEdited) {
-		args.logger?.warn({ targetKey: args.targetKey }, 'decrypted MESSAGE_EDIT plaintext had no protocolMessage.editedMessage — skipping update')
+		args.logger?.warn({ targetKey: args.targetKey }, 'decrypted secretEncryptedMessage plaintext had no editable content — skipping update')
 		return null
 	}
 	return {
@@ -372,6 +416,23 @@ const processMessage = async (message, { shouldProcessHistoryMsg, placeholderRes
 	} else if (content?.reactionMessage) {
 		const reaction = { ...content.reactionMessage, key: message.key }
 		ev.emit('messages.reaction', [{ reaction, key: content.reactionMessage?.key }])
+	} else if (content?.pollUpdateMessage) {
+		const pollUpdate = content.pollUpdateMessage
+		const creationMsgKey = pollUpdate.pollCreationMessageKey
+		const pollMsg = creationMsgKey ? await getMessage(creationMsgKey) : undefined
+		const pollEncKey = getMessageSecret(pollMsg)
+		if (pollEncKey && pollUpdate.vote) {
+			try {
+				const meIdNormalised = jidNormalizedUser(meId)
+				const meLid = creds.me?.lid
+				const creatorJids = await resolveEditParentJids(creationMsgKey, meIdNormalised, meLid, signalRepository.lidMapping)
+				const voterJids = await resolveEditEditorJids(message.key, meIdNormalised, meLid, signalRepository.lidMapping)
+				const vote = decryptPollVoteWithSenderFallback({ vote: pollUpdate.vote, pollEncKey, pollMsgId: creationMsgKey.id, creatorJids, voterJids })
+				ev.emit('messages.update', [
+					{ key: creationMsgKey, update: { pollUpdates: [{ pollUpdateMessageKey: message.key, vote, senderTimestampMs: pollUpdate.senderTimestampMs }] } }
+				])
+			} catch {}
+		}
 	} else if (content?.encEventResponseMessage) {
 		const encEventResponse = content.encEventResponseMessage
 		const creationMsgKey = encEventResponse.eventCreationMessageKey
@@ -383,7 +444,7 @@ const processMessage = async (message, { shouldProcessHistoryMsg, placeholderRes
 				const eventCreatorPn = isLidUser(eventCreatorKey) ? await signalRepository.lidMapping.getPNForLID(eventCreatorKey) : eventCreatorKey
 				const eventCreatorJid = getKeyAuthor({ remoteJid: jidNormalizedUser(eventCreatorPn), fromMe: meIdNormalised === eventCreatorPn }, meIdNormalised)
 				const responderJid = getKeyAuthor(message.key, meIdNormalised)
-				const eventEncKey = eventMsg?.messageContextInfo?.messageSecret
+				const eventEncKey = getMessageSecret(eventMsg)
 				if (!eventEncKey) {
 					logger?.warn({ creationMsgKey }, 'event response: missing messageSecret for decryption')
 				} else {
@@ -397,22 +458,23 @@ const processMessage = async (message, { shouldProcessHistoryMsg, placeholderRes
 		} else {
 			logger?.warn({ creationMsgKey }, 'event creation message not found, cannot decrypt response')
 		}
-	} else if (content?.secretEncryptedMessage && content.secretEncryptedMessage.secretEncType === proto.Message.SecretEncryptedMessage.SecretEncType.MESSAGE_EDIT) {
+	} else if (content?.secretEncryptedMessage && getSecretEncUseCase(content.secretEncryptedMessage.secretEncType)) {
 		const secEnc = content.secretEncryptedMessage
 		const targetKey = secEnc.targetMessageKey
-		const targetMsg = await getMessage(targetKey)
+		const targetMsg = targetKey ? await getMessage(targetKey) : undefined
 		if (targetMsg) {
 			try {
-				const editEncKey = targetMsg?.messageContextInfo?.messageSecret
+				const editEncKey = getMessageSecret(targetMsg)
 				if (!editEncKey) {
-					logger?.warn({ targetKey }, 'message edit: missing messageSecret on original message — cannot decrypt')
+					logger?.warn({ targetKey }, 'secret encrypted message: missing messageSecret on original message — cannot decrypt')
 				} else {
 					const meIdNormalised = jidNormalizedUser(meId)
 					const meLid = creds.me?.lid
 					const parentJids = await resolveEditParentJids(targetKey, meIdNormalised, meLid, signalRepository.lidMapping)
 					const editorJids = await resolveEditEditorJids(message.key, meIdNormalised, meLid, signalRepository.lidMapping)
-					const update = buildEditUpdate({
+					const update = buildSecretEncryptedUpdate({
 						editEncKey,
+						useCase: getSecretEncUseCase(secEnc.secretEncType),
 						encPayload: secEnc.encPayload,
 						encIv: secEnc.encIv,
 						parentJids,
@@ -422,15 +484,17 @@ const processMessage = async (message, { shouldProcessHistoryMsg, placeholderRes
 						targetKeyId: targetKey.id,
 						fallbackTimestamp: toNumber(message.messageTimestamp),
 						logger,
-						targetKey
+						targetKey,
+						targetMsg,
+						outerContextInfo: message.message?.messageContextInfo || content.messageContextInfo
 					})
 					if (update) ev.emit('messages.update', [update])
 				}
 			} catch (err) {
-				logger?.warn({ err, targetKey }, 'failed to decrypt secretEncryptedMessage MESSAGE_EDIT')
+				logger?.warn({ err, targetKey }, 'failed to decrypt secretEncryptedMessage')
 			}
 		} else {
-			logger?.warn({ targetKey }, 'original message not found in store, cannot decrypt secretEncryptedMessage edit')
+			logger?.warn({ targetKey }, 'original message not found in store, cannot decrypt secretEncryptedMessage')
 		}
 	} else if (message.messageStubType) {
 		const jid = message.key?.remoteJid

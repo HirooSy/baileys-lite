@@ -362,6 +362,19 @@ await sock.sendMessage(jid, {
 })
 ```
 
+Votes arrive as `update.pollUpdates` and added options as `update.message` (with the new option appended) through `messages.update`, already decrypted. This needs `getMessage` to return the stored poll message with its `messageContextInfo.messageSecret`.
+
+```javascript
+sock.ev.on('messages.update', async updates => {
+  for (const { key, update } of updates) {
+    if (update.pollUpdates) {
+      const poll = await getMessage(key)
+      const tally = getAggregateVotesInPollMessage({ message: poll, pollUpdates: update.pollUpdates })
+    }
+  }
+})
+```
+
 </details>
 
 <details> <summary>AI Rich</summary>

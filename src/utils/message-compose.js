@@ -1532,6 +1532,7 @@ const getFutureProofMessage = message =>
 	message?.botForwardedMessage ||
 	message?.botInvokeMessage ||
 	message?.botTaskMessage ||
+	message?.deviceSentMessage ||
 	message?.documentWithCaptionMessage ||
 	message?.editedMessage ||
 	message?.ephemeralMessage ||
@@ -1556,9 +1557,11 @@ const getFutureProofMessage = message =>
 	message?.viewOnceMessageV2 ||
 	message?.viewOnceMessageV2Extension
 
+const MAX_UNWRAP_DEPTH = 16
+
 export const normalizeMessageContent = content => {
 	if (!content) return undefined
-	for (let i = 0; i < 5; i++) {
+	for (let i = 0; i < MAX_UNWRAP_DEPTH; i++) {
 		const inner = getFutureProofMessage(content)
 		if (!inner) break
 		content = inner.message
@@ -1566,11 +1569,39 @@ export const normalizeMessageContent = content => {
 	return content
 }
 
+export const getMessageSecret = message => {
+	let content = message
+	for (let i = 0; content && i < MAX_UNWRAP_DEPTH; i++) {
+		const secret = content.messageContextInfo?.messageSecret
+		if (secret?.length) return secret
+		const inner = getFutureProofMessage(content)
+		if (!inner) break
+		content = inner.message
+	}
+	return undefined
+}
+
+const POLL_CREATION_KEYS = ['pollCreationMessage', 'pollCreationMessageV2', 'pollCreationMessageV3', 'pollCreationMessageV5', 'pollCreationMessageV6']
+
+export const addPollOption = (message, option) => {
+	if (!message || !option?.optionName) return undefined
+	let added = false
+	const updated = mapInnerContent(message, inner => {
+		const key = POLL_CREATION_KEYS.find(k => inner?.[k])
+		if (!key) return inner
+		const options = inner[key].options || []
+		if (options.some(o => o.optionName === option.optionName)) return inner
+		added = true
+		return { ...inner, [key]: { ...inner[key], options: [...options, option] } }
+	})
+	return added ? updated : undefined
+}
+
 const VIEW_ONCE_MEDIA_KEYS = ['imageMessage', 'videoMessage', 'ptvMessage', 'audioMessage']
 
 export const isViewOnceMessage = message => {
 	if (!message) return false
-	if (message.viewOnceMessage || message.viewOnceMessageV2) return true
+	if (message.viewOnceMessage || message.viewOnceMessageV2 || message.viewOnceMessageV2Extension) return true
 	const inner = normalizeMessageContent(message)
 	return !!inner && VIEW_ONCE_MEDIA_KEYS.some(key => !!inner[key]?.viewOnce)
 }
@@ -1624,12 +1655,13 @@ export const updateMessageWithEventResponse = (msg, update) => {
 }
 
 export function getAggregateVotesInPollMessage({ message, pollUpdates }, meId) {
+	const content = normalizeMessageContent(message)
 	const opts =
-		message?.pollCreationMessage?.options ||
-		message?.pollCreationMessageV2?.options ||
-		message?.pollCreationMessageV3?.options ||
-		message?.pollCreationMessageV5?.options ||
-		message?.pollCreationMessageV6?.options ||
+		content?.pollCreationMessage?.options ||
+		content?.pollCreationMessageV2?.options ||
+		content?.pollCreationMessageV3?.options ||
+		content?.pollCreationMessageV5?.options ||
+		content?.pollCreationMessageV6?.options ||
 		[]
 	const voteHashMap = opts.reduce((acc, opt) => {
 		const hash = sha256(Buffer.from(opt.optionName || '')).toString()
