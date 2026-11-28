@@ -342,7 +342,7 @@ export const getStatusFromReceiptType = type => {
 	return status
 }
 
-const CODE_MAP = { conflict: DisconnectReason.connectionReplaced }
+const CODE_MAP = { conflict: DisconnectReason.connectionReplaced, ack: DisconnectReason.restartRequired }
 
 export const getErrorCodeFromStreamError = node => {
 	const [reasonNode] = getAllBinaryNodeChildren(node)
@@ -356,7 +356,7 @@ export const getErrorCodeFromStreamError = node => {
 			reason = 'device removed'
 		}
 	}
-	if (statusCode === DisconnectReason.restartRequired) reason = 'restart required'
+	if (statusCode === DisconnectReason.restartRequired && reason !== 'ack') reason = 'restart required'
 	return { reason, statusCode }
 }
 
@@ -484,7 +484,7 @@ export const getCompanionWebClientType = ([os, browserName]) => {
 
 export const getCompanionPlatformId = browser => getCompanionWebClientType(browser).toString()
 
-export const getPairingCodePlatformId = browser => (browser[1].toLocaleLowerCase().includes('android') ? 'e' : getCompanionPlatformId(browser))
+export const isAndroidBrowser = browser => browser[1].toLocaleLowerCase().includes('android')
 
 export const buildPairingQRData = (ref, noiseKeyB64, identityKeyB64, advB64, browser) =>
 	'https://wa.me/settings/linked_devices#' + [ref, noiseKeyB64, identityKeyB64, advB64, getCompanionPlatformId(browser)].join(',')
@@ -890,9 +890,9 @@ const WA_ADV_ACCOUNT_SIG_PREFIX = Buffer.from([6, 0])
 const WA_ADV_DEVICE_SIG_PREFIX = Buffer.from([6, 1])
 const WA_ADV_HOSTED_ACCOUNT_SIG_PREFIX = Buffer.from([6, 5])
 
-const getUserAgent = config => ({
+const getUserAgent = (config, android) => ({
 	appVersion: { primary: config.version[0], secondary: config.version[1], tertiary: config.version[2] },
-	platform: proto.ClientPayload.UserAgent.Platform.WEB,
+	platform: android ? proto.ClientPayload.UserAgent.Platform.ANDROID : proto.ClientPayload.UserAgent.Platform.WEB,
 	releaseChannel: proto.ClientPayload.UserAgent.ReleaseChannel.RELEASE,
 	osVersion: '0.1',
 	device: 'Desktop',
@@ -916,20 +916,20 @@ const getWebInfo = config => {
 	return { webSubPlatform }
 }
 
-const getClientPayload = config => {
+const getClientPayload = (config, android) => {
 	const payload = {
 		connectType: proto.ClientPayload.ConnectType.WIFI_UNKNOWN,
 		connectReason: proto.ClientPayload.ConnectReason.USER_ACTIVATED,
-		userAgent: getUserAgent(config),
-		webInfo: getWebInfo(config)
+		userAgent: getUserAgent(config, android)
 	}
+	if (!android) payload.webInfo = getWebInfo(config)
 	if (config.pushName) payload.pushName = config.pushName
 	return payload
 }
 
-export const generateLoginNode = (userJid, config) => {
+export const generateLoginNode = (userJid, config, android = isAndroidBrowser(config.browser)) => {
 	const { user, device } = jidDecode(userJid)
-	const payload = { ...getClientPayload(config), passive: true, pull: true, username: +user, device, lidDbMigrated: false }
+	const payload = { ...getClientPayload(config, android), passive: true, pull: true, username: +user, device, lidDbMigrated: false }
 	return proto.ClientPayload.fromObject(payload)
 }
 
@@ -939,7 +939,7 @@ const getPlatformType = platform => {
 	return proto.DeviceProps.PlatformType[platformType] || proto.DeviceProps.PlatformType.CHROME
 }
 
-export const generateRegistrationNode = ({ registrationId, signedPreKey, signedIdentityKey }, config) => {
+export const generateRegistrationNode = ({ registrationId, signedPreKey, signedIdentityKey }, config, android = isAndroidBrowser(config.browser)) => {
 	const appVersionBuf = createHash('md5').update(config.version.join('.')).digest()
 	const companion = {
 		os: config.browser[0],
@@ -966,7 +966,7 @@ export const generateRegistrationNode = ({ registrationId, signedPreKey, signedI
 	}
 	const companionProto = proto.DeviceProps.encode(companion).finish()
 	const registerPayload = {
-		...getClientPayload(config),
+		...getClientPayload(config, android),
 		passive: false,
 		pull: false,
 		devicePairingData: {

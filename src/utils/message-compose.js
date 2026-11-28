@@ -1476,9 +1476,14 @@ export const generateWAMessageFromContent = (jid, message, options) => {
 		const participant = quoted.key.fromMe ? userJid : quoted.participant || quoted.key.participant || quoted.key.remoteJid
 		let quotedMsg = normalizeMessageContent(quoted.message)
 		const msgType = getContentType(quotedMsg)
-		const quotedContent = { ...quotedMsg[msgType] }
-		delete quotedContent.contextInfo
-		quotedMsg = proto.Message.create({ [msgType]: quotedContent })
+		const quotedBody = quotedMsg[msgType]
+		if (typeof quotedBody === 'string') {
+			quotedMsg = proto.Message.create({ [msgType]: quotedBody })
+		} else {
+			const quotedContent = { ...quotedBody }
+			delete quotedContent.contextInfo
+			quotedMsg = proto.Message.create({ [msgType]: quotedContent })
+		}
 		const patch = { participant: jidNormalizedUser(participant), stanzaId: quoted.key.id, quotedMessage: quotedMsg }
 		if (!isNewsletter && jid !== quoted.key.remoteJid) patch.remoteJid = quoted.key.remoteJid
 		mergeContextInfo(patch)

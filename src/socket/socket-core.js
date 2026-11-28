@@ -17,9 +17,10 @@ import {
 	generateMdTagPrefix,
 	generateRegistrationNode,
 	getCodeFromWSError,
+	getCompanionPlatformId,
 	getErrorCodeFromStreamError,
 	getNextPreKeysNode,
-	getPairingCodePlatformId,
+	isAndroidBrowser,
 	makeNoiseHandler,
 	promiseTimeout,
 	signedKeyPair,
@@ -344,7 +345,7 @@ export const makeSocket = config => {
 		const keyEnc = noise.processHandshake(handshake, creds.noiseKey)
 		let node
 		if (!creds.me) {
-			node = generateRegistrationNode(creds, config)
+			node = generateRegistrationNode(creds, config, false)
 			logger.info({ node }, 'not logged in, attempting registration...')
 		} else {
 			node = generateLoginNode(creds.me.id, config)
@@ -628,8 +629,8 @@ export const makeSocket = config => {
 						content: [
 							{ tag: 'link_code_pairing_wrapped_companion_ephemeral_pub', attrs: {}, content: await generatePairingKey() },
 							{ tag: 'companion_server_auth_key_pub', attrs: {}, content: authState.creds.noiseKey.public },
-							{ tag: 'companion_platform_id', attrs: {}, content: getPairingCodePlatformId(browser) },
-							{ tag: 'companion_platform_display', attrs: {}, content: `${browser[1]} (${browser[0]})` },
+							{ tag: 'companion_platform_id', attrs: {}, content: getCompanionPlatformId(browser) },
+							{ tag: 'companion_platform_display', attrs: {}, content: isAndroidBrowser(browser) ? `Chrome (${browser[1]})` : `${browser[1]} (${browser[0]})` },
 							{ tag: 'link_code_pairing_nonce', attrs: {}, content: '0' }
 						]
 					}
