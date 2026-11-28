@@ -8,16 +8,6 @@
 
 **High-Performance Javascript Baileys**, built for high-scalability workloads, built-in modules, multi-session operation, and full user configurability.
 
-| Feature | Baileys-Lite | Whiskeysockets |
-| --- | --- | --- |
-| RAM usage | 80 mb | 150mb+ |
-| Call | Yes | No |
-| Ping | 8 ms | 200 ms |
-| Multi sessions limit | 100+, still fast | 2-10, slow |
-| LID/PN/Username | Yes, all | Only LID and PN |
-| SQL session | Yes | No |
-| Node required | >=18 | >=20 |
-
 ---
 
 ## Install
